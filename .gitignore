@@ -1,0 +1,7 @@
+# Исключить все файлы с расширением
+*.xccheckout 
+*.xcscmblueprint
+# Игнорировать все файлы в директории
+build/
+DerivedData/
+xcuserdata/
