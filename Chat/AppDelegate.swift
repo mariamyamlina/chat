@@ -22,43 +22,67 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let inAct = "'inactive state'"
     let act = "'active state'"
     let back = "'background'"
-    let susp = "'suspended state'"
+    
+    lazy var currentState: (UIApplication.State) -> () = { state in
+        switch state.rawValue {
+        case 0:
+            print("current - \(self.act),")
+        case 1:
+            print("current - \(self.inAct),")
+        case 2:
+            print("current - \(self.back),")
+        default:
+            break
+        }
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         if AppDelegate.appLogIndicator {
-            print("Application moved from \(notRun) to \(inAct): \n" + "called \(#function)\n")
+            print("Application moved from \(notRun) to \(inAct):")
+            currentState(application.applicationState)
+            print("called method - \(#function)\n")
         }
         return true
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         if AppDelegate.appLogIndicator {
-            print("Application moved from \(inAct) to \(act): \n" + "called \(#function)\n")
+            print("Application moved from \(inAct) to \(act):")
+            currentState(application.applicationState)
+            print("called method - \(#function)\n")
         }
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
         if AppDelegate.appLogIndicator {
-            print("Application moved from \(act) to \(inAct): \n" + "called \(#function)\n")
+            print("Application is about to move from \(act) to \(inAct):")
+            currentState(application.applicationState)
+            print("called method - \(#function)\n")
         }
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
         if AppDelegate.appLogIndicator {
-            print("Application moved from \(back) to \(inAct): \n" + "called \(#function)\n")
+            print("Application is about to move from \(back) to \(inAct):")
+            currentState(application.applicationState)
+            print("called method - \(#function)\n")
         }
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
         if AppDelegate.appLogIndicator {
-            print("Application moved from \(inAct) to \(back): \n" + "called \(#function)\n")
+            print("Application moved from \(inAct) to \(back):")
+            currentState(application.applicationState)
+            print("called method - \(#function)\n")
         }
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
         if AppDelegate.appLogIndicator {
-            print("Application is about to terminate: \n" + "called \(#function)\n")
+            print("Application is about to terminate:")
+            currentState(application.applicationState)
+            print("called method - \(#function)\n")
         }
     }
 

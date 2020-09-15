@@ -23,42 +23,42 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if AppDelegate.appLogIndicator {
-            print("ViewController moved from \(disappIng)/\(disappEd) to \(appIng): \n" + "called \(#function)\n")
+            print("ViewController is about to move from \(disappIng)/\(disappEd) to \(appIng): \n" + "called method - \(#function)\n")
         }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if AppDelegate.appLogIndicator {
-            print("ViewController moved from \(appIng) to \(appEd): \n" + "called \(#function)\n")
+            print("ViewController moved from \(appIng) to \(appEd): \n" + "called method - \(#function)\n")
         }
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         if AppDelegate.appLogIndicator {
-            print("ViewController's view is about to layout its subviews: \n" + "called \(#function)\n")
+            print("ViewController's view is about to layout its subviews: \n" + "called method - \(#function)\n")
         }
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if AppDelegate.appLogIndicator {
-            print("ViewController's view has just laid out its subviews: \n" + "called \(#function)\n")
+            print("ViewController's view has just laid out its subviews: \n" + "called method - \(#function)\n")
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if AppDelegate.appLogIndicator {
-            print("ViewController moved from \(appIng)/\(appEd) to \(disappIng): \n" + "called \(#function)\n")
+            print("ViewController is about to move from \(appIng)/\(appEd) to \(disappIng): \n" + "called method - \(#function)\n")
         }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if AppDelegate.appLogIndicator {
-            print("ViewController moved from \(disappIng) to \(disappEd): \n" + "called \(#function)\n")
+            print("ViewController moved from \(disappIng) to \(disappEd): \n" + "called method - \(#function)\n")
         }
     }
 }
