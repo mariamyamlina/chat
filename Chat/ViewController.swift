@@ -23,7 +23,7 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if AppDelegate.appLogIndicator {
-            print("ViewController moved from \(disappEd) to \(appIng): \n" + "called \(#function)\n")
+            print("ViewController moved from \(disappIng)/\(disappEd) to \(appIng): \n" + "called \(#function)\n")
         }
     }
     
@@ -58,7 +58,7 @@ class ViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if AppDelegate.appLogIndicator {
-            print("ViewController moved from \(disappIng) to \(disappEd)/\(appIng): \n" + "called \(#function)\n")
+            print("ViewController moved from \(disappIng) to \(disappEd): \n" + "called \(#function)\n")
         }
     }
 }
