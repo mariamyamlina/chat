@@ -9,17 +9,6 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
-    let appIng = "'appearing'"
-    let appEd = "'appeared'"
-    let disappIng = "'disappearing'"
-    let disappEd = "'disappeared'"
-    
-    private func printLog(message: String, function: String = #function) {
-        if AppDelegate.appLogIndicator {
-            print(message + "called method - \(function)\n")
-        }
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,32 +17,32 @@ class ViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        printLog(message: "ViewController is about to move from \(disappIng)/\(disappEd) to \(appIng): \n")
+        Loger.printVCLog("ViewController is about to move from 'disappearing'/'disappeared' to 'appearing': \n", #function)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        printLog(message: "ViewController moved from \(appIng) to \(appEd): \n")
+        Loger.printVCLog("ViewController moved from 'appearing' to 'appeared': \n", #function)
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        printLog(message: "ViewController's view is about to layout its subviews: \n")
+        Loger.printVCLog("ViewController's view is about to layout its subviews: \n", #function)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        printLog(message: "ViewController's view has just laid out its subviews: \n")
+        Loger.printVCLog("ViewController's view has just laid out its subviews: \n", #function)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        printLog(message: "ViewController is about to move from \(appIng)/\(appEd) to \(disappIng): \n")
+        Loger.printVCLog("ViewController is about to move from 'appearing'/'appeared' to 'disappearing': \n", #function)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        printLog(message: "ViewController moved from \(disappIng) to \(disappEd): \n")
+        Loger.printVCLog("ViewController moved from 'disappearing' to 'disappeared': \n", #function)
     }
 }
 
