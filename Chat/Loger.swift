@@ -41,9 +41,9 @@ class Loger {
         }
     }
     
-    static var printButtonLog = {(button: UIButton) in
+    static var printButtonLog = {(button: UIButton, function: String) in
         if Loger.buttonLogIndicator {
-            print("Button frame: \(button.frame)\n")
+            print("Button frame from \(function):\n\(button.frame)\n")
         }
     }
 }

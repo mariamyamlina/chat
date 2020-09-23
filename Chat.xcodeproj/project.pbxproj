@@ -12,6 +12,7 @@
 		99803F8E250ADD0F000284D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99803F8C250ADD0F000284D9 /* Main.storyboard */; };
 		99803F90250ADD11000284D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99803F8F250ADD11000284D9 /* Assets.xcassets */; };
 		99803F93250ADD11000284D9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99803F91250ADD11000284D9 /* LaunchScreen.storyboard */; };
+		99846730251B5EA1004E9044 /* ButtonWithTouchSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */; };
 		998755532513D3210080EEAE /* Loger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998755522513D3210080EEAE /* Loger.swift */; };
 		998755552513F4430080EEAE /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998755542513F4430080EEAE /* ProfileViewController.swift */; };
 		9987555B2514244D0080EEAE /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9987555A2514244D0080EEAE /* Roboto-Regular.ttf */; };
@@ -28,6 +29,7 @@
 		99803F8F250ADD11000284D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		99803F92250ADD11000284D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		99803F94250ADD11000284D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonWithTouchSize.swift; sourceTree = "<group>"; };
 		998755522513D3210080EEAE /* Loger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loger.swift; sourceTree = "<group>"; };
 		998755542513F4430080EEAE /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		9987555A2514244D0080EEAE /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 				998755522513D3210080EEAE /* Loger.swift */,
 				99569DE32515FD6900F103D4 /* LogViewController.swift */,
 				998755542513F4430080EEAE /* ProfileViewController.swift */,
+				9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */,
 				9987556625142AC90080EEAE /* Fonts */,
 			);
 			path = Chat;
@@ -167,6 +170,7 @@
 			files = (
 				998755532513D3210080EEAE /* Loger.swift in Sources */,
 				998755552513F4430080EEAE /* ProfileViewController.swift in Sources */,
+				99846730251B5EA1004E9044 /* ButtonWithTouchSize.swift in Sources */,
 				99803F87250ADD0F000284D9 /* AppDelegate.swift in Sources */,
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,
 			);
