@@ -1,137 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="dSq-Kq-lxw">
-    <device id="retina4_7" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="h3k-Qs-er5">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="Roboto-Regular.ttf">
-            <string>Roboto-Regular</string>
-        </array>
-        <array key="SFProDisplay-Bold.ttf">
-            <string>SFProDisplay-Bold</string>
-        </array>
-        <array key="SFProText-Regular.ttf">
-            <string>SFProText-Regular</string>
-        </array>
-        <array key="SFProText-Semibold.ttf">
-            <string>SFProText-Semibold</string>
-        </array>
-    </customFonts>
     <scenes>
-        <!--Profile View Controller-->
-        <scene sceneID="9uR-ww-sVj">
+        <!--Tinkoff Chat-->
+        <scene sceneID="51c-Rw-y8z">
             <objects>
-                <viewController id="dSq-Kq-lxw" customClass="ProfileViewController" customModule="Chat" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="43M-Ei-AdS">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                <viewController id="kbr-ho-hMP" customClass="ConversationsListViewController" customModule="Chat" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="gSE-ng-Clm">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ruh-mw-n90">
-                                <rect key="frame" x="67.5" y="45" width="240" height="240"/>
-                                <color key="backgroundColor" red="0.89411764705882346" green="0.90980392156862744" blue="0.16862745098039217" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="240" id="B2S-7a-u5f"/>
-                                    <constraint firstAttribute="width" secondItem="Ruh-mw-n90" secondAttribute="height" multiplier="1:1" id="SoE-Jo-uMG"/>
-                                    <constraint firstAttribute="width" constant="240" id="sQK-FF-czZ"/>
-                                </constraints>
-                            </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Marina Dudarenko" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SuO-pi-sWR">
-                                <rect key="frame" x="87.5" y="317" width="200" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="Ewn-Lt-1Uw"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="NEE-FD-b3b"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="SFProDisplay-Bold" family="SF Pro Display" pointSize="24"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sjd-Cp-0iJ">
-                                <rect key="frame" x="267.5" y="259" width="40" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="40" id="m7L-6n-BDM"/>
-                                    <constraint firstAttribute="height" constant="40" id="sLF-kS-eul"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="SFProText-Semibold" family="SF Pro Text" pointSize="16"/>
-                                <state key="normal" title="Edit">
-                                    <color key="titleColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="editButtonTapped:" destination="dSq-Kq-lxw" eventType="touchUpInside" id="CVM-sW-xhb"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UX/UI designer, web-designer Moscow, Russia" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w8j-k8-Dog">
-                                <rect key="frame" x="72" y="379" width="231.5" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="230" id="v9e-ao-BHT"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="y2A-cq-CUh"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="SFProText-Regular" family="SF Pro Text" pointSize="16"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QHo-Ml-Vwx" customClass="ButtonWithTouchSize" customModule="Chat" customModuleProvider="target">
-                                <rect key="frame" x="56" y="597" width="263" height="40"/>
-                                <color key="backgroundColor" red="0.96470588235294119" green="0.96470588235294119" blue="0.96470588235294119" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="X9B-Y8-1H3"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="263" id="hef-Hr-QeB"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="SFProText-Semibold" family="SF Pro Text" pointSize="19"/>
-                                <state key="normal" title="Save"/>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="MD" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="piM-kb-qi0">
-                                <rect key="frame" x="77.5" y="110" width="220" height="110"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="220" id="3ai-Kf-cnb"/>
-                                    <constraint firstAttribute="height" constant="110" id="EkF-tp-0FU"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="120"/>
-                                <color key="textColor" red="0.21176470589999999" green="0.2156862745" blue="0.21960784310000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="nd0-my-SSB">
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="piM-kb-qi0" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Ruh-mw-n90" secondAttribute="trailing" constant="-10" id="0Aa-4i-5f4"/>
-                            <constraint firstItem="w8j-k8-Dog" firstAttribute="top" secondItem="SuO-pi-sWR" secondAttribute="bottom" constant="32" id="2D3-5T-5cB"/>
-                            <constraint firstItem="SuO-pi-sWR" firstAttribute="centerX" secondItem="43M-Ei-AdS" secondAttribute="centerX" id="2Qo-wq-Tc0"/>
-                            <constraint firstItem="SuO-pi-sWR" firstAttribute="top" secondItem="Sjd-Cp-0iJ" secondAttribute="bottom" constant="18" id="2cT-ZR-nz3"/>
-                            <constraint firstItem="QHo-Ml-Vwx" firstAttribute="centerX" secondItem="43M-Ei-AdS" secondAttribute="centerX" id="5Wj-jG-EtI"/>
-                            <constraint firstItem="QHo-Ml-Vwx" firstAttribute="top" relation="greaterThanOrEqual" secondItem="w8j-k8-Dog" secondAttribute="bottom" constant="10" id="BWa-W6-bBb"/>
-                            <constraint firstItem="w8j-k8-Dog" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="43M-Ei-AdS" secondAttribute="leading" constant="45" id="Cda-a0-3pB"/>
-                            <constraint firstItem="QHo-Ml-Vwx" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NAn-au-JKJ" secondAttribute="leading" constant="28" id="Je1-Ju-QXw"/>
-                            <constraint firstItem="Sjd-Cp-0iJ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NAn-au-JKJ" secondAttribute="leading" constant="30" id="KD5-4O-oW1"/>
-                            <constraint firstItem="SuO-pi-sWR" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NAn-au-JKJ" secondAttribute="leading" constant="60" id="KEZ-Xt-x1h"/>
-                            <constraint firstItem="Sjd-Cp-0iJ" firstAttribute="trailing" secondItem="Ruh-mw-n90" secondAttribute="trailing" id="QJF-tx-DVb"/>
-                            <constraint firstItem="piM-kb-qi0" firstAttribute="centerX" secondItem="Ruh-mw-n90" secondAttribute="centerX" id="Uh6-4B-PxQ"/>
-                            <constraint firstItem="NAn-au-JKJ" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="SuO-pi-sWR" secondAttribute="trailing" constant="60" id="XrM-7T-HpU"/>
-                            <constraint firstItem="w8j-k8-Dog" firstAttribute="centerX" secondItem="43M-Ei-AdS" secondAttribute="centerX" id="bH7-Tk-osH"/>
-                            <constraint firstItem="Ruh-mw-n90" firstAttribute="centerY" secondItem="piM-kb-qi0" secondAttribute="centerY" id="fjI-HK-e0b"/>
-                            <constraint firstItem="NAn-au-JKJ" firstAttribute="bottom" secondItem="QHo-Ml-Vwx" secondAttribute="bottom" constant="30" id="gag-7T-x31"/>
-                            <constraint firstItem="Ruh-mw-n90" firstAttribute="top" secondItem="NAn-au-JKJ" secondAttribute="top" constant="45" id="kXr-MW-7I3"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="w8j-k8-Dog" secondAttribute="trailing" constant="45" id="lxn-yB-jll"/>
-                            <constraint firstItem="Ruh-mw-n90" firstAttribute="centerX" secondItem="43M-Ei-AdS" secondAttribute="centerX" id="rAm-Zh-rJy"/>
-                            <constraint firstItem="piM-kb-qi0" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Ruh-mw-n90" secondAttribute="leading" constant="10" id="unr-dp-S8P"/>
-                            <constraint firstItem="SuO-pi-sWR" firstAttribute="top" secondItem="Ruh-mw-n90" secondAttribute="bottom" constant="32" id="vyI-9j-UsJ"/>
-                            <constraint firstItem="NAn-au-JKJ" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="QHo-Ml-Vwx" secondAttribute="trailing" constant="28" id="z6A-Kh-KTK"/>
+                            <constraint firstItem="Yxq-wl-srz" firstAttribute="bottom" secondItem="nd0-my-SSB" secondAttribute="bottom" id="1gg-K1-evE"/>
+                            <constraint firstItem="nd0-my-SSB" firstAttribute="top" secondItem="Yxq-wl-srz" secondAttribute="top" id="Sa7-u4-8Hp"/>
+                            <constraint firstItem="nd0-my-SSB" firstAttribute="leading" secondItem="Yxq-wl-srz" secondAttribute="leading" id="SlG-GD-WiF"/>
+                            <constraint firstItem="Yxq-wl-srz" firstAttribute="trailing" secondItem="nd0-my-SSB" secondAttribute="trailing" id="kB6-fI-oN8"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="NAn-au-JKJ"/>
+                        <viewLayoutGuide key="safeArea" id="Yxq-wl-srz"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Tinkoff Chat" id="1dW-aa-ptE"/>
                     <connections>
-                        <outlet property="bioLabel" destination="w8j-k8-Dog" id="3eg-v1-foH"/>
-                        <outlet property="lettersLabel" destination="piM-kb-qi0" id="yL4-vC-vXs"/>
-                        <outlet property="nameLabel" destination="SuO-pi-sWR" id="m7N-Xs-Ag9"/>
-                        <outlet property="profileImage" destination="Ruh-mw-n90" id="ksg-l5-9tc"/>
-                        <outlet property="saveButton" destination="QHo-Ml-Vwx" id="Xx1-zD-bqL"/>
+                        <outlet property="tableView" destination="nd0-my-SSB" id="FwN-rA-ZOc"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Wiu-3F-tRl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="c02-IE-SGS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="789.60000000000002" y="90.404797601199405"/>
+            <point key="canvasLocation" x="3804" y="297.04433497536945"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="AfC-VX-hrH">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="h3k-Qs-er5" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="l1d-tt-RBo">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="kbr-ho-hMP" kind="relationship" relationship="rootViewController" id="RLr-sK-I7A"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wOt-2l-aVa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2864.8000000000002" y="297.30134932533736"/>
         </scene>
     </scenes>
 </document>

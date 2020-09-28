@@ -42,6 +42,12 @@ class ProfileViewController: LogViewController, UINavigationControllerDelegate, 
         Loger.printButtonLog(saveButton, #function)
 
         // Do any additional setup after loading the view.
+
+        setupViews()
+        setupNavigationBar()
+    }
+    
+    func setupViews() {
         profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
         profileImage.contentMode = .scaleAspectFill
         
@@ -58,6 +64,23 @@ class ProfileViewController: LogViewController, UINavigationControllerDelegate, 
         } else {
             lettersLabel.isHidden = true
         }
+    }
+    
+    func setupNavigationBar() {
+        let leftViewLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 115, height: 22))
+        leftViewLabel.text = "My Profile"
+        leftViewLabel.textColor = .black
+        leftViewLabel.font = UIFont(name: "SFProDisplay-Bold", size: 26)
+        let leftItem = UIBarButtonItem(customView: leftViewLabel)
+        navigationItem.leftBarButtonItem = leftItem
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeProfileViewController))
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SFProText-Semibold", size: 17) as Any], for: .normal)
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SFProText-Semibold", size: 17) as Any], for: .highlighted)
+    }
+    
+    @objc func closeProfileViewController() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -106,25 +129,25 @@ class ProfileViewController: LogViewController, UINavigationControllerDelegate, 
         self.imagePicker.delegate = self
         self.imagePicker.allowsEditing = true
 
-        let galeryAction = UIAlertAction(title: "Установить из галереи", style: .default) { (action) in
+        let galeryAction = UIAlertAction(title: "Choose from gallery", style: .default) { (action) in
             if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary) {
                 self.imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
                 self.present(self.imagePicker, animated: true, completion: nil)
             } else {
-                self.configureAlert(title: "Невозможно открыть галерею")
+                self.configureAlert(title: "Can't open gallery")
             }
         }
         
-        let takePhotoAction = UIAlertAction(title: "Сделать фото", style: .default) { (action) in
+        let takePhotoAction = UIAlertAction(title: "Take a photo", style: .default) { (action) in
             if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
                 self.imagePicker.sourceType = UIImagePickerController.SourceType.camera
                 self.present(self.imagePicker, animated: true, completion: nil)
             } else {
-                self.configureAlert(title: "Невозможно сделать фото")
+                self.configureAlert(title: "Can't take a photo")
             }
         }
         
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
         for action in [galeryAction, takePhotoAction, cancelAction] {
             alertController.addAction(action)
@@ -134,8 +157,8 @@ class ProfileViewController: LogViewController, UINavigationControllerDelegate, 
     }
     
     func configureAlert(title: String) {
-        let alertController = UIAlertController(title: title, message: "Проверьте устройство, затем попробуйте снова", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "Хорошо", style: .cancel, handler: nil)
+        let alertController = UIAlertController(title: title, message: "Check your device and try later", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Okay", style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
         self.present(alertController, animated: true, completion: nil)
     }
