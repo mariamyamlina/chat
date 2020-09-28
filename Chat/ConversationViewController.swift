@@ -164,7 +164,7 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as? MessageTableViewCell
         
         cell?.selectionStyle = .none
-        cell?.messageTextView.backgroundColor = ChatHelper.messages(name ?? "")[indexPath.row].1
+        cell?.textBubbleView.backgroundColor = ChatHelper.messages(name ?? "")[indexPath.row].1
         cell?.timeLabel.text = dateFormatter(date: ChatHelper.messages(name ?? "")[indexPath.row].2, force: true)
             
         cell?.configure(with: ChatHelper.messages(name ?? "")[indexPath.row].0)
@@ -178,12 +178,18 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         stringMessage = ChatHelper.messages(name ?? "")[indexPath.row].0.text
-        
+
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        let estimatedFrame = NSString(string: stringMessage + "date").boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 16.0) as Any], context: nil)
+        var estimatedFrame = NSString(string: stringMessage + "    ").boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 16.0) as Any], context: nil)
         
-        let rect = CGSize(width: view.frame.width, height: estimatedFrame.height + 44)
+        if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
+            let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
+            estimatedFrame.size.height = estimatedFrame.height * estimatedFrame.width / newWidth
+            estimatedFrame.size.width = newWidth
+        }
+        
+        let rect = CGSize(width: view.frame.width, height: estimatedFrame.height + 42)
         
         return rect.height
     }

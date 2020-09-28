@@ -29,7 +29,7 @@
                         <rect key="frame" x="15.5" y="20" width="48" height="48"/>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ronald Robertson" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rrY-gc-UJb">
-                        <rect key="frame" x="76" y="16" width="178" height="20"/>
+                        <rect key="frame" x="76" y="16" width="208" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="YUY-1l-MXU"/>
                         </constraints>
@@ -39,17 +39,15 @@
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="An suas viderer pro. Vis cu magna altera, ex his vivendo atomorum." lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eiT-mM-tUf">
                         <rect key="frame" x="76" y="36" width="284" height="36"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="36" id="w8d-wx-gtU"/>
-                        </constraints>
                         <fontDescription key="fontDescription" name="SFProText-Regular" family="SF Pro Text" pointSize="13"/>
                         <color key="textColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Today &gt;" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sjs-dF-RkU">
-                        <rect key="frame" x="260" y="16" width="100" height="20"/>
+                        <rect key="frame" x="290" y="16" width="70" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="kHm-mc-tF3"/>
+                            <constraint firstAttribute="width" constant="70" id="lGj-V3-VXM"/>
                         </constraints>
                         <fontDescription key="fontDescription" name="SFProText-Regular" family="SF Pro Text" pointSize="15"/>
                         <color key="textColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -61,7 +59,6 @@
                     <constraint firstItem="rrY-gc-UJb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="76" id="G6q-eq-DiH"/>
                     <constraint firstItem="eiT-mM-tUf" firstAttribute="leading" secondItem="GzZ-8x-Fff" secondAttribute="trailing" constant="12.5" id="HZn-2B-P72"/>
                     <constraint firstItem="Sjs-dF-RkU" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="Hpe-9N-x3d"/>
-                    <constraint firstAttribute="trailing" secondItem="rrY-gc-UJb" secondAttribute="trailing" constant="121" id="KeJ-TU-Hbh"/>
                     <constraint firstAttribute="bottom" secondItem="eiT-mM-tUf" secondAttribute="bottom" constant="16" id="Kol-bw-xYu"/>
                     <constraint firstAttribute="trailing" secondItem="eiT-mM-tUf" secondAttribute="trailing" constant="15" id="NTE-2f-NqX"/>
                     <constraint firstItem="rrY-gc-UJb" firstAttribute="leading" secondItem="GzZ-8x-Fff" secondAttribute="trailing" constant="12.5" id="Rhh-1Z-v8b"/>

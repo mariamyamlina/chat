@@ -18,14 +18,14 @@ class MessageTableViewCell: UITableViewCell {
        let textView = UITextView()
         textView.backgroundColor = .clear
         textView.isUserInteractionEnabled = false
-        textView.layer.cornerRadius = 8
-        textView.clipsToBounds = true
         textView.font = UIFont(name: "SFProText-Regular", size: 16.0)
         return textView
     }()
     
     lazy var textBubbleView: UIView = {
         let view = UIView()
+        view.layer.cornerRadius = 8
+        view.clipsToBounds = true
         return view
     }()
     
@@ -58,9 +58,8 @@ class MessageTableViewCell: UITableViewCell {
 
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            textBubbleView.topAnchor.constraint(equalTo: messageTextView.topAnchor),
-            timeLabel.bottomAnchor.constraint(equalTo: textBubbleView.bottomAnchor, constant: -16),
-            timeLabel.trailingAnchor.constraint(equalTo: messageTextView.trailingAnchor, constant: -8),
+            timeLabel.bottomAnchor.constraint(equalTo: textBubbleView.bottomAnchor, constant: -2),
+            timeLabel.trailingAnchor.constraint(equalTo: textBubbleView.trailingAnchor, constant: -8),
             timeLabel.heightAnchor.constraint(equalToConstant: 13),
             timeLabel.widthAnchor.constraint(equalToConstant: 32)
         ])
@@ -73,21 +72,23 @@ extension MessageTableViewCell: ConfigurableView {
     func configure(with model: ConfigurationModel) {
         
         messageTextView.text = model.text
-        
+
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        var estimatedFrame = NSString(string: model.text + "date").boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 16.0) as Any], context: nil)
+        var estimatedFrame = NSString(string: model.text + "    ").boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 16.0) as Any], context: nil)
 
         if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
-            estimatedFrame.size.width = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
+            let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
+            estimatedFrame.size.height = estimatedFrame.height * estimatedFrame.width / newWidth
+            estimatedFrame.size.width = newWidth
         }
         
-        if messageTextView.backgroundColor == UIColor(red: 220/250, green: 247/250, blue: 197/250, alpha: 1) {
-            messageTextView.frame = CGRect(x: UIScreen.main.bounds.width - 28 - estimatedFrame.width - 16, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
-            textBubbleView.frame = CGRect(x: UIScreen.main.bounds.width - 20 - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 26)
+        if textBubbleView.backgroundColor == UIColor(red: 220/250, green: 247/250, blue: 197/250, alpha: 1) {
+            messageTextView.frame = CGRect(x: UIScreen.main.bounds.width - 28 - estimatedFrame.width - 16, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 28)
+            textBubbleView.frame = CGRect(x: UIScreen.main.bounds.width - 20 - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 28)
         } else {
-            messageTextView.frame = CGRect(x: 28, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 20)
-            textBubbleView.frame = CGRect(x: 20, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 26)
+            messageTextView.frame = CGRect(x: 28, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 28)
+            textBubbleView.frame = CGRect(x: 20, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 28)
         }
     }
 }
