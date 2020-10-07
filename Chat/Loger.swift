@@ -13,7 +13,7 @@ class Loger {
     //Индикаторы наличия логов приложения
     static let appLogIndicator = false
     static let vcLogIndicator = false
-    static let buttonLogIndicator = true
+    static let buttonLogIndicator = false
     
     static var printAppLog = {(message: String, current: UIApplication.State, function: String) in
         if Loger.appLogIndicator {
