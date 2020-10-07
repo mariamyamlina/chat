@@ -12,9 +12,12 @@
 		99454C3B251D49A9005CEEA2 /* ConversationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99454C39251D49A9005CEEA2 /* ConversationTableViewCell.xib */; };
 		994AF9D125221D300013B0E0 /* TopViewWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */; };
 		994AF9D525221D560013B0E0 /* TopViewWithTitle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 994AF9D425221D560013B0E0 /* TopViewWithTitle.xib */; };
-		994AF9DD252249850013B0E0 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994AF9DC252249850013B0E0 /* ProfileImageView.swift */; };
-		994AF9DF2522498C0013B0E0 /* ProfileImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 994AF9DE2522498B0013B0E0 /* ProfileImageView.xib */; };
+		994B4A7E252A79E900A50B5D /* SFProText-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */; };
+		994B4A80252A7C3900A50B5D /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994B4A7F252A7C3900A50B5D /* Theme.swift */; };
+		994B9ADA252799F600A453F2 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994B9AD9252799F600A453F2 /* ThemeManager.swift */; };
 		994C34302520E89C00815A1C /* ChatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994C342F2520E89C00815A1C /* ChatHelper.swift */; };
+		994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */; };
+		994CF6CD252E0E3200AB0A10 /* ProfileImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 994CF6CC252E0E3200AB0A10 /* ProfileImageView.xib */; };
 		9950733D251F87A500515678 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9950733B251F87A500515678 /* MessageTableViewCell.swift */; };
 		9950733E251F87A500515678 /* MessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9950733C251F87A500515678 /* MessageTableViewCell.xib */; };
 		99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99569DE32515FD6900F103D4 /* LogViewController.swift */; };
@@ -32,6 +35,10 @@
 		9987555E251425610080EEAE /* SFProText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9987555C251425610080EEAE /* SFProText-Regular.ttf */; };
 		99875561251427000080EEAE /* SFProDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99875560251427000080EEAE /* SFProDisplay-Bold.ttf */; };
 		99875565251429290080EEAE /* SFProText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99875564251429290080EEAE /* SFProText-Semibold.ttf */; };
+		99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B6962526850C00117A04 /* ThemesViewController.swift */; };
+		99E8B6992526852300117A04 /* Themes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99E8B6982526852300117A04 /* Themes.storyboard */; };
+		99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B69A252689ED00117A04 /* ThemeButton.swift */; };
+		99E8B69D25268A3200117A04 /* ThemeButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99E8B69C25268A3200117A04 /* ThemeButton.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,9 +47,12 @@
 		99454C39251D49A9005CEEA2 /* ConversationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConversationTableViewCell.xib; sourceTree = "<group>"; };
 		994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopViewWithTitle.swift; sourceTree = "<group>"; };
 		994AF9D425221D560013B0E0 /* TopViewWithTitle.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TopViewWithTitle.xib; sourceTree = "<group>"; };
-		994AF9DC252249850013B0E0 /* ProfileImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
-		994AF9DE2522498B0013B0E0 /* ProfileImageView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileImageView.xib; sourceTree = "<group>"; };
+		994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-RegularItalic.ttf"; sourceTree = "<group>"; };
+		994B4A7F252A7C3900A50B5D /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		994B9AD9252799F600A453F2 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		994C342F2520E89C00815A1C /* ChatHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatHelper.swift; sourceTree = "<group>"; };
+		994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
+		994CF6CC252E0E3200AB0A10 /* ProfileImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileImageView.xib; sourceTree = "<group>"; };
 		9950733B251F87A500515678 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		9950733C251F87A500515678 /* MessageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageTableViewCell.xib; sourceTree = "<group>"; };
 		99569DE32515FD6900F103D4 /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
@@ -62,6 +72,10 @@
 		9987555C251425610080EEAE /* SFProText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Regular.ttf"; sourceTree = "<group>"; };
 		99875560251427000080EEAE /* SFProDisplay-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProDisplay-Bold.ttf"; sourceTree = "<group>"; };
 		99875564251429290080EEAE /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Semibold.ttf"; sourceTree = "<group>"; };
+		99E8B6962526850C00117A04 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
+		99E8B6982526852300117A04 /* Themes.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Themes.storyboard; sourceTree = "<group>"; };
+		99E8B69A252689ED00117A04 /* ThemeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeButton.swift; sourceTree = "<group>"; };
+		99E8B69C25268A3200117A04 /* ThemeButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ThemeButton.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +117,8 @@
 				99569DE32515FD6900F103D4 /* LogViewController.swift */,
 				998755542513F4430080EEAE /* ProfileViewController.swift */,
 				9957F569251EABD2007EB624 /* Profile.storyboard */,
+				994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */,
+				994CF6CC252E0E3200AB0A10 /* ProfileImageView.xib */,
 				9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */,
 				99454C32251D4502005CEEA2 /* ConversationsListViewController.swift */,
 				99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */,
@@ -114,9 +130,13 @@
 				994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */,
 				994AF9D425221D560013B0E0 /* TopViewWithTitle.xib */,
 				994C342F2520E89C00815A1C /* ChatHelper.swift */,
-				994AF9DC252249850013B0E0 /* ProfileImageView.swift */,
-				994AF9DE2522498B0013B0E0 /* ProfileImageView.xib */,
 				9987556625142AC90080EEAE /* Fonts */,
+				99E8B6962526850C00117A04 /* ThemesViewController.swift */,
+				99E8B6982526852300117A04 /* Themes.storyboard */,
+				99E8B69A252689ED00117A04 /* ThemeButton.swift */,
+				99E8B69C25268A3200117A04 /* ThemeButton.xib */,
+				994B9AD9252799F600A453F2 /* ThemeManager.swift */,
+				994B4A7F252A7C3900A50B5D /* Theme.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -127,6 +147,7 @@
 				9987555A2514244D0080EEAE /* Roboto-Regular.ttf */,
 				9987555C251425610080EEAE /* SFProText-Regular.ttf */,
 				99875564251429290080EEAE /* SFProText-Semibold.ttf */,
+				994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */,
 				99875560251427000080EEAE /* SFProDisplay-Bold.ttf */,
 			);
 			path = Fonts;
@@ -190,16 +211,19 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				994AF9DF2522498C0013B0E0 /* ProfileImageView.xib in Resources */,
 				994AF9D525221D560013B0E0 /* TopViewWithTitle.xib in Resources */,
+				994B4A7E252A79E900A50B5D /* SFProText-RegularItalic.ttf in Resources */,
 				9950733E251F87A500515678 /* MessageTableViewCell.xib in Resources */,
 				9957F56A251EABD2007EB624 /* Profile.storyboard in Resources */,
+				99E8B6992526852300117A04 /* Themes.storyboard in Resources */,
 				99803F93250ADD11000284D9 /* LaunchScreen.storyboard in Resources */,
 				99803F90250ADD11000284D9 /* Assets.xcassets in Resources */,
 				9957F56C251F67C7007EB624 /* Conversation.storyboard in Resources */,
 				9987555B2514244D0080EEAE /* Roboto-Regular.ttf in Resources */,
 				99454C3B251D49A9005CEEA2 /* ConversationTableViewCell.xib in Resources */,
 				99875561251427000080EEAE /* SFProDisplay-Bold.ttf in Resources */,
+				994CF6CD252E0E3200AB0A10 /* ProfileImageView.xib in Resources */,
+				99E8B69D25268A3200117A04 /* ThemeButton.xib in Resources */,
 				99875565251429290080EEAE /* SFProText-Semibold.ttf in Resources */,
 				9987555E251425610080EEAE /* SFProText-Regular.ttf in Resources */,
 				99803F8E250ADD0F000284D9 /* Main.storyboard in Resources */,
@@ -216,9 +240,13 @@
 				998755532513D3210080EEAE /* Loger.swift in Sources */,
 				998755552513F4430080EEAE /* ProfileViewController.swift in Sources */,
 				994C34302520E89C00815A1C /* ChatHelper.swift in Sources */,
+				994B9ADA252799F600A453F2 /* ThemeManager.swift in Sources */,
+				99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */,
+				994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */,
 				9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */,
-				994AF9DD252249850013B0E0 /* ProfileImageView.swift in Sources */,
+				99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */,
 				9950733D251F87A500515678 /* MessageTableViewCell.swift in Sources */,
+				994B4A80252A7C3900A50B5D /* Theme.swift in Sources */,
 				99846730251B5EA1004E9044 /* ButtonWithTouchSize.swift in Sources */,
 				99803F87250ADD0F000284D9 /* AppDelegate.swift in Sources */,
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,

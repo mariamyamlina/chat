@@ -8,6 +8,15 @@
 
 import UIKit
 
+let themeWindow = UIWindow()
+
+extension UIWindow {
+    func initTheme() {
+        guard #available(iOS 13.0, *) else { return }
+        overrideUserInterfaceStyle = Theme.current.userInterfaceStyle
+    }
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -16,6 +25,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         Loger.printAppLog("Application moved from 'not running state' to 'inactive state':", application.applicationState, #function)
+    
+        Theme.current.setActive()
+        themeWindow.initTheme()
+        themeWindow.makeKey()
+
         return true
     }
     

@@ -12,14 +12,27 @@ class ProfileViewController: LogViewController, UINavigationControllerDelegate, 
     
     var imagePicker: UIImagePickerController!
 
-    @IBOutlet weak var profileImage: UIImageView!
-    @IBOutlet weak var lettersLabel: UILabel!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var bioLabel: UILabel!
     @IBAction func editButtonTapped(_ sender: UIButton) {
         configureActionSheet()
     }
+    @IBOutlet weak var profileImageView: ProfileImageView!
+    
+    static var letters: String = {
+        let lettersArray = ProfileViewController.name.components(separatedBy: .whitespaces)
+        if lettersArray.count == 2 {
+            let letters = [String(lettersArray[0].first ?? "M"), String(lettersArray[1].first ?? "D")]
+            return letters[0] + letters[1]
+        } else {
+            return "MD"
+        }
+    }()
+    
+    static var name: String = {
+        return "Marina Dudarenko"
+    }()
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -42,45 +55,8 @@ class ProfileViewController: LogViewController, UINavigationControllerDelegate, 
         Loger.printButtonLog(saveButton, #function)
 
         // Do any additional setup after loading the view.
-
         setupViews()
         setupNavigationBar()
-    }
-    
-    func setupViews() {
-        profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
-        profileImage.contentMode = .scaleAspectFill
-        
-        saveButton.layer.cornerRadius = 14
-        saveButton.clipsToBounds = true
-        
-        nameLabel.text = "Marina Dudarenko"
-        bioLabel.text = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
-        
-        let lettersArray = nameLabel.text?.components(separatedBy: .whitespaces)
-        if let unwrappedArray = lettersArray, unwrappedArray.count == 2, profileImage.image == nil {
-            let letters = [String(unwrappedArray[0].first ?? "M"), String(unwrappedArray[1].first ?? "D")]
-            lettersLabel.text = letters[0] + letters[1]
-        } else {
-            lettersLabel.isHidden = true
-        }
-    }
-    
-    func setupNavigationBar() {
-        let leftViewLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 115, height: 22))
-        leftViewLabel.text = "My Profile"
-        leftViewLabel.textColor = .black
-        leftViewLabel.font = UIFont(name: "SFProDisplay-Bold", size: 26)
-        let leftItem = UIBarButtonItem(customView: leftViewLabel)
-        navigationItem.leftBarButtonItem = leftItem
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeProfileViewController))
-        navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SFProText-Semibold", size: 17) as Any], for: .normal)
-        navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SFProText-Semibold", size: 17) as Any], for: .highlighted)
-    }
-    
-    @objc func closeProfileViewController() {
-        self.dismiss(animated: true, completion: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -96,25 +72,67 @@ class ProfileViewController: LogViewController, UINavigationControllerDelegate, 
         После срабатывает viewDidAppear, при этом view уже имеет свой окончательный внешний вид.
         */
     }
-
     
-    /*
-    // MARK: - Navigation
+    
+    // MARK: - Views
+    
+    func setupViews() {
+        let currentTheme = Theme.current.themeOptions
+        
+        view.backgroundColor = currentTheme.backgroundColor
+        nameLabel.textColor = currentTheme.inputAndCommonTextColor
+        bioLabel.textColor = currentTheme.inputAndCommonTextColor
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        profileImageView.layer.cornerRadius = profileImageView.bounds.size.width / 2
+        profileImageView.clipsToBounds = true
+        
+        nameLabel.text = ProfileViewController.name
+        bioLabel.text = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
+
+        if profileImageView.profileImage.image != nil {
+            profileImageView.lettersLabel.isHidden = true
+        }
+        
+        saveButton.layer.cornerRadius = 14
+        saveButton.clipsToBounds = true
+        saveButton.backgroundColor = currentTheme.saveButtonColor
     }
-    */
+    
+    
+    // MARK: - Navigation
+    
+    func setupNavigationBar() {
+        let leftViewLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 115, height: 22))
+        leftViewLabel.text = "My Profile"
+        
+        if #available(iOS 13.0, *) {
+        } else {
+            let currentTheme = Theme.current.themeOptions
+            
+            navigationController?.navigationBar.barStyle = currentTheme.barStyle
+            leftViewLabel.textColor = currentTheme.inputAndCommonTextColor
+        }
+
+        leftViewLabel.font = UIFont(name: "SFProDisplay-Bold", size: 26)
+        let leftItem = UIBarButtonItem(customView: leftViewLabel)
+        navigationItem.leftBarButtonItem = leftItem
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeProfileViewController))
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SFProText-Semibold", size: 17) as Any], for: .normal)
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SFProText-Semibold", size: 17) as Any], for: .highlighted)
+    }
+    
+    @objc func closeProfileViewController() {
+        self.dismiss(animated: true, completion: nil)
+    }
     
     
     // MARK: - ImagePicker
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         imagePicker.dismiss(animated: true, completion: nil)
-        profileImage.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-        lettersLabel.isHidden = true
+        profileImageView.profileImage.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        profileImageView.lettersLabel.isHidden = true
     }
     
     
@@ -147,10 +165,20 @@ class ProfileViewController: LogViewController, UINavigationControllerDelegate, 
             }
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (action) in
+            alertController.dismiss(animated: true, completion: nil)
+        }
+
         for action in [galeryAction, takePhotoAction, cancelAction] {
             alertController.addAction(action)
+        }
+
+        if #available(iOS 13.0, *) {
+        } else {
+            if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
+                let currentTheme = Theme.current.themeOptions
+                subview.backgroundColor = currentTheme.alertColor
+            }
         }
         
         self.present(alertController, animated: true, completion: nil)
@@ -160,6 +188,15 @@ class ProfileViewController: LogViewController, UINavigationControllerDelegate, 
         let alertController = UIAlertController(title: title, message: "Check your device and try later", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "Okay", style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
+        
+        if #available(iOS 13.0, *) {
+        } else {
+            if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
+                let currentTheme = Theme.current.themeOptions
+                subview.backgroundColor = currentTheme.alertColor
+            }
+        }
+
         self.present(alertController, animated: true, completion: nil)
     }
 }

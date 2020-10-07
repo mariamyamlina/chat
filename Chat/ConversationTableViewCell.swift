@@ -8,12 +8,6 @@
 
 import UIKit
 
-protocol ConfigurableView {
-    associatedtype ConfigurationModel
-    
-    func configure(with model: ConfigurationModel)
-}
-
 class ConversationTableViewCell: UITableViewCell {
     
     struct ConversationCellModel {
@@ -28,22 +22,67 @@ class ConversationTableViewCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var onlineIndicator: UIView!
+    
+    static let reuseIdentifier = "Conversation Cell"
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
-        profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
-        profileImage.contentMode = .scaleAspectFill
+        setupView()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+        setOnlineIndicatorColor()
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        setOnlineIndicatorColor()
+    }
+    
+    
+    // MARK: - View
+    
+    func setupView() {
+        profileImage.contentMode = .scaleAspectFill
+        
+        setOnlineIndicatorColor()
+        onlineIndicator.layer.borderWidth = 3
+        onlineIndicator.layer.borderColor = UIColor.white.cgColor
+    }
+    
+    func setOnlineIndicatorColor() {
+        onlineIndicator.backgroundColor = Colors.brightGreen
+    }
+    
+    func configureImageSubview() -> UIImageView {
+        guard let subview = profileImage else { return UIImageView() }
+        subview.translatesAutoresizingMaskIntoConstraints = false
+
+        let viewWithImage = UIImageView(frame: CGRect(x: 0, y: 0, width: 36, height: 36))
+
+        viewWithImage.clipsToBounds = true
+        viewWithImage.image = subview.image
+        viewWithImage.addSubview(subview)
+
+        NSLayoutConstraint.activate([
+            subview.topAnchor.constraint(equalTo: viewWithImage.topAnchor),
+            subview.bottomAnchor.constraint(equalTo: viewWithImage.bottomAnchor),
+            subview.trailingAnchor.constraint(equalTo: viewWithImage.trailingAnchor),
+            subview.leadingAnchor.constraint(equalTo: viewWithImage.leadingAnchor),
+            subview.heightAnchor.constraint(equalToConstant: 36),
+            subview.widthAnchor.constraint(equalToConstant: 36)
+        ])
+        
+        return viewWithImage
     }
     
 }
+
 
 // MARK: - Configuration
 
@@ -51,20 +90,21 @@ extension ConversationTableViewCell: ConfigurableView {
     typealias ConfigurationModel = ConversationCellModel
     
     func configure(with model: ConfigurationModel) {
+        backgroundColor = .clear
         
         profileImage.image = UIImage(named: model.name)
         nameLabel.text = model.name
         
         if model.isOnline {
-            backgroundColor = #colorLiteral(red: 0.9764705896, green: 0.850980401, blue: 0.5490196347, alpha: 0.1548319778)
+            onlineIndicator.isHidden = false
         } else {
-            backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            onlineIndicator.isHidden = true
         }
         
         if model.message == "" {
             messageLabel.text = "No messages yet"
             dateLabel.text = ">"
-            messageLabel.font = .italicSystemFont(ofSize: 13.0)
+            messageLabel.font = UIFont(name: "SFProText-RegularItalic", size: 13.0) 
         } else {
             messageLabel.text = model.message
             dateLabel.text = dateFormatter(date: model.date, force: false) + "  >"

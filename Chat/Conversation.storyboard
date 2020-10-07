@@ -24,9 +24,13 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="yPG-8k-TgW">
                                 <rect key="frame" x="0.0" y="44" width="414" height="772"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="Qwk-FE-GMS" id="2LW-Ph-LL1"/>
+                                    <outlet property="delegate" destination="Qwk-FE-GMS" id="czn-vR-4ej"/>
+                                </connections>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No messages yet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wBH-wI-9NZ">
-                                <rect key="frame" x="138" y="244" width="138" height="20"/>
+                                <rect key="frame" x="138" y="174" width="138" height="20"/>
                                 <fontDescription key="fontDescription" name="SFProText-Regular" family="SF Pro Text" pointSize="17"/>
                                 <color key="textColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -87,7 +91,7 @@
                         <constraints>
                             <constraint firstItem="Pev-x1-JYo" firstAttribute="trailing" secondItem="yPG-8k-TgW" secondAttribute="trailing" id="8Z3-1F-6wa"/>
                             <constraint firstItem="wBH-wI-9NZ" firstAttribute="centerX" secondItem="snc-ym-tbt" secondAttribute="centerX" id="Dro-Gy-aZh"/>
-                            <constraint firstItem="wBH-wI-9NZ" firstAttribute="top" secondItem="Pev-x1-JYo" secondAttribute="top" constant="200" id="N9D-qT-j4q"/>
+                            <constraint firstItem="wBH-wI-9NZ" firstAttribute="top" secondItem="Pev-x1-JYo" secondAttribute="top" constant="130" id="N9D-qT-j4q"/>
                             <constraint firstItem="wUJ-kZ-svH" firstAttribute="leading" secondItem="Pev-x1-JYo" secondAttribute="leading" id="Nhg-xb-U9J"/>
                             <constraint firstItem="yPG-8k-TgW" firstAttribute="top" secondItem="Pev-x1-JYo" secondAttribute="top" id="e05-pN-cTu"/>
                             <constraint firstItem="Pev-x1-JYo" firstAttribute="trailing" secondItem="wUJ-kZ-svH" secondAttribute="trailing" id="gOE-fa-FMk"/>
@@ -99,6 +103,7 @@
                     </view>
                     <connections>
                         <outlet property="addButton" destination="X3S-br-laM" id="0pp-ME-M9c"/>
+                        <outlet property="borderLine" destination="wPL-XR-JIw" id="Zq1-2v-yE4"/>
                         <outlet property="bottomConstraint" destination="xe1-hf-CG2" id="Kai-Pq-7iq"/>
                         <outlet property="messageInputContainer" destination="wUJ-kZ-svH" id="TEP-V0-GgS"/>
                         <outlet property="noMessagesLabel" destination="wBH-wI-9NZ" id="Jyt-1w-pet"/>

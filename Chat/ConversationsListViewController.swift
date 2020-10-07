@@ -12,11 +12,18 @@ class ConversationsListViewController: LogViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
-    private let reuseIdentifier = "Conversation Cell"
-    
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchBar.placeholder = "Search"
+        if #available(iOS 13.0, *) {
+            let currentTheme = Theme.current.themeOptions
+            
+            searchController.searchBar.searchTextField.backgroundColor = currentTheme.searchBarTextColor
+            searchController.searchBar.searchTextField.leftView?.tintColor = currentTheme.textFieldTextColor
+            searchController.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search",
+                                                                                                  attributes: [NSAttributedString.Key.font : UIFont(name: "SFProText-Regular", size: 17) as Any, NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
+        } else {
+            searchController.searchBar.placeholder = "Search"
+        }
         searchController.searchBar.searchBarStyle = .minimal
         searchController.definesPresentationContext = true
        return searchController
@@ -26,30 +33,71 @@ class ConversationsListViewController: LogViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        applyTheme()
         setupNavigationBar()
         setupTableView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.isHidden = false
+    }
+    
+    
+    // MARK: - Theme
+    
+    fileprivate func applyTheme() {
+        if #available(iOS 13.0, *) {
+        } else {
+            let currentTheme = Theme.current.themeOptions
+            
+            view.backgroundColor = currentTheme.backgroundColor
+
+            tableView.separatorColor = currentTheme.tableViewSeparatorColor
+            
+            navigationController?.navigationBar.barTintColor = currentTheme.barColor
+            navigationController?.navigationBar.barStyle = currentTheme.barStyle
+            
+            searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
+        }
+    }
+    
+    fileprivate func applyTheme(for cell: ConversationTableViewCell?) {
+        cell?.profileImage.layer.cornerRadius = (cell?.profileImage.bounds.size.width ?? 48) / 2
+        cell?.onlineIndicator.layer.cornerRadius = (cell?.onlineIndicator.bounds.width ?? 18) / 2
+        if #available(iOS 13.0, *) {
+        } else {
+            let currentTheme = Theme.current.themeOptions
+            
+            cell?.nameLabel.textColor = currentTheme.inputAndCommonTextColor
+            cell?.messageLabel.textColor = currentTheme.textFieldTextColor
+            cell?.dateLabel.textColor = currentTheme.textFieldTextColor
+        }
     }
     
     
     // MARK: - Navigation
     
     func setupNavigationBar() {
+        definesPresentationContext = true
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.searchController = searchController
+        
         navigationItem.hidesSearchBarWhenScrolling = true
         searchController.hidesNavigationBarDuringPresentation = true
-        navigationController?.navigationBar.barTintColor = UIColor(red: 245/250, green: 245/250, blue: 245/250, alpha: 1.0)
+        
         if #available(iOS 13.0, *) {
             navigationItem.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "SettingsIcon"), style: .plain, target: nil, action: nil)
-        navigationItem.leftBarButtonItem?.tintColor = UIColor(red: 84/250, green: 84/250, blue: 88/250, alpha: 0.65)
-        navigationItem.leftBarButtonItem?.isEnabled = false
-        
-        let profileImage = ProfileImageView()
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "SettingsIcon"), style: .plain, target: self, action: #selector(settingsButtonTapped))
+        navigationItem.leftBarButtonItem?.tintColor = Colors.settingsIconColor
+
+        let profileImage = ProfileImageView(small: true)
         profileImage.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
+        profileImage.clipsToBounds = true
         profileImage.contentView.backgroundColor = navigationController?.navigationBar.backgroundColor
 
         let rightButton = ButtonWithTouchSize()
@@ -66,19 +114,17 @@ class ConversationsListViewController: LogViewController {
         let storyboard = UIStoryboard(name: "Profile", bundle: nil)
         let profileController = storyboard.instantiateViewController(withIdentifier: "Profile VC")
         let navigationVC = UINavigationController(rootViewController: profileController)
+        navigationVC.modalPresentationStyle = UIModalPresentationStyle.pageSheet
         present(navigationVC, animated: true, completion: nil)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @objc func settingsButtonTapped() {
+        let storyboard = UIStoryboard(name: "Themes", bundle: nil)
+        let themesController = storyboard.instantiateViewController(withIdentifier: "Themes VC")
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Chat", style: .plain, target: nil, action: nil)
+        tableView.isHidden = true
+        navigationController?.pushViewController(themesController, animated: true)
     }
-    */
     
     
     // MARK: - TableView
@@ -92,7 +138,7 @@ class ConversationsListViewController: LogViewController {
         tableView.allowsMultipleSelection = false
         tableView.sectionFooterHeight = 0
 
-        tableView?.register(UINib(nibName: "ConversationTableViewCell", bundle: nil), forCellReuseIdentifier: reuseIdentifier)
+        tableView?.register(UINib(nibName: "ConversationTableViewCell", bundle: nil), forCellReuseIdentifier: ConversationTableViewCell.reuseIdentifier)
     }
 
 }
@@ -103,14 +149,13 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         var sectionOnlineCount = 0
         var sectionOfflineCount = 0
         
         for friend in ChatHelper.friends {
             if friend.isOnline {
                 sectionOnlineCount += 1
-            } else {
+            } else if !friend.isOnline && !friend.message.isEmpty {
                 sectionOfflineCount += 1
             }
         }
@@ -127,10 +172,10 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as? ConversationTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.reuseIdentifier, for: indexPath) as? ConversationTableViewCell
         
         cell?.configure(with: ChatHelper.friends[indexPath.row + indexPath.section * self.tableView(tableView, numberOfRowsInSection: 0)])
-
+        applyTheme(for: cell)
         return cell ?? UITableViewCell()
     }
     
@@ -155,33 +200,13 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
         
         let storyboard = UIStoryboard(name: "Conversation", bundle: nil)
         let conversationController = storyboard.instantiateViewController(withIdentifier: "Conversation VC") as? ConversationViewController
+        let cell = self.tableView(tableView, cellForRowAt: indexPath) as? ConversationTableViewCell
         
-        conversationController?.name = (self.tableView(tableView, cellForRowAt: indexPath) as? ConversationTableViewCell)?.nameLabel.text
-        
-        if (self.tableView(tableView, cellForRowAt: indexPath) as? ConversationTableViewCell)?.messageLabel.text != "No messages yet" {
-            conversationController?.lastMessage = (self.tableView(tableView, cellForRowAt: indexPath) as? ConversationTableViewCell)?.messageLabel.text
+        conversationController?.name = cell?.nameLabel.text
+        conversationController?.image = cell?.configureImageSubview()
+        if cell?.messageLabel.text != "No messages yet" {
+            conversationController?.lastMessage = cell?.messageLabel.text
         }
-        
-        guard let subview = (self.tableView(tableView, cellForRowAt: indexPath) as? ConversationTableViewCell)?.profileImage else { return }
-        subview.translatesAutoresizingMaskIntoConstraints = false
-        
-        let viewWithImage = UIImageView(frame: CGRect(x: 0, y: 0, width: 36, height: 36))
-
-        subview.layer.cornerRadius = viewWithImage.bounds.width / 2
-        viewWithImage.clipsToBounds = true
-        viewWithImage.image = subview.image
-        viewWithImage.addSubview(subview)
-        
-        NSLayoutConstraint.activate([
-            subview.topAnchor.constraint(equalTo: viewWithImage.topAnchor),
-            subview.bottomAnchor.constraint(equalTo: viewWithImage.bottomAnchor),
-            subview.trailingAnchor.constraint(equalTo: viewWithImage.trailingAnchor),
-            subview.leadingAnchor.constraint(equalTo: viewWithImage.leadingAnchor),
-            subview.heightAnchor.constraint(equalToConstant: 36),
-            subview.widthAnchor.constraint(equalToConstant: 36)
-        ])
-        
-        conversationController?.image = viewWithImage
 
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationController?.pushViewController(conversationController ?? UIViewController(), animated: true)
