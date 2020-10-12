@@ -24,6 +24,8 @@
 		9957F56A251EABD2007EB624 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9957F569251EABD2007EB624 /* Profile.storyboard */; };
 		9957F56C251F67C7007EB624 /* Conversation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9957F56B251F67C7007EB624 /* Conversation.storyboard */; };
 		9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9957F56D251F67DC007EB624 /* ConversationViewController.swift */; };
+		997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE1F2530D8EF00645079 /* GCDDataManager.swift */; };
+		997CEE222530D91500645079 /* OperationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE212530D91500645079 /* OperationDataManager.swift */; };
 		99803F87250ADD0F000284D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99803F86250ADD0F000284D9 /* AppDelegate.swift */; };
 		99803F8E250ADD0F000284D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99803F8C250ADD0F000284D9 /* Main.storyboard */; };
 		99803F90250ADD11000284D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99803F8F250ADD11000284D9 /* Assets.xcassets */; };
@@ -59,6 +61,8 @@
 		9957F569251EABD2007EB624 /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
 		9957F56B251F67C7007EB624 /* Conversation.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Conversation.storyboard; sourceTree = "<group>"; };
 		9957F56D251F67DC007EB624 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
+		997CEE1F2530D8EF00645079 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
+		997CEE212530D91500645079 /* OperationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDataManager.swift; sourceTree = "<group>"; };
 		99803F83250ADD0F000284D9 /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99803F86250ADD0F000284D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99803F8D250ADD0F000284D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -137,6 +141,8 @@
 				99E8B69C25268A3200117A04 /* ThemeButton.xib */,
 				994B9AD9252799F600A453F2 /* ThemeManager.swift */,
 				994B4A7F252A7C3900A50B5D /* Theme.swift */,
+				997CEE1F2530D8EF00645079 /* GCDDataManager.swift */,
+				997CEE212530D91500645079 /* OperationDataManager.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -242,6 +248,7 @@
 				994C34302520E89C00815A1C /* ChatHelper.swift in Sources */,
 				994B9ADA252799F600A453F2 /* ThemeManager.swift in Sources */,
 				99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */,
+				997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */,
 				994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */,
 				9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */,
 				99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */,
@@ -253,6 +260,7 @@
 				994AF9D125221D300013B0E0 /* TopViewWithTitle.swift in Sources */,
 				99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */,
 				99454C33251D4502005CEEA2 /* ConversationsListViewController.swift in Sources */,
+				997CEE222530D91500645079 /* OperationDataManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

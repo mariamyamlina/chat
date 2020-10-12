@@ -49,7 +49,7 @@ class ConversationViewController: LogViewController {
     
     // MARK: - Theme
     
-    func applyTheme() {
+    fileprivate func applyTheme() {
         if #available(iOS 13.0, *) {
         } else {
             let currentTheme = Theme.current.themeOptions

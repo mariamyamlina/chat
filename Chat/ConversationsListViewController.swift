@@ -93,7 +93,11 @@ class ConversationsListViewController: LogViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "SettingsIcon"), style: .plain, target: self, action: #selector(settingsButtonTapped))
         navigationItem.leftBarButtonItem?.tintColor = Colors.settingsIconColor
-
+        
+        updateProfileImageView()
+    }
+    
+    func updateProfileImageView() {
         let profileImage = ProfileImageView(small: true)
         profileImage.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2

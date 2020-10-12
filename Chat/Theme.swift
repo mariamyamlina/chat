@@ -79,7 +79,6 @@ enum Theme: Int, CaseIterable {
                 return NightTheme()
             }
         }
-        set { }
     }
 }
 
@@ -89,12 +88,13 @@ extension Theme {
     private static var appTheme: Int
 
     func save() {
-        Theme.appTheme = self.rawValue
+        DispatchQueue(label: "Theme", qos: .userInteractive).async {
+            Theme.appTheme = self.rawValue
+        }
     }
 
     static var current: Theme {
         get { return Theme(rawValue: appTheme) ?? .classic }
-        set { }
     }
 
     @available(iOS 13.0, *)

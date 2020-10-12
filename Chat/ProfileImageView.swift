@@ -19,13 +19,13 @@ class ProfileImageView: UIView {
     @IBOutlet weak var lettersLabelWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var lettersLabelHeightConstraint: NSLayoutConstraint!
     
+    static var letters: String? = nil
     static var fontSize: CGFloat = 120
     
     private var touchPath: UIBezierPath {return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius)}
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        print(frame)
         setupView()
     }
     
@@ -56,9 +56,16 @@ class ProfileImageView: UIView {
         
         lettersLabel.font = lettersLabel.font.withSize(ProfileImageView.fontSize)
         ProfileImageView.fontSize = 120
+        
+        layer.cornerRadius = profileImageWidthConstraint.constant / 2
+        clipsToBounds = true
     }
     
-    private func setupView() {
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        return touchPath.contains(point)
+    }
+    
+    func setupView() {
         let bundle = Bundle(for: ProfileImageView.self)
         bundle.loadNibNamed("ProfileImageView", owner: self, options: nil)
         addSubview(contentView)
@@ -79,16 +86,60 @@ class ProfileImageView: UIView {
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
         
-        profileImage.contentMode = .scaleAspectFill
+        profileImageWidthConstraint.constant = 240
+        profileImageHeightConstraint.constant = 240
+        lettersLabelWidthConstraint.constant = 220
+        lettersLabelHeightConstraint.constant = 110
+        
+        //Считываю с помощью GCD
+        readFromFile(with: .gcd)
 
-        let letters = ProfileViewController.letters
+        let letters = getLetters(for: ProfileViewController.name ?? "Marina Dudarenko")
+        lettersLabel.text = letters
         let attr: [NSAttributedString.Key: Any] = [.font: UIFont(name: "Roboto-Regular", size: ProfileImageView.fontSize) as Any]
         let attrString = NSMutableAttributedString(string: letters, attributes: attr)
         lettersLabel.attributedText = attrString
         lettersLabel.textColor = Colors.lettersLabelColor
+
+        profileImage.contentMode = .scaleAspectFill
+        
+        updateImage()
+        
+        layer.cornerRadius = profileImageWidthConstraint.constant / 2
+        clipsToBounds = true
     }
     
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        return touchPath.contains(point)
+    func readFromFile(with dataManager: ProfileViewController.DataManagerType) {
+        if dataManager == .gcd {
+            let gcdDataManager = GCDDataManager()
+            gcdDataManager.readNameFromFile()
+            gcdDataManager.readImageFromFile()
+        } else {
+            let operationDataManager = OperationDataManager()
+            operationDataManager.readNameFromFile()
+            operationDataManager.readImageFromFile()
+        }
+    }
+    
+    func getLetters(for text: String) -> String {
+        let lettersArray = text.components(separatedBy: .whitespaces)
+        if lettersArray.count == 2 {
+            let letters = [String(lettersArray[0].first ?? "M"), String(lettersArray[1].first ?? "D")]
+            ProfileImageView.letters = letters[0] + letters[1]
+            return letters[0] + letters[1]
+        } else {
+            ProfileImageView.letters = "MD"
+            return "MD"
+        }
+    }
+    
+    func updateImage() {
+        profileImage.image = nil
+        if let existingImage = ProfileViewController.image {
+            profileImage.image = existingImage
+        }
+        if profileImage.image != nil {
+            lettersLabel.isHidden = true
+        }
     }
 }
