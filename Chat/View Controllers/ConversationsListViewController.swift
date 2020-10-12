@@ -156,7 +156,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
         var sectionOnlineCount = 0
         var sectionOfflineCount = 0
         
-        for friend in ChatHelper.friends {
+        for friend in ConversationModel.friends {
             if friend.isOnline {
                 sectionOnlineCount += 1
             } else if !friend.isOnline && !friend.message.isEmpty {
@@ -178,7 +178,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
         
         let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.reuseIdentifier, for: indexPath) as? ConversationTableViewCell
         
-        cell?.configure(with: ChatHelper.friends[indexPath.row + indexPath.section * self.tableView(tableView, numberOfRowsInSection: 0)])
+        cell?.configure(with: ConversationModel.friends[indexPath.row + indexPath.section * self.tableView(tableView, numberOfRowsInSection: 0)])
         applyTheme(for: cell)
         return cell ?? UITableViewCell()
     }

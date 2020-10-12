@@ -8,14 +8,6 @@
 
 import UIKit
 
-protocol SaveDataDelegate {
-//    func writeToFile(nameText: String?, bioText: String?, image: UIImage?, completion: @escaping (_ title: String, _ message: String?, _ twoActions: Bool) -> Void)
-    func writeToFile(nameText: String?, bioText: String?, image: UIImage?)
-    func readNameFromFile()
-    func readBioFromFile()
-    func readImageFromFile()
-}
-
 class ProfileViewController: LogViewController, UIScrollViewDelegate {
     
     enum DataManagerType {
@@ -28,26 +20,20 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         case read
     }
     
-    static let nameFile = "ProfileName.txt"
-    static let bioFile = "ProfileBio.txt"
-    static let imageFile = "ProfileImage.png"
+    var imagePicker: UIImagePickerController!
+
+    var delegate: DataManagerDelegate?
+    
+    var nameDidChange = false
+    var bioDidChange = false
+    var imageDidChange = false
+    
+    var gcdButtonTapped = false
+    var operationButtonTapped = false
     
     static var name: String? = nil
     static var bio: String? = nil
     static var image: UIImage? = nil
-    
-    static var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-    
-    var imagePicker: UIImagePickerController!
-
-    var delegate: SaveDataDelegate?
-    
-    var imageDidChange = false
-    var nameDidChange = false
-    var bioDidChange = false
-    
-    var gcdButtonTapped = false
-    var operationButtonTapped = false
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var scrollViewContentView: UIView!
@@ -253,6 +239,17 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
     
     
     // MARK: - Profile Editing
+    
+    func saveCompletion(_ succeed: Bool) -> Void {
+        if succeed {
+            activityIndicator.stopAnimating()
+            configureAlert("Data has been successfully saved", nil, false)
+            editProfileButton.isEnabled = true
+            setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
+        } else {
+            configureAlert("Error", "Failed to save data", true)
+        }
+    }
 
     func referToFile(action: ActionType, dataManager: DataManagerType) {
         switch dataManager {
@@ -263,9 +260,11 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
             }
         
             if action == .read {
-                gcdDataManager.readNameFromFile()
-                gcdDataManager.readBioFromFile()
-                gcdDataManager.readImageFromFile()
+//                gcdDataManager.readNameFromFile()
+//                gcdDataManager.readBioFromFile()
+//                gcdDataManager.readImageFromFile()
+                
+                gcdDataManager.readFromFile()
 
                 nameTextView.text = ProfileViewController.name
                 bioTextView.text = ProfileViewController.bio
@@ -273,7 +272,7 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
                 profileImageView.updateImage()
             } else {
 //                gcdDataManager?.writeToFile(nameText: nameTextView.text, bioText: bioTextView.text, image: profileImageView.profileImage.image ?? UIImage(), completion: configureAlert(_:_:_:))
-                gcdDataManager.writeToFile(nameText: nameTextView.text, bioText: bioTextView.text, image: profileImageView.profileImage.image ?? UIImage())
+                gcdDataManager.writeToFile(nameText: nameTextView.text, bioText: bioTextView.text, image: profileImageView.profileImage.image ?? UIImage(), completion: saveCompletion(_:))
             }
         case .operation:
             let operationDataManager = OperationDataManager()
@@ -286,10 +285,9 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
                 operationDataManager.readBioFromFile()
                 operationDataManager.readImageFromFile()
             } else {
-                operationDataManager.writeToFile(nameText: nameTextView.text, bioText: bioTextView.text, image: profileImageView.profileImage.image ?? UIImage())
+                operationDataManager.writeToFile(nameText: nameTextView.text, bioText: bioTextView.text, image: profileImageView.profileImage.image ?? UIImage(), completion: saveCompletion(_:))
             }
         }
-
     }
     
     
@@ -481,14 +479,8 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: {(alert: UIAlertAction) in
             if title != "Error" {
                 if self.gcdButtonTapped {
-//                    self.writeInfoWithGCD()
-//                    self.readInfoWithGCD()
-//                    self.referToFile(action: .read, dataManager: .gcd)
                     self.gcdButtonTapped = false
                 } else if self.operationButtonTapped {
-//                    self.writeInfoWithOperation()
-//                    self.readInfoWithOperation()
-//                    self.referToFile(action: .read, dataManager: .operation)
                     self.operationButtonTapped = false
                 }
                 self.editProfileButton.isEnabled = true
@@ -500,10 +492,8 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         if twoActions {
             let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: {(alert: UIAlertAction) in
                 if self.gcdButtonTapped {
-//                    self.writeInfoWithGCD()
                     self.referToFile(action: .write, dataManager: .gcd)
                 } else if self.operationButtonTapped {
-//                    self.writeInfoWithOperation()
                     self.referToFile(action: .write, dataManager: .operation)
                 }
             })

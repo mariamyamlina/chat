@@ -93,6 +93,8 @@ class ProfileImageView: UIView {
         
         //Считываю с помощью GCD
         readFromFile(with: .gcd)
+        
+        profileImage.contentMode = .scaleAspectFill
 
         let letters = getLetters(for: ProfileViewController.name ?? "Marina Dudarenko")
         lettersLabel.text = letters
@@ -100,10 +102,6 @@ class ProfileImageView: UIView {
         let attrString = NSMutableAttributedString(string: letters, attributes: attr)
         lettersLabel.attributedText = attrString
         lettersLabel.textColor = Colors.lettersLabelColor
-
-        profileImage.contentMode = .scaleAspectFill
-        
-        updateImage()
         
         layer.cornerRadius = profileImageWidthConstraint.constant / 2
         clipsToBounds = true
@@ -112,13 +110,15 @@ class ProfileImageView: UIView {
     func readFromFile(with dataManager: ProfileViewController.DataManagerType) {
         if dataManager == .gcd {
             let gcdDataManager = GCDDataManager()
-            gcdDataManager.readNameFromFile()
-            gcdDataManager.readImageFromFile()
+            gcdDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true)
+//            gcdDataManager.readNameFromFile()
+//            gcdDataManager.readImageFromFile()
         } else {
             let operationDataManager = OperationDataManager()
             operationDataManager.readNameFromFile()
             operationDataManager.readImageFromFile()
         }
+        updateImage()
     }
     
     func getLetters(for text: String) -> String {
@@ -134,7 +134,6 @@ class ProfileImageView: UIView {
     }
     
     func updateImage() {
-        profileImage.image = nil
         if let existingImage = ProfileViewController.image {
             profileImage.image = existingImage
         }

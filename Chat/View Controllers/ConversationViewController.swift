@@ -167,7 +167,7 @@ class ConversationViewController: LogViewController {
     
     func configureModel() {
         if let friendName = name {
-            model = ChatHelper.messages(friendName)
+            model = ConversationModel.messages(friendName)
         }
     }
 
