@@ -9,7 +9,7 @@
 import UIKit
 
 protocol DataManagerDelegate {
-    func writeToFile(nameText: String?, bioText: String?, image: UIImage?, completion: @escaping (Bool) -> Void)
-    func readFromFile(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool)
+    func writeToFile(completion: @escaping (Bool) -> Void)
+    func readFromFile(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
 }
 

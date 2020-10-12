@@ -58,7 +58,7 @@ class ThemesViewController: LogViewController {
     
     // MARK: - Theme Picker
     
-    func createHandler() {
+    private func createHandler() {
         classicButton.pickHandler = { [weak self] in
             self?.pickButtonTapped(self?.classicButton ?? ThemeButton())
 
@@ -82,7 +82,7 @@ class ThemesViewController: LogViewController {
     }
     
     
-    func pickButtonTapped(_ sender: ThemeButton) {
+    private func pickButtonTapped(_ sender: ThemeButton) {
         
         sender.isSelected = !sender.isSelected
         
@@ -151,7 +151,7 @@ class ThemesViewController: LogViewController {
     
     // MARK: - View
     
-    func setupViews() {
+    private func setupViews() {
         ThemeManager.themesViewController = self
         themeManager = ThemeManager()
         
@@ -182,7 +182,7 @@ class ThemesViewController: LogViewController {
         }
     }
     
-    func setupButtonView(for button: ThemeButton, selected state: Bool) {
+    private func setupButtonView(for button: ThemeButton, selected state: Bool) {
         if state {
             button.backgroundView.layer.borderWidth = 3
             button.backgroundView.layer.borderColor = Colors.outputBlue.cgColor
@@ -195,7 +195,7 @@ class ThemesViewController: LogViewController {
     
     // MARK: - Navigation
     
-    func configureNavigationBar() {
+    private func configureNavigationBar() {
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.titleView = titleLabel
     }

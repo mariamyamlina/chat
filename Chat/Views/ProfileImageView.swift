@@ -91,10 +91,13 @@ class ProfileImageView: UIView {
         lettersLabelWidthConstraint.constant = 220
         lettersLabelHeightConstraint.constant = 110
         
-        //Считываю с помощью GCD
-        readFromFile(with: .gcd)
+        //Считываю с помощью ...
+        readFromFile(with: .operation)
         
         profileImage.contentMode = .scaleAspectFill
+        if profileImage.image != nil {
+            lettersLabel.isHidden = true
+        }
 
         let letters = getLetters(for: ProfileViewController.name ?? "Marina Dudarenko")
         lettersLabel.text = letters
@@ -107,21 +110,27 @@ class ProfileImageView: UIView {
         clipsToBounds = true
     }
     
-    func readFromFile(with dataManager: ProfileViewController.DataManagerType) {
+    private func readFromFile(with dataManager: ProfileViewController.DataManagerType) {
         if dataManager == .gcd {
             let gcdDataManager = GCDDataManager()
-            gcdDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true)
-//            gcdDataManager.readNameFromFile()
-//            gcdDataManager.readImageFromFile()
+            gcdDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: uploadImageCompletion(_:_:_:))
         } else {
             let operationDataManager = OperationDataManager()
-            operationDataManager.readNameFromFile()
-            operationDataManager.readImageFromFile()
+            operationDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: uploadImageCompletion(_:_:_:))
         }
         updateImage()
     }
     
-    func getLetters(for text: String) -> String {
+    func uploadImageCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) -> Void {
+        if mustOverwriteName {
+            lettersLabel.text = getLetters(for: ProfileViewController.name ?? "Marina Dudarenko")
+        }
+        if mustOverwriteImage {
+            updateImage()
+        }
+    }
+    
+    private func getLetters(for text: String) -> String {
         let lettersArray = text.components(separatedBy: .whitespaces)
         if lettersArray.count == 2 {
             let letters = [String(lettersArray[0].first ?? "M"), String(lettersArray[1].first ?? "D")]
@@ -136,9 +145,6 @@ class ProfileImageView: UIView {
     func updateImage() {
         if let existingImage = ProfileViewController.image {
             profileImage.image = existingImage
-        }
-        if profileImage.image != nil {
-            lettersLabel.isHidden = true
         }
     }
 }

@@ -78,7 +78,7 @@ class ConversationsListViewController: LogViewController {
     
     // MARK: - Navigation
     
-    func setupNavigationBar() {
+    private func setupNavigationBar() {
         definesPresentationContext = true
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -114,7 +114,7 @@ class ConversationsListViewController: LogViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profileImage)
     }
     
-    @objc func profileMenuTapped() {
+    @objc private func profileMenuTapped() {
         let storyboard = UIStoryboard(name: "Profile", bundle: nil)
         let profileController = storyboard.instantiateViewController(withIdentifier: "Profile VC")
         let navigationVC = UINavigationController(rootViewController: profileController)
@@ -122,7 +122,7 @@ class ConversationsListViewController: LogViewController {
         present(navigationVC, animated: true, completion: nil)
     }
     
-    @objc func settingsButtonTapped() {
+    @objc private func settingsButtonTapped() {
         let storyboard = UIStoryboard(name: "Themes", bundle: nil)
         let themesController = storyboard.instantiateViewController(withIdentifier: "Themes VC")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Chat", style: .plain, target: nil, action: nil)
@@ -133,7 +133,7 @@ class ConversationsListViewController: LogViewController {
     
     // MARK: - TableView
     
-    func setupTableView() {
+    private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
 

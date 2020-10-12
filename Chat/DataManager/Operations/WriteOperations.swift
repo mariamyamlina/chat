@@ -9,59 +9,38 @@
 import UIKit
 
 class WriteOperation: Operation {
-    var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    private var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     
-    let nameFile = "ProfileName.txt"
-    let bioFile = "ProfileBio.txt"
-    let imageFile = "ProfileImage.png"
+    private let nameFile = "ProfileName.txt"
+    private let bioFile = "ProfileBio.txt"
+    private let imageFile = "ProfileImage.png"
 
-    var hasSucceeded: Bool?
+    var hasSucceeded = true
     
     override func main() {
         if isCancelled { return }
         
-        if let dir = urlDir {
-            let nameFileURL = dir.appendingPathComponent(nameFile)
-            let bioFileURL = dir.appendingPathComponent(bioFile)
-            let imageFileURL = dir.appendingPathComponent(imageFile)
-
-            do {
-                if let nameChanged = OperationDataManager.profileViewController?.nameDidChange, nameChanged {
-                    try ProfileViewController.name?.write(to: nameFileURL, atomically: false, encoding: .utf8)
-                }
-                if let bioChanged = OperationDataManager.profileViewController?.bioDidChange, bioChanged {
-                    try ProfileViewController.bio?.write(to: bioFileURL, atomically: false, encoding: .utf8)
-                }
-                //ДАТУ ВЫНЕСТИ ОТДЕЛЬНО?
-                if let data = ProfileViewController.image?.jpegData(compressionQuality: 0) ?? ProfileViewController.image?.pngData(), OperationDataManager.profileViewController?.imageDidChange ?? true {
-                    try data.write(to: imageFileURL)
-                }
-                hasSucceeded = true
+        let nameFileURL = urlDir?.appendingPathComponent(nameFile) ?? URL(fileURLWithPath: "")
+        let bioFileURL = urlDir?.appendingPathComponent(bioFile) ?? URL(fileURLWithPath: "")
+        let imageFileURL = urlDir?.appendingPathComponent(imageFile) ?? URL(fileURLWithPath: "")
+        
+        do {
+            if let nameChanged = OperationDataManager.profileViewController?.nameDidChange,
+                nameChanged {
+                try ProfileViewController.name?.write(to: nameFileURL, atomically: false, encoding: .utf8)
             }
-            catch {
-                hasSucceeded = false
+            if let bioChanged = OperationDataManager.profileViewController?.bioDidChange,
+                bioChanged {
+                try ProfileViewController.bio?.write(to: bioFileURL, atomically: false, encoding: .utf8)
+            }
+            if let data = ProfileViewController.image?.jpegData(compressionQuality: 1.0) ?? ProfileViewController.image?.pngData(),
+                let imageChanged = OperationDataManager.profileViewController?.imageDidChange,
+                imageChanged {
+                try data.write(to: imageFileURL)
             }
         }
-    }
-}
-
-class UpdateViewOperation: Operation {
-    var succeed: Bool? {
-        let operation = dependencies.first{ $0 is WriteOperation } as? WriteOperation
-        return operation?.hasSucceeded
-    }
-    
-    override func main() {
-        if isCancelled { return }
-        
-        if let result = succeed, result {
-            OperationDataManager.profileViewController?.activityIndicator.stopAnimating()
-            OperationDataManager.profileViewController?.referToFile(action: .read, dataManager: .operation)
-            OperationDataManager.profileViewController?.configureAlert("Data has been successfully saved", nil, false)
-            OperationDataManager.profileViewController?.editProfileButton.isEnabled = true
-            OperationDataManager.profileViewController?.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-        } else {
-            OperationDataManager.profileViewController?.configureAlert("Error", "Failed to save data", true)
+        catch {
+            hasSucceeded = false
         }
     }
 }

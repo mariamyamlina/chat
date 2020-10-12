@@ -9,45 +9,28 @@
 import UIKit
 
 class ReadNameOperation: Operation {
-    var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    private var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     
-    let nameFile = "ProfileName.txt"
-    let bioFile = "ProfileBio.txt"
-    let imageFile = "ProfileImage.png"
+    private let nameFile = "ProfileName.txt"
+    private let bioFile = "ProfileBio.txt"
+    private let imageFile = "ProfileImage.png"
     
-    var hasSucceeded: Bool?
+    var hasSucceeded = true
     
     override func main() {
-        if isCancelled { return }
+        if isCancelled { return }        
+        let nameFileURL = urlDir?.appendingPathComponent(nameFile) ?? URL(fileURLWithPath: "")
         
-        if let dir = urlDir {
-            let nameFileURL: URL = dir.appendingPathComponent(nameFile)
-            var nameFromFile: String?
-
-            do {
-                nameFromFile = try String(data: Data(contentsOf: nameFileURL), encoding: .utf8)
-                hasSucceeded = true
-            }
-            catch {
-                ProfileViewController.name = "Marina Dudarenko"
-                hasSucceeded = false
-            }
-            
+        do {
+            let nameFromFile = try String(data: Data(contentsOf: nameFileURL), encoding: .utf8)
             if let name = nameFromFile {
                 ProfileViewController.name = name
             }
         }
-    }
-}
-
-class UpdateNameOperation: Operation {
-    var succeed: Bool? {
-        let operation = dependencies.first{ $0 is ReadNameOperation } as? ReadNameOperation
-        return operation?.hasSucceeded
-    }
-    
-    override func main() {
-        OperationDataManager.profileViewController?.nameTextView.text = ProfileViewController.name
+        catch {
+            ProfileViewController.name = "Marina Dudarenko"
+            hasSucceeded = false
+        }
     }
 }
 
@@ -58,39 +41,22 @@ class ReadBioOperation: Operation {
     let bioFile = "ProfileBio.txt"
     let imageFile = "ProfileImage.png"
     
-    var hasSucceeded: Bool?
+    var hasSucceeded = true
     
     override func main() {
         if isCancelled { return }
-        
-        if let dir = urlDir {
-            let bioFileURL: URL = dir.appendingPathComponent(bioFile)
-            var bioFromFile: String?
+        let bioFileURL = urlDir?.appendingPathComponent(bioFile) ?? URL(fileURLWithPath: "")
 
-            do {
-                bioFromFile = try String(data: Data(contentsOf: bioFileURL), encoding: .utf8)
-                hasSucceeded = true
-            }
-            catch {
-                ProfileViewController.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
-                hasSucceeded = false
-            }
-            
+        do {
+            let bioFromFile = try String(data: Data(contentsOf: bioFileURL), encoding: .utf8)
             if let bio = bioFromFile {
                 ProfileViewController.bio = bio
             }
         }
-    }
-}
-
-class UpdateBioOperation: Operation {
-    var succeed: Bool? {
-        let operation = dependencies.first{ $0 is ReadBioOperation } as? ReadBioOperation
-        return operation?.hasSucceeded
-    }
-    
-    override func main() {
-        OperationDataManager.profileViewController?.bioTextView.text = ProfileViewController.bio
+        catch {
+            ProfileViewController.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
+            hasSucceeded = false
+        }
     }
 }
 
@@ -105,37 +71,17 @@ class ReadImageOperation: Operation {
     
     override func main() {
         if isCancelled { return }
-        
-        if let dir = urlDir {
-            let imageFileURL: URL = URL(fileURLWithPath: dir.absoluteString).appendingPathComponent(imageFile)
-            var imageFromFile: UIImage?
+        let imageFileURL = urlDir?.appendingPathComponent(imageFile) ?? URL(fileURLWithPath: "")
 
-            do {
-                imageFromFile = try UIImage(data: Data(contentsOf: imageFileURL))
-                hasSucceeded = true
-            }
-            catch {
-                ProfileViewController.image = nil
-                hasSucceeded = false
-            }
-            
+        do {
+            let imageFromFile = try UIImage(data: Data(contentsOf: imageFileURL))
             if let image = imageFromFile {
                 ProfileViewController.image = image
             }
         }
-    }
-}
-
-class UpdateImageOperation: Operation {
-    var succeed: Bool? {
-        let operation = dependencies.first{ $0 is ReadImageOperation } as? ReadImageOperation
-        return operation?.hasSucceeded
-    }
-    
-    override func main() {
-        if let result = succeed, result {
-            OperationDataManager.profileViewController?.profileImageView.updateImage()
+        catch {
+            ProfileViewController.image = nil
+            hasSucceeded = false
         }
     }
 }
-

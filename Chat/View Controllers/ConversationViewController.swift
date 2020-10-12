@@ -23,8 +23,9 @@ class ConversationViewController: LogViewController {
     var image: UIImageView?
     var name: String?
     var lastMessage: String?
-    var lastRowIndex: Int = 0
-    var stringMessage: String = ""
+    
+    private var lastRowIndex: Int = 0
+    private var stringMessage: String = ""
     
     typealias messageModel = [(MessageTableViewCell.MessageCellModel, UIColor, Date)]
     var model: messageModel = []
@@ -62,7 +63,7 @@ class ConversationViewController: LogViewController {
     
     // MARK: - MessageInputView
     
-    func configureMessageInputView() {
+    private func configureMessageInputView() {
         let currentTheme = Theme.current.themeOptions
         
         textField.delegate = self
@@ -89,17 +90,17 @@ class ConversationViewController: LogViewController {
         bottomConstraint?.isActive = true
     }
     
-    func addKeyboardNotifications() {
+    private func addKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    func removeKeyboardNotifications() {
+    private func removeKeyboardNotifications() {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    @objc func handleKeyBoardNotification(notification: NSNotification) {
+    @objc private func handleKeyBoardNotification(notification: NSNotification) {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
             
@@ -122,7 +123,7 @@ class ConversationViewController: LogViewController {
     
     // MARK: - Navigation
     
-    func configureNavigationBar() {
+    private func configureNavigationBar() {
         navigationItem.largeTitleDisplayMode = .never
         if #available(iOS 13.0, *) {
             navigationItem.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
@@ -147,7 +148,7 @@ class ConversationViewController: LogViewController {
     
     // MARK: - TableView
     
-    func configureTableView() {
+    private func configureTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -165,7 +166,7 @@ class ConversationViewController: LogViewController {
         tableView?.register(UINib(nibName: "MessageTableViewCell", bundle: nil), forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
     }
     
-    func configureModel() {
+    private func configureModel() {
         if let friendName = name {
             model = ConversationModel.messages(friendName)
         }

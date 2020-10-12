@@ -10,72 +10,41 @@ import UIKit
 
 class OperationDataManager: DataManagerDelegate {
     static var profileViewController: ProfileViewController?
+    
+    private let operationQueue = OperationQueue()
+    private let mainOperationQueue = OperationQueue.main
 
     init() {
+        operationQueue.qualityOfService = .userInitiated
+        operationQueue.maxConcurrentOperationCount = 1
+        
         OperationDataManager.profileViewController?.delegate = self
     }
     
-    func writeToFile(nameText: String?, bioText: String?, image: UIImage?, completion: @escaping (Bool) -> Void) {
+    func writeToFile(completion: @escaping (Bool) -> Void) {
+        let writeOperation = WriteOperation()        
+        let completionOperation = BlockOperation {
+            completion(writeOperation.hasSucceeded)
+        }
         
-        ProfileViewController.name = nameText
-        ProfileViewController.bio = bioText
-        ProfileViewController.image = image
-        
-        OperationDataManager.profileViewController?.editProfileButton.isEnabled = false
-        OperationDataManager.profileViewController?.activityIndicator.startAnimating()
-        
-        let operationQueue = OperationQueue()
-        operationQueue.qualityOfService = .userInitiated
-        let writeOperation = WriteOperation()
-        
-        let mainOperationQueue = OperationQueue.main
-        let uiOperation = UpdateViewOperation()
-        
-        uiOperation.addDependency(writeOperation)
+        completionOperation.addDependency(writeOperation)
         operationQueue.addOperations([writeOperation], waitUntilFinished: true)
-        mainOperationQueue.addOperation(uiOperation)
+        mainOperationQueue.addOperation(completionOperation)
     }
-    
-    func readFromFile(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool) {
-        
-    }
-    
-    func readNameFromFile() {
-        let operationQueue = OperationQueue()
-        operationQueue.qualityOfService = .userInitiated
-        let readOperation = ReadNameOperation()
-        
-        let mainOperationQueue = OperationQueue.main
-        let uiOperation = UpdateNameOperation()
-        
-        uiOperation.addDependency(readOperation)
-        operationQueue.addOperations([readOperation], waitUntilFinished: true)
-        mainOperationQueue.addOperation(uiOperation)
-    }
-    
-    func readBioFromFile() {
-        let operationQueue = OperationQueue()
-        operationQueue.qualityOfService = .userInitiated
-        let readOperation = ReadBioOperation()
-        
-        let mainOperationQueue = OperationQueue.main
-        let uiOperation = UpdateBioOperation()
-        
-        uiOperation.addDependency(readOperation)
-        operationQueue.addOperations([readOperation], waitUntilFinished: true)
-        mainOperationQueue.addOperation(uiOperation)
-    }
-    
-    func readImageFromFile() {
-        let operationQueue = OperationQueue()
-        operationQueue.qualityOfService = .userInitiated
-        let readOperation = ReadImageOperation()
-        
-        let mainOperationQueue = OperationQueue.main
-        let uiOperation = UpdateImageOperation()
-        
-        uiOperation.addDependency(readOperation)
-        operationQueue.addOperations([readOperation], waitUntilFinished: true)
-        mainOperationQueue.addOperation(uiOperation)
+    //Не работает
+    func readFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
+        let readNameOperation = ReadNameOperation()
+        let readBioOperation = ReadBioOperation()
+        let readImageOperation = ReadImageOperation()
+        let completionOperation = BlockOperation {
+            completion(mustReadName, mustReadBio, mustReadImage)
+        }
+
+        completionOperation.addDependency(readNameOperation)
+        completionOperation.addDependency(readBioOperation)
+        completionOperation.addDependency(readImageOperation)
+        operationQueue.addOperations([readNameOperation, readBioOperation, readImageOperation], waitUntilFinished: true)
+//        operationQueue.addOperation(readBioOperation)
+//        operationQueue.addOperation(readImageOperation)
     }
 }

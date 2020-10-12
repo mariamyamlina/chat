@@ -15,15 +15,15 @@ class GCDDataManager: DataManagerDelegate {
     private let mainQueue = DispatchQueue.main
     private let queue = DispatchQueue(label: "GCD", qos: .userInitiated)
     
-    var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    private var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     
-    let nameFile = "ProfileName.txt"
-    let bioFile = "ProfileBio.txt"
-    let imageFile = "ProfileImage.png"
+    private let nameFile = "ProfileName.txt"
+    private let bioFile = "ProfileBio.txt"
+    private let imageFile = "ProfileImage.png"
     
-    var nameFileURL: URL
-    var bioFileURL: URL
-    var imageFileURL: URL
+    private var nameFileURL: URL
+    private var bioFileURL: URL
+    private var imageFileURL: URL
 
     init() {
         nameFileURL = urlDir?.appendingPathComponent(nameFile) ?? URL(fileURLWithPath: "")
@@ -33,20 +33,16 @@ class GCDDataManager: DataManagerDelegate {
         GCDDataManager.profileViewController?.delegate = self
     }
     
-    func writeToFile(nameText: String?, bioText: String?, image: UIImage?, completion: @escaping (Bool) -> Void) {
+    func writeToFile(completion: @escaping (Bool) -> Void) {
         let group = DispatchGroup()
         var errorsCounter = 0
         
-        let imageData = image?.jpegData(compressionQuality: 0) ?? image?.pngData()
-        
-        GCDDataManager.profileViewController?.editProfileButton.isEnabled = false
-        GCDDataManager.profileViewController?.activityIndicator.startAnimating()
-        
         group.enter()
         queue.async {
-            if let nameChanged = GCDDataManager.profileViewController?.nameDidChange, nameChanged {
+            if let nameChanged = GCDDataManager.profileViewController?.nameDidChange,
+                nameChanged {
                 do {
-                    try nameText?.write(to: self.nameFileURL, atomically: false, encoding: .utf8)
+                    try ProfileViewController.name?.write(to: self.nameFileURL, atomically: false, encoding: .utf8)
                 }
                 catch {
                     errorsCounter += 1
@@ -57,9 +53,10 @@ class GCDDataManager: DataManagerDelegate {
         
         group.enter()
         queue.async {
-            if let bioChanged = GCDDataManager.profileViewController?.bioDidChange, bioChanged {
+            if let bioChanged = GCDDataManager.profileViewController?.bioDidChange,
+                bioChanged {
                 do {
-                    try bioText?.write(to: self.bioFileURL, atomically: false, encoding: .utf8)
+                    try ProfileViewController.bio?.write(to: self.bioFileURL, atomically: false, encoding: .utf8)
                 }
                 catch {
                     errorsCounter += 1
@@ -70,9 +67,11 @@ class GCDDataManager: DataManagerDelegate {
         
         group.enter()
         queue.async {
-            if let imageChanged = GCDDataManager.profileViewController?.imageDidChange, imageChanged {
+            if let data = ProfileViewController.image?.jpegData(compressionQuality: 1.0) ?? ProfileViewController.image?.pngData(),
+                let imageChanged = GCDDataManager.profileViewController?.imageDidChange,
+                imageChanged {
                 do {
-                    try imageData?.write(to: self.imageFileURL)
+                    try data.write(to: self.imageFileURL)
                 }
                 catch {
                     errorsCounter += 1
@@ -88,7 +87,7 @@ class GCDDataManager: DataManagerDelegate {
         }
     }
     
-    func readFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true) {
+    func readFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
         let group = DispatchGroup()
         
         group.enter()
@@ -137,6 +136,12 @@ class GCDDataManager: DataManagerDelegate {
                 }
             }
             group.leave()
+        }
+        
+        group.notify(queue: queue) {
+            self.mainQueue.async {
+                completion(mustReadName, mustReadBio, mustReadImage)
+            }
         }
     }
 }

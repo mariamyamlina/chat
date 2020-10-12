@@ -60,14 +60,14 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
     
     @IBAction func GCDSaveButtonTapped(_ sender: ButtonWithTouchSize) {
         gcdButtonTapped = true
-        referToFile(action: .write, dataManager: .gcd)
         enableSomeViews()
+        referToFile(action: .write, dataManager: .gcd)
     }
     
     @IBAction func OperationSaveButtonTapped(_ sender: ButtonWithTouchSize) {
         operationButtonTapped = true
-        referToFile(action: .write, dataManager: .operation)
         enableSomeViews()
+        referToFile(action: .write, dataManager: .operation)
     }
     
     @IBAction func editProfileButtonTapped(_ sender: ButtonWithTouchSize) {
@@ -153,7 +153,6 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         } else {
             viewHeight = viewHeight - 20
         }
-//        - 7 - 240 - 14 - 44 - 20 - 20 - 40 = - 385
         bioTextViewHeightConstraint.constant = viewHeight - 385
     }
     
@@ -240,7 +239,7 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
     
     // MARK: - Profile Editing
     
-    func saveCompletion(_ succeed: Bool) -> Void {
+    func loadCompletion(_ succeed: Bool) -> Void {
         if succeed {
             activityIndicator.stopAnimating()
             configureAlert("Data has been successfully saved", nil, false)
@@ -248,6 +247,18 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
             setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
         } else {
             configureAlert("Error", "Failed to save data", true)
+        }
+    }
+    
+    func uploadCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) -> Void {
+        if mustOverwriteName {
+            nameTextView.text = ProfileViewController.name
+        }
+        if mustOverwriteBio {
+            bioTextView.text = ProfileViewController.bio
+        }
+        if mustOverwriteImage {
+            profileImageView.updateImage()
         }
     }
 
@@ -260,19 +271,14 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
             }
         
             if action == .read {
-//                gcdDataManager.readNameFromFile()
-//                gcdDataManager.readBioFromFile()
-//                gcdDataManager.readImageFromFile()
-                
-                gcdDataManager.readFromFile()
+                gcdDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
 
-                nameTextView.text = ProfileViewController.name
-                bioTextView.text = ProfileViewController.bio
-
-                profileImageView.updateImage()
+                //Завернуть в completion?
+//                nameTextView.text = ProfileViewController.name
+//                bioTextView.text = ProfileViewController.bio
+//                profileImageView.updateImage()
             } else {
-//                gcdDataManager?.writeToFile(nameText: nameTextView.text, bioText: bioTextView.text, image: profileImageView.profileImage.image ?? UIImage(), completion: configureAlert(_:_:_:))
-                gcdDataManager.writeToFile(nameText: nameTextView.text, bioText: bioTextView.text, image: profileImageView.profileImage.image ?? UIImage(), completion: saveCompletion(_:))
+                gcdDataManager.writeToFile(completion: loadCompletion(_:))
             }
         case .operation:
             let operationDataManager = OperationDataManager()
@@ -281,11 +287,14 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
             }
                     
             if action == .read {
-                operationDataManager.readNameFromFile()
-                operationDataManager.readBioFromFile()
-                operationDataManager.readImageFromFile()
+                operationDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
+
+                //Завернуть в completion? ТОЧНО НАДО, так как может не выполняться сразу этот код
+//                nameTextView.text = ProfileViewController.name
+//                bioTextView.text = ProfileViewController.bio
+//                profileImageView.updateImage()
             } else {
-                operationDataManager.writeToFile(nameText: nameTextView.text, bioText: bioTextView.text, image: profileImageView.profileImage.image ?? UIImage(), completion: saveCompletion(_:))
+                operationDataManager.writeToFile(completion: loadCompletion(_:))
             }
         }
     }
@@ -293,20 +302,20 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
     
     // MARK: - Views
     
-    func setupViews() {
+    private func setupViews() {
         applyTheme()
 
         activityIndicator.hidesWhenStopped = true
         activityIndicator.stopAnimating()
         
-        //Считываю с помощью GCD
-        referToFile(action: .read, dataManager: .gcd)
+        //Считываю с помощью ... - достаточно заторможенно читает gcd !!!
+        referToFile(action: .read, dataManager: .operation)
 
         setupTextViews()
         setupButtonViews()
     }
     
-    func setupButtonViews() {
+    private func setupButtonViews() {
         setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
         editProfileButton.layer.cornerRadius = 14
         editProfileButton.clipsToBounds = true
@@ -321,7 +330,7 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         operationSaveButton.isEnabled = false
     }
     
-    func setupButtonsConstraints() {
+    private func setupButtonsConstraints() {
         view.addSubview(gcdSaveButton)
         view.addSubview(gcdSaveButton)
 
@@ -342,10 +351,9 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         operationSaveButtonBottomConstraint?.isActive = true
     }
     
-    func setupTextViews() {
+    private func setupTextViews() {
         let currentTheme = Theme.current.themeOptions
-        
-//        https://github.com/hackiftekhar/IQKeyboardManager/issues/1616
+
         nameTextView.autocorrectionType = .no
         bioTextView.autocorrectionType = .no
         
@@ -376,28 +384,31 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         bioTextView.clipsToBounds = true
     }
     
-    func setupEditProfileButtonView(title: String, color: UIColor) {
+    private func setupEditProfileButtonView(title: String, color: UIColor) {
         editProfileButton.setTitle(title, for: .normal)
         editProfileButton.setTitleColor(color, for: .normal)
         editProfileButton.setTitleColor(.lightGray, for: .disabled)
     }
     
-    func enableSomeViews() {
-        nameTextView.layer.borderWidth = 0
-            bioTextView.layer.borderWidth = 0
+    private func enableSomeViews() {
+        editProfileButton.isEnabled = false
+        activityIndicator.startAnimating()
         
-            gcdSaveButton.isEnabled = false
-            operationSaveButton.isEnabled = false
+        nameTextView.layer.borderWidth = 0
+        bioTextView.layer.borderWidth = 0
+        
+        gcdSaveButton.isEnabled = false
+        operationSaveButton.isEnabled = false
 
-            nameTextView.isEditable = false
-            bioTextView.isEditable = false
-            editPhotoButton.isEnabled = false
+        nameTextView.isEditable = false
+        bioTextView.isEditable = false
+        editPhotoButton.isEnabled = false
     }
     
     
     // MARK: - Navigation
     
-    func setupNavigationBar() {
+    private func setupNavigationBar() {
         let leftViewLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 115, height: 22))
         leftViewLabel.text = "My Profile"
         
@@ -418,7 +429,7 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SFProText-Semibold", size: 17) as Any], for: .highlighted)
     }
     
-    @objc func closeProfileViewController() {
+    @objc private func closeProfileViewController() {
         let navigationVC = self.presentingViewController as? UINavigationController
         let conversationsListVC = navigationVC?.viewControllers.first as? ConversationsListViewController
         conversationsListVC?.updateProfileImageView()
@@ -428,7 +439,7 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
     
     // MARK: - Alert
     
-    func presentImagePicker(of type: UIImagePickerController.SourceType) {
+    private func presentImagePicker(of type: UIImagePickerController.SourceType) {
         if UIImagePickerController.isSourceTypeAvailable(type) {
             imagePicker = UIImagePickerController()
             imagePicker.delegate = self
@@ -442,7 +453,7 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         }
     }
     
-    func configureActionSheet() {
+    private func configureActionSheet() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         alertController.pruneNegativeWidthConstraints()
@@ -474,7 +485,7 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         self.present(alertController, animated: true, completion: nil)
     }
     
-    func configureAlert(_ title: String, _ message: String?, _ twoActions: Bool) {
+    private func configureAlert(_ title: String, _ message: String?, _ twoActions: Bool) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: {(alert: UIAlertAction) in
             if title != "Error" {
@@ -532,9 +543,9 @@ extension UIAlertController {
 // MARK: - UINavigationControllerDelegate, UIImagePickerControllerDelegate
 
 extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        profileImageView.profileImage.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        let chosenImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        profileImageView.profileImage.image = chosenImage
         profileImageView.lettersLabel.isHidden = true
         
         imagePicker.dismiss(animated: true, completion: nil)
@@ -543,6 +554,7 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
         operationSaveButton.isEnabled = true
         
         imageDidChange = true
+        ProfileViewController.image = chosenImage
     }
 }
 
@@ -559,6 +571,17 @@ extension ProfileViewController: UITextViewDelegate {
             nameDidChange = true
         case bioTextView:
             bioDidChange = true
+        default:
+            break
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        switch textView {
+        case nameTextView:
+            ProfileViewController.name = textView.text
+        case bioTextView:
+            ProfileViewController.bio = textView.text
         default:
             break
         }
