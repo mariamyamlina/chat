@@ -9,8 +9,7 @@
 import UIKit
 
 class Loger {
-    
-    //Индикаторы наличия логов приложения
+
     static let appLogIndicator = false
     static let vcLogIndicator = false
     static let buttonLogIndicator = false

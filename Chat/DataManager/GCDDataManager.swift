@@ -82,7 +82,7 @@ extension GCDDataManager: DataManagerDelegate {
         let group = DispatchGroup()
         
         group.enter()
-        queue.sync {
+        queue.async {
             if mustReadName {
                 do {
                     let nameFromFile = try String(data: Data(contentsOf: DataManager.nameFileURL), encoding: .utf8)
@@ -98,7 +98,7 @@ extension GCDDataManager: DataManagerDelegate {
         }
         
         group.enter()
-        queue.sync {
+        queue.async {
             if mustReadBio {
                 do {
                     let bioFromFile = try String(data: Data(contentsOf: DataManager.bioFileURL), encoding: .utf8)
@@ -114,7 +114,7 @@ extension GCDDataManager: DataManagerDelegate {
         }
         
         group.enter()
-        queue.sync {
+        queue.async {
             if mustReadImage {
                 do {
                     let imageFromFile = try UIImage(data: Data(contentsOf: DataManager.imageFileURL))

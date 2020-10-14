@@ -100,7 +100,7 @@ class ProfileImageView: UIView {
             lettersLabel.isHidden = true
         }
 
-        let letters = getLetters(for: ProfileViewController.name ?? "Marina Dudarenko")
+        let letters = getLetters(for: ProfileViewController.name ?? "")
         lettersLabel.text = letters
         let attr: [NSAttributedString.Key: Any] = [.font: UIFont(name: "Roboto-Regular", size: ProfileImageView.fontSize) as Any]
         let attrString = NSMutableAttributedString(string: letters, attributes: attr)
@@ -121,12 +121,11 @@ class ProfileImageView: UIView {
                 operationDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: uploadImageCompletion(_:_:_:))
             }
         }
-        uploadImageCompletion(true, false, true)
     }
     
     func uploadImageCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) -> Void {
         if mustOverwriteName {
-            lettersLabel.text = getLetters(for: ProfileViewController.name ?? "Marina Dudarenko")
+            lettersLabel.text = getLetters(for: ProfileViewController.name ?? "")
         }
         if mustOverwriteImage {
             updateImage()
@@ -139,9 +138,9 @@ class ProfileImageView: UIView {
             let letters = [String(lettersArray[0].first ?? "M"), String(lettersArray[1].first ?? "D")]
             ProfileImageView.letters = letters[0] + letters[1]
         } else {
-            ProfileImageView.letters = "MD"
+            ProfileImageView.letters = ""
         }
-        return ProfileImageView.letters ?? "MD"
+        return ProfileImageView.letters ?? ""
     }
     
     func updateImage() {

@@ -507,30 +507,28 @@ extension UIAlertController {
 }
 
 
-// MARK: - ScrollViewDelegate
-
-extension ProfileViewController: UIScrollViewDelegate {}
-
-
-// MARK: - UINavigationControllerDelegate, UIImagePickerControllerDelegate
+// MARK: - ImagePicker, UINavigationControllerDelegate, UIImagePickerControllerDelegate
 
 extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let chosenImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-        
-        guard let compressData = chosenImage?.jpegData(compressionQuality: 0.5) else { return }
-        let compressedImage = UIImage(data: compressData)
-        
-        profileImageView.profileImage.image = chosenImage
-        profileImageView.lettersLabel.isHidden = true
-        
-        imagePicker.dismiss(animated: true, completion: nil)
+        if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            guard let compressData = pickedImage.jpegData(compressionQuality: 0.5) else { return }
+            let compressedImage = UIImage(data: compressData)
 
-        gcdSaveButton.isEnabled = true
-        operationSaveButton.isEnabled = true
-        
-        ProfileViewController.imageDidChange = true
-        ProfileViewController.image = compressedImage
+            profileImageView.profileImage.image = compressedImage
+            profileImageView.lettersLabel.isHidden = true
+
+            gcdSaveButton.isEnabled = true
+            operationSaveButton.isEnabled = true
+
+            ProfileViewController.imageDidChange = true
+            ProfileViewController.image = compressedImage
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
     
     func presentImagePicker(of type: UIImagePickerController.SourceType) {
