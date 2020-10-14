@@ -8,81 +8,72 @@
 
 import UIKit
 
-class GCDDataManager: DataManagerDelegate {
-    
+class GCDDataManager: DataManager {
     static var profileViewController: ProfileViewController?
     
     private let mainQueue = DispatchQueue.main
-    private let queue = DispatchQueue(label: "GCD", qos: .userInitiated)
-    
-    private var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-    
-    private let nameFile = "ProfileName.txt"
-    private let bioFile = "ProfileBio.txt"
-    private let imageFile = "ProfileImage.png"
-    
-    private var nameFileURL: URL
-    private var bioFileURL: URL
-    private var imageFileURL: URL
+    private let queue = DispatchQueue(label: "GCD", qos: .userInteractive, attributes: .concurrent)
 
-    init() {
-        nameFileURL = urlDir?.appendingPathComponent(nameFile) ?? URL(fileURLWithPath: "")
-        bioFileURL = urlDir?.appendingPathComponent(bioFile) ?? URL(fileURLWithPath: "")
-        imageFileURL = urlDir?.appendingPathComponent(imageFile) ?? URL(fileURLWithPath: "")
-        
+    override init() {
+        super.init()
         GCDDataManager.profileViewController?.delegate = self
     }
-    
+}
+
+extension GCDDataManager: DataManagerDelegate {
     func writeToFile(completion: @escaping (Bool) -> Void) {
         let group = DispatchGroup()
-        var errorsCounter = 0
+
+        var nameSaved = true
+        var bioSaved = true
+        var imageSaved = true
         
         group.enter()
         queue.async {
-            if let nameChanged = GCDDataManager.profileViewController?.nameDidChange,
-                nameChanged {
+            if ProfileViewController.nameDidChange {
                 do {
-                    try ProfileViewController.name?.write(to: self.nameFileURL, atomically: false, encoding: .utf8)
+                    try ProfileViewController.name?.write(to: DataManager.nameFileURL, atomically: false, encoding: .utf8)
                 }
                 catch {
-                    errorsCounter += 1
+                    nameSaved = false
                 }
+                ProfileViewController.nameDidChange = !nameSaved
             }
             group.leave()
         }
         
         group.enter()
         queue.async {
-            if let bioChanged = GCDDataManager.profileViewController?.bioDidChange,
-                bioChanged {
+            if ProfileViewController.bioDidChange {
                 do {
-                    try ProfileViewController.bio?.write(to: self.bioFileURL, atomically: false, encoding: .utf8)
+                    try ProfileViewController.bio?.write(to: DataManager.bioFileURL, atomically: false, encoding: .utf8)
                 }
                 catch {
-                    errorsCounter += 1
+                    bioSaved = false
                 }
+                ProfileViewController.bioDidChange = !bioSaved
             }
             group.leave()
         }
         
         group.enter()
         queue.async {
-            if let data = ProfileViewController.image?.jpegData(compressionQuality: 1.0) ?? ProfileViewController.image?.pngData(),
-                let imageChanged = GCDDataManager.profileViewController?.imageDidChange,
-                imageChanged {
+            if let data = ProfileViewController.image?.jpegData(compressionQuality: 0.5),
+                ProfileViewController.imageDidChange {
                 do {
-                    try data.write(to: self.imageFileURL)
+                    try data.write(to: DataManager.imageFileURL)
                 }
                 catch {
-                    errorsCounter += 1
+                    imageSaved = false
                 }
+                ProfileViewController.imageDidChange = !imageSaved
             }
             group.leave()
         }
         
         group.notify(queue: queue) {
             self.mainQueue.async {
-                completion(errorsCounter == 0)
+                completion(nameSaved && bioSaved && imageSaved)
             }
         }
     }
@@ -94,7 +85,7 @@ class GCDDataManager: DataManagerDelegate {
         queue.sync {
             if mustReadName {
                 do {
-                    let nameFromFile = try String(data: Data(contentsOf: self.nameFileURL), encoding: .utf8)
+                    let nameFromFile = try String(data: Data(contentsOf: DataManager.nameFileURL), encoding: .utf8)
                     if let name = nameFromFile {
                         ProfileViewController.name = name
                     }
@@ -110,7 +101,7 @@ class GCDDataManager: DataManagerDelegate {
         queue.sync {
             if mustReadBio {
                 do {
-                    let bioFromFile = try String(data: Data(contentsOf: self.bioFileURL), encoding: .utf8)
+                    let bioFromFile = try String(data: Data(contentsOf: DataManager.bioFileURL), encoding: .utf8)
                     if let bio = bioFromFile {
                         ProfileViewController.bio = bio
                     }
@@ -126,7 +117,7 @@ class GCDDataManager: DataManagerDelegate {
         queue.sync {
             if mustReadImage {
                 do {
-                    let imageFromFile = try UIImage(data: Data(contentsOf: self.imageFileURL))
+                    let imageFromFile = try UIImage(data: Data(contentsOf: DataManager.imageFileURL))
                     if let image = imageFromFile {
                         ProfileViewController.image = image
                     }
@@ -138,11 +129,8 @@ class GCDDataManager: DataManagerDelegate {
             group.leave()
         }
         
-        group.notify(queue: queue) {
-            self.mainQueue.async {
-                completion(mustReadName, mustReadBio, mustReadImage)
-            }
+        group.notify(queue: .main) {
+            completion(mustReadName, mustReadBio, mustReadImage)
         }
     }
 }
-

@@ -8,30 +8,31 @@
 
 import UIKit
 
-class OperationDataManager: DataManagerDelegate {
+class OperationDataManager: DataManager {
     static var profileViewController: ProfileViewController?
     
     private let operationQueue = OperationQueue()
     private let mainOperationQueue = OperationQueue.main
 
-    init() {
-        operationQueue.qualityOfService = .userInitiated
-        operationQueue.maxConcurrentOperationCount = 1
-        
+    override init() {
+        super.init()
+        operationQueue.qualityOfService = .userInteractive
         OperationDataManager.profileViewController?.delegate = self
     }
-    
+}
+
+extension OperationDataManager: DataManagerDelegate {
     func writeToFile(completion: @escaping (Bool) -> Void) {
-        let writeOperation = WriteOperation()        
+        let writeOperation = WriteOperation()
         let completionOperation = BlockOperation {
-            completion(writeOperation.hasSucceeded)
+            completion(writeOperation.nameSaved && writeOperation.bioSaved && writeOperation.imageSaved)
         }
         
         completionOperation.addDependency(writeOperation)
         operationQueue.addOperations([writeOperation], waitUntilFinished: true)
         mainOperationQueue.addOperation(completionOperation)
     }
-    //Не работает
+    
     func readFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
         let readNameOperation = ReadNameOperation()
         let readBioOperation = ReadBioOperation()
@@ -44,7 +45,6 @@ class OperationDataManager: DataManagerDelegate {
         completionOperation.addDependency(readBioOperation)
         completionOperation.addDependency(readImageOperation)
         operationQueue.addOperations([readNameOperation, readBioOperation, readImageOperation], waitUntilFinished: true)
-//        operationQueue.addOperation(readBioOperation)
-//        operationQueue.addOperation(readImageOperation)
+        mainOperationQueue.addOperation(completionOperation)
     }
 }

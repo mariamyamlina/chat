@@ -76,7 +76,7 @@
                                                 <fontDescription key="fontDescription" name="SFProText-Semibold" family="SF Pro Text" pointSize="16"/>
                                                 <state key="normal" title="Edit"/>
                                                 <connections>
-                                                    <action selector="editPhotoButtonTapped:" destination="4DX-H8-M1c" eventType="touchUpInside" id="VUU-Hi-tdP"/>
+                                                    <action selector="editPhotoButtonTapped:" destination="4DX-H8-M1c" eventType="touchUpInside" id="dzE-YI-sRO"/>
                                                 </connections>
                                             </button>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="6d7-Mn-Csl">
@@ -145,7 +145,7 @@
                                 <fontDescription key="fontDescription" name="SFProText-Semibold" family="SF Pro Text" pointSize="19"/>
                                 <state key="normal" title="GCD Save"/>
                                 <connections>
-                                    <action selector="GCDSaveButtonTapped:" destination="4DX-H8-M1c" eventType="touchUpInside" id="hYp-2h-Ava"/>
+                                    <action selector="GCDSaveButtonTapped:" destination="4DX-H8-M1c" eventType="touchUpInside" id="Mte-Eu-hE5"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -171,7 +171,7 @@
                         <outlet property="bioTextViewHeightConstraint" destination="4r9-FW-26w" id="Tcu-lh-mog"/>
                         <outlet property="editPhotoButton" destination="Lme-uM-Bby" id="bMC-47-0gU"/>
                         <outlet property="editProfileButton" destination="t9z-VK-8Xb" id="57g-cn-qqv"/>
-                        <outlet property="gcdSaveButton" destination="j4Z-BW-bKy" id="yny-cl-K8J"/>
+                        <outlet property="gcdSaveButton" destination="j4Z-BW-bKy" id="RxE-vZ-DRe"/>
                         <outlet property="gcdSaveButtonBottomConstraint" destination="W9c-c2-nQU" id="g5r-mn-lKr"/>
                         <outlet property="gcdSaveButtonTopConstraint" destination="KMe-ng-A1i" id="MWL-Y0-Atj"/>
                         <outlet property="nameTextView" destination="yj4-MX-ggG" id="fbA-em-Xkm"/>

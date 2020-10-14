@@ -8,10 +8,6 @@
 
 import UIKit
 
-protocol ThemesPickerDelegate {
-    func changeTheme(for theme: Theme)
-}
-
 class ThemesViewController: LogViewController {
     
     var changeThemeHandler: ((_ theme: Theme) -> Void)?
@@ -23,7 +19,6 @@ class ThemesViewController: LogViewController {
         let attr: [NSAttributedString.Key: Any] = [.font: UIFont(name: "SFProText-Semibold", size: 17) as Any]
         let attrString = NSMutableAttributedString(string: "Settings", attributes: attr)
         title.attributedText = attrString
-        
         return title
     }()
     
@@ -35,10 +30,8 @@ class ThemesViewController: LogViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-
         setupViews()
         configureNavigationBar()
-        
         createHandler()
         
         /*
@@ -83,7 +76,6 @@ class ThemesViewController: LogViewController {
     
     
     private func pickButtonTapped(_ sender: ThemeButton) {
-        
         sender.isSelected = !sender.isSelected
         
         if sender.isSelected {

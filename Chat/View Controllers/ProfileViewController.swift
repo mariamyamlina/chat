@@ -8,28 +8,17 @@
 
 import UIKit
 
-class ProfileViewController: LogViewController, UIScrollViewDelegate {
-    
-    enum DataManagerType {
-        case gcd
-        case operation
-    }
-    
-    enum ActionType {
-        case write
-        case read
-    }
+class ProfileViewController: LogViewController {
     
     var imagePicker: UIImagePickerController!
-
     var delegate: DataManagerDelegate?
     
-    var nameDidChange = false
-    var bioDidChange = false
-    var imageDidChange = false
+    static var nameDidChange = false
+    static var bioDidChange = false
+    static var imageDidChange = false
     
-    var gcdButtonTapped = false
-    var operationButtonTapped = false
+    static var gcdButtonTapped = false
+    static var operationButtonTapped = false
     
     static var name: String? = nil
     static var bio: String? = nil
@@ -44,30 +33,31 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
     @IBOutlet weak var operationSaveButtonBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var bioTextViewHeightConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var gcdSaveButton: UIButton!
+    @IBOutlet weak var gcdSaveButton: ButtonWithTouchSize!
     @IBOutlet weak var operationSaveButton: ButtonWithTouchSize!
     @IBOutlet weak var editProfileButton: ButtonWithTouchSize!
     @IBOutlet weak var editPhotoButton: UIButton!
+    
     @IBOutlet weak var nameTextView: UITextView!
     @IBOutlet weak var bioTextView: UITextView!
-    
-    @IBAction func editPhotoButtonTapped(_ sender: UIButton) {
-        configureActionSheet()
-    }
     
     @IBOutlet weak var profileImageView: ProfileImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     @IBAction func GCDSaveButtonTapped(_ sender: ButtonWithTouchSize) {
-        gcdButtonTapped = true
+        ProfileViewController.gcdButtonTapped = true
         enableSomeViews()
         referToFile(action: .write, dataManager: .gcd)
     }
     
     @IBAction func OperationSaveButtonTapped(_ sender: ButtonWithTouchSize) {
-        operationButtonTapped = true
+        ProfileViewController.operationButtonTapped = true
         enableSomeViews()
         referToFile(action: .write, dataManager: .operation)
+    }
+    
+    @IBAction func editPhotoButtonTapped(_ sender: UIButton) {
+        configureActionSheet()
     }
     
     @IBAction func editProfileButtonTapped(_ sender: ButtonWithTouchSize) {
@@ -76,10 +66,6 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
             setupEditProfileButtonView(title: "Cancel Editing", color: .systemRed)
             nameTextView.becomeFirstResponder()
             bioTextView.becomeFirstResponder()
-            
-            imageDidChange = false
-            nameDidChange = false
-            bioDidChange = false
             
             nameTextView.isEditable = true
             bioTextView.isEditable = true
@@ -94,10 +80,6 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
             setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
             nameTextView.resignFirstResponder()
             bioTextView.resignFirstResponder()
-            
-            imageDidChange = false
-            nameDidChange = false
-            bioDidChange = false
             
             nameTextView.isEditable = false
             bioTextView.isEditable = false
@@ -143,6 +125,10 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         setupNavigationBar()
         setupButtonsConstraints()
         addKeyboardNotifications()
+        
+        imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -231,8 +217,6 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         } else {
             let currentTheme = Theme.current.themeOptions
             self.imagePicker.navigationBar.barStyle = currentTheme.barStyle
-            
-            // TODO: - Change theme for PickerView
         }
     }
     
@@ -265,36 +249,28 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
     func referToFile(action: ActionType, dataManager: DataManagerType) {
         switch dataManager {
         case .gcd:
-            let gcdDataManager = GCDDataManager()
-            if GCDDataManager.profileViewController == nil {
-                GCDDataManager.profileViewController = self
-            }
-        
-            if action == .read {
-                gcdDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
-
-                //Завернуть в completion?
-//                nameTextView.text = ProfileViewController.name
-//                bioTextView.text = ProfileViewController.bio
-//                profileImageView.updateImage()
-            } else {
-                gcdDataManager.writeToFile(completion: loadCompletion(_:))
+            if let gcdDataManager: GCDDataManager = DataManager.returnDataManager(of: dataManager) {
+                if GCDDataManager.profileViewController == nil {
+                        GCDDataManager.profileViewController = self
+                }
+                if action == .read {
+                    gcdDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
+                    uploadCompletion(true, true, true)
+                } else {
+                    gcdDataManager.writeToFile(completion: loadCompletion(_:))
+                }
             }
         case .operation:
-            let operationDataManager = OperationDataManager()
-            if OperationDataManager.profileViewController == nil {
-                OperationDataManager.profileViewController = self
-            }
-                    
-            if action == .read {
-                operationDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
-
-                //Завернуть в completion? ТОЧНО НАДО, так как может не выполняться сразу этот код
-//                nameTextView.text = ProfileViewController.name
-//                bioTextView.text = ProfileViewController.bio
-//                profileImageView.updateImage()
-            } else {
-                operationDataManager.writeToFile(completion: loadCompletion(_:))
+            if let operationDataManager: OperationDataManager = DataManager.returnDataManager(of: dataManager) {
+                if OperationDataManager.profileViewController == nil {
+                    OperationDataManager.profileViewController = self
+                }
+                if action == .read {
+                    operationDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
+                    uploadCompletion(true, true, true)
+                } else {
+                    operationDataManager.writeToFile(completion: loadCompletion(_:))
+                }
             }
         }
     }
@@ -307,9 +283,10 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
 
         activityIndicator.hidesWhenStopped = true
         activityIndicator.stopAnimating()
-        
-        //Считываю с помощью ... - достаточно заторможенно читает gcd !!!
-        referToFile(action: .read, dataManager: .operation)
+
+//        You can choose here how to read data by the inizialization
+        referToFile(action: .read, dataManager: .gcd)
+//        referToFile(action: .read, dataManager: .operation)
 
         setupTextViews()
         setupButtonViews()
@@ -439,31 +416,17 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
     
     // MARK: - Alert
     
-    private func presentImagePicker(of type: UIImagePickerController.SourceType) {
-        if UIImagePickerController.isSourceTypeAvailable(type) {
-            imagePicker = UIImagePickerController()
-            imagePicker.delegate = self
-            imagePicker.allowsEditing = true
-            
-            imagePicker.sourceType = type
-            present(imagePicker, animated: true, completion: nil)
-            applyThemeForImagePicker()
-        } else {
-            configureAlert("Error", "Check your device and try later", false)
-        }
-    }
-    
     private func configureActionSheet() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         alertController.pruneNegativeWidthConstraints()
 
         let galeryAction = UIAlertAction(title: "Choose from gallery", style: .default) { (action) in
-            self.presentImagePicker(of: UIImagePickerController.SourceType.photoLibrary)
+            self.presentImagePicker(of: .photoLibrary)
         }
         
         let takePhotoAction = UIAlertAction(title: "Take a photo", style: .default) { (action) in
-            self.presentImagePicker(of: UIImagePickerController.SourceType.camera)
+            self.presentImagePicker(of: .camera)
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (action) in
@@ -489,22 +452,26 @@ class ProfileViewController: LogViewController, UIScrollViewDelegate {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: {(alert: UIAlertAction) in
             if title != "Error" {
-                if self.gcdButtonTapped {
-                    self.gcdButtonTapped = false
-                } else if self.operationButtonTapped {
-                    self.operationButtonTapped = false
+                if ProfileViewController.gcdButtonTapped {
+                    ProfileViewController.gcdButtonTapped = false
+                } else if ProfileViewController.operationButtonTapped {
+                    ProfileViewController.operationButtonTapped = false
                 }
                 self.editProfileButton.isEnabled = true
                 self.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
+                
+                ProfileViewController.nameDidChange = false
+                ProfileViewController.bioDidChange = false
+                ProfileViewController.imageDidChange = false
             }
         })
         alertController.addAction(cancelAction)
         
         if twoActions {
             let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: {(alert: UIAlertAction) in
-                if self.gcdButtonTapped {
+                if ProfileViewController.gcdButtonTapped {
                     self.referToFile(action: .write, dataManager: .gcd)
-                } else if self.operationButtonTapped {
+                } else if ProfileViewController.operationButtonTapped {
                     self.referToFile(action: .write, dataManager: .operation)
                 }
             })
@@ -540,11 +507,20 @@ extension UIAlertController {
 }
 
 
+// MARK: - ScrollViewDelegate
+
+extension ProfileViewController: UIScrollViewDelegate {}
+
+
 // MARK: - UINavigationControllerDelegate, UIImagePickerControllerDelegate
 
 extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let chosenImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        
+        guard let compressData = chosenImage?.jpegData(compressionQuality: 0.5) else { return }
+        let compressedImage = UIImage(data: compressData)
+        
         profileImageView.profileImage.image = chosenImage
         profileImageView.lettersLabel.isHidden = true
         
@@ -553,8 +529,18 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
         gcdSaveButton.isEnabled = true
         operationSaveButton.isEnabled = true
         
-        imageDidChange = true
-        ProfileViewController.image = chosenImage
+        ProfileViewController.imageDidChange = true
+        ProfileViewController.image = compressedImage
+    }
+    
+    func presentImagePicker(of type: UIImagePickerController.SourceType) {
+        if UIImagePickerController.isSourceTypeAvailable(type) {
+            imagePicker.sourceType = type
+            applyThemeForImagePicker()
+            present(imagePicker, animated: true, completion: nil)
+        } else {
+            configureAlert("Error", "Check your device and try later", false)
+        }
     }
 }
 
@@ -568,9 +554,9 @@ extension ProfileViewController: UITextViewDelegate {
         
         switch textView {
         case nameTextView:
-            nameDidChange = true
+            ProfileViewController.nameDidChange = true
         case bioTextView:
-            bioDidChange = true
+            ProfileViewController.bioDidChange = true
         default:
             break
         }
@@ -595,7 +581,7 @@ extension ProfileViewController: UITextViewDelegate {
         } else if textView == bioTextView {
             let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
             let numberOfChars = newText.count
-            return numberOfChars < 51
+            return numberOfChars < 61
         }
         return false
     }

@@ -29,6 +29,9 @@
 		9957F56A251EABD2007EB624 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9957F569251EABD2007EB624 /* Profile.storyboard */; };
 		9957F56C251F67C7007EB624 /* Conversation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9957F56B251F67C7007EB624 /* Conversation.storyboard */; };
 		9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9957F56D251F67DC007EB624 /* ConversationViewController.swift */; };
+		99599C98253731CA00FB2264 /* DataManagerEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C97253731C900FB2264 /* DataManagerEnums.swift */; };
+		99599C9A253731F100FB2264 /* DataManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C99253731F100FB2264 /* DataManagerDelegate.swift */; };
+		99599C9C253751BD00FB2264 /* ThemesPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C9B253751BD00FB2264 /* ThemesPickerDelegate.swift */; };
 		995DEEFA2534D1A1000BEF15 /* WriteOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995DEEF92534D1A1000BEF15 /* WriteOperations.swift */; };
 		995DEEFC2534D1E0000BEF15 /* ReadOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995DEEFB2534D1E0000BEF15 /* ReadOperations.swift */; };
 		997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE1F2530D8EF00645079 /* GCDDataManager.swift */; };
@@ -73,6 +76,9 @@
 		9957F569251EABD2007EB624 /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
 		9957F56B251F67C7007EB624 /* Conversation.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Conversation.storyboard; sourceTree = "<group>"; };
 		9957F56D251F67DC007EB624 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
+		99599C97253731C900FB2264 /* DataManagerEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerEnums.swift; sourceTree = "<group>"; };
+		99599C99253731F100FB2264 /* DataManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerDelegate.swift; sourceTree = "<group>"; };
+		99599C9B253751BD00FB2264 /* ThemesPickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPickerDelegate.swift; sourceTree = "<group>"; };
 		995DEEF92534D1A1000BEF15 /* WriteOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteOperations.swift; sourceTree = "<group>"; };
 		995DEEFB2534D1E0000BEF15 /* ReadOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOperations.swift; sourceTree = "<group>"; };
 		997CEE1F2530D8EF00645079 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
@@ -112,6 +118,7 @@
 			children = (
 				994B9AD9252799F600A453F2 /* ThemeManager.swift */,
 				994B4A7F252A7C3900A50B5D /* Theme.swift */,
+				99599C9B253751BD00FB2264 /* ThemesPickerDelegate.swift */,
 				994F1C9B2534C9A9003FC809 /* ThemeOptions.swift */,
 			);
 			path = Theme;
@@ -121,6 +128,8 @@
 			isa = PBXGroup;
 			children = (
 				994635B82534DE05003DEA03 /* DataManager.swift */,
+				99599C97253731C900FB2264 /* DataManagerEnums.swift */,
+				99599C99253731F100FB2264 /* DataManagerDelegate.swift */,
 				997CEE1F2530D8EF00645079 /* GCDDataManager.swift */,
 				997CEE212530D91500645079 /* OperationDataManager.swift */,
 				995DEEFD2534D1FE000BEF15 /* Operations */,
@@ -344,6 +353,7 @@
 				99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */,
 				997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */,
 				994F1CA02534CAD1003FC809 /* ConfigurableView.swift in Sources */,
+				99599C98253731CA00FB2264 /* DataManagerEnums.swift in Sources */,
 				995DEEFA2534D1A1000BEF15 /* WriteOperations.swift in Sources */,
 				994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */,
 				9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */,
@@ -358,6 +368,8 @@
 				994AF9D125221D300013B0E0 /* TopViewWithTitle.swift in Sources */,
 				99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */,
 				994635B92534DE05003DEA03 /* DataManager.swift in Sources */,
+				99599C9A253731F100FB2264 /* DataManagerDelegate.swift in Sources */,
+				99599C9C253751BD00FB2264 /* ThemesPickerDelegate.swift in Sources */,
 				99454C33251D4502005CEEA2 /* ConversationsListViewController.swift in Sources */,
 				997CEE222530D91500645079 /* OperationDataManager.swift in Sources */,
 				995DEEFC2534D1E0000BEF15 /* ReadOperations.swift in Sources */,

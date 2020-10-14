@@ -90,9 +90,10 @@ class ProfileImageView: UIView {
         profileImageHeightConstraint.constant = 240
         lettersLabelWidthConstraint.constant = 220
         lettersLabelHeightConstraint.constant = 110
-        
-        //Считываю с помощью ...
-        readFromFile(with: .operation)
+
+//        You can choose here how to read data by the inizialization
+        readFromFile(with: .gcd)
+//        readFromFile(with: .operation)
         
         profileImage.contentMode = .scaleAspectFill
         if profileImage.image != nil {
@@ -110,15 +111,17 @@ class ProfileImageView: UIView {
         clipsToBounds = true
     }
     
-    private func readFromFile(with dataManager: ProfileViewController.DataManagerType) {
+    private func readFromFile(with dataManager: DataManagerType) {
         if dataManager == .gcd {
-            let gcdDataManager = GCDDataManager()
-            gcdDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: uploadImageCompletion(_:_:_:))
+            if let gcdDataManager: GCDDataManager = DataManager.returnDataManager(of: .gcd) {
+                gcdDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: uploadImageCompletion(_:_:_:))
+            }
         } else {
-            let operationDataManager = OperationDataManager()
-            operationDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: uploadImageCompletion(_:_:_:))
+            if let operationDataManager: OperationDataManager = DataManager.returnDataManager(of: .operation) {
+                operationDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: uploadImageCompletion(_:_:_:))
+            }
         }
-        updateImage()
+        uploadImageCompletion(true, false, true)
     }
     
     func uploadImageCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) -> Void {
@@ -135,16 +138,18 @@ class ProfileImageView: UIView {
         if lettersArray.count == 2 {
             let letters = [String(lettersArray[0].first ?? "M"), String(lettersArray[1].first ?? "D")]
             ProfileImageView.letters = letters[0] + letters[1]
-            return letters[0] + letters[1]
         } else {
             ProfileImageView.letters = "MD"
-            return "MD"
         }
+        return ProfileImageView.letters ?? "MD"
     }
     
     func updateImage() {
         if let existingImage = ProfileViewController.image {
             profileImage.image = existingImage
+        }
+        if profileImage.image != nil {
+            lettersLabel.isHidden = true
         }
     }
 }
