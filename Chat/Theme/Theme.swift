@@ -32,7 +32,7 @@ extension Theme {
     private static var appTheme: Int
 
     func save() {
-        DispatchQueue(label: "Theme", qos: .userInteractive).sync {
+        DispatchQueue(label: "com.chat.theme", qos: .userInteractive).sync {
             Theme.appTheme = self.rawValue
         }
     }

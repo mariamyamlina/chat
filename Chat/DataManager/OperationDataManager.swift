@@ -9,7 +9,7 @@
 import UIKit
 
 class OperationDataManager: DataManager {
-    static var profileViewController: ProfileViewController?
+    weak var profileViewController: ProfileViewController?
     
     private let operationQueue = OperationQueue()
     private let mainOperationQueue = OperationQueue.main
@@ -17,7 +17,7 @@ class OperationDataManager: DataManager {
     override init() {
         super.init()
         operationQueue.qualityOfService = .userInteractive
-        OperationDataManager.profileViewController?.delegate = self
+        profileViewController?.delegate = self
     }
 }
 

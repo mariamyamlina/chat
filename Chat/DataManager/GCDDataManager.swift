@@ -9,14 +9,14 @@
 import UIKit
 
 class GCDDataManager: DataManager {
-    static var profileViewController: ProfileViewController?
+    weak var profileViewController: ProfileViewController?
     
     private let mainQueue = DispatchQueue.main
-    private let queue = DispatchQueue(label: "GCD", qos: .userInteractive, attributes: .concurrent)
+    private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
 
     override init() {
         super.init()
-        GCDDataManager.profileViewController?.delegate = self
+        profileViewController?.delegate = self
     }
 }
 

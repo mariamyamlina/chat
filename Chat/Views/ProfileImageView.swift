@@ -91,7 +91,7 @@ class ProfileImageView: UIView {
         lettersLabelWidthConstraint.constant = 220
         lettersLabelHeightConstraint.constant = 110
 
-//        You can choose here how to read data by the inizialization
+//        You can choose here how to read data by the initialization
         readFromFile(with: .gcd)
 //        readFromFile(with: .operation)
         

@@ -11,7 +11,7 @@ import UIKit
 class ProfileViewController: LogViewController {
     
     var imagePicker: UIImagePickerController!
-    var delegate: DataManagerDelegate?
+    weak var delegate: DataManagerDelegate?
     
     static var nameDidChange = false
     static var bioDidChange = false
@@ -250,9 +250,7 @@ class ProfileViewController: LogViewController {
         switch dataManager {
         case .gcd:
             if let gcdDataManager: GCDDataManager = DataManager.returnDataManager(of: dataManager) {
-                if GCDDataManager.profileViewController == nil {
-                        GCDDataManager.profileViewController = self
-                }
+                gcdDataManager.profileViewController = self
                 if action == .read {
                     gcdDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
                     uploadCompletion(true, true, true)
@@ -262,9 +260,7 @@ class ProfileViewController: LogViewController {
             }
         case .operation:
             if let operationDataManager: OperationDataManager = DataManager.returnDataManager(of: dataManager) {
-                if OperationDataManager.profileViewController == nil {
-                    OperationDataManager.profileViewController = self
-                }
+                operationDataManager.profileViewController = self
                 if action == .read {
                     operationDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
                     uploadCompletion(true, true, true)
@@ -284,7 +280,7 @@ class ProfileViewController: LogViewController {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.stopAnimating()
 
-//        You can choose here how to read data by the inizialization
+//        You can choose here how to read data by the initialization
         referToFile(action: .read, dataManager: .gcd)
 //        referToFile(action: .read, dataManager: .operation)
 
@@ -309,7 +305,7 @@ class ProfileViewController: LogViewController {
     
     private func setupButtonsConstraints() {
         view.addSubview(gcdSaveButton)
-        view.addSubview(gcdSaveButton)
+        view.addSubview(operationSaveButton)
 
         gcdSaveButtonTopConstraint.isActive = false
         gcdSaveButtonTopConstraint = gcdSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10)

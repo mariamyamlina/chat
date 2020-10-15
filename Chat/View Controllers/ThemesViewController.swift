@@ -11,7 +11,7 @@ import UIKit
 class ThemesViewController: LogViewController {
     
     var changeThemeHandler: ((_ theme: Theme) -> Void)?
-    var delegate: ThemesPickerDelegate?
+    weak var delegate: ThemesPickerDelegate?
     private var themeManager: ThemeManager?
     
     lazy var titleLabel: UILabel = {
@@ -144,8 +144,7 @@ class ThemesViewController: LogViewController {
     // MARK: - View
     
     private func setupViews() {
-        ThemeManager.themesViewController = self
-        themeManager = ThemeManager()
+        themeManager = ThemeManager(themesVC: self)
         
         applyTheme()
         let currentTheme = Theme.current.themeOptions

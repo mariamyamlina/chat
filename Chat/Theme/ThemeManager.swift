@@ -9,13 +9,14 @@
 import UIKit
 
 class ThemeManager {
-    static var themesViewController: ThemesViewController?
+    weak var themesViewController: ThemesViewController?
 
-    init() {
-        ThemeManager.themesViewController?.changeThemeHandler = { [weak self] (_ theme: Theme) -> Void in
+    init(themesVC: ThemesViewController?) {
+        themesViewController = themesVC
+        themesViewController?.changeThemeHandler = { [weak self] (_ theme: Theme) -> Void in
             self?.applyTheme(for: theme)
         }
-        ThemeManager.themesViewController?.delegate = self
+        themesViewController?.delegate = self
     }
     
     func applyTheme(for theme: Theme) {
@@ -33,16 +34,15 @@ class ThemeManager {
         
         let currentTheme = Theme.current.themeOptions
 
-        let themesVC = ThemeManager.themesViewController
-        themesVC?.view.backgroundColor = currentTheme.settingsBackgroundColor
+        themesViewController?.view.backgroundColor = currentTheme.settingsBackgroundColor
 
         if #available(iOS 13.0, *) {
         } else {
-            themesVC?.navigationController?.navigationBar.barStyle = currentTheme.barStyle
-            themesVC?.navigationController?.navigationBar.barTintColor = currentTheme.barColor
-            themesVC?.titleLabel.textColor = currentTheme.inputAndCommonTextColor
+            themesViewController?.navigationController?.navigationBar.barStyle = currentTheme.barStyle
+            themesViewController?.navigationController?.navigationBar.barTintColor = currentTheme.barColor
+            themesViewController?.titleLabel.textColor = currentTheme.inputAndCommonTextColor
 
-            let conversationsListVC = themesVC?.navigationController?.viewControllers.first as? ConversationsListViewController
+            let conversationsListVC = themesViewController?.navigationController?.viewControllers.first as? ConversationsListViewController
             conversationsListVC?.view.backgroundColor = currentTheme.backgroundColor
 
             conversationsListVC?.tableView.reloadData()

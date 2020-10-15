@@ -8,6 +8,6 @@
 
 import UIKit
 
-protocol ThemesPickerDelegate {
+protocol ThemesPickerDelegate: class {
     func changeTheme(for theme: Theme)
 }

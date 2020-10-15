@@ -8,9 +8,7 @@
 
 import UIKit
 
-protocol DataManagerDelegate {
-    static var profileViewController: ProfileViewController? { get }
-    
+protocol DataManagerDelegate: class {
     func writeToFile(completion: @escaping (Bool) -> Void)
     func readFromFile(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
 }
