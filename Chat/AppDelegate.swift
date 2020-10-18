@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 let themeWindow = UIWindow()
 
@@ -29,6 +30,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Theme.current.setActive()
         themeWindow.initTheme()
         themeWindow.makeKey()
+        
+        FirebaseApp.configure()
 
         return true
     }
@@ -54,4 +57,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
-

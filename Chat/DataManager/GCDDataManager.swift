@@ -33,8 +33,7 @@ extension GCDDataManager: DataManagerDelegate {
             if ProfileViewController.nameDidChange {
                 do {
                     try ProfileViewController.name?.write(to: DataManager.nameFileURL, atomically: false, encoding: .utf8)
-                }
-                catch {
+                } catch {
                     nameSaved = false
                 }
                 ProfileViewController.nameDidChange = !nameSaved
@@ -47,8 +46,7 @@ extension GCDDataManager: DataManagerDelegate {
             if ProfileViewController.bioDidChange {
                 do {
                     try ProfileViewController.bio?.write(to: DataManager.bioFileURL, atomically: false, encoding: .utf8)
-                }
-                catch {
+                } catch {
                     bioSaved = false
                 }
                 ProfileViewController.bioDidChange = !bioSaved
@@ -62,8 +60,7 @@ extension GCDDataManager: DataManagerDelegate {
                 ProfileViewController.imageDidChange {
                 do {
                     try data.write(to: DataManager.imageFileURL)
-                }
-                catch {
+                } catch {
                     imageSaved = false
                 }
                 ProfileViewController.imageDidChange = !imageSaved
@@ -89,8 +86,7 @@ extension GCDDataManager: DataManagerDelegate {
                     if let name = nameFromFile {
                         ProfileViewController.name = name
                     }
-                }
-                catch {
+                } catch {
                     ProfileViewController.name = "Marina Dudarenko"
                 }
             }
@@ -105,8 +101,7 @@ extension GCDDataManager: DataManagerDelegate {
                     if let bio = bioFromFile {
                         ProfileViewController.bio = bio
                     }
-                }
-                catch {
+                } catch {
                     ProfileViewController.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
                 }
             }
@@ -121,8 +116,7 @@ extension GCDDataManager: DataManagerDelegate {
                     if let image = imageFromFile {
                         ProfileViewController.image = image
                     }
-                }
-                catch {
+                } catch {
                     ProfileViewController.image = nil
                 }
             }

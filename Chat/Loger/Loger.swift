@@ -16,7 +16,7 @@ class Loger {
     
     static var printAppLog = {(message: String, current: UIApplication.State, function: String) in
         if Loger.appLogIndicator {
-            var currentState: (UIApplication.State) -> () = { state in
+            var currentState: (UIApplication.State) -> Void = { state in
                 switch state.rawValue {
                 case 0:
                     print("current - 'active state',")

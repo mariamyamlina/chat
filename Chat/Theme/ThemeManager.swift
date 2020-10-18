@@ -40,7 +40,7 @@ class ThemeManager {
         } else {
             themesViewController?.navigationController?.navigationBar.barStyle = currentTheme.barStyle
             themesViewController?.navigationController?.navigationBar.barTintColor = currentTheme.barColor
-            themesViewController?.titleLabel.textColor = currentTheme.inputAndCommonTextColor
+            themesViewController?.titleLabel.textColor = currentTheme.textColor
 
             let conversationsListVC = themesViewController?.navigationController?.viewControllers.first as? ConversationsListViewController
             conversationsListVC?.view.backgroundColor = currentTheme.backgroundColor
@@ -56,7 +56,6 @@ class ThemeManager {
     }
 }
 
-
 // MARK: - ThemesPickerDelegate
 
 extension ThemeManager: ThemesPickerDelegate {
@@ -64,4 +63,3 @@ extension ThemeManager: ThemesPickerDelegate {
 //        applyTheme(for: theme)
     }
 }
-

@@ -16,8 +16,7 @@ class ReadNameOperation: Operation {
             if let name = nameFromFile {
                 ProfileViewController.name = name
             }
-        }
-        catch {
+        } catch {
             ProfileViewController.name = "Marina Dudarenko"
         }
     }
@@ -31,8 +30,7 @@ class ReadBioOperation: Operation {
             if let bio = bioFromFile {
                 ProfileViewController.bio = bio
             }
-        }
-        catch {
+        } catch {
             ProfileViewController.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
         }
     }
@@ -46,8 +44,7 @@ class ReadImageOperation: Operation {
             if let image = imageFromFile {
                 ProfileViewController.image = image
             }
-        }
-        catch {
+        } catch {
             ProfileViewController.image = nil
         }
     }

@@ -44,7 +44,6 @@ class ConversationTableViewCell: UITableViewCell {
         setOnlineIndicatorColor()
     }
     
-    
     // MARK: - View
     
     func setupView() {
@@ -83,7 +82,6 @@ class ConversationTableViewCell: UITableViewCell {
     
 }
 
-
 // MARK: - Configuration
 
 extension ConversationTableViewCell: ConfigurableView {
@@ -92,7 +90,8 @@ extension ConversationTableViewCell: ConfigurableView {
     func configure(with model: ConfigurationModel) {
         backgroundColor = .clear
         
-        profileImage.image = UIImage(named: model.name)
+//        profileImage.image = UIImage(named: model.name)
+        profileImage.backgroundColor = Colors.profileImageGreen
         nameLabel.text = model.name
         
         if model.isOnline {

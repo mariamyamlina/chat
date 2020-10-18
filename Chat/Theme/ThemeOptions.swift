@@ -12,7 +12,7 @@ protocol ThemeOptions {
     var inputBubbleColor: UIColor { get }
     var outputBubbleColor: UIColor { get }
     
-    var inputAndCommonTextColor: UIColor { get }
+    var textColor: UIColor { get }
     var outputTextColor: UIColor { get }
     
     var barColor: UIColor { get }
@@ -34,14 +34,13 @@ protocol ThemeOptions {
     var tableViewSeparatorColor: UIColor { get }
 }
 
-
-//MARK: - Theme Set
+// MARK: - Theme Set
 
 struct ClassicTheme: ThemeOptions {
     var inputBubbleColor: UIColor { return Colors.inputGrey }
     var outputBubbleColor: UIColor { return Colors.outputGreen }
     
-    var inputAndCommonTextColor: UIColor { return .black }
+    var textColor: UIColor { return .black }
     var outputTextColor: UIColor { return .black }
     
     var barColor: UIColor { return Colors.lightBarColor }
@@ -67,7 +66,7 @@ struct DayTheme: ThemeOptions {
     var inputBubbleColor: UIColor { return Colors.inputLightGrey }
     var outputBubbleColor: UIColor { return Colors.outputBlue }
     
-    var inputAndCommonTextColor: UIColor { return .black }
+    var textColor: UIColor { return .black }
     var outputTextColor: UIColor { return .white }
     
     var barColor: UIColor { return Colors.lightBarColor }
@@ -93,7 +92,7 @@ struct NightTheme: ThemeOptions {
     var inputBubbleColor: UIColor { return Colors.inputDarkGrey }
     var outputBubbleColor: UIColor { return Colors.outputDarkGrey }
     
-    var inputAndCommonTextColor: UIColor { return .white }
+    var textColor: UIColor { return .white }
     var outputTextColor: UIColor { return .white }
     
     var barColor: UIColor { return Colors.darkBarColor }
