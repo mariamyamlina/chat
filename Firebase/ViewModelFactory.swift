@@ -18,18 +18,14 @@ class ViewModelFactory {
         return cellModel
     }
 
-    func messageToCell(_ message: Message) -> MessageTableViewCell.MessageCellModel {
-//        var senderName = message.senderName
-//        if senderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-//            senderName = "Unknown sender"
-//        }
-        
+    func messageToCell(_ message: Message, _ messageType: MessageTableViewCell.MessageType) -> MessageTableViewCell.MessageCellModel {
         var messageModel: MessageTableViewCell.MessageCellModel = MessageTableViewCell.MessageCellModel(text: message.content, time: message.created, type: .input)
 
-        if message.senderId == getUniversallyUniqueIdentifier() {
+        switch messageType {
+        case .input:
+            messageModel = MessageTableViewCell.MessageCellModel(text: "\(message.senderName)\n\(message.content)", time: message.created, type: .input)
+        case .output:
             messageModel = MessageTableViewCell.MessageCellModel(text: message.content, time: message.created, type: .output)
-        } else {
-            messageModel = MessageTableViewCell.MessageCellModel(text: "\(senderName)\n\(message.content)", time: message.created, type: .input)
         }
         return messageModel
     }

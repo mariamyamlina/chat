@@ -7,15 +7,12 @@
 //
 
 import UIKit
-import Firebase
 
 class ConversationViewController: LogViewController {
     
     var messages: [Message] = []
     var docId: String?
-
-    lazy var db = Firestore.firestore()
-    lazy var reference = db.collection("channels")
+    var fbManager = FirebaseManager()
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
@@ -30,7 +27,7 @@ class ConversationViewController: LogViewController {
     @IBAction func sendButtonTapped(_ sender: UIButton) {
         guard let text = textField.text else { return }
         if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            createMessage(text)
+            fbManager.createMessage(text)
         }
         textField.text = ""
     }
@@ -38,7 +35,7 @@ class ConversationViewController: LogViewController {
     var image: UIImageView?
     var name: String?
     
-    private var lastRowIndex: Int = 0
+    var lastRowIndex: Int = 0
     
     typealias MessageModel = [(MessageTableViewCell.MessageCellModel, UIColor, Date)]
     var model: MessageModel = []
@@ -57,82 +54,15 @@ class ConversationViewController: LogViewController {
         configureMessageInputView()
         addKeyboardNotifications()
 
+        fbManager.messagesViewController = self
         let queue = DispatchQueue(label: "com.chat.Messages", qos: .userInitiated)
         queue.async {
-            self.getMessages()
+            self.fbManager.getMessages()
         }
         
 //        reference.document(docId ?? "").collection("messages").addSnapshotListener() { [weak self] snapshot, error in
 //            print("")
 //        }
-    }
-    
-    // MARK: - Firebase
-
-    private func getMessages() {
-        guard let id = docId else { return }
-        reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
-            guard error == nil else { return }
-            var message = ""
-            var time = Date()
-            var senderId = ""
-            var senderName = ""
-                
-            for document in querySnapshot!.documents {
-//                print("\(document.documentID) => \(document.data())")
-                let docData = document.data()
-                guard let contentFromFB = docData["content"] as? String,
-                    let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
-                    let senderIdFromFB = docData["senderId"] as? String,
-                    let senderNameFromFB = docData["senderName"] as? String else { continue }
-                message = contentFromFB
-                time = dateFromFB
-                senderId = senderIdFromFB
-                senderName = senderNameFromFB
-
-                self.messages.append(Message(
-                    content: message,
-                    created: time,
-                    senderId: senderId,
-                    senderName: senderName))
-            }
-            self.sortMessages()
-            DispatchQueue.main.async {
-                if !self.messages.isEmpty {
-                    self.noMessagesLabel.isHidden = true
-                }
-                self.tableView.reloadData()
-            }
-        }
-    }
-    
-    private func sortMessages() {
-        messages.sort {
-            if $1.created > $0.created {
-                return true
-            } else {
-                return false
-            }
-        }
-    }
-    
-    private func createMessage(_ text: String) {
-        let uuid = getUniversallyUniqueIdentifier()
-        guard let id = docId else { return }
-        let name = ProfileViewController.name ?? "Marina Dudarenko"
-        let message = ["content": text, "created": Timestamp(date: Date()), "senderId": getUniversallyUniqueIdentifier(), "senderName": name] as [String: Any]
-        messages.append(Message(content: text,
-                                created: Date(),
-                                senderId: uuid,
-                                senderName: name))
-        reference.document(id).collection("messages").addDocument(data: message)
-        if lastRowIndex >= 0 {
-            tableView.beginUpdates()
-            tableView.insertRows(at: [IndexPath(row: lastRowIndex, section: 0)], with: .right)
-            tableView.endUpdates()
-        } else {
-            tableView.reloadSections([0], with: .fade)
-        }
     }
     
     // MARK: - Theme
@@ -252,12 +182,14 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
         let cell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier, for: indexPath) as? MessageTableViewCell
         let message = messages[indexPath.row]
         let messageCellFactory = ViewModelFactory()
-        let messageModel = messageCellFactory.messageToCell(message)
+        let messageModel: MessageTableViewCell.MessageCellModel
         let currentTheme = Theme.current.themeOptions
-        if message.senderId == getUniversallyUniqueIdentifier() {
+        if message.senderId == fbManager.universallyUniqueIdentifier {
             cell?.textBubbleView.backgroundColor = currentTheme.outputBubbleColor
+            messageModel = messageCellFactory.messageToCell(message, .output)
         } else {
             cell?.textBubbleView.backgroundColor = currentTheme.inputBubbleColor
+            messageModel = messageCellFactory.messageToCell(message, .input)
         }
         cell?.configure(with: messageModel)
         return cell ?? UITableViewCell()

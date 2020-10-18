@@ -9,8 +9,11 @@
 import UIKit
 import Firebase
 
-protocol FirebaseManagerDelegate {
-    var db: Firestore { get set }
+protocol FirebaseManagerProtocol: class {
+    var channelsViewController: ConversationsListViewController? { get set }
+    var messagesViewController: ConversationViewController? { get set }
+    
+    var db: Firestore { get }
     var reference: CollectionReference { get }
     var uuid: String { get }
     
@@ -19,6 +22,6 @@ protocol FirebaseManagerDelegate {
     func sortChannels()
     
     func getMessages()
-    func createMessage(_ name: String)
+    func createMessage(_ text: String)
     func sortMessages()
 }

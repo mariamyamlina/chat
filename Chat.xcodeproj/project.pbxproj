@@ -51,7 +51,7 @@
 		99875561251427000080EEAE /* SFProDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99875560251427000080EEAE /* SFProDisplay-Bold.ttf */; };
 		99875565251429290080EEAE /* SFProText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99875564251429290080EEAE /* SFProText-Semibold.ttf */; };
 		99A5733F253C7B3E00899AAC /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A5733E253C7B3E00899AAC /* FirebaseManager.swift */; };
-		99E5F5C4253C8DDD004C71BF /* FirebaseManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E5F5C3253C8DDD004C71BF /* FirebaseManagerDelegate.swift */; };
+		99E5F5C4253C8DDD004C71BF /* FirebaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */; };
 		99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B6962526850C00117A04 /* ThemesViewController.swift */; };
 		99E8B6992526852300117A04 /* Themes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99E8B6982526852300117A04 /* Themes.storyboard */; };
 		99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B69A252689ED00117A04 /* ThemeButton.swift */; };
@@ -108,7 +108,7 @@
 		99875560251427000080EEAE /* SFProDisplay-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProDisplay-Bold.ttf"; sourceTree = "<group>"; };
 		99875564251429290080EEAE /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Semibold.ttf"; sourceTree = "<group>"; };
 		99A5733E253C7B3E00899AAC /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
-		99E5F5C3253C8DDD004C71BF /* FirebaseManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManagerDelegate.swift; sourceTree = "<group>"; };
+		99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManagerProtocol.swift; sourceTree = "<group>"; };
 		99E8B6962526850C00117A04 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		99E8B6982526852300117A04 /* Themes.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Themes.storyboard; sourceTree = "<group>"; };
 		99E8B69A252689ED00117A04 /* ThemeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeButton.swift; sourceTree = "<group>"; };
@@ -174,7 +174,7 @@
 			children = (
 				995C84B1253B09DA0036B067 /* FirebaseStruct.swift */,
 				99A5733E253C7B3E00899AAC /* FirebaseManager.swift */,
-				99E5F5C3253C8DDD004C71BF /* FirebaseManagerDelegate.swift */,
+				99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */,
 				99248976253C92790095851E /* ViewModelFactory.swift */,
 			);
 			path = Firebase;
@@ -463,7 +463,7 @@
 				997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */,
 				994F1CA02534CAD1003FC809 /* ConfigurableView.swift in Sources */,
 				99599C98253731CA00FB2264 /* DataManagerEnums.swift in Sources */,
-				99E5F5C4253C8DDD004C71BF /* FirebaseManagerDelegate.swift in Sources */,
+				99E5F5C4253C8DDD004C71BF /* FirebaseManagerProtocol.swift in Sources */,
 				995DEEFA2534D1A1000BEF15 /* WriteOperations.swift in Sources */,
 				994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */,
 				9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */,

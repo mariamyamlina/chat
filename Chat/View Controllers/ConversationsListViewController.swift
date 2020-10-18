@@ -7,21 +7,17 @@
 //
 
 import UIKit
-import Firebase
 
 class ConversationsListViewController: LogViewController {
     @IBOutlet weak var tableView: UITableView!
-    
-    lazy var db = Firestore.firestore()
-    lazy var reference = db.collection("channels")
-    static var uuid: String = ""
+
     var channels: [Channel] = []
+    var fbManager = FirebaseManager()
     
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         if #available(iOS 13.0, *) {
             let currentTheme = Theme.current.themeOptions
-            
             searchController.searchBar.searchTextField.backgroundColor = currentTheme.searchBarTextColor
             searchController.searchBar.searchTextField.leftView?.tintColor = currentTheme.textFieldTextColor
             searchController.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [
@@ -44,8 +40,6 @@ class ConversationsListViewController: LogViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         applyTheme()
         setupNavigationBar()
         setupTableView()
@@ -54,9 +48,10 @@ class ConversationsListViewController: LogViewController {
 //            print("")
 //        }
 
+        fbManager.channelsViewController = self
         let queue = DispatchQueue(label: "com.chat.Channels", qos: .userInitiated)
         queue.async {
-            self.getChannels()
+            self.fbManager.getChannels()
         }
     }
     
@@ -74,74 +69,6 @@ class ConversationsListViewController: LogViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         showNewMessageButton(false)
-    }
-    
-    // MARK: - Firebase
-    
-    func getChannels() {
-        reference.getDocuments { (querySnapshot, error) in
-            guard error == nil else { return }
-            var name = ""
-            var message = ""
-            var activity = Date()
-                    
-            for document in querySnapshot!.documents {
-//                print("\(document.documentID) => \(document.data())")
-                let docData = document.data()
-                guard let nameFromFB = docData["name"] as? String else { continue }
-                name = nameFromFB
-                message = docData["lastMessage"] as? String ?? ""
-                let lastActivityDate = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                activity = lastActivityDate ?? Date(timeInterval: -50000000000, since: Date())
-
-                self.channels.append(Channel(
-                    identifier: document.documentID,
-                    name: name,
-                    lastMessage: message,
-                    lastActivity: activity))
-            }
-            self.sortChannels()
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
-    }
-
-    func createChannel(_ name: String) {
-        let channel = ["name": name] as [String: Any]
-        reference.addDocument(data: channel)
-        channels.removeAll()
-        getChannels()
-        
-//        channels.insert(Channel(identifier: docId,
-//               name: name,
-//               lastMessage: nil,
-//               lastActivity: nil),
-//        at: 0)
-//        tableView.beginUpdates()
-//        tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .fade)
-//        tableView.endUpdates()
-    }
-            
-    func sortChannels() {
-        channels.sort {
-//            if $0.isOnline && !$1.isOnline {
-//                return true
-//            } else if $1.date < $0.date {
-//                return true
-//            } else if !$0.message.isEmpty && $1.message.isEmpty {
-//                return true
-//            } else {
-//                return false
-//            }
-            if ($1.lastActivity ?? Date(timeInterval: -50000000000, since: Date())) < ($0.lastActivity ?? Date(timeInterval: -50000000000, since: Date())) {
-                return true
-            } else if $0.lastMessage != nil && $1.lastMessage == nil {
-                return true
-            } else {
-                return false
-            }
-        }
     }
     
     // MARK: - Theme
@@ -257,7 +184,7 @@ class ConversationsListViewController: LogViewController {
         let createAction = UIAlertAction(title: "Create", style: .default) { [weak self, weak alertController] _ in
             let answer = alertController?.textFields![0].text
             if let channelName = answer, !channelName.isEmpty, !channelName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                self?.createChannel(channelName)
+                self?.fbManager.createChannel(channelName)
             }
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
