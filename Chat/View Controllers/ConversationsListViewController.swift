@@ -49,10 +49,7 @@ class ConversationsListViewController: LogViewController {
 //        }
 
         fbManager.channelsViewController = self
-        let queue = DispatchQueue(label: "com.chat.Channels", qos: .userInitiated)
-        queue.async {
-            self.fbManager.getChannels()
-        }
+        fbManager.getChannels()
     }
     
     override func viewWillAppear(_ animated: Bool) {

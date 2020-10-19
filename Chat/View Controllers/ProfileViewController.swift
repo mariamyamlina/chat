@@ -9,9 +9,7 @@
 import UIKit
 
 class ProfileViewController: LogViewController {
-    
     var imagePicker: UIImagePickerController!
-    weak var delegate: DataManagerDelegate?
     
     static var nameDidChange = false
     static var bioDidChange = false

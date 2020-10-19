@@ -13,14 +13,9 @@ class GCDDataManager: DataManager {
     
     private let mainQueue = DispatchQueue.main
     private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
-
-    override init() {
-        super.init()
-        profileViewController?.delegate = self
-    }
 }
 
-extension GCDDataManager: DataManagerDelegate {
+extension GCDDataManager: DataManagerProtocol {
     func writeToFile(completion: @escaping (Bool) -> Void) {
         let group = DispatchGroup()
 

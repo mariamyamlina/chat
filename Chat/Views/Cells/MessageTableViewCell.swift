@@ -73,9 +73,21 @@ extension MessageTableViewCell: ConfigurableView {
     
     func configure(with model: ConfigurationModel) {
         let currentTheme = Theme.current.themeOptions
-
-        messageTextView.text = model.text
+        let messageText = model.text
         timeLabel.text = dateFormatter(date: model.time, force: true)
+
+        if let index = messageText.firstIndex(of: "\n"), model.type == .input {
+            let nameSubstring = String(messageText[..<index])
+            let messageSubstring = String(messageText[index...])
+            let attrsBold = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16) as Any]
+            let attributedString = NSMutableAttributedString(string: nameSubstring, attributes: attrsBold)
+            let attrsRegular = [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 16) as Any]
+            let messageString = NSMutableAttributedString(string: messageSubstring, attributes: attrsRegular)
+            attributedString.append(messageString)
+            messageTextView.attributedText = attributedString
+        } else {
+            messageTextView.text = messageText
+        }
         
         backgroundColor = .clear
         selectionStyle = .none
@@ -83,7 +95,7 @@ extension MessageTableViewCell: ConfigurableView {
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         
-        let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 16.0) as Any]
+        let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16.0) as Any]
         var estimatedFrame = NSString(string: model.text + "    ").boundingRect(with: size, options: options, attributes: attr, context: nil)
 
         if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {

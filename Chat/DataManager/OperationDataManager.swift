@@ -13,15 +13,9 @@ class OperationDataManager: DataManager {
     
     private let operationQueue = OperationQueue()
     private let mainOperationQueue = OperationQueue.main
-
-    override init() {
-        super.init()
-        operationQueue.qualityOfService = .userInteractive
-        profileViewController?.delegate = self
-    }
 }
 
-extension OperationDataManager: DataManagerDelegate {
+extension OperationDataManager: DataManagerProtocol {
     func writeToFile(completion: @escaping (Bool) -> Void) {
         let writeOperation = WriteOperation()
         let completionOperation = BlockOperation {

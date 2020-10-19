@@ -12,8 +12,8 @@ class ConversationTableViewCell: UITableViewCell {
     
     struct ConversationCellModel {
         let name: String
-        let message: String
-        let date: Date
+        let message: String?
+        let date: Date?
         let isOnline: Bool
         let hasUnreadMessages: Bool
     }
@@ -28,14 +28,11 @@ class ConversationTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         setupView()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
         setOnlineIndicatorColor()
     }
     
@@ -48,7 +45,6 @@ class ConversationTableViewCell: UITableViewCell {
     
     func setupView() {
         profileImage.contentMode = .scaleAspectFill
-        
         setOnlineIndicatorColor()
         onlineIndicator.layer.borderWidth = 3
         onlineIndicator.layer.borderColor = UIColor.white.cgColor
@@ -75,8 +71,7 @@ class ConversationTableViewCell: UITableViewCell {
             subview.leadingAnchor.constraint(equalTo: viewWithImage.leadingAnchor),
             subview.heightAnchor.constraint(equalToConstant: 36),
             subview.widthAnchor.constraint(equalToConstant: 36)
-        ])
-        
+        ])        
         return viewWithImage
     }
     
@@ -90,28 +85,23 @@ extension ConversationTableViewCell: ConfigurableView {
     func configure(with model: ConfigurationModel) {
         backgroundColor = .clear
         
-//        profileImage.image = UIImage(named: model.name)
         profileImage.backgroundColor = Colors.profileImageGreen
+        profileImage.image = generateImage()
         nameLabel.text = model.name
-        
-        if model.isOnline {
-            onlineIndicator.isHidden = false
-        } else {
-            onlineIndicator.isHidden = true
-        }
-        
-        if model.message == "" {
-            messageLabel.text = "No messages yet"
-            dateLabel.text = ">"
-            messageLabel.font = UIFont(name: "SFProText-RegularItalic", size: 13.0) 
-        } else {
-            messageLabel.text = model.message
-            dateLabel.text = dateFormatter(date: model.date, force: false) + "  >"
+        onlineIndicator.isHidden = !model.isOnline
+
+        if let message = model.message, let date = model.date {
+            messageLabel.text = message
+            dateLabel.text = dateFormatter(date: date, force: false) + "  >"
             if model.hasUnreadMessages == true {
                 messageLabel.font = UIFont(name: "SFProText-Semibold", size: 13.0)
             } else {
                 messageLabel.font = UIFont(name: "SFProText-Regular", size: 13.0)
             }
+        } else {
+            messageLabel.text = "No messages yet"
+            dateLabel.text = ">"
+            messageLabel.font = UIFont(name: "SFProText-RegularItalic", size: 13.0)
         }
     }
     

@@ -31,7 +31,7 @@
 		9957F56C251F67C7007EB624 /* Conversation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9957F56B251F67C7007EB624 /* Conversation.storyboard */; };
 		9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9957F56D251F67DC007EB624 /* ConversationViewController.swift */; };
 		99599C98253731CA00FB2264 /* DataManagerEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C97253731C900FB2264 /* DataManagerEnums.swift */; };
-		99599C9A253731F100FB2264 /* DataManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C99253731F100FB2264 /* DataManagerDelegate.swift */; };
+		99599C9A253731F100FB2264 /* DataManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C99253731F100FB2264 /* DataManagerProtocol.swift */; };
 		99599C9C253751BD00FB2264 /* ThemesPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C9B253751BD00FB2264 /* ThemesPickerDelegate.swift */; };
 		995C84B2253B09DA0036B067 /* FirebaseStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995C84B1253B09DA0036B067 /* FirebaseStruct.swift */; };
 		995DEEFA2534D1A1000BEF15 /* WriteOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995DEEF92534D1A1000BEF15 /* WriteOperations.swift */; };
@@ -39,6 +39,7 @@
 		996941142539082500819078 /* AlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996941132539082500819078 /* AlertExtension.swift */; };
 		997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE1F2530D8EF00645079 /* GCDDataManager.swift */; };
 		997CEE222530D91500645079 /* OperationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE212530D91500645079 /* OperationDataManager.swift */; };
+		997DA9C1253DE2330021A8F9 /* GenerateImageFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997DA9C0253DE2330021A8F9 /* GenerateImageFunc.swift */; };
 		99803F87250ADD0F000284D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99803F86250ADD0F000284D9 /* AppDelegate.swift */; };
 		99803F8E250ADD0F000284D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99803F8C250ADD0F000284D9 /* Main.storyboard */; };
 		99803F90250ADD11000284D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99803F8F250ADD11000284D9 /* Assets.xcassets */; };
@@ -86,7 +87,7 @@
 		9957F56B251F67C7007EB624 /* Conversation.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Conversation.storyboard; sourceTree = "<group>"; };
 		9957F56D251F67DC007EB624 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		99599C97253731C900FB2264 /* DataManagerEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerEnums.swift; sourceTree = "<group>"; };
-		99599C99253731F100FB2264 /* DataManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerDelegate.swift; sourceTree = "<group>"; };
+		99599C99253731F100FB2264 /* DataManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerProtocol.swift; sourceTree = "<group>"; };
 		99599C9B253751BD00FB2264 /* ThemesPickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPickerDelegate.swift; sourceTree = "<group>"; };
 		995C84B1253B09DA0036B067 /* FirebaseStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseStruct.swift; sourceTree = "<group>"; };
 		995DEEF92534D1A1000BEF15 /* WriteOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteOperations.swift; sourceTree = "<group>"; };
@@ -94,6 +95,7 @@
 		996941132539082500819078 /* AlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertExtension.swift; sourceTree = "<group>"; };
 		997CEE1F2530D8EF00645079 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
 		997CEE212530D91500645079 /* OperationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDataManager.swift; sourceTree = "<group>"; };
+		997DA9C0253DE2330021A8F9 /* GenerateImageFunc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateImageFunc.swift; sourceTree = "<group>"; };
 		99803F83250ADD0F000284D9 /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99803F86250ADD0F000284D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99803F8D250ADD0F000284D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -152,7 +154,7 @@
 			children = (
 				994635B82534DE05003DEA03 /* DataManager.swift */,
 				99599C97253731C900FB2264 /* DataManagerEnums.swift */,
-				99599C99253731F100FB2264 /* DataManagerDelegate.swift */,
+				99599C99253731F100FB2264 /* DataManagerProtocol.swift */,
 				997CEE1F2530D8EF00645079 /* GCDDataManager.swift */,
 				997CEE212530D91500645079 /* OperationDataManager.swift */,
 				995DEEFD2534D1FE000BEF15 /* Operations */,
@@ -211,6 +213,7 @@
 				994F1C992534C987003FC809 /* Colors.swift */,
 				994F1C9D2534CA0E003FC809 /* DateFormatter.swift */,
 				996941132539082500819078 /* AlertExtension.swift */,
+				997DA9C0253DE2330021A8F9 /* GenerateImageFunc.swift */,
 				9987556625142AC90080EEAE /* Fonts */,
 			);
 			path = Accessors;
@@ -482,10 +485,11 @@
 				994AF9D125221D300013B0E0 /* TopViewWithTitle.swift in Sources */,
 				99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */,
 				994635B92534DE05003DEA03 /* DataManager.swift in Sources */,
-				99599C9A253731F100FB2264 /* DataManagerDelegate.swift in Sources */,
+				99599C9A253731F100FB2264 /* DataManagerProtocol.swift in Sources */,
 				99599C9C253751BD00FB2264 /* ThemesPickerDelegate.swift in Sources */,
 				99454C33251D4502005CEEA2 /* ConversationsListViewController.swift in Sources */,
 				997CEE222530D91500645079 /* OperationDataManager.swift in Sources */,
+				997DA9C1253DE2330021A8F9 /* GenerateImageFunc.swift in Sources */,
 				995DEEFC2534D1E0000BEF15 /* ReadOperations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

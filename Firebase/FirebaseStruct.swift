@@ -1,5 +1,5 @@
 //
-//  DataStruct.swift
+//  FirebaseStruct.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 17.10.2020.

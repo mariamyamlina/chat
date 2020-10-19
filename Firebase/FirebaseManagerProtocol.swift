@@ -1,5 +1,5 @@
 //
-//  FirebaseManagerDelegate.swift
+//  FirebaseManagerProtocol.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 18.10.2020.

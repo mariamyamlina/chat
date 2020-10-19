@@ -9,11 +9,6 @@
 import UIKit
 
 class ConversationViewController: LogViewController {
-    
-    var messages: [Message] = []
-    var docId: String?
-    var fbManager = FirebaseManager()
-
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var addButton: UIButton!
@@ -25,17 +20,20 @@ class ConversationViewController: LogViewController {
     @IBOutlet weak var borderLine: UIView!
     
     @IBAction func sendButtonTapped(_ sender: UIButton) {
-        guard let text = textField.text else { return }
-        if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            fbManager.createMessage(text)
+        guard let message = textField.text else { return }
+        if !message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            fbManager.createMessage(message)
         }
         textField.text = ""
     }
     
     var image: UIImageView?
     var name: String?
-    
     var lastRowIndex: Int = 0
+    
+    var messages: [Message] = []
+    var docId: String?
+    var fbManager = FirebaseManager()
     
     typealias MessageModel = [(MessageTableViewCell.MessageCellModel, UIColor, Date)]
     var model: MessageModel = []
@@ -47,22 +45,24 @@ class ConversationViewController: LogViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         applyTheme()
-        
         configureNavigationBar()
         configureTableView()
-        
         configureMessageInputView()
         addKeyboardNotifications()
 
         fbManager.messagesViewController = self
-        let queue = DispatchQueue(label: "com.chat.Messages", qos: .userInitiated)
-        queue.async {
-            self.fbManager.getMessages()
-        }
+        fbManager.getMessages()
         
 //        reference.document(docId ?? "").collection("messages").addSnapshotListener() { [weak self] snapshot, error in
 //            print("")
 //        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        let conversationsListVC = navigationController?.viewControllers.first as? ConversationsListViewController
+        fbManager.channelsViewController = conversationsListVC
+        fbManager.getChannels()
     }
     
     // MARK: - Theme
@@ -230,7 +230,6 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 // MARK: - UITextFieldDelegate
 
 extension ConversationViewController: UITextFieldDelegate {
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -245,5 +244,4 @@ extension ConversationViewController: UITextFieldDelegate {
         sendButton.isHidden = true
         sendButton.isEnabled = false
     }
-    
 }

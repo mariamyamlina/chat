@@ -32,36 +32,34 @@ extension FirebaseManager: FirebaseManagerProtocol {
     // MARK: - Channels
         
     func getChannels() {
+        channelsViewController?.channels.removeAll()
         reference.getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
-            var name = ""
-            var message = ""
-            var activity = Date()
                             
             for document in querySnapshot!.documents {
                 let docData = document.data()
-                guard let nameFromFB = docData["name"] as? String else { continue }
-                name = nameFromFB
-                message = docData["lastMessage"] as? String ?? ""
-                let lastActivityDate = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                activity = lastActivityDate ?? Date(timeInterval: -50000000000, since: Date())
+                guard let nameFromFB = docData["name"] as? String,
+                      !nameFromFB.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { continue }
+                let lastMessageFromFB = docData["lastMessage"] as? String
+                let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
 
-                self.channelsViewController?.channels.append(Channel(
-                    identifier: document.documentID,
-                    name: name,
-                    lastMessage: message,
-                    lastActivity: activity))
+                self.channelsViewController?.channels.append(Channel(identifier: document.documentID,
+                                                                     name: nameFromFB,
+                                                                     lastMessage: lastMessageFromFB,
+                                                                     lastActivity: lastActivityFromFB))
             }
+            
             self.sortChannels()
-            DispatchQueue.main.async {
-                self.channelsViewController?.tableView.reloadData()
-            }
+            self.channelsViewController?.tableView.reloadData()
         }
     }
     
     func sortChannels() {
         channelsViewController?.channels.sort {
-            if ($1.lastActivity ?? Date(timeInterval: -50000000000, since: Date())) < ($0.lastActivity ?? Date(timeInterval: -50000000000, since: Date())) {
+            let date = Date(timeInterval: -50000000000, since: Date())
+            let firstDate = $0.lastActivity ?? date
+            let secondDate = $1.lastActivity ?? date
+            if secondDate < firstDate {
                 return true
             } else if $0.lastMessage != nil && $1.lastMessage == nil {
                 return true
@@ -74,7 +72,6 @@ extension FirebaseManager: FirebaseManagerProtocol {
     func createChannel(_ name: String) {
         let channel = ["name": name] as [String: Any]
         reference.addDocument(data: channel)
-        channelsViewController?.channels.removeAll()
         getChannels()
     }
 
@@ -84,35 +81,25 @@ extension FirebaseManager: FirebaseManagerProtocol {
         guard let id = messagesViewController?.docId else { return }
         reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
-            var message = ""
-            var time = Date()
-            var senderId = ""
-            var senderName = ""
                     
             for document in querySnapshot!.documents {
                 let docData = document.data()
                 guard let contentFromFB = docData["content"] as? String,
-                    let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
-                    let senderIdFromFB = docData["senderId"] as? String,
-                    let senderNameFromFB = docData["senderName"] as? String else { continue }
-                message = contentFromFB
-                time = dateFromFB
-                senderId = senderIdFromFB
-                senderName = senderNameFromFB
+                      let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
+                      let senderIdFromFB = docData["senderId"] as? String,
+                      let senderNameFromFB = docData["senderName"] as? String else { continue }
 
-                self.messagesViewController?.messages.append(Message(
-                    content: message,
-                    created: time,
-                    senderId: senderId,
-                    senderName: senderName))
+                self.messagesViewController?.messages.append(Message(content: contentFromFB,
+                                                                     created: dateFromFB,
+                                                                     senderId: senderIdFromFB,
+                                                                     senderName: senderNameFromFB))
             }
+            
             self.sortMessages()
-            DispatchQueue.main.async {
-                if !(self.messagesViewController?.messages.isEmpty ?? false) {
-                    self.messagesViewController?.noMessagesLabel.isHidden = true
-                }
-                self.messagesViewController?.tableView.reloadData()
+            if let messagesArray = self.messagesViewController?.messages, !messagesArray.isEmpty {
+                self.messagesViewController?.noMessagesLabel.isHidden = true
             }
+            self.messagesViewController?.tableView.reloadData()
         }
     }
         
@@ -130,18 +117,23 @@ extension FirebaseManager: FirebaseManagerProtocol {
         let uuid = universallyUniqueIdentifier
         guard let id = messagesViewController?.docId else { return }
         let name = ProfileViewController.name ?? "Marina Dudarenko"
-        let message = ["content": text, "created": Timestamp(date: Date()), "senderId": universallyUniqueIdentifier, "senderName": name] as [String: Any]
-        messagesViewController?.messages.append(Message(content: text,
-                                    created: Date(),
-                                    senderId: uuid,
-                                    senderName: name))
+        let message = ["content": text,
+                       "created": Timestamp(date: Date()),
+                       "senderId": uuid,
+                       "senderName": name] as [String: Any]
         reference.document(id).collection("messages").addDocument(data: message)
-        if (messagesViewController?.lastRowIndex ?? -1) >= 0 {
-            messagesViewController?.tableView.beginUpdates()
-               messagesViewController?.tableView.insertRows(at: [IndexPath(row: messagesViewController?.lastRowIndex ?? 0, section: 0)], with: .right)
-            messagesViewController?.tableView.endUpdates()
-        } else {
-            messagesViewController?.tableView.reloadSections([0], with: .fade)
+        messagesViewController?.messages.append(Message(content: text,
+                                                        created: Date(),
+                                                        senderId: uuid,
+                                                        senderName: name))
+        if let rowIndex = messagesViewController?.lastRowIndex {
+            if rowIndex >= 0 {
+                messagesViewController?.tableView.beginUpdates()
+                   messagesViewController?.tableView.insertRows(at: [IndexPath(row: rowIndex + 1, section: 0)], with: .right)
+                messagesViewController?.tableView.endUpdates()
+            } else {
+                messagesViewController?.tableView.reloadSections([0], with: .fade)
+            }
         }
     }
 }
