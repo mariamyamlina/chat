@@ -13,19 +13,19 @@ class ProfileImageView: UIView {
 
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var profileImage: UIImageView!
+    @IBOutlet weak var lettersLabel: UILabel!
+    @IBOutlet weak var profileImageWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var profileImageHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var lettersLabelWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var lettersLabelHeightConstraint: NSLayoutConstraint!
+    
+    static var fontSize: CGFloat = 120
     
     private var touchPath: UIBezierPath {return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius)}
     
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        print(frame)
         setupView()
     }
     
@@ -34,14 +34,44 @@ class ProfileImageView: UIView {
         setupView()
     }
     
+    init(small: Bool) {
+        super.init(frame: CGRect.zero)
+        setupView()
+        
+        if small {
+            profileImageWidthConstraint.constant = 40
+            profileImageHeightConstraint.constant = 40
+            lettersLabelWidthConstraint.constant = 36
+            lettersLabelHeightConstraint.constant = 18
+            
+            ProfileImageView.fontSize = 20
+        } else {
+            profileImageWidthConstraint.constant = 240
+            profileImageHeightConstraint.constant = 240
+            lettersLabelWidthConstraint.constant = 220
+            lettersLabelHeightConstraint.constant = 110
+
+            ProfileImageView.fontSize = 120
+        }
+        
+        lettersLabel.font = lettersLabel.font.withSize(ProfileImageView.fontSize)
+        ProfileImageView.fontSize = 120
+    }
+    
     private func setupView() {
         let bundle = Bundle(for: ProfileImageView.self)
         bundle.loadNibNamed("ProfileImageView", owner: self, options: nil)
         addSubview(contentView)
+        contentView.isUserInteractionEnabled = false
         contentView.frame = self.bounds
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        contentView.addSubview(profileImage)
+        profileImage.addSubview(lettersLabel)
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
+        profileImage.translatesAutoresizingMaskIntoConstraints = false
+        lettersLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -49,11 +79,16 @@ class ProfileImageView: UIView {
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
         
-        profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
+        profileImage.contentMode = .scaleAspectFill
+
+        let letters = ProfileViewController.letters
+        let attr: [NSAttributedString.Key: Any] = [.font: UIFont(name: "Roboto-Regular", size: ProfileImageView.fontSize) as Any]
+        let attrString = NSMutableAttributedString(string: letters, attributes: attr)
+        lettersLabel.attributedText = attrString
+        lettersLabel.textColor = Colors.lettersLabelColor
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         return touchPath.contains(point)
     }
-
 }

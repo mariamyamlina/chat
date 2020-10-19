@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ConversationViewController: UIViewController {
+class ConversationViewController: LogViewController {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
@@ -18,14 +18,16 @@ class ConversationViewController: UIViewController {
     @IBOutlet weak var topConstraint: NSLayoutConstraint!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var noMessagesLabel: UILabel!
+    @IBOutlet weak var borderLine: UIView!
     
     var image: UIImageView?
     var name: String?
     var lastMessage: String?
     var lastRowIndex: Int = 0
     var stringMessage: String = ""
-
-    private let reuseIdentifier = "Message Cell"
+    
+    typealias messageModel = [(MessageTableViewCell.MessageCellModel, UIColor, Date)]
+    var model: messageModel = []
     
     deinit {
         removeKeyboardNotifications()
@@ -35,6 +37,7 @@ class ConversationViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        applyTheme()
         
         configureNavigationBar()
         configureTableView()
@@ -44,18 +47,36 @@ class ConversationViewController: UIViewController {
     }
     
     
+    // MARK: - Theme
+    
+    func applyTheme() {
+        if #available(iOS 13.0, *) {
+        } else {
+            let currentTheme = Theme.current.themeOptions
+            
+            view.backgroundColor = currentTheme.backgroundColor
+            textField.keyboardAppearance = currentTheme.keyboardAppearance
+        }
+    }
+    
+    
     // MARK: - MessageInputView
     
     func configureMessageInputView() {
+        let currentTheme = Theme.current.themeOptions
+        
         textField.delegate = self
         textField.autocapitalizationType = .sentences
-        textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
-        attributes: [NSAttributedString.Key.font : UIFont(name: "SFProText-Regular", size: 17) as Any])
-        textField.font = UIFont(name: "SFProText-Regular", size: 17)
         
-        addButton.isEnabled = false
+        textField.backgroundColor = currentTheme.textFieldBackgroundColor
+        textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
+        attributes: [NSAttributedString.Key.font : UIFont(name: "SFProText-Regular", size: 17) as Any, NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
+
         sendButton.isEnabled = false
         sendButton.isHidden = true
+        
+        messageInputContainer.backgroundColor = currentTheme.barColor
+        borderLine.backgroundColor = Colors.separatorColor()
         
         view.addSubview(messageInputContainer)
 
@@ -113,6 +134,7 @@ class ConversationViewController: UIViewController {
         viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
         viewWithTitle.contentView.backgroundColor = navigationController?.navigationBar.backgroundColor
         viewWithTitle.profileImage.image = titleImageView.image
+        viewWithTitle.profileImage.layer.cornerRadius = viewWithTitle.profileImage.bounds.size.width / 2
         viewWithTitle.nameLabel.text = name
         
         let topView = UIView(frame: CGRect(x: 0, y: 0, width: 236, height: 36))
@@ -122,16 +144,7 @@ class ConversationViewController: UIViewController {
         navigationItem.titleView = viewWithTitle
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
     // MARK: - TableView
     
     func configureTableView() {
@@ -142,11 +155,20 @@ class ConversationViewController: UIViewController {
         tableView.backgroundColor = .clear
         tableView.allowsMultipleSelection = false
         
-        if !ChatHelper.messages(name ?? "").isEmpty {
+        noMessagesLabel.textColor = Colors.separatorColor()
+        
+        configureModel()
+        if !model.isEmpty {
             noMessagesLabel.isHidden = true
         }
         
-        tableView?.register(UINib(nibName: "MessageTableViewCell", bundle: nil), forCellReuseIdentifier: reuseIdentifier)
+        tableView?.register(UINib(nibName: "MessageTableViewCell", bundle: nil), forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
+    }
+    
+    func configureModel() {
+        if let friendName = name {
+            model = ChatHelper.messages(friendName)
+        }
     }
 
 }
@@ -154,20 +176,20 @@ class ConversationViewController: UIViewController {
 extension ConversationViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let numberOfRows = ChatHelper.messages(name ?? "").count
+        configureModel()
+        let numberOfRows = model.count
         lastRowIndex = numberOfRows - 1
         return numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as? MessageTableViewCell
-        
-        cell?.selectionStyle = .none
-        cell?.textBubbleView.backgroundColor = ChatHelper.messages(name ?? "")[indexPath.row].1
-        cell?.timeLabel.text = dateFormatter(date: ChatHelper.messages(name ?? "")[indexPath.row].2, force: true)
+        let cell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier, for: indexPath) as? MessageTableViewCell
+
+        cell?.textBubbleView.backgroundColor = model[indexPath.row].1
+        cell?.timeLabel.text = dateFormatter(date: model[indexPath.row].2, force: true)
             
-        cell?.configure(with: ChatHelper.messages(name ?? "")[indexPath.row].0)
+        cell?.configure(with: model[indexPath.row].0)
 
         return cell ?? UITableViewCell()
     }
@@ -177,7 +199,7 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        stringMessage = ChatHelper.messages(name ?? "")[indexPath.row].0.text
+        stringMessage = model[indexPath.row].0.text
 
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
@@ -216,10 +238,12 @@ extension ConversationViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         sendButton.isHidden = false
+        sendButton.isEnabled = true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         sendButton.isHidden = true
+        sendButton.isEnabled = false
     }
     
 }
