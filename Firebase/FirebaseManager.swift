@@ -15,7 +15,6 @@ class FirebaseManager {
     
     lazy var db = Firestore.firestore()
     lazy var reference = db.collection("channels")
-    lazy var uuid: String = ""
     
     // MARK: - Universally Unique Identifier
     
@@ -33,7 +32,8 @@ extension FirebaseManager: FirebaseManagerProtocol {
         
     func getChannels() {
         channelsViewController?.channels.removeAll()
-        reference.getDocuments { (querySnapshot, error) in
+        channelsViewController?.images.removeAll()
+        reference.getDocuments { [weak self] (querySnapshot, error) in
             guard error == nil else { return }
                             
             for document in querySnapshot!.documents {
@@ -43,14 +43,15 @@ extension FirebaseManager: FirebaseManagerProtocol {
                 let lastMessageFromFB = docData["lastMessage"] as? String
                 let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
 
-                self.channelsViewController?.channels.append(Channel(identifier: document.documentID,
-                                                                     name: nameFromFB,
-                                                                     lastMessage: lastMessageFromFB,
-                                                                     lastActivity: lastActivityFromFB))
+                self?.channelsViewController?.channels.append(Channel(identifier: document.documentID,
+                                                                      name: nameFromFB,
+                                                                      lastMessage: lastMessageFromFB,
+                                                                      lastActivity: lastActivityFromFB))
+                self?.channelsViewController?.images.append(generateImage())
             }
             
-            self.sortChannels()
-            self.channelsViewController?.tableView.reloadData()
+            self?.sortChannels()
+            self?.channelsViewController?.tableView.reloadData()
         }
     }
     
@@ -79,7 +80,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
 
     func getMessages() {
         guard let id = messagesViewController?.docId else { return }
-        reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
+        reference.document(id).collection("messages").getDocuments { [weak self] (querySnapshot, error) in
             guard error == nil else { return }
                     
             for document in querySnapshot!.documents {
@@ -89,17 +90,17 @@ extension FirebaseManager: FirebaseManagerProtocol {
                       let senderIdFromFB = docData["senderId"] as? String,
                       let senderNameFromFB = docData["senderName"] as? String else { continue }
 
-                self.messagesViewController?.messages.append(Message(content: contentFromFB,
-                                                                     created: dateFromFB,
-                                                                     senderId: senderIdFromFB,
-                                                                     senderName: senderNameFromFB))
+                self?.messagesViewController?.messages.append(Message(content: contentFromFB,
+                                                                      created: dateFromFB,
+                                                                      senderId: senderIdFromFB,
+                                                                      senderName: senderNameFromFB))
             }
             
-            self.sortMessages()
-            if let messagesArray = self.messagesViewController?.messages, !messagesArray.isEmpty {
-                self.messagesViewController?.noMessagesLabel.isHidden = true
+            self?.sortMessages()
+            if let messagesArray = self?.messagesViewController?.messages, !messagesArray.isEmpty {
+                self?.messagesViewController?.noMessagesLabel.isHidden = true
             }
-            self.messagesViewController?.tableView.reloadData()
+            self?.messagesViewController?.tableView.reloadData()
         }
     }
         

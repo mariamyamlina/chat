@@ -14,6 +14,7 @@ class ConversationTableViewCell: UITableViewCell {
         let name: String
         let message: String?
         let date: Date?
+        let image: UIImage?
         let isOnline: Bool
         let hasUnreadMessages: Bool
     }
@@ -86,7 +87,7 @@ extension ConversationTableViewCell: ConfigurableView {
         backgroundColor = .clear
         
         profileImage.backgroundColor = Colors.profileImageGreen
-        profileImage.image = generateImage()
+        profileImage.image = model.image
         nameLabel.text = model.name
         onlineIndicator.isHidden = !model.isOnline
 

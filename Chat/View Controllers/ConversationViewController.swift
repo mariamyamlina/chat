@@ -52,10 +52,6 @@ class ConversationViewController: LogViewController {
 
         fbManager.messagesViewController = self
         fbManager.getMessages()
-        
-//        reference.document(docId ?? "").collection("messages").addSnapshotListener() { [weak self] snapshot, error in
-//            print("")
-//        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {

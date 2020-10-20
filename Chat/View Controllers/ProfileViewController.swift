@@ -366,11 +366,11 @@ class ProfileViewController: LogViewController {
     private func configureActionSheet() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.pruneNegativeWidthConstraints()
-        let galeryAction = UIAlertAction(title: "Choose from gallery", style: .default) { (_) in
-            self.presentImagePicker(of: .photoLibrary)
+        let galeryAction = UIAlertAction(title: "Choose from gallery", style: .default) { [weak self] (_) in
+            self?.presentImagePicker(of: .photoLibrary)
         }
-        let takePhotoAction = UIAlertAction(title: "Take a photo", style: .default) { (_) in
-            self.presentImagePicker(of: .camera)
+        let takePhotoAction = UIAlertAction(title: "Take a photo", style: .default) { [weak self] (_) in
+            self?.presentImagePicker(of: .camera)
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (_) in
             alertController.dismiss(animated: true, completion: nil)
@@ -389,15 +389,15 @@ class ProfileViewController: LogViewController {
     
     private func configureAlert(_ title: String, _ message: String?, _ twoActions: Bool) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: {(_: UIAlertAction) in
+        let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: { [weak self] (_: UIAlertAction) in
             if title != "Error" {
                 if ProfileViewController.gcdButtonTapped {
                     ProfileViewController.gcdButtonTapped = false
                 } else if ProfileViewController.operationButtonTapped {
                     ProfileViewController.operationButtonTapped = false
                 }
-                self.editProfileButton.isEnabled = true
-                self.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
+                self?.editProfileButton.isEnabled = true
+                self?.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
                 
                 ProfileViewController.nameDidChange = false
                 ProfileViewController.bioDidChange = false
@@ -407,11 +407,11 @@ class ProfileViewController: LogViewController {
         alertController.addAction(cancelAction)
         
         if twoActions {
-            let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: {(_: UIAlertAction) in
+            let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self] (_: UIAlertAction) in
                 if ProfileViewController.gcdButtonTapped {
-                    self.referToFile(action: .write, dataManager: .gcd)
+                    self?.referToFile(action: .write, dataManager: .gcd)
                 } else if ProfileViewController.operationButtonTapped {
-                    self.referToFile(action: .write, dataManager: .operation)
+                    self?.referToFile(action: .write, dataManager: .operation)
                 }
             })
             alertController.addAction(repeatAction)

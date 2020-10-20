@@ -13,14 +13,19 @@ class ViewModelFactory {
     typealias MessageModel = MessageTableViewCell.MessageCellModel
     typealias MessageType = MessageTableViewCell.MessageType
     
-    func channelToCell(_ channel: Channel) -> ChannelModel {
+    // MARK: - Channel
+    
+    func channelToCell(_ channel: Channel, _ image: UIImage?) -> ChannelModel {
         let cellModel = ChannelModel(name: channel.name,
                                      message: channel.lastMessage ?? "No messages yet",
                                      date: channel.lastActivity,
+                                     image: image,
                                      isOnline: true,
                                      hasUnreadMessages: false)
         return cellModel
     }
+    
+    // MARK: - Message
 
     func messageToCell(_ message: Message, _ messageType: MessageType) -> MessageModel {
         var messageModel = MessageModel(text: message.content,

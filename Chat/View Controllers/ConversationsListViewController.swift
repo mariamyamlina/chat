@@ -12,6 +12,7 @@ class ConversationsListViewController: LogViewController {
     @IBOutlet weak var tableView: UITableView!
 
     var channels: [Channel] = []
+    var images: [UIImage?] = []
     var fbManager = FirebaseManager()
     
     lazy var searchController: UISearchController = {
@@ -43,10 +44,6 @@ class ConversationsListViewController: LogViewController {
         applyTheme()
         setupNavigationBar()
         setupTableView()
-        
-//        reference.addSnapshotListener() { [weak self] snapshot, error in
-//            print("")
-//        }
 
         fbManager.channelsViewController = self
         fbManager.getChannels()
@@ -66,6 +63,12 @@ class ConversationsListViewController: LogViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         showNewMessageButton(false)
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        guard let height = navigationController?.navigationBar.frame.height else { return }
+        showNewMessageButton(height >= 96)
     }
     
     // MARK: - Theme
@@ -232,8 +235,9 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
         let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.reuseIdentifier, for: indexPath) as? ConversationTableViewCell
         
         let channel = channels[indexPath.row]
+        let image = images[indexPath.row]
         let channelCellFactory = ViewModelFactory()
-        let channelModel = channelCellFactory.channelToCell(channel)
+        let channelModel = channelCellFactory.channelToCell(channel, image)
         cell?.configure(with: channelModel)
         applyTheme(for: cell)
         return cell ?? UITableViewCell()

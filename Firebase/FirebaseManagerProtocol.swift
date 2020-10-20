@@ -15,7 +15,7 @@ protocol FirebaseManagerProtocol: class {
     
     var db: Firestore { get }
     var reference: CollectionReference { get }
-    var uuid: String { get }
+    var universallyUniqueIdentifier: String { get }
     
     func getChannels()
     func createChannel(_ name: String)
