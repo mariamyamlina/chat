@@ -261,7 +261,6 @@
 			isa = PBXGroup;
 			children = (
 				99803F85250ADD0F000284D9 /* Chat */,
-				995C84B0253B099E0036B067 /* Firebase */,
 				99803F84250ADD0F000284D9 /* Products */,
 				C78D818F3F96AE304B2B292D /* Pods */,
 				6D9FD48FD7E60E608CA38EE0 /* Frameworks */,
@@ -289,6 +288,7 @@
 				995DEF012534D29D000BEF15 /* Accessors */,
 				994F1CA12534CB10003FC809 /* Theme */,
 				994F1CA22534CB43003FC809 /* DataManager */,
+				995C84B0253B099E0036B067 /* Firebase */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
