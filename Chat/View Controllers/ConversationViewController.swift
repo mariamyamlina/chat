@@ -201,7 +201,7 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 16.0) as Any]
+        let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16.0) as Any]
         var estimatedFrame = NSString(string: stringMessage + "    ").boundingRect(with: size, options: options, attributes: attr, context: nil)
         if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
             let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8

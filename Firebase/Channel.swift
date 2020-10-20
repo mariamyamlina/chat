@@ -1,8 +1,8 @@
 //
-//  FirebaseStruct.swift
+//  Channel.swift
 //  Chat
 //
-//  Created by Maria Myamlina on 17.10.2020.
+//  Created by Maria Myamlina on 21.10.2020.
 //  Copyright © 2020 Maria Myamlina. All rights reserved.
 //
 
@@ -13,11 +13,4 @@ struct Channel {
     let name: String
     let lastMessage: String?
     let lastActivity: Date?
-}
-
-struct Message {
-    let content: String
-    let created: Date
-    let senderId: String
-    let senderName: String
 }
