@@ -9,8 +9,6 @@
 import UIKit
 
 class GCDDataManager: DataManager {
-    weak var profileViewController: ProfileViewController?
-    
     private let mainQueue = DispatchQueue.main
     private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
 }

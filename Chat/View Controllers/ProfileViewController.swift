@@ -45,13 +45,15 @@ class ProfileViewController: LogViewController {
     @IBAction func GCDSaveButtonTapped(_ sender: ButtonWithTouchSize) {
         ProfileViewController.gcdButtonTapped = true
         enableSomeViews()
-        referToFile(action: .write, dataManager: .gcd)
+        let gcdDataManager = GCDDataManager()
+        referToFile(action: .write, dataManager: gcdDataManager)
     }
     
     @IBAction func OperationSaveButtonTapped(_ sender: ButtonWithTouchSize) {
         ProfileViewController.operationButtonTapped = true
         enableSomeViews()
-        referToFile(action: .write, dataManager: .operation)
+        let operationDataManager = OperationDataManager()
+        referToFile(action: .write, dataManager: operationDataManager)
     }
     
     @IBAction func editPhotoButtonTapped(_ sender: UIButton) {
@@ -211,29 +213,13 @@ class ProfileViewController: LogViewController {
             profileImageView.updateImage()
         }
     }
-
-    func referToFile(action: ActionType, dataManager: DataManagerType) {
-        switch dataManager {
-        case .gcd:
-            if let gcdDataManager: GCDDataManager = DataManager.returnDataManager(of: dataManager) {
-                gcdDataManager.profileViewController = self
-                if action == .read {
-                    gcdDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
-                    uploadCompletion(true, true, true)
-                } else {
-                    gcdDataManager.writeToFile(completion: loadCompletion(_:))
-                }
-            }
-        case .operation:
-            if let operationDataManager: OperationDataManager = DataManager.returnDataManager(of: dataManager) {
-                operationDataManager.profileViewController = self
-                if action == .read {
-                    operationDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
-                    uploadCompletion(true, true, true)
-                } else {
-                    operationDataManager.writeToFile(completion: loadCompletion(_:))
-                }
-            }
+    
+    func referToFile(action: ActionType, dataManager: DataManagerProtocol) {
+        if action == .read {
+            dataManager.readFromFile(mustReadName: true, mustReadBio: true, mustReadImage: true, completion: uploadCompletion(_:_:_:))
+            uploadCompletion(true, true, true)
+        } else {
+            dataManager.writeToFile(completion: loadCompletion(_:))
         }
     }
     
@@ -244,8 +230,10 @@ class ProfileViewController: LogViewController {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.stopAnimating()
 
-        referToFile(action: .read, dataManager: .gcd)
-//        referToFile(action: .read, dataManager: .operation)
+        let gcdDataManager = GCDDataManager()
+        referToFile(action: .read, dataManager: gcdDataManager)
+//        let operationDataManager = OperationDataManager()
+//        referToFile(action: .read, dataManager: operationDataManager)
 
         setupTextViews()
         setupButtonViews()
@@ -280,7 +268,6 @@ class ProfileViewController: LogViewController {
     
     private func setupTextViews() {
         let currentTheme = Theme.current.themeOptions
-
         for textView in [nameTextView, bioTextView] {
             var text: String = ""
             if textView == nameTextView {
@@ -337,13 +324,11 @@ class ProfileViewController: LogViewController {
     private func setupNavigationBar() {
         let leftViewLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 115, height: 22))
         leftViewLabel.text = "My Profile"
-        
         if #available(iOS 13.0, *) { } else {
             let currentTheme = Theme.current.themeOptions
             navigationController?.navigationBar.barStyle = currentTheme.barStyle
             leftViewLabel.textColor = currentTheme.textColor
         }
-
         leftViewLabel.font = UIFont(name: "SFProDisplay-Bold", size: 26)
         let leftItem = UIBarButtonItem(customView: leftViewLabel)
         navigationItem.leftBarButtonItem = leftItem
@@ -398,7 +383,6 @@ class ProfileViewController: LogViewController {
                 }
                 self?.editProfileButton.isEnabled = true
                 self?.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-                
                 ProfileViewController.nameDidChange = false
                 ProfileViewController.bioDidChange = false
                 ProfileViewController.imageDidChange = false
@@ -409,9 +393,11 @@ class ProfileViewController: LogViewController {
         if twoActions {
             let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self] (_: UIAlertAction) in
                 if ProfileViewController.gcdButtonTapped {
-                    self?.referToFile(action: .write, dataManager: .gcd)
+                    let gcdDataManager = GCDDataManager()
+                    self?.referToFile(action: .write, dataManager: gcdDataManager)
                 } else if ProfileViewController.operationButtonTapped {
-                    self?.referToFile(action: .write, dataManager: .operation)
+                    let operationDataManager = OperationDataManager()
+                    self?.referToFile(action: .write, dataManager: operationDataManager)
                 }
             })
             alertController.addAction(repeatAction)
@@ -434,12 +420,9 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             guard let compressData = pickedImage.jpegData(compressionQuality: 0.5) else { return }
             let compressedImage = UIImage(data: compressData)
-
             profileImageView.profileImage.image = compressedImage
             profileImageView.lettersLabel.isHidden = true
-
             setSaveButtonsEnable(flag: true)
-
             ProfileViewController.imageDidChange = true
             ProfileViewController.image = compressedImage
         }

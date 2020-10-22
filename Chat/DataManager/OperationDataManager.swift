@@ -9,8 +9,6 @@
 import UIKit
 
 class OperationDataManager: DataManager {
-    weak var profileViewController: ProfileViewController?
-    
     private let operationQueue = OperationQueue()
     private let mainOperationQueue = OperationQueue.main
 }
