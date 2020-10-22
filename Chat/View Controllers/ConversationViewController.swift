@@ -22,7 +22,7 @@ class ConversationViewController: LogViewController {
     @IBAction func sendButtonTapped(_ sender: UIButton) {
         guard let message = textField.text else { return }
         if !message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            fbManager.createMessage(message)
+            fbManager.createMessage(message, completion: createMessageCompletion)
         }
         textField.text = ""
     }
@@ -31,8 +31,8 @@ class ConversationViewController: LogViewController {
     var name: String?
     var lastRowIndex: Int = 0
     
-    var messages: [Message] = []
-    var docId: String?
+    static var messages: [Message] = []
+    static var docId: String?
     var fbManager = FirebaseManager()
     
     typealias MessageModel = [(MessageTableViewCell.MessageCellModel, UIColor, Date)]
@@ -49,16 +49,43 @@ class ConversationViewController: LogViewController {
         configureTableView()
         configureMessageInputView()
         addKeyboardNotifications()
-
-        fbManager.messagesViewController = self
-        fbManager.getMessages()
+        fbManager.getMessages(completion: getMessagesCompletion)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        let conversationsListVC = navigationController?.viewControllers.first as? ConversationsListViewController
-        fbManager.channelsViewController = conversationsListVC
-        fbManager.getChannels()
+        guard let conversationsListVC = navigationController?.viewControllers.first as? ConversationsListViewController else { return }
+        fbManager.getChannels(completion: conversationsListVC.getChannelsCompletion)
+    }
+    
+    // MARK: - Firebase
+    
+    func createMessageCompletion() {
+        if lastRowIndex >= 0 {
+            tableView.beginUpdates()
+               tableView.insertRows(at: [IndexPath(row: lastRowIndex + 1, section: 0)], with: .right)
+            tableView.endUpdates()
+        } else {
+            tableView.reloadSections([0], with: .fade)
+        }
+    }
+    
+    func getMessagesCompletion() {
+        sortMessages()
+        if !ConversationViewController.messages.isEmpty {
+            noMessagesLabel.isHidden = true
+        }
+        tableView.reloadData()
+    }
+    
+    func sortMessages() {
+        ConversationViewController.messages.sort {
+            if $1.created > $0.created {
+                return true
+            } else {
+                return false
+            }
+        }
     }
     
     // MARK: - Theme
@@ -169,14 +196,14 @@ class ConversationViewController: LogViewController {
 
 extension ConversationViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let numberOfRows = messages.count
+        let numberOfRows = ConversationViewController.messages.count
         lastRowIndex = numberOfRows - 1
         return numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier, for: indexPath) as? MessageTableViewCell
-        let message = messages[indexPath.row]
+        let message = ConversationViewController.messages[indexPath.row]
         let messageCellFactory = ViewModelFactory()
         let messageModel: MessageTableViewCell.MessageCellModel
         let currentTheme = Theme.current.themeOptions
@@ -196,7 +223,7 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let message = messages[indexPath.row]
+        let message = ConversationViewController.messages[indexPath.row]
         let stringMessage = "\(message.senderName)\n\(message.content)"
 
         let size = CGSize(width: 250, height: 1000)

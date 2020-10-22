@@ -20,6 +20,7 @@
 		994B9ADA252799F600A453F2 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994B9AD9252799F600A453F2 /* ThemeManager.swift */; };
 		994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */; };
 		994CF6CD252E0E3200AB0A10 /* ProfileImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 994CF6CC252E0E3200AB0A10 /* ProfileImageView.xib */; };
+		994D2DFB2541D8EE00BD5E20 /* ActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994D2DFA2541D8EE00BD5E20 /* ActionType.swift */; };
 		994F1C9A2534C987003FC809 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C992534C987003FC809 /* Colors.swift */; };
 		994F1C9C2534C9A9003FC809 /* ThemeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C9B2534C9A9003FC809 /* ThemeOptions.swift */; };
 		994F1C9E2534CA0E003FC809 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C9D2534CA0E003FC809 /* DateFormatter.swift */; };
@@ -30,7 +31,7 @@
 		9957F56A251EABD2007EB624 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9957F569251EABD2007EB624 /* Profile.storyboard */; };
 		9957F56C251F67C7007EB624 /* Conversation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9957F56B251F67C7007EB624 /* Conversation.storyboard */; };
 		9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9957F56D251F67DC007EB624 /* ConversationViewController.swift */; };
-		99599C98253731CA00FB2264 /* DataManagerEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C97253731C900FB2264 /* DataManagerEnums.swift */; };
+		99599C98253731CA00FB2264 /* DataManagerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C97253731C900FB2264 /* DataManagerType.swift */; };
 		99599C9A253731F100FB2264 /* DataManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C99253731F100FB2264 /* DataManagerProtocol.swift */; };
 		99599C9C253751BD00FB2264 /* ThemesPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C9B253751BD00FB2264 /* ThemesPickerDelegate.swift */; };
 		995C84B2253B09DA0036B067 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995C84B1253B09DA0036B067 /* Message.swift */; };
@@ -77,6 +78,7 @@
 		994B9AD9252799F600A453F2 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		994CF6CC252E0E3200AB0A10 /* ProfileImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileImageView.xib; sourceTree = "<group>"; };
+		994D2DFA2541D8EE00BD5E20 /* ActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionType.swift; sourceTree = "<group>"; };
 		994F1C992534C987003FC809 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		994F1C9B2534C9A9003FC809 /* ThemeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeOptions.swift; sourceTree = "<group>"; };
 		994F1C9D2534CA0E003FC809 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
@@ -87,7 +89,7 @@
 		9957F569251EABD2007EB624 /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
 		9957F56B251F67C7007EB624 /* Conversation.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Conversation.storyboard; sourceTree = "<group>"; };
 		9957F56D251F67DC007EB624 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
-		99599C97253731C900FB2264 /* DataManagerEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerEnums.swift; sourceTree = "<group>"; };
+		99599C97253731C900FB2264 /* DataManagerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerType.swift; sourceTree = "<group>"; };
 		99599C99253731F100FB2264 /* DataManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerProtocol.swift; sourceTree = "<group>"; };
 		99599C9B253751BD00FB2264 /* ThemesPickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPickerDelegate.swift; sourceTree = "<group>"; };
 		995C84B1253B09DA0036B067 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -155,7 +157,8 @@
 			isa = PBXGroup;
 			children = (
 				994635B82534DE05003DEA03 /* DataManager.swift */,
-				99599C97253731C900FB2264 /* DataManagerEnums.swift */,
+				99599C97253731C900FB2264 /* DataManagerType.swift */,
+				994D2DFA2541D8EE00BD5E20 /* ActionType.swift */,
 				99599C99253731F100FB2264 /* DataManagerProtocol.swift */,
 				997CEE1F2530D8EF00645079 /* GCDDataManager.swift */,
 				997CEE212530D91500645079 /* OperationDataManager.swift */,
@@ -468,7 +471,7 @@
 				99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */,
 				997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */,
 				994F1CA02534CAD1003FC809 /* ConfigurableView.swift in Sources */,
-				99599C98253731CA00FB2264 /* DataManagerEnums.swift in Sources */,
+				99599C98253731CA00FB2264 /* DataManagerType.swift in Sources */,
 				99E5F5C4253C8DDD004C71BF /* FirebaseManagerProtocol.swift in Sources */,
 				995DEEFA2534D1A1000BEF15 /* WriteOperations.swift in Sources */,
 				994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */,
@@ -488,6 +491,7 @@
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,
 				994AF9D125221D300013B0E0 /* TopViewWithTitle.swift in Sources */,
 				99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */,
+				994D2DFB2541D8EE00BD5E20 /* ActionType.swift in Sources */,
 				994635B92534DE05003DEA03 /* DataManager.swift in Sources */,
 				99599C9A253731F100FB2264 /* DataManagerProtocol.swift in Sources */,
 				99599C9C253751BD00FB2264 /* ThemesPickerDelegate.swift in Sources */,

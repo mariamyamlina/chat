@@ -10,9 +10,6 @@ import UIKit
 import Firebase
 
 class FirebaseManager {
-    weak var channelsViewController: ConversationsListViewController?
-    weak var messagesViewController: ConversationViewController?
-    
     lazy var db = Firestore.firestore()
     lazy var reference = db.collection("channels")
     
@@ -30,10 +27,10 @@ class FirebaseManager {
 extension FirebaseManager: FirebaseManagerProtocol {
     // MARK: - Channels
         
-    func getChannels() {
-        channelsViewController?.channels.removeAll()
-        channelsViewController?.images.removeAll()
-        reference.getDocuments { [weak self] (querySnapshot, error) in
+    func getChannels(completion: @escaping () -> Void) {
+        ConversationsListViewController.channels.removeAll()
+        ConversationsListViewController.images.removeAll()
+        reference.getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
             guard let snapshot = querySnapshot else { return }
             for document in snapshot.documents {
@@ -46,40 +43,24 @@ extension FirebaseManager: FirebaseManagerProtocol {
                                       name: nameFromFB,
                                       lastMessage: lastMessageFromFB,
                                       lastActivity: lastActivityFromFB)
-                self?.channelsViewController?.channels.append(channel)
-                self?.channelsViewController?.images.append(generateImage())
+                ConversationsListViewController.channels.append(channel)
+                ConversationsListViewController.images.append(generateImage())
             }
-            self?.sortChannels()
-            self?.channelsViewController?.tableView.reloadData()
-        }
-    }
-    
-    func sortChannels() {
-        channelsViewController?.channels.sort {
-            let date = Date(timeInterval: -50000000000, since: Date())
-            let firstDate = $0.lastActivity ?? date
-            let secondDate = $1.lastActivity ?? date
-            if secondDate < firstDate {
-                return true
-            } else if $0.lastMessage != nil && $1.lastMessage == nil {
-                return true
-            } else {
-                return false
-            }
+            completion()
         }
     }
 
-    func createChannel(_ name: String) {
+    func createChannel(_ name: String, completion: @escaping () -> Void) {
         let channel = ["name": name] as [String: Any]
         reference.addDocument(data: channel)
-        getChannels()
+        getChannels(completion: completion)
     }
 
     // MARK: - Messages
 
-    func getMessages() {
-        guard let id = messagesViewController?.docId else { return }
-        reference.document(id).collection("messages").getDocuments { [weak self] (querySnapshot, error) in
+    func getMessages(completion: @escaping () -> Void) {
+        guard let id = ConversationViewController.docId else { return }
+        reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
             guard let snapshot = querySnapshot else { return }
             for document in snapshot.documents {
@@ -92,44 +73,22 @@ extension FirebaseManager: FirebaseManagerProtocol {
                                       created: dateFromFB,
                                       senderId: senderIdFromFB,
                                       senderName: senderNameFromFB)
-                self?.messagesViewController?.messages.append(message)
+                ConversationViewController.messages.append(message)
             }
-            self?.sortMessages()
-            if let messagesArray = self?.messagesViewController?.messages, !messagesArray.isEmpty {
-                self?.messagesViewController?.noMessagesLabel.isHidden = true
-            }
-            self?.messagesViewController?.tableView.reloadData()
+            completion()
         }
     }
         
-    func sortMessages() {
-        messagesViewController?.messages.sort {
-            if $1.created > $0.created {
-                return true
-            } else {
-                return false
-            }
-        }
-    }
-        
-    func createMessage(_ text: String) {
+    func createMessage(_ text: String, completion: @escaping () -> Void) {
         let uuid = universallyUniqueIdentifier
-        guard let id = messagesViewController?.docId else { return }
+        guard let id = ConversationViewController.docId else { return }
         let name = ProfileViewController.name ?? "Marina Dudarenko"
         let message = Message(content: text,
                               created: Date(),
                               senderId: uuid,
                               senderName: name)
         reference.document(id).collection("messages").addDocument(data: message.jsonType)
-        messagesViewController?.messages.append(message)
-        if let rowIndex = messagesViewController?.lastRowIndex {
-            if rowIndex >= 0 {
-                messagesViewController?.tableView.beginUpdates()
-                   messagesViewController?.tableView.insertRows(at: [IndexPath(row: rowIndex + 1, section: 0)], with: .right)
-                messagesViewController?.tableView.endUpdates()
-            } else {
-                messagesViewController?.tableView.reloadSections([0], with: .fade)
-            }
-        }
+        ConversationViewController.messages.append(message)
+        completion()
     }
 }
