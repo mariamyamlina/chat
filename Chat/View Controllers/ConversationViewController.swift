@@ -35,7 +35,7 @@ class ConversationViewController: LogViewController {
     static var docId: String?
     var fbManager = FirebaseManager()
     
-    typealias MessageModel = [(MessageTableViewCell.MessageCellModel, UIColor, Date)]
+    typealias MessageModel = [MessageTableViewCell.MessageCellModel]
     var model: MessageModel = []
     
     deinit {
