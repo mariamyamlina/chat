@@ -35,9 +35,6 @@ class ConversationViewController: LogViewController {
     static var docId: String?
     var fbManager = FirebaseManager()
     
-    typealias MessageModel = [MessageTableViewCell.MessageCellModel]
-    var model: MessageModel = []
-    
     deinit {
         removeKeyboardNotifications()
     }
