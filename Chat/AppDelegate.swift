@@ -22,6 +22,7 @@ extension UIWindow {
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var coreDataStack = CoreDataStack()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -30,6 +31,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Theme.current.setActive()
         themeWindow.initTheme()
         themeWindow.makeKey()
+        
+        coreDataStack.didUpdateDataBase = { stack in
+            stack.printDatabaseStatistics()
+        }
+        coreDataStack.enableObservers()
+        let chatRequest = ChatRequest(coreDataStack: coreDataStack)
+        chatRequest.makeRequest()
         
         FirebaseApp.configure()
 

@@ -54,6 +54,10 @@
 		99875561251427000080EEAE /* SFProDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99875560251427000080EEAE /* SFProDisplay-Bold.ttf */; };
 		99875565251429290080EEAE /* SFProText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99875564251429290080EEAE /* SFProText-Semibold.ttf */; };
 		99A5733F253C7B3E00899AAC /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A5733E253C7B3E00899AAC /* FirebaseManager.swift */; };
+		99E52A6C2542EF40007BD9B6 /* Chat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A6A2542EF40007BD9B6 /* Chat.xcdatamodeld */; };
+		99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A6E2542F313007BD9B6 /* CoreDataStack.swift */; };
+		99E52A712542F88F007BD9B6 /* ChatRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A702542F88F007BD9B6 /* ChatRequest.swift */; };
+		99E52A732542FBF4007BD9B6 /* ObjectsExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A722542FBF4007BD9B6 /* ObjectsExtensions.swift */; };
 		99E5F5C4253C8DDD004C71BF /* FirebaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */; };
 		99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B6962526850C00117A04 /* ThemesViewController.swift */; };
 		99E8B6992526852300117A04 /* Themes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99E8B6982526852300117A04 /* Themes.storyboard */; };
@@ -115,6 +119,10 @@
 		99875560251427000080EEAE /* SFProDisplay-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProDisplay-Bold.ttf"; sourceTree = "<group>"; };
 		99875564251429290080EEAE /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Semibold.ttf"; sourceTree = "<group>"; };
 		99A5733E253C7B3E00899AAC /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
+		99E52A6B2542EF40007BD9B6 /* Chat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Chat.xcdatamodel; sourceTree = "<group>"; };
+		99E52A6E2542F313007BD9B6 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		99E52A702542F88F007BD9B6 /* ChatRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRequest.swift; sourceTree = "<group>"; };
+		99E52A722542FBF4007BD9B6 /* ObjectsExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectsExtensions.swift; sourceTree = "<group>"; };
 		99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManagerProtocol.swift; sourceTree = "<group>"; };
 		99E8B6962526850C00117A04 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		99E8B6982526852300117A04 /* Themes.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Themes.storyboard; sourceTree = "<group>"; };
@@ -295,6 +303,7 @@
 				994F1CA12534CB10003FC809 /* Theme */,
 				994F1CA22534CB43003FC809 /* DataManager */,
 				995C84B0253B099E0036B067 /* Firebase */,
+				99E52A6D2542EF52007BD9B6 /* CoreData */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -309,6 +318,17 @@
 				99875560251427000080EEAE /* SFProDisplay-Bold.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		99E52A6D2542EF52007BD9B6 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				99E52A6A2542EF40007BD9B6 /* Chat.xcdatamodeld */,
+				99E52A6E2542F313007BD9B6 /* CoreDataStack.swift */,
+				99E52A702542F88F007BD9B6 /* ChatRequest.swift */,
+				99E52A722542FBF4007BD9B6 /* ObjectsExtensions.swift */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		C78D818F3F96AE304B2B292D /* Pods */ = {
@@ -469,11 +489,13 @@
 			files = (
 				998755532513D3210080EEAE /* Loger.swift in Sources */,
 				998755552513F4430080EEAE /* ProfileViewController.swift in Sources */,
+				99E52A6C2542EF40007BD9B6 /* Chat.xcdatamodeld in Sources */,
 				994F1C9E2534CA0E003FC809 /* DateFormatter.swift in Sources */,
 				994B9ADA252799F600A453F2 /* ThemeManager.swift in Sources */,
 				99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */,
 				997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */,
 				994F1CA02534CAD1003FC809 /* ConfigurableView.swift in Sources */,
+				99E52A712542F88F007BD9B6 /* ChatRequest.swift in Sources */,
 				99599C98253731CA00FB2264 /* DataManagerType.swift in Sources */,
 				99E5F5C4253C8DDD004C71BF /* FirebaseManagerProtocol.swift in Sources */,
 				995DEEFA2534D1A1000BEF15 /* WriteOperations.swift in Sources */,
@@ -485,6 +507,7 @@
 				996941142539082500819078 /* AlertExtension.swift in Sources */,
 				994B4A80252A7C3900A50B5D /* Theme.swift in Sources */,
 				99846730251B5EA1004E9044 /* ButtonWithTouchSize.swift in Sources */,
+				99E52A732542FBF4007BD9B6 /* ObjectsExtensions.swift in Sources */,
 				99EC182525421C980068158C /* Result.swift in Sources */,
 				994F1C9C2534C9A9003FC809 /* ThemeOptions.swift in Sources */,
 				994F1C9A2534C987003FC809 /* Colors.swift in Sources */,
@@ -493,6 +516,7 @@
 				99248977253C92790095851E /* ViewModelFactory.swift in Sources */,
 				995C84B2253B09DA0036B067 /* Message.swift in Sources */,
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,
+				99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */,
 				994AF9D125221D300013B0E0 /* TopViewWithTitle.swift in Sources */,
 				99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */,
 				994D2DFB2541D8EE00BD5E20 /* ActionType.swift in Sources */,
@@ -704,6 +728,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		99E52A6A2542EF40007BD9B6 /* Chat.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				99E52A6B2542EF40007BD9B6 /* Chat.xcdatamodel */,
+			);
+			currentVersion = 99E52A6B2542EF40007BD9B6 /* Chat.xcdatamodel */;
+			path = Chat.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 99803F7B250ADD0F000284D9 /* Project object */;
 }
