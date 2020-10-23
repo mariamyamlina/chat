@@ -64,18 +64,18 @@ class ProfileViewController: LogViewController {
         if editProfileButton.titleLabel?.text == "Edit Profile" {
             setupEditProfileButtonView(title: "Cancel Editing", color: .systemRed)
             setTextViewsEditable(flag: true)
-            for textView in [nameTextView, bioTextView] {
-                textView?.becomeFirstResponder()
-                textView?.layer.borderWidth = 1.0
-                textView?.layer.borderColor = Colors.tableViewLightSeparatorColor.cgColor
+            [nameTextView, bioTextView].forEach {
+                $0?.becomeFirstResponder()
+                $0?.layer.borderWidth = 1.0
+                $0?.layer.borderColor = Colors.tableViewLightSeparatorColor.cgColor
             }
         } else {
             setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
             setTextViewsEditable(flag: false)
             setSaveButtonsEnable(flag: false)
-            for textView in [nameTextView, bioTextView] {
-                textView?.resignFirstResponder()
-                textView?.layer.borderWidth = 0.0
+            [nameTextView, bioTextView].forEach {
+                $0?.resignFirstResponder()
+                $0?.layer.borderWidth = 0.0
             }
         }
     }
@@ -167,17 +167,11 @@ class ProfileViewController: LogViewController {
     
     fileprivate func applyTheme() {
         let currentTheme = Theme.current.themeOptions
-        for coloredView in [view, scrollViewContentView] {
-            coloredView?.backgroundColor = currentTheme.backgroundColor
-        }
+        [view, scrollViewContentView].forEach { $0?.backgroundColor = currentTheme.backgroundColor }
         activityIndicator.color = currentTheme.textColor
-        for button in [gcdSaveButton, operationSaveButton, editProfileButton] {
-            button?.backgroundColor = currentTheme.saveButtonColor
-        }
+        [gcdSaveButton, operationSaveButton, editProfileButton].forEach { $0?.backgroundColor = currentTheme.saveButtonColor }
         if #available(iOS 13.0, *) { } else {
-            for textView in [nameTextView, bioTextView] {
-                textView?.keyboardAppearance = currentTheme.keyboardAppearance
-            }
+            [nameTextView, bioTextView].forEach { $0?.keyboardAppearance = currentTheme.keyboardAppearance }
         }
     }
     
@@ -191,8 +185,8 @@ class ProfileViewController: LogViewController {
     
     // MARK: - Profile Editing
     
-    func loadCompletion(_ succeed: Bool) {
-        if succeed {
+    func loadCompletion(_ succeed: Result) {
+        if succeed == .success {
             activityIndicator.stopAnimating()
             configureAlert("Data has been successfully saved", nil, false)
             editProfileButton.isEnabled = true
@@ -241,9 +235,9 @@ class ProfileViewController: LogViewController {
     
     private func setupButtonViews() {
         setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-        for button in [editProfileButton, gcdSaveButton, operationSaveButton] {
-            button?.layer.cornerRadius = 14
-            button?.clipsToBounds = true
+        [editProfileButton, gcdSaveButton, operationSaveButton].forEach {
+            $0?.layer.cornerRadius = 14
+            $0?.clipsToBounds = true
         }
         setSaveButtonsEnable(flag: false)
     }
@@ -268,26 +262,26 @@ class ProfileViewController: LogViewController {
     
     private func setupTextViews() {
         let currentTheme = Theme.current.themeOptions
-        for textView in [nameTextView, bioTextView] {
+        [nameTextView, bioTextView].forEach {
             var text: String = ""
-            if textView == nameTextView {
-                textView?.isScrollEnabled = false
-                textView?.autocapitalizationType = .words
-                textView?.textAlignment = .center
+            if $0 == nameTextView {
+                $0?.isScrollEnabled = false
+                $0?.autocapitalizationType = .words
+                $0?.textAlignment = .center
                 text = ProfileViewController.name ?? "Marina Dudarenko"
-                textView?.font = UIFont(name: "SFProDisplay-Bold", size: 24)
+                $0?.font = UIFont(name: "SFProDisplay-Bold", size: 24)
             } else {
-                textView?.autocapitalizationType = .sentences
-                textView?.textAlignment = .left
+                $0?.autocapitalizationType = .sentences
+                $0?.textAlignment = .left
                 text = ProfileViewController.bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
-                textView?.font = UIFont(name: "SFProText-Regular", size: 16)
+                $0?.font = UIFont(name: "SFProText-Regular", size: 16)
             }
-            textView?.text = text
-            textView?.autocorrectionType = .no
-            textView?.backgroundColor = view.backgroundColor
-            textView?.textColor = currentTheme.textColor
-            textView?.layer.cornerRadius = 14
-            textView?.clipsToBounds = true
+            $0?.text = text
+            $0?.autocorrectionType = .no
+            $0?.backgroundColor = view.backgroundColor
+            $0?.textColor = currentTheme.textColor
+            $0?.layer.cornerRadius = 14
+            $0?.clipsToBounds = true
         }
         setTextViewsEditable(flag: false)
     }
@@ -301,9 +295,7 @@ class ProfileViewController: LogViewController {
     private func enableSomeViews() {
         editProfileButton.isEnabled = false
         activityIndicator.startAnimating()
-        for textView in [nameTextView, bioTextView] {
-            textView?.layer.borderWidth = 0
-        }
+        [nameTextView, bioTextView].forEach { $0?.layer.borderWidth = 0 }
         setSaveButtonsEnable(flag: false)
         setTextViewsEditable(flag: false)
     }
@@ -360,9 +352,7 @@ class ProfileViewController: LogViewController {
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (_) in
             alertController.dismiss(animated: true, completion: nil)
         }
-        for action in [galeryAction, takePhotoAction, cancelAction] {
-            alertController.addAction(action)
-        }
+        [galeryAction, takePhotoAction, cancelAction].forEach { alertController.addAction($0) }
         if #available(iOS 13.0, *) { } else {
             if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
                 let currentTheme = Theme.current.themeOptions

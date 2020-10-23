@@ -210,9 +210,7 @@ class ConversationsListViewController: LogViewController {
             }
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        for action in [createAction, cancelAction] {
-            alertController.addAction(action)
-        }
+        [createAction, cancelAction].forEach { alertController.addAction($0) }
         if #available(iOS 13.0, *) { } else {
             if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
                 let currentTheme = Theme.current.themeOptions

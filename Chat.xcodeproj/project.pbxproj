@@ -59,6 +59,7 @@
 		99E8B6992526852300117A04 /* Themes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99E8B6982526852300117A04 /* Themes.storyboard */; };
 		99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B69A252689ED00117A04 /* ThemeButton.swift */; };
 		99E8B69D25268A3200117A04 /* ThemeButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99E8B69C25268A3200117A04 /* ThemeButton.xib */; };
+		99EC182525421C980068158C /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EC182425421C980068158C /* Result.swift */; };
 		BA51D36F604194656F6CC3D1 /* Pods_Chat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D669EE74477880C6CB0979D /* Pods_Chat.framework */; };
 /* End PBXBuildFile section */
 
@@ -119,6 +120,7 @@
 		99E8B6982526852300117A04 /* Themes.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Themes.storyboard; sourceTree = "<group>"; };
 		99E8B69A252689ED00117A04 /* ThemeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeButton.swift; sourceTree = "<group>"; };
 		99E8B69C25268A3200117A04 /* ThemeButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ThemeButton.xib; sourceTree = "<group>"; };
+		99EC182425421C980068158C /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		EF719589154F29D5838B05D3 /* Pods-Chat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.release.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -220,6 +222,7 @@
 				994F1C9D2534CA0E003FC809 /* DateFormatter.swift */,
 				996941132539082500819078 /* AlertExtension.swift */,
 				997DA9C0253DE2330021A8F9 /* GenerateImageFunc.swift */,
+				99EC182425421C980068158C /* Result.swift */,
 				9987556625142AC90080EEAE /* Fonts */,
 			);
 			path = Accessors;
@@ -482,6 +485,7 @@
 				996941142539082500819078 /* AlertExtension.swift in Sources */,
 				994B4A80252A7C3900A50B5D /* Theme.swift in Sources */,
 				99846730251B5EA1004E9044 /* ButtonWithTouchSize.swift in Sources */,
+				99EC182525421C980068158C /* Result.swift in Sources */,
 				994F1C9C2534C9A9003FC809 /* ThemeOptions.swift in Sources */,
 				994F1C9A2534C987003FC809 /* Colors.swift in Sources */,
 				99803F87250ADD0F000284D9 /* AppDelegate.swift in Sources */,

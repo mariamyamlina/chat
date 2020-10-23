@@ -14,10 +14,16 @@ class OperationDataManager: DataManager {
 }
 
 extension OperationDataManager: DataManagerProtocol {
-    func writeToFile(completion: @escaping (Bool) -> Void) {
+    func writeToFile(completion: @escaping (Result) -> Void) {
         let writeOperation = WriteOperation()
         let completionOperation = BlockOperation {
-            completion(writeOperation.nameSaved && writeOperation.bioSaved && writeOperation.imageSaved)
+            let succeeded: Result
+            if writeOperation.nameSaved && writeOperation.bioSaved && writeOperation.imageSaved {
+                succeeded = .success
+            } else {
+                succeeded = .error
+            }
+            completion(succeeded)
         }
         
         completionOperation.addDependency(writeOperation)

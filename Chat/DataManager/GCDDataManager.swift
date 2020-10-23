@@ -14,7 +14,7 @@ class GCDDataManager: DataManager {
 }
 
 extension GCDDataManager: DataManagerProtocol {
-    func writeToFile(completion: @escaping (Bool) -> Void) {
+    func writeToFile(completion: @escaping (Result) -> Void) {
         let group = DispatchGroup()
 
         var nameSaved = true
@@ -63,7 +63,13 @@ extension GCDDataManager: DataManagerProtocol {
         
         group.notify(queue: queue) {
             self.mainQueue.async {
-                completion(nameSaved && bioSaved && imageSaved)
+                let succeded: Result
+                if nameSaved && bioSaved && imageSaved {
+                    succeded = .success
+                } else {
+                    succeded = .error
+                }
+                completion(succeded)
             }
         }
     }
