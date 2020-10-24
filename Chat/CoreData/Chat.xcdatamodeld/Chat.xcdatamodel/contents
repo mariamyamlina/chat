@@ -20,7 +20,7 @@
         <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Channel_db" inverseName="messages" inverseEntity="Channel_db"/>
     </entity>
     <elements>
-        <element name="Channel_db" positionX="-253.47265625" positionY="-92.3203125" width="114.65234375" height="28"/>
-        <element name="Message_db" positionX="-54" positionY="-9" width="128" height="28"/>
+        <element name="Channel_db" positionX="-253.47265625" positionY="-92.3203125" width="114.65234375" height="118"/>
+        <element name="Message_db" positionX="-54" positionY="-9" width="128" height="118"/>
     </elements>
 </model>

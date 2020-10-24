@@ -22,6 +22,64 @@ class FirebaseManager {
             return UUID().uuidString
         }
     }()
+    
+    var coreDataStack = CoreDataStack()
+    
+    func getInfoAndWriteToCoreData() {
+        ChatRequest.channels.removeAll()
+        reference.getDocuments { (querySnapshot, error) in
+            guard error == nil else { return }
+            guard let snapshot = querySnapshot else { return }
+            for document in snapshot.documents {
+                let docData = document.data()
+                guard let nameFromFB = docData["name"] as? String,
+                      !nameFromFB.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { continue }
+                let lastMessageFromFB = docData["lastMessage"] as? String
+                let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
+                let id = document.documentID
+                ChatRequest.docId.append(id)
+                let channel = Channel(identifier: id,
+                                      name: nameFromFB,
+                                      lastMessage: lastMessageFromFB,
+                                      lastActivity: lastActivityFromFB)
+                ChatRequest.channels.append(channel)
+            }
+
+            let group = DispatchGroup()
+            for i in 0...ChatRequest.channels.count - 1 {
+                group.enter()
+                var messages: [Message] = []
+                let id = ChatRequest.docId[i]
+                self.reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
+                    guard error == nil else { return }
+                    guard let snapshot = querySnapshot else { return }
+                    for document in snapshot.documents {
+                        let docData = document.data()
+                        guard let contentFromFB = docData["content"] as? String,
+                              let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
+                              let senderIdFromFB = docData["senderId"] as? String,
+                              let senderNameFromFB = docData["senderName"] as? String else { continue }
+                        let message = Message(content: contentFromFB,
+                                              created: dateFromFB,
+                                              senderId: senderIdFromFB,
+                                              senderName: senderNameFromFB)
+                        messages.append(message)
+                    }
+                    ChatRequest.messages.append(messages)
+                    group.leave()
+                    
+                }
+            }
+            group.notify(queue: .main) {
+                self.coreDataStack.didUpdateDataBase = { stack in
+                    stack.printDatabaseStatistics()
+                }
+                self.coreDataStack.enableObservers()
+                let chatRequest = ChatRequest(coreDataStack: self.coreDataStack)
+                chatRequest.makeRequest()
+            }
+        }
+    }
 }
 
 extension FirebaseManager: FirebaseManagerProtocol {
@@ -59,6 +117,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
     // MARK: - Messages
 
     func getMessages(completion: @escaping () -> Void) {
+        ConversationViewController.messages.removeAll()
         guard let id = ConversationViewController.docId else { return }
         reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
             guard error == nil else { return }

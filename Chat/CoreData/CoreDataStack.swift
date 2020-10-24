@@ -42,6 +42,7 @@ class CoreDataStack {
     
     // MARK: - Coordinator
     
+    // TODO: - Вынести в отдельную очередь
     private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         
@@ -145,6 +146,19 @@ class CoreDataStack {
             } catch {
                 fatalError(error.localizedDescription)
             }
+        }
+    }
+    
+    // MARK: - Delete
+    
+    func deleteChannelsRequest(in context: NSManagedObjectContext) {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "Channel_db")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try persistentStoreCoordinator.execute(deleteRequest, with: context)
+        } catch let error as NSError {
+            print(error.localizedDescription)
         }
     }
 }

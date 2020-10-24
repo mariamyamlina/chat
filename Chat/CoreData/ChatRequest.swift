@@ -10,6 +10,10 @@ import Foundation
 import CoreData
 
 struct ChatRequest {
+    static var channels: [Channel] = []
+    static var messages: [[Message]] = []
+    static var docId: [String] = []
+    
     let coreDataStack: CoreDataStack
     
     init(coreDataStack: CoreDataStack) {
@@ -18,40 +22,36 @@ struct ChatRequest {
     
     func makeRequest() {
         coreDataStack.performSave { context in
-            let message1 = Message_db(content: "First",
-                                   created: Date(),
-                                   senderId: "ID1",
-                                   senderName: "Name1",
-                                   in: context)
-            let message2 = Message_db(content: "Second",
-                                   created: Date(),
-                                   senderId: "ID2",
-                                   senderName: "Name2",
-                                   in: context)
-            let message3 = Message_db(content: "Third",
-                                   created: Date(),
-                                   senderId: "ID1",
-                                   senderName: "Name1",
-                                   in: context)
-            let message4 = Message_db(content: "Fourth",
-                                   created: Date(),
-                                   senderId: "ID2",
-                                   senderName: "Name2",
-                                   in: context)
-            
-            let john = Channel_db(identifier: "ID1",
-                                  name: "John",
-                                  lastMessage: nil,
-                                  lastActivity: nil,
-                                  in: context)
-            [message1, message3].forEach { john.addToMessages($0) }
-            
-            let alex = Channel_db(identifier: "ID2",
-                                  name: "Alex",
-                                  lastMessage: nil,
-                                  lastActivity: nil,
-                                  in: context)
-            [message2, message4].forEach { alex.addToMessages($0) }
+            let channels = ChatRequest.channels
+            var channels_db: [Channel_db] = []
+            channels.forEach {
+                let channel_db = Channel_db(identifier: $0.identifier,
+                                            name: $0.name,
+                                            lastMessage: $0.lastMessage,
+                                            lastActivity: $0.lastActivity,
+                                            in: context)
+                channels_db.append(channel_db)
+                
+                let messagesArray = ChatRequest.messages
+                for i in 0...messagesArray.count - 1 {
+                    let messages = messagesArray[i]
+                    var messages_db: [Message_db] = []
+                    if messages.count > 0 {
+                        messages.forEach {
+                            messages_db.append(Message_db(content: $0.content,
+                                                          created: $0.created,
+                                                          senderId: $0.senderId,
+                                                          senderName: $0.senderName,
+                                                          in: context))
+                        }
+                        messages_db.forEach {
+                            if channel_db.identifier == ChatRequest.docId[i] {
+                                channel_db.addToMessages($0)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
