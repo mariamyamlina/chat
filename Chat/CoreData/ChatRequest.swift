@@ -11,7 +11,7 @@ import CoreData
 
 struct ChatRequest {
     static var channels: [Channel] = []
-    static var messages: [[Message]] = []
+    static var messages: [Int: [Message]] = [:]
     static var docId: [String] = []
     
     let coreDataStack: CoreDataStack
@@ -24,6 +24,7 @@ struct ChatRequest {
         coreDataStack.performSave { context in
             let channels = ChatRequest.channels
             var channels_db: [Channel_db] = []
+            var channelIndex = 0
             channels.forEach {
                 let channel_db = Channel_db(identifier: $0.identifier,
                                             name: $0.name,
@@ -33,24 +34,21 @@ struct ChatRequest {
                 channels_db.append(channel_db)
                 
                 let messagesArray = ChatRequest.messages
-                for i in 0...messagesArray.count - 1 {
-                    let messages = messagesArray[i]
-                    var messages_db: [Message_db] = []
-                    if messages.count > 0 {
-                        messages.forEach {
-                            messages_db.append(Message_db(content: $0.content,
-                                                          created: $0.created,
-                                                          senderId: $0.senderId,
-                                                          senderName: $0.senderName,
-                                                          in: context))
-                        }
-                        messages_db.forEach {
-                            if channel_db.identifier == ChatRequest.docId[i] {
-                                channel_db.addToMessages($0)
-                            }
-                        }
+                let messages = messagesArray[channelIndex]
+                var messages_db: [Message_db] = []
+                if (messages?.count ?? -1) > 0 {
+                    messages?.forEach {
+                        messages_db.append(Message_db(content: $0.content,
+                                                      created: $0.created,
+                                                      senderId: $0.senderId,
+                                                      senderName: $0.senderName,
+                                                      in: context))
+                    }
+                    messages_db.forEach {
+                        channels_db[channelIndex].addToMessages($0)
                     }
                 }
+                channelIndex += 1
             }
         }
     }

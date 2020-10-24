@@ -16,10 +16,6 @@ extension Channel_db {
                      lastActivity: Date?,
                      in context: NSManagedObjectContext) {
         self.init(context: context)
-//        let name = String(describing: type(of: self))
-//        let entity = NSEntityDescription.entity(forEntityName: name, in: context)!
-//        self.init(entity: entity, insertInto: context)
-        
         self.identifier = identifier
         self.name = name
         self.lastMessage = lastMessage
@@ -27,7 +23,7 @@ extension Channel_db {
     }
     
     var about: String {
-        let description = "\(String(describing: name)) with ID: \(String(describing: identifier)) \n"
+        let description = "\(String(describing: name)) \n"
         let messages = self.messages?.allObjects
             .compactMap { $0 as? Message_db }
             .map { "\t\t\t\($0.about)" }
@@ -44,10 +40,6 @@ extension Message_db {
                      senderName: String,
                      in context: NSManagedObjectContext) {
         self.init(context: context)
-//        let name = String(describing: type(of: self))
-//        let entity = NSEntityDescription.entity(forEntityName: name, in: context)!
-//        self.init(entity: entity, insertInto: context)
-        
         self.content = content
         self.created = created
         self.senderId = senderId

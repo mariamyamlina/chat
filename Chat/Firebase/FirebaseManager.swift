@@ -26,7 +26,6 @@ class FirebaseManager {
     var coreDataStack = CoreDataStack()
     
     func getInfoAndWriteToCoreData() {
-        ChatRequest.channels.removeAll()
         reference.getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
             guard let snapshot = querySnapshot else { return }
@@ -49,8 +48,7 @@ class FirebaseManager {
             for i in 0...ChatRequest.channels.count - 1 {
                 group.enter()
                 var messages: [Message] = []
-                let id = ChatRequest.docId[i]
-                self.reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
+                self.reference.document(ChatRequest.docId[i]).collection("messages").getDocuments { (querySnapshot, error) in
                     guard error == nil else { return }
                     guard let snapshot = querySnapshot else { return }
                     for document in snapshot.documents {
@@ -65,7 +63,7 @@ class FirebaseManager {
                                               senderName: senderNameFromFB)
                         messages.append(message)
                     }
-                    ChatRequest.messages.append(messages)
+                    ChatRequest.messages[i] = messages
                     group.leave()
                     
                 }

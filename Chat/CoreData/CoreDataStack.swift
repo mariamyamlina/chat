@@ -85,13 +85,13 @@ class CoreDataStack {
     
     // MARK: - Save Context
     
-    func performSave(_ block: (NSManagedObjectContext) -> Void) {
+    func performSave(_ block: @escaping (NSManagedObjectContext) -> Void) {
         let context = saveContext()
-        context.performAndWait {
+        context.perform {
             block(context)
             if context.hasChanges {
                 do {
-                    try performSave(in: context)
+                    try self.performSave(in: context)
                 } catch {
                     assertionFailure(error.localizedDescription)
                 }
@@ -146,19 +146,6 @@ class CoreDataStack {
             } catch {
                 fatalError(error.localizedDescription)
             }
-        }
-    }
-    
-    // MARK: - Delete
-    
-    func deleteChannelsRequest(in context: NSManagedObjectContext) {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "Channel_db")
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
-        do {
-            try persistentStoreCoordinator.execute(deleteRequest, with: context)
-        } catch let error as NSError {
-            print(error.localizedDescription)
         }
     }
 }

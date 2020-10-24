@@ -69,7 +69,6 @@ extension GCDDataManager: DataManagerProtocol {
                 } else {
                     succeded = .error
                 }
-                succeded
                 completion(succeded)
             }
         }
