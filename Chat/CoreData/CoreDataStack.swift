@@ -84,9 +84,7 @@ class CoreDataStack {
     }
     
     // MARK: - Save Context
-    
-    let group = DispatchGroup()
-    
+
     func performSave(_ block: (NSManagedObjectContext) -> Void) {
         let context = saveContext()
         context.performAndWait {
@@ -106,10 +104,13 @@ class CoreDataStack {
         if let parent = context.parent {
             parent.performAndWait {
                 do {
-                    try performSave(in: parent)
+                    try parent.save()
                 } catch {
                     assertionFailure(error.localizedDescription)
                 }
+            }
+            if let grandParent = parent.parent {
+                try grandParent.save()
             }
         }
     }
