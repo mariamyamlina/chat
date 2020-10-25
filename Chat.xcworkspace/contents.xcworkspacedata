@@ -2,6 +2,18 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/mariamyamlina/Desktop/Swift/TinkoffFintech/Chat/Chat/CoreData/MessageDB+CoreDataClass.swift">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/mariamyamlina/Desktop/Swift/TinkoffFintech/Chat/Chat/CoreData/MessageDB+CoreDataProperties.swift">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/mariamyamlina/Desktop/Swift/TinkoffFintech/Chat/Chat/CoreData/ChannelDB+CoreDataClass.swift">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/mariamyamlina/Desktop/Swift/TinkoffFintech/Chat/Chat/CoreData/ChannelDB+CoreDataProperties.swift">
+   </FileRef>
+   <FileRef
       location = "group:Chat.xcodeproj">
    </FileRef>
    <FileRef

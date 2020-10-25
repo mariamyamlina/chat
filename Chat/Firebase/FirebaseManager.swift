@@ -65,7 +65,6 @@ class FirebaseManager {
                     }
                     ChatRequest.messages[i] = messages
                     group.leave()
-                    
                 }
             }
             group.notify(queue: .main) {

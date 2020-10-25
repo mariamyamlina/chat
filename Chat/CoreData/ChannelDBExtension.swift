@@ -1,5 +1,5 @@
 //
-//  ObjectsExtensions.swift
+//  ChannelDBExtension.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 23.10.2020.
@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-extension Channel_db {
+extension ChannelDB {
     convenience init(identifier: String,
                      name: String,
                      lastMessage: String?,
@@ -23,30 +23,22 @@ extension Channel_db {
     }
     
     var about: String {
-        let description = "\(String(describing: name)) \n"
+        let description = "Channel's '\(name)' info. \n"
+        let count = self.messages?.allObjects.count ?? 0
+        var messageCount: String = ""
+        switch count {
+        case 0:
+            messageCount = "This channel is empty \n"
+        case 1:
+            messageCount = "This channel has \(count) message: \n"
+        default:
+            messageCount = "This channel has \(count) messages: \n"
+        }
         let messages = self.messages?.allObjects
-            .compactMap { $0 as? Message_db }
+            .compactMap { $0 as? MessageDB }
             .map { "\t\t\t\($0.about)" }
             .joined(separator: "\n") ?? ""
 
-        return description + messages
-    }
-}
-
-extension Message_db {
-    convenience init(content: String,
-                     created: Date,
-                     senderId: String,
-                     senderName: String,
-                     in context: NSManagedObjectContext) {
-        self.init(context: context)
-        self.content = content
-        self.created = created
-        self.senderId = senderId
-        self.senderName = senderName
-    }
-    
-    var about: String {
-        return "Message: \(String(describing: content))"
+        return description + messageCount + messages
     }
 }

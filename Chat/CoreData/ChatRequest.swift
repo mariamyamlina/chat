@@ -23,33 +23,36 @@ struct ChatRequest {
     func makeRequest() {
         coreDataStack.performSave { context in
             let channels = ChatRequest.channels
-            var channels_db: [Channel_db] = []
+            var channelsDB: [ChannelDB] = []
             var channelIndex = 0
             channels.forEach {
-                let channel_db = Channel_db(identifier: $0.identifier,
+                let channelDB = ChannelDB(identifier: $0.identifier,
                                             name: $0.name,
                                             lastMessage: $0.lastMessage,
                                             lastActivity: $0.lastActivity,
                                             in: context)
-                channels_db.append(channel_db)
+                channelsDB.append(channelDB)
                 
                 let messagesArray = ChatRequest.messages
                 let messages = messagesArray[channelIndex]
-                var messages_db: [Message_db] = []
+                var messagesDB: [MessageDB] = []
                 if (messages?.count ?? -1) > 0 {
                     messages?.forEach {
-                        messages_db.append(Message_db(content: $0.content,
+                        messagesDB.append(MessageDB(content: $0.content,
                                                       created: $0.created,
                                                       senderId: $0.senderId,
                                                       senderName: $0.senderName,
                                                       in: context))
                     }
-                    messages_db.forEach {
-                        channels_db[channelIndex].addToMessages($0)
+                    messagesDB.forEach {
+                        channelsDB[channelIndex].addToMessages($0)
                     }
                 }
                 channelIndex += 1
             }
         }
+        ChatRequest.channels = []
+        ChatRequest.messages = [:]
+        ChatRequest.docId = []
     }
 }

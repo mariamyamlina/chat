@@ -87,7 +87,7 @@ class CoreDataStack {
     
     func performSave(_ block: @escaping (NSManagedObjectContext) -> Void) {
         let context = saveContext()
-        context.perform {
+        context.performAndWait {
             block(context)
             if context.hasChanges {
                 do {
@@ -138,11 +138,15 @@ class CoreDataStack {
     
     func printDatabaseStatistics() {
         mainContext.perform {
+            var counter = 1
             do {
-                let count = try self.mainContext.count(for: Channel_db.fetchRequest())
+                let count = try self.mainContext.count(for: ChannelDB.fetchRequest())
                 print("\(count) каналов")
-                let array = try self.mainContext.fetch(Channel_db.fetchRequest()) as? [Channel_db] ?? []
-                array.forEach { print($0.about) }
+                let array = try self.mainContext.fetch(ChannelDB.fetchRequest()) as? [ChannelDB] ?? []
+                array.forEach {
+                    print("\(counter). \($0.about)")
+                    counter += 1
+                }
             } catch {
                 fatalError(error.localizedDescription)
             }
