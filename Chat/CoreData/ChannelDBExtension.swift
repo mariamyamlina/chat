@@ -28,11 +28,11 @@ extension ChannelDB {
         var messageCount: String = ""
         switch count {
         case 0:
-            messageCount = "This channel is empty \n"
+            messageCount = "This channel is empty. \n"
         case 1:
-            messageCount = "This channel has \(count) message: \n"
+            messageCount = "This channel has \(count) message. \n"
         default:
-            messageCount = "This channel has \(count) messages: \n"
+            messageCount = "This channel has \(count) messages. \n"
         }
         let messages = self.messages?.allObjects
             .compactMap { $0 as? MessageDB }

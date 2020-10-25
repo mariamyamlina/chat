@@ -88,22 +88,6 @@ class CoreDataStack {
     let group = DispatchGroup()
     
     func performSave(_ block: (NSManagedObjectContext) -> Void) {
-//        let context = saveContext()
-//        context.performAndWait {
-//            block(context)
-//            if context.hasChanges {
-//                do {
-//                    group.enter()
-//                    group.enter()
-//                    group.enter()
-//                    try self.performSave(in: context)
-//                    group.wait()
-//                } catch {
-//                    assertionFailure(error.localizedDescription)
-//                }
-//            }
-//        }
-        
         let context = saveContext()
         context.performAndWait {
             block(context)
@@ -115,40 +99,6 @@ class CoreDataStack {
                 }
             }
         }
-//
-//        let savecontext = saveContext()
-//        savecontext.performAndWait {
-//            block(savecontext)
-//            if savecontext.hasChanges {
-//                do {
-//                    try savecontext.save()
-//
-//                    let maincontext = savecontext.parent
-//                    maincontext?.performAndWait {
-//                        if let maincontextHasChanges = maincontext?.hasChanges, maincontextHasChanges {
-//                            do {
-//                                try maincontext?.save()
-//
-//                                let writtercontext = maincontext?.parent
-//                                writtercontext?.performAndWait {
-//                                    if let writtercontextHasChanges = writtercontext?.hasChanges, writtercontextHasChanges {
-//                                        do {
-//                                            try writtercontext?.save()
-//                                        } catch {
-//                                            assertionFailure(error.localizedDescription)
-//                                        }
-//                                    }
-//                                }
-//                            } catch {
-//                                assertionFailure(error.localizedDescription)
-//                            }
-//                        }
-//                    }
-//                } catch {
-//                    assertionFailure(error.localizedDescription)
-//                }
-//            }
-//        }
     }
 
     private func performSave(in context: NSManagedObjectContext) throws {
@@ -162,41 +112,6 @@ class CoreDataStack {
                 }
             }
         }
-        
-//        if context == mainContext {
-//
-//        } else {
-//            try context.save()
-//            self.group.leave()
-//            if let contextParent = context.parent {
-//                DispatchQueue.main.async {
-//                    do {
-//                        try contextParent.save()
-//                        self.group.leave()
-//                    } catch { }
-//                }
-//                if let contextGrandParent = contextParent.parent {
-//                    try contextGrandParent.save()
-//                    group.leave()
-//                }
-//            }
-//        }
-        
-//        print(context == mainContext)
-//        if context == mainContext {
-//            DispatchQueue.main.async {
-//                do {
-//                    try context.save()
-//                    self.group.leave()
-//                } catch { }
-//            }
-//        } else {
-//            try context.save()
-//            group.leave()
-//        }
-//        if let parent = context.parent {
-//            try self.performSave(in: parent)
-//        }
     }
     
     // MARK: - Observers
