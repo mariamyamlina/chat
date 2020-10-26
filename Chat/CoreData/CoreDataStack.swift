@@ -12,6 +12,16 @@ import CoreData
 class CoreDataStack {
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
     
+    static var shared: CoreDataStack = {
+        return CoreDataStack()
+    }()
+    
+    private init() { }
+    
+    deinit {
+        disableObservers()
+    }
+    
     // MARK: - URL
     
     private var storeUrl: URL = {
@@ -121,21 +131,28 @@ class CoreDataStack {
                                        object: mainContext)
     }
     
+    func disableObservers() {
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.removeObserver(self,
+                                          name: NSNotification.Name.NSManagedObjectContextObjectsDidChange,
+                                          object: mainContext)
+    }
+    
     @objc
     private func managedObjectContextObjectsDidChange(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
         didUpdateDataBase?(self)
         
         if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>, inserts.count > 0 {
-            print("Добавлено объектов:", inserts.count)
+            Loger.printDBLog("Added", inserts.count)
         }
         
         if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>, updates.count > 0 {
-            print("Обновлено объектов:", updates.count)
+            Loger.printDBLog("Updated", updates.count)
         }
         
         if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
-            print("Удалено объектов:", deletes.count)
+            Loger.printDBLog("Deleted", deletes.count)
         }
     }
     
@@ -143,16 +160,16 @@ class CoreDataStack {
     
     func printDatabaseStatistics() {
         mainContext.perform {
-            var counter = 1
             do {
                 let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
                 let dateSortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
                 request.sortDescriptors = [dateSortDescriptor]
+                var counter = 1
                 let count = try self.mainContext.count(for: request)
-                print("\(count) каналов")
+                Loger.printDBStatLog(count, nil, nil)
                 let array = try self.mainContext.fetch(request)
                 array.forEach {
-                    print("\(counter). \($0.about)")
+                    Loger.printDBStatLog(nil, counter, $0.about)
                     counter += 1
                 }
             } catch {

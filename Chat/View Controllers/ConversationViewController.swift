@@ -58,6 +58,10 @@ class ConversationViewController: LogViewController {
     // MARK: - Firebase
     
     func getMessagesCompletion() {
+        guard let id = ConversationViewController.channel?.identifier else { return }
+        let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
+        chatRequest.makeRequest(messages: ConversationViewController.messages, channelId: id)
+        
         sortMessages()
         if !ConversationViewController.messages.isEmpty {
             noMessagesLabel.isHidden = true

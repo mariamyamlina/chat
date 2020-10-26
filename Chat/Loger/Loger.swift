@@ -9,10 +9,10 @@
 import UIKit
 
 class Loger {
-
     static let appLogIndicator = false
     static let vcLogIndicator = false
     static let buttonLogIndicator = false
+    static let dbLogIndicator = true
     
     static var printAppLog = {(message: String, current: UIApplication.State, function: String) in
         if Loger.appLogIndicator {
@@ -43,6 +43,23 @@ class Loger {
     static var printButtonLog = {(button: UIButton, function: String) in
         if Loger.buttonLogIndicator {
             print("Button frame from \(function):\n\(button.frame)\n")
+        }
+    }
+    
+    static var printDBLog = {(modificationType: String, count: Int) in
+        if Loger.dbLogIndicator {
+            print(modificationType + " objects count: \(count)")
+        }
+    }
+    
+    static var printDBStatLog = {(count: Int?, counter: Int?, infoAbout: String?) in
+        if Loger.dbLogIndicator {
+            if let count = count {
+                print("\(count) каналов")
+            } else if let counter = counter,
+                      let infoAbout = infoAbout {
+                print("\(counter). " + infoAbout)
+            }
         }
     }
 }

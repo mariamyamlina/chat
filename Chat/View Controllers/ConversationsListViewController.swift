@@ -73,6 +73,9 @@ class ConversationsListViewController: LogViewController {
     // MARK: - Firebase
     
     func getChannelsCompletion() {
+        let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
+        chatRequest.makeRequest(channels: ConversationsListViewController.channels)
+        
         sortChannels()
         tableView.reloadData()
     }

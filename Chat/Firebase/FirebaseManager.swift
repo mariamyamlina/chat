@@ -45,11 +45,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
                                       lastActivity: lastActivityFromFB)
                 ConversationsListViewController.channels.append(channel)
                 ConversationsListViewController.images.append(generateImage())
-            }
-
-            let chatRequest = ChatRequest(coreDataStack: coreDataStack)
-            chatRequest.makeChannelsRequest()
-            
+            }            
             completion()
         }
     }
@@ -81,10 +77,6 @@ extension FirebaseManager: FirebaseManagerProtocol {
                                       senderName: senderNameFromFB)
                 ConversationViewController.messages.append(message)
             }
-
-            let chatRequest = ChatRequest(coreDataStack: coreDataStack)
-            chatRequest.makeMessagesRequest(channelId: id)
-            
             completion()
         }
     }

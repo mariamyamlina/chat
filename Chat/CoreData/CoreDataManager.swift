@@ -9,32 +9,29 @@
 import Foundation
 import CoreData
 
-struct ChatRequest {
+struct CoreDataManager {
     let coreDataStack: CoreDataStack
     
     init(coreDataStack: CoreDataStack) {
         self.coreDataStack = coreDataStack
     }
     
-    func makeChannelsRequest() {
+    func makeRequest(channels: [Channel]) {
         coreDataStack.performSave { context in
-            let channels = ConversationsListViewController.channels
-            var channelsDB: [ChannelDB] = []
             channels.forEach {
-                channelsDB.append(ChannelDB(identifier: $0.identifier,
+                _ = ChannelDB(identifier: $0.identifier,
                                             name: $0.name,
                                             lastMessage: $0.lastMessage,
                                             lastActivity: $0.lastActivity,
-                                            in: context))
+                                            in: context)
             }
         }
     }
     
-    func makeMessagesRequest(channelId: String) {
+    func makeRequest(messages: [Message], channelId: String) {
         coreDataStack.performSave { context in
-            let messages = ConversationViewController.messages
-            var messagesDB: [MessageDB] = []
             if messages.count > 0 {
+                var messagesDB: [MessageDB] = []
                 messages.forEach {
                     messagesDB.append(MessageDB(identifier: $0.identifier,
                                                 content: $0.content,
@@ -43,11 +40,9 @@ struct ChatRequest {
                                                 senderName: $0.senderName,
                                                 in: context))
                 }
-
                 let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
                 let predicate = NSPredicate(format: "identifier = %@", channelId)
                 request.predicate = predicate
-                
                 do {
                     let channel = try context.fetch(request)
                     messagesDB.forEach {

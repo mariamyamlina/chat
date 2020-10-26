@@ -61,7 +61,7 @@
 		99A5733F253C7B3E00899AAC /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A5733E253C7B3E00899AAC /* FirebaseManager.swift */; };
 		99E52A6C2542EF40007BD9B6 /* Chat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A6A2542EF40007BD9B6 /* Chat.xcdatamodeld */; };
 		99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A6E2542F313007BD9B6 /* CoreDataStack.swift */; };
-		99E52A712542F88F007BD9B6 /* ChatRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A702542F88F007BD9B6 /* ChatRequest.swift */; };
+		99E52A712542F88F007BD9B6 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A702542F88F007BD9B6 /* CoreDataManager.swift */; };
 		99E52A732542FBF4007BD9B6 /* ChannelDBExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A722542FBF4007BD9B6 /* ChannelDBExtension.swift */; };
 		99E5F5C4253C8DDD004C71BF /* FirebaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */; };
 		99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B6962526850C00117A04 /* ThemesViewController.swift */; };
@@ -131,7 +131,7 @@
 		99A5733E253C7B3E00899AAC /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		99E52A6B2542EF40007BD9B6 /* Chat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Chat.xcdatamodel; sourceTree = "<group>"; };
 		99E52A6E2542F313007BD9B6 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
-		99E52A702542F88F007BD9B6 /* ChatRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRequest.swift; sourceTree = "<group>"; };
+		99E52A702542F88F007BD9B6 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		99E52A722542FBF4007BD9B6 /* ChannelDBExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDBExtension.swift; sourceTree = "<group>"; };
 		99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManagerProtocol.swift; sourceTree = "<group>"; };
 		99E8B6962526850C00117A04 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
@@ -335,7 +335,7 @@
 			children = (
 				99E52A6A2542EF40007BD9B6 /* Chat.xcdatamodeld */,
 				99E52A6E2542F313007BD9B6 /* CoreDataStack.swift */,
-				99E52A702542F88F007BD9B6 /* ChatRequest.swift */,
+				99E52A702542F88F007BD9B6 /* CoreDataManager.swift */,
 				993846F92545BCCC00D1A40F /* MessageDB+CoreDataClass.swift */,
 				993846FA2545BCCC00D1A40F /* MessageDB+CoreDataProperties.swift */,
 				993846FC2545BCCC00D1A40F /* ChannelDB+CoreDataClass.swift */,
@@ -511,7 +511,7 @@
 				99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */,
 				997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */,
 				994F1CA02534CAD1003FC809 /* ConfigurableView.swift in Sources */,
-				99E52A712542F88F007BD9B6 /* ChatRequest.swift in Sources */,
+				99E52A712542F88F007BD9B6 /* CoreDataManager.swift in Sources */,
 				99599C98253731CA00FB2264 /* DataManagerType.swift in Sources */,
 				99E5F5C4253C8DDD004C71BF /* FirebaseManagerProtocol.swift in Sources */,
 				995DEEFA2534D1A1000BEF15 /* WriteOperations.swift in Sources */,
