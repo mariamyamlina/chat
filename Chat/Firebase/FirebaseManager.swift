@@ -86,9 +86,9 @@ extension FirebaseManager: FirebaseManagerProtocol {
         guard let id = ConversationViewController.channel?.identifier else { return }
         let name = ProfileViewController.name ?? "Marina Dudarenko"
         let message = ["content": text,
-                           "created": Timestamp(date: Date()),
-                           "senderId": uuid,
-                           "senderName": name] as [String: Any]
+                       "created": Timestamp(date: Date()),
+                       "senderId": uuid,
+                       "senderName": name] as [String: Any]
         reference.document(id).collection("messages").addDocument(data: message)        
         getMessages(completion: completion)
     }

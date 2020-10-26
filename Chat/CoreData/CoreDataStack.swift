@@ -161,8 +161,9 @@ class CoreDataStack {
     // MARK: - CoreData Logs
     
     func printDatabaseStatistics() {
-        mainContext.perform {
+        mainContext.perform { [weak self] in
             do {
+                guard let self = self else { return }
                 let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
                 let dateSortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
                 request.sortDescriptors = [dateSortDescriptor]
