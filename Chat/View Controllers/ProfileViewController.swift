@@ -188,6 +188,7 @@ class ProfileViewController: LogViewController {
     func loadCompletion(_ succeed: Result) {
         if succeed == .success {
             activityIndicator.stopAnimating()
+            profileImageView.uploadImageCompletion(true, true, true)
             configureAlert("Data has been successfully saved", nil, false)
             editProfileButton.isEnabled = true
             setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)

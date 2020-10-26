@@ -22,7 +22,7 @@ class ConversationViewController: LogViewController {
     @IBAction func sendButtonTapped(_ sender: UIButton) {
         guard let message = textField.text else { return }
         if !message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            fbManager.createMessage(message, completion: createMessageCompletion)
+            fbManager.createMessage(message, completion: getMessagesCompletion)
         }
         textField.text = ""
     }
@@ -57,22 +57,12 @@ class ConversationViewController: LogViewController {
     
     // MARK: - Firebase
     
-    func createMessageCompletion() {
-        if lastRowIndex >= 0 {
-            tableView.beginUpdates()
-               tableView.insertRows(at: [IndexPath(row: lastRowIndex + 1, section: 0)], with: .right)
-            tableView.endUpdates()
-        } else {
-            tableView.reloadSections([0], with: .fade)
-        }
-    }
-    
     func getMessagesCompletion() {
         sortMessages()
         if !ConversationViewController.messages.isEmpty {
             noMessagesLabel.isHidden = true
         }
-        tableView.reloadData()
+        tableView.reloadSections([0], with: .fade)
     }
     
     func sortMessages() {
@@ -191,7 +181,9 @@ class ConversationViewController: LogViewController {
     }
 }
 
-extension ConversationViewController: UITableViewDelegate, UITableViewDataSource {
+// MARK: - UITableViewDataSource
+
+extension ConversationViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let numberOfRows = ConversationViewController.messages.count
         lastRowIndex = numberOfRows - 1
@@ -214,7 +206,11 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
         cell?.configure(with: messageModel)
         return cell ?? UITableViewCell()
     }
-    
+}
+
+// MARK: - UITableViewDelegate
+
+extension ConversationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         textField.endEditing(true)
     }

@@ -97,17 +97,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
                            "created": Timestamp(date: Date()),
                            "senderId": uuid,
                            "senderName": name] as [String: Any]
-//        let message = Message(identifier: ,
-//                              content: text,
-//                              created: Date(),
-//                              senderId: uuid,
-//                              senderName: name)
-        reference.document(id).collection("messages").addDocument(data: jsonMessage)
-//        ConversationViewController.messages.append(message)
-//
-//        let chatRequest = ChatRequest(coreDataStack: coreDataStack)
-//        chatRequest.makeMessagesRequest(channelId: id)
-        
+        reference.document(id).collection("messages").addDocument(data: jsonMessage)        
         getMessages(completion: completion)
     }
 }

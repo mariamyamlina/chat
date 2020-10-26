@@ -246,7 +246,9 @@ class ConversationsListViewController: LogViewController {
 
 }
 
-extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
+// MARK: - UITableViewDataSource
+
+extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return ConversationsListViewController.channels.count
     }
@@ -262,7 +264,11 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
         applyTheme(for: cell)
         return cell ?? UITableViewCell()
     }
-    
+}
+
+// MARK: - UITableViewDelegate
+
+extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
