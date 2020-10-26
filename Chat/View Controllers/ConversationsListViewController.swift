@@ -274,7 +274,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
         conversationController?.image = cell?.configureImageSubview()
 
         let channel = ConversationsListViewController.channels[indexPath.row]
-        ConversationViewController.docId = channel.identifier
+        ConversationViewController.channel = channel
 
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationController?.pushViewController(conversationController ?? UIViewController(), animated: true)

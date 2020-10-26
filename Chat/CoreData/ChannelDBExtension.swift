@@ -28,7 +28,7 @@ extension ChannelDB {
         var messageCount: String = ""
         switch count {
         case 0:
-            messageCount = "This channel is empty. \n"
+            messageCount = "This channel is still empty. \n"
         case 1:
             messageCount = "This channel has \(count) message. \n"
         default:

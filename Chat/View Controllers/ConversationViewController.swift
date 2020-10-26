@@ -32,7 +32,7 @@ class ConversationViewController: LogViewController {
     var lastRowIndex: Int = 0
     
     static var messages: [Message] = []
-    static var docId: String?
+    static var channel: Channel?
     var fbManager = FirebaseManager()
     
     deinit {

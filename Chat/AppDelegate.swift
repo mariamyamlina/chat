@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 
 let themeWindow = UIWindow()
+let coreDataStack = CoreDataStack()
 
 extension UIWindow {
     func initTheme() {
@@ -32,9 +33,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         themeWindow.makeKey()
         
         FirebaseApp.configure()
-        
-        let fbManager = FirebaseManager()
-        fbManager.getInfoAndWriteToCoreData()
+
+        coreDataStack.didUpdateDataBase = { stack in
+            stack.printDatabaseStatistics()
+        }
+        coreDataStack.enableObservers()
         
         return true
     }

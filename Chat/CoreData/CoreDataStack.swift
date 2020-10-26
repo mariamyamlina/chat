@@ -145,19 +145,15 @@ class CoreDataStack {
         mainContext.perform {
             var counter = 1
             do {
-                var about: [String] = []
-                let count = try self.mainContext.count(for: ChannelDB.fetchRequest())
-                let array = try self.mainContext.fetch(ChannelDB.fetchRequest()) as? [ChannelDB] ?? []
+                let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+                let dateSortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
+                request.sortDescriptors = [dateSortDescriptor]
+                let count = try self.mainContext.count(for: request)
+                print("\(count) каналов")
+                let array = try self.mainContext.fetch(request)
                 array.forEach {
-                    about.append("\(counter). \($0.about)")
+                    print("\(counter). \($0.about)")
                     counter += 1
-                }
-                let queue = DispatchQueue(label: "com.chat.coredata", qos: .background)
-                queue.async {
-                    print("\(count) каналов")
-                    about.forEach {
-                        print($0)
-                    }
                 }
             } catch {
                 fatalError(error.localizedDescription)
