@@ -41,8 +41,7 @@ class CoreDataStack {
     }()
     
     // MARK: - Coordinator
-    
-    // TODO: - Вынести в отдельную очередь
+
     private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         
@@ -104,13 +103,10 @@ class CoreDataStack {
         if let parent = context.parent {
             parent.performAndWait {
                 do {
-                    try parent.save()
+                    try performSave(in: parent)
                 } catch {
                     assertionFailure(error.localizedDescription)
                 }
-            }
-            if let grandParent = parent.parent {
-                try grandParent.save()
             }
         }
     }
@@ -149,12 +145,19 @@ class CoreDataStack {
         mainContext.perform {
             var counter = 1
             do {
+                var about: [String] = []
                 let count = try self.mainContext.count(for: ChannelDB.fetchRequest())
-                print("\(count) каналов")
                 let array = try self.mainContext.fetch(ChannelDB.fetchRequest()) as? [ChannelDB] ?? []
                 array.forEach {
-                    print("\(counter). \($0.about)")
+                    about.append("\(counter). \($0.about)")
                     counter += 1
+                }
+                let queue = DispatchQueue(label: "com.chat.coredata", qos: .background)
+                queue.async {
+                    print("\(count) каналов")
+                    about.forEach {
+                        print($0)
+                    }
                 }
             } catch {
                 fatalError(error.localizedDescription)
