@@ -85,11 +85,11 @@ extension FirebaseManager: FirebaseManagerProtocol {
         let uuid = universallyUniqueIdentifier
         guard let id = ConversationViewController.channel?.identifier else { return }
         let name = ProfileViewController.name ?? "Marina Dudarenko"
-        let jsonMessage = ["content": text,
+        let message = ["content": text,
                            "created": Timestamp(date: Date()),
                            "senderId": uuid,
                            "senderName": name] as [String: Any]
-        reference.document(id).collection("messages").addDocument(data: jsonMessage)        
+        reference.document(id).collection("messages").addDocument(data: message)        
         getMessages(completion: completion)
     }
 }
