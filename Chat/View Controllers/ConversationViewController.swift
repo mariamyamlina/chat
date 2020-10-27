@@ -9,7 +9,6 @@
 import UIKit
 
 class ConversationViewController: LogViewController {
-
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var addButton: UIButton!
@@ -20,15 +19,24 @@ class ConversationViewController: LogViewController {
     @IBOutlet weak var noMessagesLabel: UILabel!
     @IBOutlet weak var borderLine: UIView!
     
+    @IBAction func sendButtonTapped(_ sender: UIButton) {
+        guard let message = textField.text else { return }
+        if !message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            fbManager.createMessage(message)
+        }
+        textField.text = ""
+    }
+    
     var image: UIImageView?
     var name: String?
-    var lastMessage: String?
+    var lastRowIndex: Int = 0
     
-    private var lastRowIndex: Int = 0
-    private var stringMessage: String = ""
+    var messages: [Message] = []
+    var docId: String?
+    var fbManager = FirebaseManager()
     
-    typealias messageModel = [(MessageTableViewCell.MessageCellModel, UIColor, Date)]
-    var model: messageModel = []
+    typealias MessageModel = [(MessageTableViewCell.MessageCellModel, UIColor, Date)]
+    var model: MessageModel = []
     
     deinit {
         removeKeyboardNotifications()
@@ -36,17 +44,22 @@ class ConversationViewController: LogViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         applyTheme()
-        
         configureNavigationBar()
         configureTableView()
-        
         configureMessageInputView()
         addKeyboardNotifications()
+
+        fbManager.messagesViewController = self
+        fbManager.getMessages()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        let conversationsListVC = navigationController?.viewControllers.first as? ConversationsListViewController
+        fbManager.channelsViewController = conversationsListVC
+        fbManager.getChannels()
+    }
     
     // MARK: - Theme
     
@@ -54,12 +67,10 @@ class ConversationViewController: LogViewController {
         if #available(iOS 13.0, *) {
         } else {
             let currentTheme = Theme.current.themeOptions
-            
             view.backgroundColor = currentTheme.backgroundColor
             textField.keyboardAppearance = currentTheme.keyboardAppearance
         }
     }
-    
     
     // MARK: - MessageInputView
     
@@ -71,15 +82,13 @@ class ConversationViewController: LogViewController {
         
         textField.backgroundColor = currentTheme.textFieldBackgroundColor
         textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
-        attributes: [NSAttributedString.Key.font : UIFont(name: "SFProText-Regular", size: 17) as Any, NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
+        attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any, NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
 
         sendButton.isEnabled = false
         sendButton.isHidden = true
         
         messageInputContainer.backgroundColor = currentTheme.barColor
         borderLine.backgroundColor = Colors.separatorColor()
-        
-        view.addSubview(messageInputContainer)
 
         topConstraint.isActive = false
         topConstraint = messageInputContainer.topAnchor.constraint(equalTo: tableView.bottomAnchor)
@@ -102,15 +111,13 @@ class ConversationViewController: LogViewController {
     
     @objc private func handleKeyBoardNotification(notification: NSNotification) {
         if let userInfo = notification.userInfo {
-            let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-            
+            let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
             let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
-
-            bottomConstraint?.constant = isKeyboardShowing ? -keyboardFrame.height : 0
+            bottomConstraint?.constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) : 0
             
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
-            }, completion: { (completed) in
+            }, completion: { (_) in
                 if isKeyboardShowing {
                     if self.lastRowIndex >= 0 {
                         self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
@@ -119,7 +126,6 @@ class ConversationViewController: LogViewController {
             })
         }
     }
-    
     
     // MARK: - Navigation
     
@@ -144,7 +150,6 @@ class ConversationViewController: LogViewController {
         topView.addSubview(viewWithTitle)
         navigationItem.titleView = viewWithTitle
     }
-
     
     // MARK: - TableView
     
@@ -158,40 +163,31 @@ class ConversationViewController: LogViewController {
         
         noMessagesLabel.textColor = Colors.separatorColor()
         
-        configureModel()
-        if !model.isEmpty {
-            noMessagesLabel.isHidden = true
-        }
-        
         tableView?.register(UINib(nibName: "MessageTableViewCell", bundle: nil), forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
     }
-    
-    private func configureModel() {
-        if let friendName = name {
-            model = ConversationModel.messages(friendName)
-        }
-    }
-
 }
 
 extension ConversationViewController: UITableViewDelegate, UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        configureModel()
-        let numberOfRows = model.count
+        let numberOfRows = messages.count
         lastRowIndex = numberOfRows - 1
         return numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         let cell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier, for: indexPath) as? MessageTableViewCell
-
-        cell?.textBubbleView.backgroundColor = model[indexPath.row].1
-        cell?.timeLabel.text = dateFormatter(date: model[indexPath.row].2, force: true)
-            
-        cell?.configure(with: model[indexPath.row].0)
-
+        let message = messages[indexPath.row]
+        let messageCellFactory = ViewModelFactory()
+        let messageModel: MessageTableViewCell.MessageCellModel
+        let currentTheme = Theme.current.themeOptions
+        if message.senderId == fbManager.universallyUniqueIdentifier {
+            cell?.textBubbleView.backgroundColor = currentTheme.outputBubbleColor
+            messageModel = messageCellFactory.messageToCell(message, .output)
+        } else {
+            cell?.textBubbleView.backgroundColor = currentTheme.inputBubbleColor
+            messageModel = messageCellFactory.messageToCell(message, .input)
+        }
+        cell?.configure(with: messageModel)
         return cell ?? UITableViewCell()
     }
     
@@ -200,20 +196,19 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        stringMessage = model[indexPath.row].0.text
+        let message = messages[indexPath.row]
+        let stringMessage = "\(message.senderName)\n\(message.content)"
 
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        var estimatedFrame = NSString(string: stringMessage + "    ").boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 16.0) as Any], context: nil)
-        
+        let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16.0) as Any]
+        var estimatedFrame = NSString(string: stringMessage + "    ").boundingRect(with: size, options: options, attributes: attr, context: nil)
         if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
             let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
             estimatedFrame.size.height = estimatedFrame.height * estimatedFrame.width / newWidth
             estimatedFrame.size.width = newWidth
         }
-        
         let rect = CGSize(width: view.frame.width, height: estimatedFrame.height + 42)
-        
         return rect.height
     }
     
@@ -231,7 +226,6 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 // MARK: - UITextFieldDelegate
 
 extension ConversationViewController: UITextFieldDelegate {
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -246,5 +240,4 @@ extension ConversationViewController: UITextFieldDelegate {
         sendButton.isHidden = true
         sendButton.isEnabled = false
     }
-    
 }

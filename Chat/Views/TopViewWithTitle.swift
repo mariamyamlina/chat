@@ -41,8 +41,9 @@ class TopViewWithTitle: UIView {
         ])
         
         profileImage.contentMode = .scaleAspectFill
+        profileImage.backgroundColor = Colors.profileImageGreen
         
         let currentTheme = Theme.current.themeOptions
-        nameLabel.textColor = currentTheme.inputAndCommonTextColor
+        nameLabel.textColor = currentTheme.textColor
     }
 }

@@ -19,7 +19,7 @@ class ProfileImageView: UIView {
     @IBOutlet weak var lettersLabelWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var lettersLabelHeightConstraint: NSLayoutConstraint!
     
-    static var letters: String? = nil
+    static var letters: String?
     static var fontSize: CGFloat = 120
     
     private var touchPath: UIBezierPath {return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius)}
@@ -91,7 +91,6 @@ class ProfileImageView: UIView {
         lettersLabelWidthConstraint.constant = 220
         lettersLabelHeightConstraint.constant = 110
 
-//        You can choose here how to read data by the inizialization
         readFromFile(with: .gcd)
 //        readFromFile(with: .operation)
         
@@ -123,7 +122,7 @@ class ProfileImageView: UIView {
         }
     }
     
-    func uploadImageCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) -> Void {
+    func uploadImageCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {
         if mustOverwriteName {
             lettersLabel.text = getLetters(for: ProfileViewController.name ?? "")
         }

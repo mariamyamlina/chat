@@ -36,7 +36,7 @@ class LogViewController: UIViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewDidDisappear(animated)
         Loger.printVCLog("ViewController moved from 'disappearing' to 'disappeared': \n", #function)
     }
 }
