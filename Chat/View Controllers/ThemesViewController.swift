@@ -11,7 +11,7 @@ import UIKit
 class ThemesViewController: LogViewController {
     
     var changeThemeHandler: ((_ theme: Theme) -> Void)?
-    var delegate: ThemesPickerDelegate?
+    weak var delegate: ThemesPickerDelegate?
     private var themeManager: ThemeManager?
     
     lazy var titleLabel: UILabel = {
@@ -35,7 +35,8 @@ class ThemesViewController: LogViewController {
         createHandler()
         
         /*
-         Retain cycle при работе с этом экраном может возникнуть, например, если self в замыкании pickHandler захватывается по сильной ссылке. В таком случае ThemesViewController содержит сильную ссылку на ThemeButton, а ThemeButton - сильную ссылку на self, то есть на ThemesViewController
+         Retain cycle при работе с этом экраном может возникнуть, например, если self в замыкании pickHandler захватывается по сильной ссылке.
+         В таком случае ThemesViewController содержит сильную ссылку на ThemeButton, а ThemeButton - сильную ссылку на self, то есть на ThemesViewController
          Неверный вариант использования замыкания-обработчика (приведет к retain cycle):
             myButton.pickHandler = {
                 self....
@@ -47,7 +48,6 @@ class ThemesViewController: LogViewController {
          */
 
     }
-    
     
     // MARK: - Theme Picker
     
@@ -73,7 +73,6 @@ class ThemesViewController: LogViewController {
             self?.delegate?.changeTheme(for: .night)
         }
     }
-    
     
     private func pickButtonTapped(_ sender: ThemeButton) {
         sender.isSelected = !sender.isSelected
@@ -136,16 +135,14 @@ class ThemesViewController: LogViewController {
         view.backgroundColor = currentTheme.settingsBackgroundColor
         if #available(iOS 13.0, *) {
         } else {
-            titleLabel.textColor = currentTheme.inputAndCommonTextColor
+            titleLabel.textColor = currentTheme.textColor
         }
     }
-    
     
     // MARK: - View
     
     private func setupViews() {
-        ThemeManager.themesViewController = self
-        themeManager = ThemeManager()
+        themeManager = ThemeManager(themesVC: self)
         
         applyTheme()
         let currentTheme = Theme.current.themeOptions
@@ -183,7 +180,6 @@ class ThemesViewController: LogViewController {
             button.backgroundView.layer.borderColor = UIColor.clear.cgColor
         }
     }
-    
     
     // MARK: - Navigation
     

@@ -14,15 +14,13 @@ enum Theme: Int, CaseIterable {
     case night
 
     var themeOptions: ThemeOptions {
-        get {
-            switch self {
-            case .classic:
-                return ClassicTheme()
-            case .day:
-                return DayTheme()
-            case .night:
-                return NightTheme()
-            }
+        switch self {
+        case .classic:
+            return ClassicTheme()
+        case .day:
+            return DayTheme()
+        case .night:
+            return NightTheme()
         }
     }
 }
@@ -32,13 +30,13 @@ extension Theme {
     private static var appTheme: Int
 
     func save() {
-        DispatchQueue(label: "Theme", qos: .userInteractive).sync {
+        DispatchQueue(label: "com.chat.theme", qos: .userInteractive).sync {
             Theme.appTheme = self.rawValue
         }
     }
 
     static var current: Theme {
-        get { return Theme(rawValue: appTheme) ?? .classic }
+        return Theme(rawValue: appTheme) ?? .classic
     }
 
     @available(iOS 13.0, *)
@@ -60,8 +58,7 @@ extension Theme {
     }
 }
 
-
-//MARK: - Property Wrapper
+// MARK: - Property Wrapper
 
 @propertyWrapper
 struct Persist<T> {
@@ -78,4 +75,3 @@ struct Persist<T> {
         self.defaultValue = defaultValue
     }
 }
-

@@ -19,8 +19,7 @@ class WriteOperation: Operation {
             if ProfileViewController.nameDidChange {
                 try ProfileViewController.name?.write(to: DataManager.nameFileURL, atomically: false, encoding: .utf8)
             }
-        }
-        catch {
+        } catch {
             nameSaved = false
         }
         ProfileViewController.nameDidChange = !nameSaved
@@ -29,8 +28,7 @@ class WriteOperation: Operation {
             if ProfileViewController.bioDidChange {
                 try ProfileViewController.bio?.write(to: DataManager.bioFileURL, atomically: false, encoding: .utf8)
             }
-        }
-        catch {
+        } catch {
             bioSaved = false
         }
         ProfileViewController.bioDidChange = !bioSaved
@@ -40,8 +38,7 @@ class WriteOperation: Operation {
                 ProfileViewController.imageDidChange {
                 try data.write(to: DataManager.imageFileURL)
             }
-        }
-        catch {
+        } catch {
             imageSaved = false
         }
         ProfileViewController.imageDidChange = !imageSaved

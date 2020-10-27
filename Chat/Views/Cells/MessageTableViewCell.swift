@@ -10,8 +10,15 @@ import UIKit
 
 class MessageTableViewCell: UITableViewCell {
     
+    enum MessageType {
+        case input
+        case output
+    }
+    
     struct MessageCellModel {
         let text: String
+        let time: Date
+        let type: MessageType
     }
     
     static let reuseIdentifier = "Message Cell"
@@ -41,7 +48,6 @@ class MessageTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         setupViews()
     }
     
@@ -60,7 +66,6 @@ class MessageTableViewCell: UITableViewCell {
     }
 }
 
-
 // MARK: - Configuration
 
 extension MessageTableViewCell: ConfigurableView {
@@ -68,15 +73,30 @@ extension MessageTableViewCell: ConfigurableView {
     
     func configure(with model: ConfigurationModel) {
         let currentTheme = Theme.current.themeOptions
-        
-        messageTextView.text = model.text
+        let messageText = model.text
+        timeLabel.text = dateFormatter(date: model.time, force: true)
+
+        if let index = messageText.firstIndex(of: "\n"), model.type == .input {
+            let nameSubstring = String(messageText[..<index])
+            let messageSubstring = String(messageText[index...])
+            let attrsBold = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16) as Any]
+            let attributedString = NSMutableAttributedString(string: nameSubstring, attributes: attrsBold)
+            let attrsRegular = [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 16) as Any]
+            let messageString = NSMutableAttributedString(string: messageSubstring, attributes: attrsRegular)
+            attributedString.append(messageString)
+            messageTextView.attributedText = attributedString
+        } else {
+            messageTextView.text = messageText
+        }
         
         backgroundColor = .clear
         selectionStyle = .none
 
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        var estimatedFrame = NSString(string: model.text + "    ").boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 16.0) as Any], context: nil)
+        
+        let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16.0) as Any]
+        var estimatedFrame = NSString(string: model.text + "    ").boundingRect(with: size, options: options, attributes: attr, context: nil)
 
         if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
             let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
@@ -84,16 +104,19 @@ extension MessageTableViewCell: ConfigurableView {
             estimatedFrame.size.width = newWidth
         }
         
+        let estimatedHeight = estimatedFrame.height
+        let estimatedWidth = estimatedFrame.width
+        
         if textBubbleView.backgroundColor == currentTheme.outputBubbleColor {
             messageTextView.textColor = currentTheme.outputTextColor
             timeLabel.textColor = currentTheme.outputTextColor
-            messageTextView.frame = CGRect(x: UIScreen.main.bounds.width - 28 - estimatedFrame.width - 16, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 28)
-            textBubbleView.frame = CGRect(x: UIScreen.main.bounds.width - 20 - estimatedFrame.width - 16 - 8, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 28)
+            messageTextView.frame = CGRect(x: UIScreen.main.bounds.width - 28 - estimatedWidth - 16, y: 0, width: estimatedWidth + 16, height: estimatedHeight + 28)
+            textBubbleView.frame = CGRect(x: UIScreen.main.bounds.width - 20 - estimatedWidth - 16 - 8, y: 0, width: estimatedWidth + 16 + 8, height: estimatedHeight + 28)
         } else {
-            messageTextView.textColor = currentTheme.inputAndCommonTextColor
-            timeLabel.textColor = currentTheme.inputAndCommonTextColor
-            messageTextView.frame = CGRect(x: 28, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 28)
-            textBubbleView.frame = CGRect(x: 20, y: 0, width: estimatedFrame.width + 16 + 8, height: estimatedFrame.height + 28)
+            messageTextView.textColor = currentTheme.textColor
+            timeLabel.textColor = currentTheme.textColor
+            messageTextView.frame = CGRect(x: 28, y: 0, width: estimatedWidth + 16, height: estimatedHeight + 28)
+            textBubbleView.frame = CGRect(x: 20, y: 0, width: estimatedWidth + 16 + 8, height: estimatedHeight + 28)
         }
     }
 }

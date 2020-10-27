@@ -9,19 +9,13 @@
 import UIKit
 
 class OperationDataManager: DataManager {
-    static var profileViewController: ProfileViewController?
+    weak var profileViewController: ProfileViewController?
     
     private let operationQueue = OperationQueue()
     private let mainOperationQueue = OperationQueue.main
-
-    override init() {
-        super.init()
-        operationQueue.qualityOfService = .userInteractive
-        OperationDataManager.profileViewController?.delegate = self
-    }
 }
 
-extension OperationDataManager: DataManagerDelegate {
+extension OperationDataManager: DataManagerProtocol {
     func writeToFile(completion: @escaping (Bool) -> Void) {
         let writeOperation = WriteOperation()
         let completionOperation = BlockOperation {
