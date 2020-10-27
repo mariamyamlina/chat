@@ -52,7 +52,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
                                       lastActivity: lastActivityFromFB)
                 ConversationsListViewController.channels.append(channel)
                 ConversationsListViewController.images.append(generateImage())
-            }            
+            }     
             completion()
         }
     }

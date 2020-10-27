@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Wendy.jpg",
+      "filename" : "Wendy-2.jpg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Wendy-1.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Wendy.jpg",
       "idiom" : "universal",
       "scale" : "3x"
     }

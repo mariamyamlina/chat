@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Token.jpg",
+      "filename" : "Token-2.jpg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Token-1.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Token.jpg",
       "idiom" : "universal",
       "scale" : "3x"
     }
