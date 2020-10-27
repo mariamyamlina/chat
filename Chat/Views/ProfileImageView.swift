@@ -19,13 +19,13 @@ class ProfileImageView: UIView {
     @IBOutlet weak var lettersLabelWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var lettersLabelHeightConstraint: NSLayoutConstraint!
     
+    static var letters: String? = nil
     static var fontSize: CGFloat = 120
     
     private var touchPath: UIBezierPath {return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius)}
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        print(frame)
         setupView()
     }
     
@@ -56,9 +56,16 @@ class ProfileImageView: UIView {
         
         lettersLabel.font = lettersLabel.font.withSize(ProfileImageView.fontSize)
         ProfileImageView.fontSize = 120
+        
+        layer.cornerRadius = profileImageWidthConstraint.constant / 2
+        clipsToBounds = true
     }
     
-    private func setupView() {
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        return touchPath.contains(point)
+    }
+    
+    func setupView() {
         let bundle = Bundle(for: ProfileImageView.self)
         bundle.loadNibNamed("ProfileImageView", owner: self, options: nil)
         addSubview(contentView)
@@ -79,16 +86,69 @@ class ProfileImageView: UIView {
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
         
-        profileImage.contentMode = .scaleAspectFill
+        profileImageWidthConstraint.constant = 240
+        profileImageHeightConstraint.constant = 240
+        lettersLabelWidthConstraint.constant = 220
+        lettersLabelHeightConstraint.constant = 110
 
-        let letters = ProfileViewController.letters
+//        You can choose here how to read data by the inizialization
+        readFromFile(with: .gcd)
+//        readFromFile(with: .operation)
+        
+        profileImage.contentMode = .scaleAspectFill
+        if profileImage.image != nil {
+            lettersLabel.isHidden = true
+        }
+
+        let letters = getLetters(for: ProfileViewController.name ?? "")
+        lettersLabel.text = letters
         let attr: [NSAttributedString.Key: Any] = [.font: UIFont(name: "Roboto-Regular", size: ProfileImageView.fontSize) as Any]
         let attrString = NSMutableAttributedString(string: letters, attributes: attr)
         lettersLabel.attributedText = attrString
         lettersLabel.textColor = Colors.lettersLabelColor
+        
+        layer.cornerRadius = profileImageWidthConstraint.constant / 2
+        clipsToBounds = true
     }
     
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        return touchPath.contains(point)
+    private func readFromFile(with dataManager: DataManagerType) {
+        if dataManager == .gcd {
+            if let gcdDataManager: GCDDataManager = DataManager.returnDataManager(of: .gcd) {
+                gcdDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: uploadImageCompletion(_:_:_:))
+            }
+        } else {
+            if let operationDataManager: OperationDataManager = DataManager.returnDataManager(of: .operation) {
+                operationDataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: uploadImageCompletion(_:_:_:))
+            }
+        }
+    }
+    
+    func uploadImageCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) -> Void {
+        if mustOverwriteName {
+            lettersLabel.text = getLetters(for: ProfileViewController.name ?? "")
+        }
+        if mustOverwriteImage {
+            updateImage()
+        }
+    }
+    
+    private func getLetters(for text: String) -> String {
+        let lettersArray = text.components(separatedBy: .whitespaces)
+        if lettersArray.count == 2 {
+            let letters = [String(lettersArray[0].first ?? "M"), String(lettersArray[1].first ?? "D")]
+            ProfileImageView.letters = letters[0] + letters[1]
+        } else {
+            ProfileImageView.letters = ""
+        }
+        return ProfileImageView.letters ?? ""
+    }
+    
+    func updateImage() {
+        if let existingImage = ProfileViewController.image {
+            profileImage.image = existingImage
+        }
+        if profileImage.image != nil {
+            lettersLabel.isHidden = true
+        }
     }
 }

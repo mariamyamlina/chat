@@ -78,7 +78,7 @@ class ConversationsListViewController: LogViewController {
     
     // MARK: - Navigation
     
-    func setupNavigationBar() {
+    private func setupNavigationBar() {
         definesPresentationContext = true
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -93,7 +93,11 @@ class ConversationsListViewController: LogViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "SettingsIcon"), style: .plain, target: self, action: #selector(settingsButtonTapped))
         navigationItem.leftBarButtonItem?.tintColor = Colors.settingsIconColor
-
+        
+        updateProfileImageView()
+    }
+    
+    func updateProfileImageView() {
         let profileImage = ProfileImageView(small: true)
         profileImage.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
@@ -110,7 +114,7 @@ class ConversationsListViewController: LogViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profileImage)
     }
     
-    @objc func profileMenuTapped() {
+    @objc private func profileMenuTapped() {
         let storyboard = UIStoryboard(name: "Profile", bundle: nil)
         let profileController = storyboard.instantiateViewController(withIdentifier: "Profile VC")
         let navigationVC = UINavigationController(rootViewController: profileController)
@@ -118,7 +122,7 @@ class ConversationsListViewController: LogViewController {
         present(navigationVC, animated: true, completion: nil)
     }
     
-    @objc func settingsButtonTapped() {
+    @objc private func settingsButtonTapped() {
         let storyboard = UIStoryboard(name: "Themes", bundle: nil)
         let themesController = storyboard.instantiateViewController(withIdentifier: "Themes VC")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Chat", style: .plain, target: nil, action: nil)
@@ -129,7 +133,7 @@ class ConversationsListViewController: LogViewController {
     
     // MARK: - TableView
     
-    func setupTableView() {
+    private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
 
@@ -152,7 +156,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
         var sectionOnlineCount = 0
         var sectionOfflineCount = 0
         
-        for friend in ChatHelper.friends {
+        for friend in ConversationModel.friends {
             if friend.isOnline {
                 sectionOnlineCount += 1
             } else if !friend.isOnline && !friend.message.isEmpty {
@@ -174,7 +178,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
         
         let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.reuseIdentifier, for: indexPath) as? ConversationTableViewCell
         
-        cell?.configure(with: ChatHelper.friends[indexPath.row + indexPath.section * self.tableView(tableView, numberOfRowsInSection: 0)])
+        cell?.configure(with: ConversationModel.friends[indexPath.row + indexPath.section * self.tableView(tableView, numberOfRowsInSection: 0)])
         applyTheme(for: cell)
         return cell ?? UITableViewCell()
     }

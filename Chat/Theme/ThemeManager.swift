@@ -9,12 +9,9 @@
 import UIKit
 
 class ThemeManager {
-
     static var themesViewController: ThemesViewController?
 
     init() {
-        
-//        CLOSURE
         ThemeManager.themesViewController?.changeThemeHandler = { [weak self] (_ theme: Theme) -> Void in
             self?.applyTheme(for: theme)
         }
@@ -63,8 +60,6 @@ class ThemeManager {
 // MARK: - ThemesPickerDelegate
 
 extension ThemeManager: ThemesPickerDelegate {
-    
-//    DELEGATE METHOD
     func changeTheme(for theme: Theme) {
 //        applyTheme(for: theme)
     }
