@@ -67,6 +67,10 @@ class ConversationViewController: LogViewController {
             noMessagesLabel.isHidden = true
         }
         tableView.reloadSections([0], with: .fade)
+        
+        if self.lastRowIndex >= 0 {
+            self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+        }
     }
     
     func sortMessages() {
