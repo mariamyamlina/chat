@@ -8,10 +8,6 @@
 
 import UIKit
 
-protocol ThemesPickerDelegate {
-    func changeTheme(for theme: Theme)
-}
-
 class ThemesViewController: LogViewController {
     
     var changeThemeHandler: ((_ theme: Theme) -> Void)?
@@ -23,7 +19,6 @@ class ThemesViewController: LogViewController {
         let attr: [NSAttributedString.Key: Any] = [.font: UIFont(name: "SFProText-Semibold", size: 17) as Any]
         let attrString = NSMutableAttributedString(string: "Settings", attributes: attr)
         title.attributedText = attrString
-        
         return title
     }()
     
@@ -35,10 +30,8 @@ class ThemesViewController: LogViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-
         setupViews()
         configureNavigationBar()
-        
         createHandler()
         
         /*
@@ -58,7 +51,7 @@ class ThemesViewController: LogViewController {
     
     // MARK: - Theme Picker
     
-    func createHandler() {
+    private func createHandler() {
         classicButton.pickHandler = { [weak self] in
             self?.pickButtonTapped(self?.classicButton ?? ThemeButton())
 
@@ -82,8 +75,7 @@ class ThemesViewController: LogViewController {
     }
     
     
-    func pickButtonTapped(_ sender: ThemeButton) {
-        
+    private func pickButtonTapped(_ sender: ThemeButton) {
         sender.isSelected = !sender.isSelected
         
         if sender.isSelected {
@@ -151,7 +143,7 @@ class ThemesViewController: LogViewController {
     
     // MARK: - View
     
-    func setupViews() {
+    private func setupViews() {
         ThemeManager.themesViewController = self
         themeManager = ThemeManager()
         
@@ -182,7 +174,7 @@ class ThemesViewController: LogViewController {
         }
     }
     
-    func setupButtonView(for button: ThemeButton, selected state: Bool) {
+    private func setupButtonView(for button: ThemeButton, selected state: Bool) {
         if state {
             button.backgroundView.layer.borderWidth = 3
             button.backgroundView.layer.borderColor = Colors.outputBlue.cgColor
@@ -195,7 +187,7 @@ class ThemesViewController: LogViewController {
     
     // MARK: - Navigation
     
-    func configureNavigationBar() {
+    private func configureNavigationBar() {
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.titleView = titleLabel
     }
