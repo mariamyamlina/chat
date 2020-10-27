@@ -52,7 +52,7 @@ class ConversationViewController: LogViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         guard let conversationsListVC = navigationController?.viewControllers.first as? ConversationsListViewController else { return }
-        fbManager.getChannels(completion: conversationsListVC.getChannelsCompletion)
+        fbManager.getChannels(source: conversationsListVC.blockRowSelection, completion: conversationsListVC.getChannelsCompletion)
     }
     
     // MARK: - Firebase
@@ -60,7 +60,7 @@ class ConversationViewController: LogViewController {
     func getMessagesCompletion() {
         guard let id = ConversationViewController.channel?.identifier else { return }
         let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
-        chatRequest.makeRequest(messages: ConversationViewController.messages, channelId: id)
+        chatRequest.saveDB(messages: ConversationViewController.messages, channelId: id)
         
         sortMessages()
         if !ConversationViewController.messages.isEmpty {

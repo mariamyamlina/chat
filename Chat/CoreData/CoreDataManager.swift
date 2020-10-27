@@ -16,7 +16,7 @@ struct CoreDataManager {
         self.coreDataStack = coreDataStack
     }
     
-    func makeRequest(channels: [Channel]) {
+    func saveDB(channels: [Channel]) {
         coreDataStack.performSave { context in
             channels.forEach {
                 _ = ChannelDB(identifier: $0.identifier,
@@ -28,7 +28,7 @@ struct CoreDataManager {
         }
     }
     
-    func makeRequest(messages: [Message], channelId: String) {
+    func saveDB(messages: [Message], channelId: String) {
         coreDataStack.performSave { context in
             if messages.count > 0 {
                 var messagesDB: [MessageDB] = []

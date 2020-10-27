@@ -45,7 +45,7 @@ class ConversationsListViewController: LogViewController {
         setupNavigationBar()
         setupTableView()
 
-        fbManager.getChannels(completion: getChannelsCompletion)
+        fbManager.getChannels(source: blockRowSelection, completion: getChannelsCompletion)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,10 +74,15 @@ class ConversationsListViewController: LogViewController {
     
     func getChannelsCompletion() {
         let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
-        chatRequest.makeRequest(channels: ConversationsListViewController.channels)
+        chatRequest.saveDB(channels: ConversationsListViewController.channels)
         
         sortChannels()
         tableView.reloadData()
+        tableView.allowsSelection = true
+    }
+    
+    func blockRowSelection() {
+        tableView.allowsSelection = false
     }
     
     func sortChannels() {
@@ -209,7 +214,7 @@ class ConversationsListViewController: LogViewController {
             guard let self = self else { return }
             let answer = alertController?.textFields![0].text
             if let channelName = answer, !channelName.isEmpty, !channelName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                self.fbManager.createChannel(channelName, completion: self.getChannelsCompletion)
+                self.fbManager.createChannel(channelName, source: self.blockRowSelection, completion: self.getChannelsCompletion)
             }
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)

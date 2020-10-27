@@ -13,7 +13,7 @@ class FirebaseManager {
     lazy var db = Firestore.firestore()
     lazy var reference = db.collection("channels")
     
-    // MARK: - Singlton
+    // MARK: - Singleton
     
     static var shared: FirebaseManager = {
         return FirebaseManager()
@@ -34,7 +34,8 @@ class FirebaseManager {
 extension FirebaseManager: FirebaseManagerProtocol {
     // MARK: - Channels
         
-    func getChannels(completion: @escaping () -> Void) {
+    func getChannels(source: () -> Void, completion: @escaping () -> Void) {
+        source()
         ConversationsListViewController.channels.removeAll()
         ConversationsListViewController.images.removeAll()
         reference.getDocuments { (querySnapshot, error) in
@@ -57,10 +58,10 @@ extension FirebaseManager: FirebaseManagerProtocol {
         }
     }
 
-    func createChannel(_ name: String, completion: @escaping () -> Void) {
+    func createChannel(_ name: String, source: () -> Void, completion: @escaping () -> Void) {
         let channel = ["name": name] as [String: Any]
         reference.addDocument(data: channel)
-        getChannels(completion: completion)
+        getChannels(source: source, completion: completion)
     }
 
     // MARK: - Messages

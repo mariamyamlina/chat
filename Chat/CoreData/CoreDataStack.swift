@@ -12,7 +12,7 @@ import CoreData
 class CoreDataStack {
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
     
-    // MARK: - Singlton
+    // MARK: - Singleton
     
     static var shared: CoreDataStack = {
         return CoreDataStack()
@@ -110,15 +110,15 @@ class CoreDataStack {
     }
 
     private func performSave(in context: NSManagedObjectContext) throws {
-        try context.save()
-        if let parent = context.parent {
-            parent.performAndWait {
-                do {
-                    try performSave(in: parent)
-                } catch {
-                    assertionFailure(error.localizedDescription)
-                }
+        context.performAndWait {
+            do {
+                try context.save()
+            } catch {
+                assertionFailure(error.localizedDescription)
             }
+        }
+        if let parent = context.parent {
+            try performSave(in: parent)
         }
     }
     
@@ -143,15 +143,18 @@ class CoreDataStack {
     private func managedObjectContextObjectsDidChange(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
         didUpdateDataBase?(self)
+        print("INSERT \(userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>)")
+        print("UPDATE \(userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>)")
+        print("DELETE \(userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>)")
         
         if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>, inserts.count > 0 {
             Loger.printDBLog("Added", inserts.count)
         }
-        
+
         if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>, updates.count > 0 {
             Loger.printDBLog("Updated", updates.count)
         }
-        
+
         if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
             Loger.printDBLog("Deleted", deletes.count)
         }
