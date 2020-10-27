@@ -91,10 +91,8 @@ class ProfileImageView: UIView {
         lettersLabelWidthConstraint.constant = 220
         lettersLabelHeightConstraint.constant = 110
 
-        let gcdDataManager = GCDDataManager()
-        readFromFile(with: gcdDataManager)
-//        let operationDataManager = OperationDataManager()
-//        readFromFile(with: operationDataManager)
+        readFromFile(with: GCDDataManager.shared)
+//        readFromFile(with: OperationDataManager.shared)
         
         profileImage.contentMode = .scaleAspectFill
         if profileImage.image != nil {

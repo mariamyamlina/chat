@@ -45,15 +45,13 @@ class ProfileViewController: LogViewController {
     @IBAction func GCDSaveButtonTapped(_ sender: ButtonWithTouchSize) {
         ProfileViewController.gcdButtonTapped = true
         enableSomeViews()
-        let gcdDataManager = GCDDataManager()
-        referToFile(action: .write, dataManager: gcdDataManager)
+        referToFile(action: .write, dataManager: GCDDataManager.shared)
     }
     
     @IBAction func OperationSaveButtonTapped(_ sender: ButtonWithTouchSize) {
         ProfileViewController.operationButtonTapped = true
         enableSomeViews()
-        let operationDataManager = OperationDataManager()
-        referToFile(action: .write, dataManager: operationDataManager)
+        referToFile(action: .write, dataManager: OperationDataManager.shared)
     }
     
     @IBAction func editPhotoButtonTapped(_ sender: UIButton) {
@@ -225,10 +223,8 @@ class ProfileViewController: LogViewController {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.stopAnimating()
 
-        let gcdDataManager = GCDDataManager()
-        referToFile(action: .read, dataManager: gcdDataManager)
-//        let operationDataManager = OperationDataManager()
-//        referToFile(action: .read, dataManager: operationDataManager)
+        referToFile(action: .read, dataManager: GCDDataManager.shared)
+//        referToFile(action: .read, dataManager: OperationDataManager.shared)
 
         setupTextViews()
         setupButtonViews()
@@ -384,11 +380,9 @@ class ProfileViewController: LogViewController {
         if twoActions {
             let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self] (_: UIAlertAction) in
                 if ProfileViewController.gcdButtonTapped {
-                    let gcdDataManager = GCDDataManager()
-                    self?.referToFile(action: .write, dataManager: gcdDataManager)
+                    self?.referToFile(action: .write, dataManager: GCDDataManager.shared)
                 } else if ProfileViewController.operationButtonTapped {
-                    let operationDataManager = OperationDataManager()
-                    self?.referToFile(action: .write, dataManager: operationDataManager)
+                    self?.referToFile(action: .write, dataManager: OperationDataManager.shared)
                 }
             })
             alertController.addAction(repeatAction)

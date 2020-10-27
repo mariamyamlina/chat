@@ -13,7 +13,7 @@ class ConversationsListViewController: LogViewController {
 
     static var channels: [Channel] = []
     static var images: [UIImage?] = []
-    var fbManager = FirebaseManager()
+    let fbManager = FirebaseManager.shared
     
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)

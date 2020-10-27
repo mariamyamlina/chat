@@ -11,6 +11,13 @@ import UIKit
 class OperationDataManager: DataManager {
     private let operationQueue = OperationQueue()
     private let mainOperationQueue = OperationQueue.main
+    
+    // MARK: - Singlton
+    
+    static var shared: OperationDataManager = {
+        return OperationDataManager()
+    }()
+    private override init() { }
 }
 
 extension OperationDataManager: DataManagerProtocol {

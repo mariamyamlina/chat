@@ -13,6 +13,13 @@ class FirebaseManager {
     lazy var db = Firestore.firestore()
     lazy var reference = db.collection("channels")
     
+    // MARK: - Singlton
+    
+    static var shared: FirebaseManager = {
+        return FirebaseManager()
+    }()
+    private init() { }
+    
     // MARK: - Universally Unique Identifier
     
     lazy var universallyUniqueIdentifier: String = {

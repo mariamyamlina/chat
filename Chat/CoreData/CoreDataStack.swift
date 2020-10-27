@@ -17,7 +17,6 @@ class CoreDataStack {
     static var shared: CoreDataStack = {
         return CoreDataStack()
     }()
-    
     private init() { }
     
     deinit {

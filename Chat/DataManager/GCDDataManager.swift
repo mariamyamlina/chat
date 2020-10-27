@@ -11,6 +11,13 @@ import UIKit
 class GCDDataManager: DataManager {
     private let mainQueue = DispatchQueue.main
     private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
+    
+    // MARK: - Singlton
+    
+    static var shared: GCDDataManager = {
+        return GCDDataManager()
+    }()
+    private override init() { }
 }
 
 extension GCDDataManager: DataManagerProtocol {

@@ -49,8 +49,8 @@ struct ClassicTheme: ThemeOptions {
     var backgroundColor: UIColor { return .white }
     var settingsBackgroundColor: UIColor { return Colors.darkGreen }
     
-    var inputTimeColor: UIColor { return Colors.timeGreyColor }
-    var outputTimeColor: UIColor { return Colors.timeGreyColor }
+    var inputTimeColor: UIColor { return Colors.timeLightGreyColor }
+    var outputTimeColor: UIColor { return Colors.timeLightGreyColor }
     
     var textFieldBackgroundColor: UIColor { return Colors.textFieldLightBackgroundColor }
     var textFieldTextColor: UIColor { return Colors.textFieldLightTextColor }
