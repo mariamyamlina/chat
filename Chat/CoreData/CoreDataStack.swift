@@ -56,13 +56,16 @@ class CoreDataStack {
     private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         
-        do {
-            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType,
-                                               configurationName: nil,
-                                               at: self.storeUrl,
-                                               options: nil)
-        } catch {
-            fatalError(error.localizedDescription)
+        let queue = DispatchQueue(label: "com.chat.coredata", qos: .background)
+        queue.async {
+            do {
+                try coordinator.addPersistentStore(ofType: NSSQLiteStoreType,
+                                                   configurationName: nil,
+                                                   at: self.storeUrl,
+                                                   options: nil)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
         }
         
         return coordinator
@@ -143,9 +146,10 @@ class CoreDataStack {
     private func managedObjectContextObjectsDidChange(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
         didUpdateDataBase?(self)
-        print("INSERT \(userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>)")
-        print("UPDATE \(userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>)")
-        print("DELETE \(userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>)")
+        
+        if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
+            Loger.printDBLog("Deleted", deletes.count)
+        }
         
         if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>, inserts.count > 0 {
             Loger.printDBLog("Added", inserts.count)
@@ -153,10 +157,6 @@ class CoreDataStack {
 
         if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>, updates.count > 0 {
             Loger.printDBLog("Updated", updates.count)
-        }
-
-        if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
-            Loger.printDBLog("Deleted", deletes.count)
         }
     }
     

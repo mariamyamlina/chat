@@ -28,7 +28,7 @@ struct CoreDataManager {
         }
     }
     
-    func saveDB(messages: [Message], channelId: String) {
+    func saveDB(messages: [Message], in channel: Channel) {
         coreDataStack.performSave { context in
             if messages.count > 0 {
                 var messagesDB: [MessageDB] = []
@@ -40,17 +40,31 @@ struct CoreDataManager {
                                                 senderName: $0.senderName,
                                                 in: context))
                 }
-                let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-                let predicate = NSPredicate(format: "identifier = %@", channelId)
-                request.predicate = predicate
-                do {
-                    let channel = try context.fetch(request)
-                    messagesDB.forEach {
-                        channel.first?.addToMessages($0)
-                    }
-                } catch {
-                    fatalError(error.localizedDescription)
+                
+                // MARK: - FIRST OPTION
+                // --- FIRST OPTION (WITHOUT FETCH REQUEST) ---
+                let channelDB = ChannelDB(identifier: channel.identifier,
+                                          name: channel.name,
+                                          lastMessage: channel.lastMessage,
+                                          lastActivity: channel.lastActivity,
+                                          in: context)
+                messagesDB.forEach {
+                    channelDB.addToMessages($0)
                 }
+                
+                // MARK: - SECOND OPTION
+                // --- SECOND OPTION (WITH FETCH REQUEST) ---
+//                let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+//                let predicate = NSPredicate(format: "identifier = %@", channel.identifier)
+//                request.predicate = predicate
+//                do {
+//                    let channel = try context.fetch(request).first
+//                    messagesDB.forEach {
+//                        channel?.addToMessages($0)
+//                    }
+//                } catch {
+//                    fatalError(error.localizedDescription)
+//                }
             }
         }
     }
