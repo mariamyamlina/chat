@@ -85,7 +85,9 @@ extension FirebaseManager: FirebaseManagerProtocol {
                                       senderName: senderNameFromFB)
                 ConversationViewController.messages.append(message)
             }
-            completion()
+            if ConversationViewController.messages.count > 0 {
+                completion()
+            }
         }
     }
         

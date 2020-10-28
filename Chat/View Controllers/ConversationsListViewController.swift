@@ -74,7 +74,7 @@ class ConversationsListViewController: LogViewController {
     
     func getChannelsCompletion() {
         let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
-        chatRequest.saveDB(channels: ConversationsListViewController.channels)
+        chatRequest.saveToDB(channels: ConversationsListViewController.channels)
         
         sortChannels()
         tableView.reloadData()

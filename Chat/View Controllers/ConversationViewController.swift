@@ -60,7 +60,7 @@ class ConversationViewController: LogViewController {
     func getMessagesCompletion() {
         guard let channel = ConversationViewController.channel else { return }
         let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
-        chatRequest.saveDB(messages: ConversationViewController.messages, in: channel)
+        chatRequest.saveToDB(messages: ConversationViewController.messages, in: channel)
         
         sortMessages()
         if !ConversationViewController.messages.isEmpty {

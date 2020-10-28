@@ -17,11 +17,13 @@ class GCDDataManager: DataManager {
     static var shared: GCDDataManager = {
         return GCDDataManager()
     }()
-    private override init() { }
+    private override init() {
+        super.init()
+    }
 }
 
 extension GCDDataManager: DataManagerProtocol {
-    func writeToFile(completion: @escaping (Result) -> Void) {
+    func saveToFile(completion: @escaping (Result) -> Void) {
         let group = DispatchGroup()
 
         var nameSaved = true
@@ -81,7 +83,7 @@ extension GCDDataManager: DataManagerProtocol {
         }
     }
     
-    func readFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
+    func loadFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
         let group = DispatchGroup()
         
         group.enter()

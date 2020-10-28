@@ -91,8 +91,8 @@ class ProfileImageView: UIView {
         lettersLabelWidthConstraint.constant = 220
         lettersLabelHeightConstraint.constant = 110
 
-        readFromFile(with: GCDDataManager.shared)
-//        readFromFile(with: OperationDataManager.shared)
+        loadFromFile(with: GCDDataManager.shared)
+//        loadFromFile(with: OperationDataManager.shared)
         
         profileImage.contentMode = .scaleAspectFill
         if profileImage.image != nil {
@@ -110,11 +110,11 @@ class ProfileImageView: UIView {
         clipsToBounds = true
     }
     
-    private func readFromFile(with dataManager: DataManagerProtocol) {
-        dataManager.readFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: uploadImageCompletion(_:_:_:))
+    private func loadFromFile(with dataManager: DataManagerProtocol) {
+        dataManager.loadFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: loadImageCompletion(_:_:_:))
     }
     
-    func uploadImageCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {
+    func loadImageCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {
         if mustOverwriteName {
             lettersLabel.text = getLetters(for: ProfileViewController.name ?? "")
         }

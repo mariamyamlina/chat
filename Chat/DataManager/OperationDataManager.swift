@@ -17,11 +17,13 @@ class OperationDataManager: DataManager {
     static var shared: OperationDataManager = {
         return OperationDataManager()
     }()
-    private override init() { }
+    private override init() {
+        super.init()
+    }
 }
 
 extension OperationDataManager: DataManagerProtocol {
-    func writeToFile(completion: @escaping (Result) -> Void) {
+    func saveToFile(completion: @escaping (Result) -> Void) {
         let writeOperation = WriteOperation()
         let completionOperation = BlockOperation {
             let succeeded: Result
@@ -38,7 +40,7 @@ extension OperationDataManager: DataManagerProtocol {
         mainOperationQueue.addOperation(completionOperation)
     }
     
-    func readFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
+    func loadFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
         let readNameOperation = ReadNameOperation()
         let readBioOperation = ReadBioOperation()
         let readImageOperation = ReadImageOperation()

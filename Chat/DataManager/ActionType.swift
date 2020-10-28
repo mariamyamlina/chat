@@ -9,6 +9,6 @@
 import UIKit
 
 enum ActionType {
-    case write
-    case read
+    case save
+    case load
 }

@@ -45,13 +45,13 @@ class ProfileViewController: LogViewController {
     @IBAction func GCDSaveButtonTapped(_ sender: ButtonWithTouchSize) {
         ProfileViewController.gcdButtonTapped = true
         enableSomeViews()
-        referToFile(action: .write, dataManager: GCDDataManager.shared)
+        referToFile(action: .save, dataManager: GCDDataManager.shared)
     }
     
     @IBAction func OperationSaveButtonTapped(_ sender: ButtonWithTouchSize) {
         ProfileViewController.operationButtonTapped = true
         enableSomeViews()
-        referToFile(action: .write, dataManager: OperationDataManager.shared)
+        referToFile(action: .save, dataManager: OperationDataManager.shared)
     }
     
     @IBAction func editPhotoButtonTapped(_ sender: UIButton) {
@@ -183,10 +183,10 @@ class ProfileViewController: LogViewController {
     
     // MARK: - Profile Editing
     
-    func loadCompletion(_ succeed: Result) {
+    func saveCompletion(_ succeed: Result) {
         if succeed == .success {
             activityIndicator.stopAnimating()
-            profileImageView.uploadImageCompletion(true, true, true)
+            profileImageView.loadImageCompletion(true, true, true)
             configureAlert("Data has been successfully saved", nil, false)
             editProfileButton.isEnabled = true
             setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
@@ -195,7 +195,7 @@ class ProfileViewController: LogViewController {
         }
     }
     
-    func uploadCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {
+    func loadCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {
         if mustOverwriteName {
             nameTextView.text = ProfileViewController.name
         }
@@ -208,11 +208,11 @@ class ProfileViewController: LogViewController {
     }
     
     func referToFile(action: ActionType, dataManager: DataManagerProtocol) {
-        if action == .read {
-            dataManager.readFromFile(mustReadName: true, mustReadBio: true, mustReadImage: true, completion: uploadCompletion(_:_:_:))
-            uploadCompletion(true, true, true)
+        if action == .load {
+            dataManager.loadFromFile(mustReadName: true, mustReadBio: true, mustReadImage: true, completion: loadCompletion(_:_:_:))
+            loadCompletion(true, true, true)
         } else {
-            dataManager.writeToFile(completion: loadCompletion(_:))
+            dataManager.saveToFile(completion: saveCompletion(_:))
         }
     }
     
@@ -223,8 +223,8 @@ class ProfileViewController: LogViewController {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.stopAnimating()
 
-        referToFile(action: .read, dataManager: GCDDataManager.shared)
-//        referToFile(action: .read, dataManager: OperationDataManager.shared)
+        referToFile(action: .load, dataManager: GCDDataManager.shared)
+//        referToFile(action: .load, dataManager: OperationDataManager.shared)
 
         setupTextViews()
         setupButtonViews()
@@ -380,9 +380,9 @@ class ProfileViewController: LogViewController {
         if twoActions {
             let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self] (_: UIAlertAction) in
                 if ProfileViewController.gcdButtonTapped {
-                    self?.referToFile(action: .write, dataManager: GCDDataManager.shared)
+                    self?.referToFile(action: .save, dataManager: GCDDataManager.shared)
                 } else if ProfileViewController.operationButtonTapped {
-                    self?.referToFile(action: .write, dataManager: OperationDataManager.shared)
+                    self?.referToFile(action: .save, dataManager: OperationDataManager.shared)
                 }
             })
             alertController.addAction(repeatAction)
