@@ -36,9 +36,10 @@ extension FirebaseManager: FirebaseManagerProtocol {
         
     func getChannels(source: () -> Void, completion: @escaping () -> Void) {
         source()
-        ConversationsListViewController.channels.removeAll()
-        ConversationsListViewController.images.removeAll()
-        reference.document("X3TMSYWrTGDvho4HV1e9").delete()
+        if !ConversationsListViewController.channels.isEmpty || !ConversationsListViewController.images.isEmpty {
+            ConversationsListViewController.channels.removeAll()
+            ConversationsListViewController.images.removeAll()
+        }
         reference.getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
             guard let snapshot = querySnapshot else { return }
@@ -68,7 +69,9 @@ extension FirebaseManager: FirebaseManagerProtocol {
     // MARK: - Messages
 
     func getMessages(completion: @escaping () -> Void) {
-        ConversationViewController.messages.removeAll()
+        if !ConversationViewController.messages.isEmpty {
+            ConversationViewController.messages.removeAll()
+        }
         guard let id = ConversationViewController.channel?.identifier else { return }
         reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
@@ -86,9 +89,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
                                       senderName: senderNameFromFB)
                 ConversationViewController.messages.append(message)
             }
-            if ConversationViewController.messages.count > 0 {
-                completion()
-            }
+            completion()
         }
     }
         
