@@ -33,12 +33,24 @@ struct CoreDataManager {
             // MARK: - SECOND OPTION
             // --- SECOND OPTION (WITH FETCH REQUEST) ---
             for channel in channels {
-                guard loadChannelFromDB(with: channel.identifier, in: context) == nil else { continue }
-                _ = ChannelDB(identifier: channel.identifier,
-                                          name: channel.name,
-                                          lastMessage: channel.lastMessage,
-                                          lastActivity: channel.lastActivity,
-                                          in: context)
+                let channelFromDB = loadChannelFromDB(with: channel.identifier, in: context)
+                if channelFromDB == nil {
+                    _ = ChannelDB(identifier: channel.identifier,
+                                  name: channel.name,
+                                  lastMessage: channel.lastMessage,
+                                  lastActivity: channel.lastActivity,
+                                  in: context)
+                } else {
+                    if channelFromDB?.lastActivity != channel.lastActivity {
+                        channelFromDB?.lastActivity = channel.lastActivity
+                    }
+                    
+                    if channelFromDB?.lastMessage != channel.lastMessage {
+                        channelFromDB?.lastMessage = channel.lastMessage
+                    }
+                    
+                    continue
+                }
             }
         }
     }

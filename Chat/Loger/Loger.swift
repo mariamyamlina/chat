@@ -52,10 +52,11 @@ class Loger {
         }
     }
     
-    static var printDBStatLog = {(count: Int?, counter: Int?, infoAbout: String?) in
+    static var printDBStatLog = {(channelsCount: Int?, messagesCount: Int?, counter: Int?, infoAbout: String?) in
         if Loger.dbLogIndicator {
-            if let count = count {
-                print("Total \(count) channels")
+            if let channelsCount = channelsCount,
+               let messagesCount = messagesCount {
+                print("Total \(channelsCount) channels and \(messagesCount) messages")
             } else if let counter = counter,
                       let infoAbout = infoAbout {
                 print("\(counter). " + infoAbout)
