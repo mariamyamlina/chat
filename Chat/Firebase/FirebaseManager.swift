@@ -38,6 +38,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
         source()
         ConversationsListViewController.channels.removeAll()
         ConversationsListViewController.images.removeAll()
+        reference.document("X3TMSYWrTGDvho4HV1e9").delete()
         reference.getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
             guard let snapshot = querySnapshot else { return }

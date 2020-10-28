@@ -8,9 +8,13 @@
 
 import UIKit
 
-struct Channel {
+struct Channel: Equatable {
     let identifier: String
     let name: String
     let lastMessage: String?
     let lastActivity: Date?
+    
+    static func == (lhs: Channel, rhs: Channel) -> Bool {
+        return lhs.identifier == rhs.identifier && lhs.name == rhs.name && lhs.lastMessage == rhs.lastMessage && lhs.lastActivity == rhs.lastActivity
+    }
 }

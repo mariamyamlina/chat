@@ -41,17 +41,15 @@ struct CoreDataManager {
                                   lastActivity: channel.lastActivity,
                                   in: context)
                 } else {
-                    if channelFromDB?.lastActivity != channel.lastActivity {
+                    if channelFromDB?.lastActivity != channel.lastActivity || channelFromDB?.lastMessage != channel.lastMessage {
                         channelFromDB?.lastActivity = channel.lastActivity
-                    }
-                    
-                    if channelFromDB?.lastMessage != channel.lastMessage {
                         channelFromDB?.lastMessage = channel.lastMessage
                     }
                     
                     continue
                 }
             }
+            deleteExtraChannelsFromDB(compareWith: channels, in: context)
         }
     }
     
@@ -114,6 +112,41 @@ struct CoreDataManager {
             return try context.fetch(request).first
         } catch {
             fatalError(error.localizedDescription)
+        }
+    }
+    
+    func deleteExtraChannelsFromDB(compareWith channels: [Channel], in context: NSManagedObjectContext) {
+        var channelsIds: [String] = []
+        channels.forEach {
+            channelsIds.append($0.identifier)
+        }
+        
+        var channelsIdsFromDB: [String] = []
+        let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+        do {
+            let channelsDB = try context.fetch(request)
+            channelsDB.forEach {
+                channelsIdsFromDB.append($0.identifier)
+            }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+        channelsIdsFromDB = channelsIdsFromDB.filter { !channelsIds.contains($0) }
+
+        if !channelsIdsFromDB.isEmpty {
+            channelsIdsFromDB.forEach {
+                let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+                let predicate = NSPredicate(format: "identifier = %@", $0)
+                request.predicate = predicate
+                do {
+                    let channel = try context.fetch(request).first
+                    guard let unwrChannel = channel else { return }
+                    let object = context.object(with: unwrChannel.objectID)
+                    context.delete(object)
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+            }
         }
     }
 }
