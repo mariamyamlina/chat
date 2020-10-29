@@ -23,34 +23,35 @@ struct CoreDataManager {
             
             // MARK: - FIRST OPTION
             // --- FIRST OPTION (WITHOUT FETCH REQUEST) ---
-            channels.forEach {
-                _ = ChannelDB(identifier: $0.identifier,
-                              name: $0.name,
-                              lastMessage: $0.lastMessage,
-                              lastActivity: $0.lastActivity,
-                              in: context)
-            }
+//            channels.forEach {
+//                _ = ChannelDB(identifier: $0.identifier,
+//                              name: $0.name,
+//                              lastMessage: $0.lastMessage,
+//                              lastActivity: $0.lastActivity,
+//                              in: context)
+//            }
             
             // MARK: - SECOND OPTION
             // --- SECOND OPTION (WITH FETCH REQUEST) ---
-//            for channel in channels {
-//                let channelFromDB = loadChannel(with: channel.identifier, in: context)
-//                if channelFromDB == nil {
-//                    _ = ChannelDB(identifier: channel.identifier,
-//                                  name: channel.name,
-//                                  lastMessage: channel.lastMessage,
-//                                  lastActivity: channel.lastActivity,
-//                                  in: context)
-//                } else {
-//                    if channelFromDB?.lastActivity != channel.lastActivity || channelFromDB?.lastMessage != channel.lastMessage {
-//                        channelFromDB?.lastActivity = channel.lastActivity
-//                        channelFromDB?.lastMessage = channel.lastMessage
-//                    }
-//
-//                    continue
-//                }
-//            }
-//            deleteChannels(compareWith: channels, in: context)
+            for channel in channels {
+                let channelFromDB = self.loadChannel(with: channel.identifier, in: context)
+                if channelFromDB == nil {
+                    _ = ChannelDB(identifier: channel.identifier,
+                                  name: channel.name,
+                                  lastMessage: channel.lastMessage,
+                                  lastActivity: channel.lastActivity,
+                                  in: context)
+                } else {
+                    if channelFromDB?.lastActivity != channel.lastActivity || channelFromDB?.lastMessage != channel.lastMessage {
+                        channelFromDB?.lastActivity = channel.lastActivity
+                        channelFromDB?.lastMessage = channel.lastMessage
+                    }
+
+                    continue
+                }
+            }
+
+            self.deleteChannels(compareWith: channels, in: context)
         }
     }
     
@@ -58,39 +59,40 @@ struct CoreDataManager {
         coreDataStack.performSave { context in
             
             // MARK: - FIRST OPTION
-            // --- FIRST OPTION (WITHOUT FETCH REQUEST) ---
-            var messagesDB: [MessageDB] = []
-            messages.forEach {
-                messagesDB.append(MessageDB(identifier: $0.identifier,
-                                            content: $0.content,
-                                            created: $0.created,
-                                            senderId: $0.senderId,
-                                            senderName: $0.senderName,
-                                            in: context))
-            }
-            let channelDB = ChannelDB(identifier: channel.identifier,
-                                      name: channel.name,
-                                      lastMessage: channel.lastMessage,
-                                      lastActivity: channel.lastActivity,
-                                      in: context)
-            messagesDB.forEach {
-                channelDB.addToMessages($0)
-            }
+//             --- FIRST OPTION (WITHOUT FETCH REQUEST) ---
+//            var messagesDB: [MessageDB] = []
+//            messages.forEach {
+//                messagesDB.append(MessageDB(identifier: $0.identifier,
+//                                            content: $0.content,
+//                                            created: $0.created,
+//                                            senderId: $0.senderId,
+//                                            senderName: $0.senderName,
+//                                            in: context))
+//            }
+//            let channelDB = ChannelDB(identifier: channel.identifier,
+//                                      name: channel.name,
+//                                      lastMessage: channel.lastMessage,
+//                                      lastActivity: channel.lastActivity,
+//                                      in: context)
+//            messagesDB.forEach {
+//                channelDB.addToMessages($0)
+//            }
             
             // MARK: - SECOND OPTION
             // --- SECOND OPTION (WITH FETCH REQUEST) ---
-//            guard let channel = loadChannel(with: channel.identifier, in: context) else { return }
-//            for message in messages {
-//                guard loadMessage(with: message.identifier, in: context) == nil else { continue }
-//                let messageDB = MessageDB(identifier: message.identifier,
-//                                          content: message.content,
-//                                          created: message.created,
-//                                          senderId: message.senderId,
-//                                          senderName: message.senderName,
-//                                          in: context)
-//                channel.addToMessages(messageDB)
-//            }
-//            deleteMessages(compareWith: messages, in: context)
+            guard let channel = self.loadChannel(with: channel.identifier, in: context) else { return }
+            for message in messages {
+                guard self.loadMessage(with: message.identifier, in: context) == nil else { continue }
+                let messageDB = MessageDB(identifier: message.identifier,
+                                          content: message.content,
+                                          created: message.created,
+                                          senderId: message.senderId,
+                                          senderName: message.senderName,
+                                          in: context)
+                channel.addToMessages(messageDB)
+            }
+
+            self.deleteMessages(compareWith: messages, in: context)
         }
     }
     
