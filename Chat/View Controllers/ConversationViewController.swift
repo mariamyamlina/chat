@@ -22,7 +22,22 @@ class ConversationViewController: LogViewController {
     @IBAction func sendButtonTapped(_ sender: UIButton) {
         guard let message = textField.text else { return }
         if !message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            fbManager.createMessage(message, completion: getMessagesCompletion)
+            fbManager.createMessage(message, completion: { [weak self] in
+                guard let self = self else { return }
+                guard let channel = ConversationViewController.channel else { return }
+                let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
+                chatRequest.save(messages: ConversationViewController.messages, in: channel)
+                
+                self.sortMessages()
+                if !ConversationViewController.messages.isEmpty {
+                    self.noMessagesLabel.isHidden = true
+                }
+                self.tableView.reloadSections([0], with: .fade)
+                
+                if self.lastRowIndex >= 0 {
+                    self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+                }
+            })
         }
         textField.text = ""
     }
@@ -46,7 +61,22 @@ class ConversationViewController: LogViewController {
         configureTableView()
         configureMessageInputView()
         addKeyboardNotifications()
-        fbManager.getMessages(completion: getMessagesCompletion)
+        fbManager.getMessages(completion: { [weak self] in
+            guard let self = self else { return }
+            guard let channel = ConversationViewController.channel else { return }
+            let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
+            chatRequest.save(messages: ConversationViewController.messages, in: channel)
+            
+            self.sortMessages()
+            if !ConversationViewController.messages.isEmpty {
+                self.noMessagesLabel.isHidden = true
+            }
+            self.tableView.reloadSections([0], with: .fade)
+            
+            if self.lastRowIndex >= 0 {
+                self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+            }
+        })
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -56,22 +86,6 @@ class ConversationViewController: LogViewController {
     }
     
     // MARK: - Firebase
-    
-    func getMessagesCompletion() {
-        guard let channel = ConversationViewController.channel else { return }
-        let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
-        chatRequest.save(messages: ConversationViewController.messages, in: channel)
-        
-        sortMessages()
-        if !ConversationViewController.messages.isEmpty {
-            noMessagesLabel.isHidden = true
-        }
-        tableView.reloadSections([0], with: .fade)
-        
-        if self.lastRowIndex >= 0 {
-            self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
-        }
-    }
     
     func sortMessages() {
         ConversationViewController.messages.sort {
