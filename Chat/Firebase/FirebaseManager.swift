@@ -45,11 +45,12 @@ extension FirebaseManager: FirebaseManagerProtocol {
             guard let snapshot = querySnapshot else { return }
             for document in snapshot.documents {
                 let docData = document.data()
+                let docId = document.documentID
                 guard let nameFromFB = docData["name"] as? String,
                       !nameFromFB.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { continue }
                 let lastMessageFromFB = docData["lastMessage"] as? String
                 let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                let channel = Channel(identifier: document.documentID,
+                let channel = Channel(identifier: docId,
                                       name: nameFromFB,
                                       lastMessage: lastMessageFromFB,
                                       lastActivity: lastActivityFromFB)
@@ -78,11 +79,12 @@ extension FirebaseManager: FirebaseManagerProtocol {
             guard let snapshot = querySnapshot else { return }
             for document in snapshot.documents {
                 let docData = document.data()
+                let docId = document.documentID
                 guard let contentFromFB = docData["content"] as? String,
                       let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
                       let senderIdFromFB = docData["senderId"] as? String,
                       let senderNameFromFB = docData["senderName"] as? String else { continue }
-                let message = Message(identifier: document.documentID,
+                let message = Message(identifier: docId,
                                       content: contentFromFB,
                                       created: dateFromFB,
                                       senderId: senderIdFromFB,

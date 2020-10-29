@@ -166,22 +166,19 @@ class CoreDataStack {
         mainContext.perform { [weak self] in
             do {
                 guard let self = self else { return }
-                var channelsCounter = 0
-                var messagesCounter = 0
+                var messagesCount = 0
+                var description: [String] = []
                 
                 let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
                 let dateSortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
                 request.sortDescriptors = [dateSortDescriptor]
-                let count = try self.mainContext.count(for: request)
+                let channelsCount = try self.mainContext.count(for: request)
                 let array = try self.mainContext.fetch(request)
                 array.forEach {
-                    messagesCounter += $0.messages?.count ?? 0
+                    messagesCount += $0.messages?.count ?? 0
+                    description.append($0.about)
                 }
-                Loger.printDBStatLog(count, messagesCounter, nil, nil)
-                array.forEach {
-                    channelsCounter += 1
-                    Loger.printDBStatLog(nil, nil, channelsCounter, $0.about)
-                }
+                Loger.printDBStatLog(channelsCount, messagesCount, description)
             } catch {
                 fatalError(error.localizedDescription)
             }
