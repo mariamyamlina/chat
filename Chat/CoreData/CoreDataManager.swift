@@ -92,7 +92,7 @@ struct CoreDataManager {
                 channel.addToMessages(messageDB)
             }
 
-            self.deleteMessages(compareWith: messages, in: context)
+            self.deleteMessages(compareWith: messages, inChannel: channel, in: context)
         }
     }
     
@@ -156,7 +156,7 @@ struct CoreDataManager {
         }
     }
     
-    func deleteMessages(compareWith messages: [Message], in context: NSManagedObjectContext) {
+    func deleteMessages(compareWith messages: [Message], inChannel channelDB: ChannelDB, in context: NSManagedObjectContext) {
         var ids: [String] = []
         messages.forEach {
             ids.append($0.identifier)
@@ -181,8 +181,7 @@ struct CoreDataManager {
                 do {
                     let message = try context.fetch(request).first
                     guard let unwrMessage = message else { return }
-                    let object = context.object(with: unwrMessage.objectID)
-                    context.delete(object)
+                    channelDB.removeFromMessages(unwrMessage)
                 } catch {
                     fatalError(error.localizedDescription)
                 }
