@@ -56,16 +56,13 @@ class CoreDataStack {
     private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         
-        let queue = DispatchQueue(label: "com.chat.coredata", qos: .background)
-        queue.async {
-            do {
-                try coordinator.addPersistentStore(ofType: NSSQLiteStoreType,
-                                                   configurationName: nil,
-                                                   at: self.storeUrl,
-                                                   options: nil)
-            } catch {
-                fatalError(error.localizedDescription)
-            }
+        do {
+            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType,
+                                               configurationName: nil,
+                                               at: self.storeUrl,
+                                               options: nil)
+        } catch {
+            fatalError(error.localizedDescription)
         }
         
         return coordinator
@@ -113,15 +110,29 @@ class CoreDataStack {
     }
 
     private func performSave(in context: NSManagedObjectContext) throws {
-        context.performAndWait {
-            do {
-                try context.save()
-            } catch {
-                assertionFailure(error.localizedDescription)
+        if context == writterContext {
+            context.perform {
+                do {
+                    try context.save()
+                } catch {
+                    assertionFailure(error.localizedDescription)
+                }
             }
-        }
-        if let parent = context.parent {
-            try performSave(in: parent)
+        } else {
+            context.performAndWait {
+                do {
+                    try context.save()
+                } catch {
+                    assertionFailure(error.localizedDescription)
+                }
+                if let parent = context.parent {
+                    do {
+                        try self.performSave(in: parent)
+                    } catch {
+                        assertionFailure(error.localizedDescription)
+                    }
+                }
+            }
         }
     }
     
