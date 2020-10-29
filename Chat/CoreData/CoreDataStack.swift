@@ -56,13 +56,16 @@ class CoreDataStack {
     private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         
-        do {
-            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType,
-                                               configurationName: nil,
-                                               at: self.storeUrl,
-                                               options: nil)
-        } catch {
-            fatalError(error.localizedDescription)
+        let queue = DispatchQueue(label: "com.chat.coredata", qos: .background)
+        queue.sync {
+            do {
+                try coordinator.addPersistentStore(ofType: NSSQLiteStoreType,
+                                                   configurationName: nil,
+                                                   at: self.storeUrl,
+                                                   options: nil)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
         }
         
         return coordinator
