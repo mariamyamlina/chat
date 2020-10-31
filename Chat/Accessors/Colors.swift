@@ -47,6 +47,9 @@ struct Colors {
     
     static var searchBarLightTextColor = UIColor(red: 0 / 250, green: 0 / 250, blue: 0 / 250, alpha: 0.05)
     static var searchBarDarkTextColor = UIColor(red: 245 / 250, green: 245 / 250, blue: 245 / 250, alpha: 1)
+    
+    static var tableViewHeaderLightColor = UIColor.lightGray
+    static var tableViewHeaderDarkColor = UIColor(red: 232 / 255, green: 233 / 255, blue: 237 / 255, alpha: 1)
 
     static var separatorColor = { () -> UIColor in
         if #available(iOS 13.0, *) {

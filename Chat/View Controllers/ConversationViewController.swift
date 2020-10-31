@@ -26,7 +26,7 @@ class ConversationViewController: LogViewController {
             fbManager.create(message: message, in: unwrChannel, completion: { [weak self] in
                 guard let self = self else { return }
                 if self.lastRowIndex >= 0 {
-                    self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+                    self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: self.lastSectionIndex), at: .bottom, animated: true)
                 }
             })
         }
@@ -44,7 +44,7 @@ class ConversationViewController: LogViewController {
         fetchRequest.fetchBatchSize = 20
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                                   managedObjectContext: CoreDataStack.shared.mainContext,
-                                                                  sectionNameKeyPath: nil,
+                                                                  sectionNameKeyPath: "formattedDate",
                                                                   cacheName: "Messages in channel with id \(channelId)")
         fetchedResultsController.delegate = self
 
@@ -59,7 +59,8 @@ class ConversationViewController: LogViewController {
     
     var image: UIImageView?
     var name: String?
-    var lastRowIndex: Int = 0
+    var lastSectionIndex: Int = -1
+    var lastRowIndex: Int = -1
 
     var channel: Channel?
     let fbManager = FirebaseManager.shared
@@ -76,11 +77,16 @@ class ConversationViewController: LogViewController {
         configureMessageInputView()
         addKeyboardNotifications()
 
+        lastSectionIndex = (fetchedResultsController.sections?.count ?? 0) - 1
+        if lastSectionIndex >= 0 {
+            lastRowIndex = (fetchedResultsController.sections?[lastSectionIndex].numberOfObjects ?? 0) - 1
+        }
+
         if let unwrChannel = channel {
             fbManager.getMessages(in: unwrChannel, completion: { [weak self] in
                 guard let self = self else { return }
                 if self.lastRowIndex >= 0 {
-                    self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+                    self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: self.lastSectionIndex), at: .bottom, animated: true)
                 }
             })
         }
@@ -145,7 +151,7 @@ class ConversationViewController: LogViewController {
             }, completion: { (_) in
                 if isKeyboardShowing {
                     if self.lastRowIndex >= 0 {
-                        self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+                        self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: self.lastSectionIndex), at: .bottom, animated: true)
                     }
                 }
             })
@@ -185,6 +191,7 @@ class ConversationViewController: LogViewController {
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
         tableView.allowsMultipleSelection = false
+        tableView.sectionFooterHeight = 0
         
         tableView?.register(UINib(nibName: "MessageTableViewCell", bundle: nil), forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
     }
@@ -193,10 +200,13 @@ class ConversationViewController: LogViewController {
 // MARK: - UITableViewDataSource
 
 extension ConversationViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        guard let sections = fetchedResultsController.sections else { return 0 }
+        return sections.count
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let numberOfRows = fetchedResultsController.fetchedObjects?.count ?? 0
-        lastRowIndex = numberOfRows - 1
-        return numberOfRows
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -246,12 +256,26 @@ extension ConversationViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 16
+        return 25
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 8))
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 25))
         view.backgroundColor = .clear
+
+        let sectionInfo = fetchedResultsController.sections?[section]
+        let text = sectionInfo?.name ?? ""
+
+        let dateLabel = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 25))
+        dateLabel.font = UIFont(name: "SFProText-Semibold", size: 13)
+        dateLabel.textAlignment = .center
+        dateLabel.text = text
+
+        let currentTheme = Theme.current.themeOptions
+        dateLabel.textColor = currentTheme.tableViewHeaderColor
+
+        view.addSubview(dateLabel)
+        
         return view
     }
 }
@@ -289,11 +313,11 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
         let indexSet = IndexSet(integer: sectionIndex)
         switch type {
         case .insert:
-            tableView.insertSections(indexSet, with: .automatic)
+            tableView.insertSections(indexSet, with: .left)
         case .delete:
-            tableView.deleteSections(indexSet, with: .automatic)
+            tableView.deleteSections(indexSet, with: .left)
         case .move, .update:
-            tableView.reloadSections(indexSet, with: .automatic)
+            tableView.reloadSections(indexSet, with: .left)
         default:
             break
         }
@@ -307,18 +331,18 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             guard let newPath = newIndexPath else { return }
-            tableView.insertRows(at: [newPath], with: .automatic)
+            tableView.insertRows(at: [newPath], with: .left)
         case .delete:
             guard let path = indexPath else { return }
-            tableView.deleteRows(at: [path], with: .automatic)
+            tableView.deleteRows(at: [path], with: .left)
         case .move:
             guard let path = indexPath,
                   let newPath = newIndexPath else { return }
-            tableView.deleteRows(at: [path], with: .automatic)
-            tableView.insertRows(at: [newPath], with: .automatic)
+            tableView.deleteRows(at: [path], with: .left)
+            tableView.insertRows(at: [newPath], with: .left)
         case .update:
             guard let path = indexPath else { return }
-            tableView.reloadRows(at: [path], with: .automatic)
+            tableView.reloadRows(at: [path], with: .left)
         default:
             break
         }
@@ -328,7 +352,7 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
         tableView.endUpdates()
 
         if lastRowIndex >= 0 {
-            tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+            tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: self.lastSectionIndex), at: .bottom, animated: true)
         }
     }
 }

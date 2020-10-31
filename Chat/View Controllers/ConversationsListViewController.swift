@@ -337,11 +337,11 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
         let indexSet = IndexSet(integer: sectionIndex)
         switch type {
         case .insert:
-            tableView.insertSections(indexSet, with: .automatic)
+            tableView.insertSections(indexSet, with: .top)
         case .delete:
-            tableView.deleteSections(indexSet, with: .automatic)
+            tableView.deleteSections(indexSet, with: .top)
         case .move, .update:
-            tableView.reloadSections(indexSet, with: .automatic)
+            tableView.reloadSections(indexSet, with: .top)
         default:
             break
         }
@@ -356,18 +356,18 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             guard let newPath = newIndexPath else { return }
-            tableView.insertRows(at: [newPath], with: .automatic)
+            tableView.insertRows(at: [newPath], with: .top)
         case .delete:
             guard let path = indexPath else { return }
-            tableView.deleteRows(at: [path], with: .automatic)
+            tableView.deleteRows(at: [path], with: .top)
         case .move:
             guard let path = indexPath,
                   let newPath = newIndexPath else { return }
-            tableView.deleteRows(at: [path], with: .automatic)
-            tableView.insertRows(at: [newPath], with: .automatic)
+            tableView.deleteRows(at: [path], with: .top)
+            tableView.insertRows(at: [newPath], with: .top)
         case .update:
             guard let path = indexPath else { return }
-            tableView.reloadRows(at: [path], with: .automatic)
+            tableView.reloadRows(at: [path], with: .top)
         default:
             break
         }
