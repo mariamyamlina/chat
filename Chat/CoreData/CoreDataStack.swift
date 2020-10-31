@@ -98,26 +98,26 @@ class CoreDataStack {
     
     // MARK: - Save Context
 
-    func performSave(_ block: @escaping (NSManagedObjectContext) -> Void) {
+    func performSave(_ block: (NSManagedObjectContext) -> Void) {
         let context = saveContext()
-        context.perform { [weak self] in
+        context.performAndWait {
             block(context)
             if context.hasChanges {
-                self?.performSave(in: context)
+                performSave(in: context)
             }
         }
     }
 
     private func performSave(in context: NSManagedObjectContext) {
-        context.perform { [weak self] in
+        context.performAndWait {
             do {
                 try context.save()
-                if let parent = context.parent {
-                    self?.performSave(in: parent)
-                }
             } catch {
                 assertionFailure(error.localizedDescription)
             }
+        }
+        if let parent = context.parent {
+            performSave(in: parent)
         }
     }
     
