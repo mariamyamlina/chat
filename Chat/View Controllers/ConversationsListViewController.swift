@@ -306,19 +306,9 @@ extension ConversationsListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // TODO: - Выделить функцию удаления в Стэке в отдельную функцию, и поставить на perform
-            // TODO: - Обработать удаление из нижнего контекста? Проверить, что из БД пропадает объект
             let channelDB = fetchedResultsController.object(at: indexPath)
             let channel = Channel(from: channelDB)
             fbManager.delete(channel: channel.identifier)
-            let context = fetchedResultsController.managedObjectContext
-            let objectToDelete = fetchedResultsController.object(at: indexPath)
-            context.delete(objectToDelete)
-            do {
-                try context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
         }
     }
 }

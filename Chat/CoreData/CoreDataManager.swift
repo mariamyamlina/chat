@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-struct CoreDataManager {
+class CoreDataManager {
     let coreDataStack: CoreDataStack
     
     // MARK: - Singleton
@@ -52,7 +52,9 @@ struct CoreDataManager {
         }
     }
     
-    func save(messages: [Message], inChannel channel: Channel, completion: @escaping () -> Void) {
+    func save(messages: [Message],
+              inChannel channel: Channel,
+              completion: @escaping () -> Void) {
         coreDataStack.performSave { context in
             guard let channel = self.load(channel: channel.identifier, from: context) else { return }
             for message in messages {
@@ -80,7 +82,8 @@ struct CoreDataManager {
     
     // MARK: - Load
     
-    func load(channel id: String, from context: NSManagedObjectContext) -> ChannelDB? {
+    func load(channel id: String,
+              from context: NSManagedObjectContext) -> ChannelDB? {
         let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
         let predicate = NSPredicate(format: "identifier = %@", id)
         request.predicate = predicate
@@ -91,7 +94,8 @@ struct CoreDataManager {
         }
     }
     
-    func load(message id: String, from context: NSManagedObjectContext) -> MessageDB? {
+    func load(message id: String,
+              from context: NSManagedObjectContext) -> MessageDB? {
         let request: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
         let predicate = NSPredicate(format: "identifier = %@", id)
         request.predicate = predicate
@@ -104,70 +108,67 @@ struct CoreDataManager {
     
     // MARK: - Delete
     
-    func delete(compareWithChannels channels: [Channel], in context: NSManagedObjectContext) {
-        var ids: [String] = []
-        channels.forEach {
-            ids.append($0.identifier)
-        }
-        var idsFromDB: [String] = []
-        
-        let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-        do {
-            let channelsDB = try context.fetch(request)
-            channelsDB.forEach {
-                idsFromDB.append($0.identifier)
-            }
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-        idsFromDB = idsFromDB.filter { !ids.contains($0) }
+    func delete(compareWithChannels channels: [Channel],
+                in context: NSManagedObjectContext) {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Channel")
 
-        if !idsFromDB.isEmpty {
-            idsFromDB.forEach {
-                let predicate = NSPredicate(format: "identifier = %@", $0)
-                request.predicate = predicate
-                do {
-                    let channel = try context.fetch(request).first
-                    guard let unwrChannel = channel else { return }
-                    let object = context.object(with: unwrChannel.objectID)
-                    context.delete(object)
-                } catch {
-                    fatalError(error.localizedDescription)
-                }
+        arrayDifference(request: request, arrayOfEntities: channels, in: context).forEach {
+            let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+            let predicate = NSPredicate(format: "identifier = %@", $0)
+            fetchRequest.predicate = predicate
+            do {
+                let channelDB = try context.fetch(fetchRequest).first
+                guard let channel = channelDB else { return }
+                let object = context.object(with: channel.objectID)
+                context.delete(object)
+            } catch {
+                fatalError(error.localizedDescription)
             }
         }
     }
     
-    func delete(compareWithMessages messages: [Message], inChannel channelDB: ChannelDB, in context: NSManagedObjectContext) {
-        var ids: [String] = []
-        messages.forEach {
-            ids.append($0.identifier)
-        }
-        var idsFromDB: [String] = []
-        
-        let request: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
-        do {
-            let messagesDB = try context.fetch(request)
-            messagesDB.forEach {
-                idsFromDB.append($0.identifier)
+    func delete(compareWithMessages messages: [Message],
+                inChannel channelDB: ChannelDB,
+                in context: NSManagedObjectContext) {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Message")
+        let predicate = NSPredicate(format: "channel.identifier = %@", channelDB.identifier)
+        request.predicate = predicate
+
+        arrayDifference(request: request, arrayOfEntities: messages, in: context).forEach {
+            let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
+            let predicate = NSPredicate(format: "identifier = %@", $0)
+            fetchRequest.predicate = predicate
+            do {
+                let messageDB = try context.fetch(fetchRequest).first
+                guard let message = messageDB else { return }
+                channelDB.removeFromMessages(message)
+            } catch {
+                fatalError(error.localizedDescription)
             }
+        }
+    }
+    
+    func arrayDifference(request: NSFetchRequest<NSFetchRequestResult>,
+                         arrayOfEntities: [EntityProtocol],
+                         in context: NSManagedObjectContext) -> [String] {
+        var decreasing: [String] = []
+        var subtrahend: [String] = []
+        
+        request.propertiesToFetch = ["identifier"]
+        request.returnsDistinctResults = true
+        request.resultType = .dictionaryResultType
+        do {
+            let dict = try context.fetch(request)
+            guard let result = dict as? [[String: String]] else { return [] }
+            decreasing = result.map { ($0["identifier"] ?? "") }
         } catch {
             fatalError(error.localizedDescription)
         }
-        idsFromDB = idsFromDB.filter { !ids.contains($0) }
 
-        if !idsFromDB.isEmpty {
-            idsFromDB.forEach {
-                let predicate = NSPredicate(format: "identifier = %@", $0)
-                request.predicate = predicate
-                do {
-                    let message = try context.fetch(request).first
-                    guard let unwrMessage = message else { return }
-                    channelDB.removeFromMessages(unwrMessage)
-                } catch {
-                    fatalError(error.localizedDescription)
-                }
-            }
+        arrayOfEntities.forEach {
+            subtrahend.append($0.identifier)
         }
+
+        return Array(Set(decreasing).subtracting(subtrahend))
     }
 }

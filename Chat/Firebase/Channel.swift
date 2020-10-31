@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Channel {
+struct Channel: EntityProtocol {
     let identifier: String
     let name: String
     let lastMessage: String?
