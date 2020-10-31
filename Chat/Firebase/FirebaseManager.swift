@@ -13,6 +13,8 @@ class FirebaseManager {
     lazy var db = Firestore.firestore()
     lazy var reference = db.collection("channels")
     
+    let dbManager = CoreDataManager.shared
+    
     // MARK: - Singleton
     
     static var shared: FirebaseManager = {
@@ -34,12 +36,8 @@ class FirebaseManager {
 extension FirebaseManager: FirebaseManagerProtocol {
     // MARK: - Channels
         
-    func getChannels(source: () -> Void, completion: @escaping () -> Void) {
-        source()
-        if !ConversationsListViewController.channels.isEmpty || !ConversationsListViewController.images.isEmpty {
-            ConversationsListViewController.channels.removeAll()
-            ConversationsListViewController.images.removeAll()
-        }
+    func getChannels() {
+        var channels: [Channel] = []
         reference.getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
             guard let snapshot = querySnapshot else { return }
@@ -47,33 +45,35 @@ extension FirebaseManager: FirebaseManagerProtocol {
                 let docData = document.data()
                 let docId = document.documentID
                 guard let nameFromFB = docData["name"] as? String,
-                      !nameFromFB.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { continue }
+                      !containtsOnlyOfWhitespaces(string: nameFromFB) else { continue }
                 let lastMessageFromFB = docData["lastMessage"] as? String
                 let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
                 let channel = Channel(identifier: docId,
                                       name: nameFromFB,
                                       lastMessage: lastMessageFromFB,
                                       lastActivity: lastActivityFromFB)
-                ConversationsListViewController.channels.append(channel)
-                ConversationsListViewController.images.append(generateImage())
-            }     
-            completion()
+                channels.append(channel)
+            }
+            self.dbManager.save(channels: channels)
         }
     }
 
-    func createChannel(_ name: String, source: () -> Void, completion: @escaping () -> Void) {
+    func create(channel name: String) {
         let channel = ["name": name] as [String: Any]
         reference.addDocument(data: channel)
-        getChannels(source: source, completion: completion)
+        getChannels()
+    }
+    
+    func delete(channel id: String) {
+        reference.document(id).delete()
+        getChannels()
     }
 
     // MARK: - Messages
 
-    func getMessages(completion: @escaping () -> Void) {
-        if !ConversationViewController.messages.isEmpty {
-            ConversationViewController.messages.removeAll()
-        }
-        guard let id = ConversationViewController.channel?.identifier else { return }
+    func getMessages(in channel: Channel, completion: @escaping () -> Void) {
+        var messages: [Message] = []
+        let id = channel.identifier
         reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
             guard let snapshot = querySnapshot else { return }
@@ -89,21 +89,20 @@ extension FirebaseManager: FirebaseManagerProtocol {
                                       created: dateFromFB,
                                       senderId: senderIdFromFB,
                                       senderName: senderNameFromFB)
-                ConversationViewController.messages.append(message)
+                messages.append(message)
             }
-            completion()
+            self.dbManager.save(messages: messages, inChannel: channel, completion: completion)
         }
     }
         
-    func createMessage(_ text: String, completion: @escaping () -> Void) {
+    func create(message text: String, in channel: Channel, completion: @escaping () -> Void) {
         let uuid = universallyUniqueIdentifier
-        guard let id = ConversationViewController.channel?.identifier else { return }
         let name = ProfileViewController.name ?? "Marina Dudarenko"
         let message = ["content": text,
                        "created": Timestamp(date: Date()),
                        "senderId": uuid,
                        "senderName": name] as [String: Any]
-        reference.document(id).collection("messages").addDocument(data: message)        
-        getMessages(completion: completion)
+        reference.document(channel.identifier).collection("messages").addDocument(data: message)
+        getMessages(in: channel, completion: completion)
     }
 }

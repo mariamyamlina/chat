@@ -34,7 +34,7 @@ class ViewModelFactory {
         switch messageType {
         case .input:
             var senderName = message.senderName
-            if message.senderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            if containtsOnlyOfWhitespaces(string: message.senderName) {
                 senderName = "UNKNOWN SENDER"
             }
             messageModel = MessageModel(text: "\(senderName)\n\(message.content)",

@@ -12,7 +12,12 @@ import CoreData
 struct CoreDataManager {
     let coreDataStack: CoreDataStack
     
-    init(coreDataStack: CoreDataStack) {
+    // MARK: - Singleton
+    
+    static var shared: CoreDataManager = {
+        return CoreDataManager(coreDataStack: CoreDataStack.shared)
+    }()
+    private init(coreDataStack: CoreDataStack) {
         self.coreDataStack = coreDataStack
     }
     
@@ -20,27 +25,19 @@ struct CoreDataManager {
     
     func save(channels: [Channel]) {
         coreDataStack.performSave { context in
-            
-            // MARK: - FIRST OPTION
-            // --- FIRST OPTION (WITHOUT FETCH REQUEST) ---
-//            channels.forEach {
-//                _ = ChannelDB(identifier: $0.identifier,
-//                              name: $0.name,
-//                              lastMessage: $0.lastMessage,
-//                              lastActivity: $0.lastActivity,
-//                              in: context)
-//            }
-            
-            // MARK: - SECOND OPTION
-            // --- SECOND OPTION (WITH FETCH REQUEST) ---
             for channel in channels {
-                let channelFromDB = self.loadChannel(with: channel.identifier, in: context)
+                let channelFromDB = self.load(channel: channel.identifier, from: context)
                 if channelFromDB == nil {
-                    _ = ChannelDB(identifier: channel.identifier,
+                    let channelDB = ChannelDB(identifier: channel.identifier,
                                   name: channel.name,
                                   lastMessage: channel.lastMessage,
                                   lastActivity: channel.lastActivity,
                                   in: context)
+                    do {
+                        try context.obtainPermanentIDs(for: [channelDB])
+                    } catch {
+                        print(error.localizedDescription)
+                    }
                 } else {
                     if channelFromDB?.lastActivity != channel.lastActivity || channelFromDB?.lastMessage != channel.lastMessage {
                         channelFromDB?.lastActivity = channel.lastActivity
@@ -51,54 +48,39 @@ struct CoreDataManager {
                 }
             }
 
-            self.deleteChannels(compareWith: channels, in: context)
+            self.delete(compareWithChannels: channels, in: context)
         }
     }
     
-    func save(messages: [Message], in channel: Channel) {
+    func save(messages: [Message], inChannel channel: Channel, completion: @escaping () -> Void) {
         coreDataStack.performSave { context in
-            
-            // MARK: - FIRST OPTION
-//             --- FIRST OPTION (WITHOUT FETCH REQUEST) ---
-//            var messagesDB: [MessageDB] = []
-//            messages.forEach {
-//                messagesDB.append(MessageDB(identifier: $0.identifier,
-//                                            content: $0.content,
-//                                            created: $0.created,
-//                                            senderId: $0.senderId,
-//                                            senderName: $0.senderName,
-//                                            in: context))
-//            }
-//            let channelDB = ChannelDB(identifier: channel.identifier,
-//                                      name: channel.name,
-//                                      lastMessage: channel.lastMessage,
-//                                      lastActivity: channel.lastActivity,
-//                                      in: context)
-//            messagesDB.forEach {
-//                channelDB.addToMessages($0)
-//            }
-            
-            // MARK: - SECOND OPTION
-            // --- SECOND OPTION (WITH FETCH REQUEST) ---
-            guard let channel = self.loadChannel(with: channel.identifier, in: context) else { return }
+            guard let channel = self.load(channel: channel.identifier, from: context) else { return }
             for message in messages {
-                guard self.loadMessage(with: message.identifier, in: context) == nil else { continue }
+                guard self.load(message: message.identifier, from: context) == nil else { continue }
                 let messageDB = MessageDB(identifier: message.identifier,
                                           content: message.content,
                                           created: message.created,
                                           senderId: message.senderId,
                                           senderName: message.senderName,
                                           in: context)
+                do {
+                    try context.obtainPermanentIDs(for: [messageDB])
+                } catch {
+                    print(error.localizedDescription)
+                }
                 channel.addToMessages(messageDB)
             }
 
-            self.deleteMessages(compareWith: messages, inChannel: channel, in: context)
+            self.delete(compareWithMessages: messages, inChannel: channel, in: context)
+            DispatchQueue.main.async {
+                completion()
+            }
         }
     }
     
     // MARK: - Load
     
-    func loadChannel(with id: String, in context: NSManagedObjectContext) -> ChannelDB? {
+    func load(channel id: String, from context: NSManagedObjectContext) -> ChannelDB? {
         let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
         let predicate = NSPredicate(format: "identifier = %@", id)
         request.predicate = predicate
@@ -109,7 +91,7 @@ struct CoreDataManager {
         }
     }
     
-    func loadMessage(with id: String, in context: NSManagedObjectContext) -> MessageDB? {
+    func load(message id: String, from context: NSManagedObjectContext) -> MessageDB? {
         let request: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
         let predicate = NSPredicate(format: "identifier = %@", id)
         request.predicate = predicate
@@ -122,7 +104,7 @@ struct CoreDataManager {
     
     // MARK: - Delete
     
-    func deleteChannels(compareWith channels: [Channel], in context: NSManagedObjectContext) {
+    func delete(compareWithChannels channels: [Channel], in context: NSManagedObjectContext) {
         var ids: [String] = []
         channels.forEach {
             ids.append($0.identifier)
@@ -156,7 +138,7 @@ struct CoreDataManager {
         }
     }
     
-    func deleteMessages(compareWith messages: [Message], inChannel channelDB: ChannelDB, in context: NSManagedObjectContext) {
+    func delete(compareWithMessages messages: [Message], inChannel channelDB: ChannelDB, in context: NSManagedObjectContext) {
         var ids: [String] = []
         messages.forEach {
             ids.append($0.identifier)

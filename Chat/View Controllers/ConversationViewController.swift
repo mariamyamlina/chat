@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ConversationViewController: LogViewController {
     @IBOutlet weak var tableView: UITableView!
@@ -16,24 +17,14 @@ class ConversationViewController: LogViewController {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var topConstraint: NSLayoutConstraint!
     @IBOutlet weak var sendButton: UIButton!
-    @IBOutlet weak var noMessagesLabel: UILabel!
     @IBOutlet weak var borderLine: UIView!
     
     @IBAction func sendButtonTapped(_ sender: UIButton) {
         guard let message = textField.text else { return }
-        if !message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            fbManager.createMessage(message, completion: { [weak self] in
+        if let unwrChannel = channel,
+            !containtsOnlyOfWhitespaces(string: message) {
+            fbManager.getMessages(in: unwrChannel, completion: { [weak self] in
                 guard let self = self else { return }
-                guard let channel = ConversationViewController.channel else { return }
-                let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
-                chatRequest.save(messages: ConversationViewController.messages, in: channel)
-                
-                self.sortMessages()
-                if !ConversationViewController.messages.isEmpty {
-                    self.noMessagesLabel.isHidden = true
-                }
-                self.tableView.reloadSections([0], with: .fade)
-                
                 if self.lastRowIndex >= 0 {
                     self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
                 }
@@ -42,12 +33,35 @@ class ConversationViewController: LogViewController {
         textField.text = ""
     }
     
+    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<MessageDB> = {
+        let channelId = channel?.identifier ?? ""
+        let fetchRequest = NSFetchRequest<MessageDB>()
+        fetchRequest.entity = MessageDB.entity()
+        let predicate = NSPredicate(format: "channel.identifier = %@", channelId)
+        fetchRequest.predicate = predicate
+        let sortDescriptor = NSSortDescriptor(key: "created", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.fetchBatchSize = 20
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                                  managedObjectContext: CoreDataStack.shared.mainContext,
+                                                                  sectionNameKeyPath: nil,
+                                                                  cacheName: "Messages in channel with id \(channelId)")
+        fetchedResultsController.delegate = self
+
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        return fetchedResultsController
+    }()
+    
     var image: UIImageView?
     var name: String?
     var lastRowIndex: Int = 0
-    
-    static var messages: [Message] = []
-    static var channel: Channel?
+
+    var channel: Channel?
     let fbManager = FirebaseManager.shared
     
     deinit {
@@ -61,40 +75,20 @@ class ConversationViewController: LogViewController {
         configureTableView()
         configureMessageInputView()
         addKeyboardNotifications()
-        fbManager.getMessages(completion: { [weak self] in
-            guard let self = self else { return }
-            guard let channel = ConversationViewController.channel else { return }
-            let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
-            chatRequest.save(messages: ConversationViewController.messages, in: channel)
-            
-            self.sortMessages()
-            if !ConversationViewController.messages.isEmpty {
-                self.noMessagesLabel.isHidden = true
-            }
-            self.tableView.reloadSections([0], with: .fade)
-            
-            if self.lastRowIndex >= 0 {
-                self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
-            }
-        })
+
+        if let unwrChannel = channel {
+            fbManager.getMessages(in: unwrChannel, completion: { [weak self] in
+                guard let self = self else { return }
+                if self.lastRowIndex >= 0 {
+                    self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+                }
+            })
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        guard let conversationsListVC = navigationController?.viewControllers.first as? ConversationsListViewController else { return }
-        fbManager.getChannels(source: conversationsListVC.blockRowSelection, completion: conversationsListVC.getChannelsCompletion)
-    }
-    
-    // MARK: - Firebase
-    
-    func sortMessages() {
-        ConversationViewController.messages.sort {
-            if $1.created > $0.created {
-                return true
-            } else {
-                return false
-            }
-        }
+        fbManager.getChannels()
     }
     
     // MARK: - Theme
@@ -197,8 +191,6 @@ class ConversationViewController: LogViewController {
         tableView.backgroundColor = .clear
         tableView.allowsMultipleSelection = false
         
-        noMessagesLabel.textColor = Colors.separatorColor()
-        
         tableView?.register(UINib(nibName: "MessageTableViewCell", bundle: nil), forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
     }
 }
@@ -207,14 +199,17 @@ class ConversationViewController: LogViewController {
 
 extension ConversationViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let numberOfRows = ConversationViewController.messages.count
+        let numberOfRows = fetchedResultsController.fetchedObjects?.count ?? 0
         lastRowIndex = numberOfRows - 1
         return numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier, for: indexPath) as? MessageTableViewCell
-        let message = ConversationViewController.messages[indexPath.row]
+        
+        let messageDB = fetchedResultsController.object(at: indexPath)
+        let message = Message(from: messageDB)
+        
         let messageCellFactory = ViewModelFactory()
         let messageModel: MessageTableViewCell.MessageCellModel
         let currentTheme = Theme.current.themeOptions
@@ -238,7 +233,8 @@ extension ConversationViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let message = ConversationViewController.messages[indexPath.row]
+        let messageDB = fetchedResultsController.object(at: indexPath)
+        let message = Message(from: messageDB)
         let stringMessage = "\(message.senderName)\n\(message.content)"
 
         let size = CGSize(width: 250, height: 1000)
@@ -281,5 +277,63 @@ extension ConversationViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         sendButton.isHidden = true
         sendButton.isEnabled = false
+    }
+}
+
+// MARK: - NSFetchedResultsControllerDelegate
+
+extension ConversationViewController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange sectionInfo: NSFetchedResultsSectionInfo,
+                    atSectionIndex sectionIndex: Int,
+                    for type: NSFetchedResultsChangeType) {
+        let indexSet = IndexSet(integer: sectionIndex)
+        switch type {
+        case .insert:
+            tableView.insertSections(indexSet, with: .automatic)
+        case .delete:
+            tableView.deleteSections(indexSet, with: .automatic)
+        case .move, .update:
+            tableView.reloadSections(indexSet, with: .automatic)
+        default:
+            break
+        }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            guard let newPath = newIndexPath else { return }
+            tableView.insertRows(at: [newPath], with: .automatic)
+        case .delete:
+            guard let path = indexPath else { return }
+            tableView.deleteRows(at: [path], with: .automatic)
+        case .move:
+            guard let path = indexPath,
+                  let newPath = newIndexPath else { return }
+            tableView.deleteRows(at: [path], with: .automatic)
+            tableView.insertRows(at: [newPath], with: .automatic)
+        case .update:
+            guard let path = indexPath else { return }
+            tableView.reloadRows(at: [path], with: .automatic)
+        default:
+            break
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
+
+        if lastRowIndex >= 0 {
+            tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+        }
     }
 }

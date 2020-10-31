@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import CoreData
 
 class ConversationsListViewController: LogViewController {
     @IBOutlet weak var tableView: UITableView!
+    
+    var isVisible: Bool = false
 
-    static var channels: [Channel] = []
-    static var images: [UIImage?] = []
+    var images: [UIImage?] = []
     let fbManager = FirebaseManager.shared
     
     lazy var searchController: UISearchController = {
@@ -35,8 +37,29 @@ class ConversationsListViewController: LogViewController {
     lazy var newMessageButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "NewMessageIcon"), for: .normal)
-        button.addTarget(self, action: #selector(addNewMessageButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(configureAlertWithTextField), for: .touchUpInside)
         return button
+    }()
+    
+    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<ChannelDB> = {
+        let fetchRequest = NSFetchRequest<ChannelDB>()
+        fetchRequest.entity = ChannelDB.entity()
+        let sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.fetchBatchSize = 20
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                             managedObjectContext: CoreDataStack.shared.mainContext,
+                                             sectionNameKeyPath: nil,
+                                             cacheName: "Channels")
+        fetchedResultsController.delegate = self
+
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        return fetchedResultsController
     }()
     
     override func viewDidLoad() {
@@ -45,7 +68,7 @@ class ConversationsListViewController: LogViewController {
         setupNavigationBar()
         setupTableView()
 
-        fbManager.getChannels(source: blockRowSelection, completion: getChannelsCompletion)
+        fbManager.getChannels()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,6 +78,7 @@ class ConversationsListViewController: LogViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        isVisible = true
         guard let height = navigationController?.navigationBar.frame.height else { return }
         showNewMessageButton(height >= 96)
     }
@@ -64,40 +88,15 @@ class ConversationsListViewController: LogViewController {
         showNewMessageButton(false)
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        isVisible = false
+    }
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         guard let height = navigationController?.navigationBar.frame.height else { return }
         showNewMessageButton(height >= 96)
-    }
-    
-    // MARK: - Firebase
-    
-    func getChannelsCompletion() {
-        let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
-        chatRequest.save(channels: ConversationsListViewController.channels)
-        
-        sortChannels()
-        tableView.reloadData()
-        tableView.allowsSelection = true
-    }
-    
-    func blockRowSelection() {
-        tableView.allowsSelection = false
-    }
-    
-    func sortChannels() {
-        ConversationsListViewController.channels.sort {
-            let date = Date(timeInterval: -50000000000, since: Date())
-            let firstDate = $0.lastActivity ?? date
-            let secondDate = $1.lastActivity ?? date
-            if secondDate < firstDate {
-                return true
-            } else if $0.lastMessage != nil && $1.lastMessage == nil {
-                return true
-            } else {
-                return false
-            }
-        }
     }
     
     // MARK: - Theme
@@ -145,8 +144,8 @@ class ConversationsListViewController: LogViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "SettingsIcon"), style: .plain, target: self, action: #selector(settingsButtonTapped))
         navigationItem.leftBarButtonItem?.tintColor = Colors.settingsIconColor
-        
-        updateProfileImageView()
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        setupRightBarButton()
         
         guard let navigationBar = self.navigationController?.navigationBar else { return }
         navigationBar.addSubview(newMessageButton)
@@ -166,7 +165,7 @@ class ConversationsListViewController: LogViewController {
         }
     }
     
-    func updateProfileImageView() {
+    func setupRightBarButton() {
         let profileImage = ProfileImageView(small: true)
         profileImage.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
@@ -199,13 +198,9 @@ class ConversationsListViewController: LogViewController {
         navigationController?.pushViewController(themesController, animated: true)
     }
     
-    @objc func addNewMessageButtonTapped() {
-        configureAlertWithTextField()
-    }
-    
     // MARK: - Alert
     
-    private func configureAlertWithTextField() {
+    @objc private func configureAlertWithTextField() {
         let alertController = UIAlertController(title: "Create new channel", message: nil, preferredStyle: .alert)
         alertController.pruneNegativeWidthConstraints()
         alertController.addTextField()
@@ -213,8 +208,9 @@ class ConversationsListViewController: LogViewController {
         let createAction = UIAlertAction(title: "Create", style: .default) { [weak self, weak alertController] _ in
             guard let self = self else { return }
             let answer = alertController?.textFields![0].text
-            if let channelName = answer, !channelName.isEmpty, !channelName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                self.fbManager.createChannel(channelName, source: self.blockRowSelection, completion: self.getChannelsCompletion)
+            if let channelName = answer, !channelName.isEmpty, !containtsOnlyOfWhitespaces(string: channelName) {
+                self.images.append(generateImage())
+                self.fbManager.create(channel: channelName)
             }
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -258,14 +254,28 @@ class ConversationsListViewController: LogViewController {
 
 extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return ConversationsListViewController.channels.count
+        let count = fetchedResultsController.sections?[section].numberOfObjects ?? 0
+        if images.isEmpty {
+            for _ in 0..<count {
+                images.append(generateImage())
+            }
+        }
+        return count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.reuseIdentifier, for: indexPath) as? ConversationTableViewCell
         
-        let channel = ConversationsListViewController.channels[indexPath.row]
-        let image = ConversationsListViewController.images[indexPath.row]
+        let channelDB = fetchedResultsController.object(at: indexPath)
+        let channel = Channel(from: channelDB)
+        
+        var image: UIImage?
+        if images.count > indexPath.row {
+            image = images[indexPath.row]
+        } else {
+            image = nil
+        }
+        
         let channelCellFactory = ViewModelFactory()
         let channelModel = channelCellFactory.channelToCell(channel, image)
         cell?.configure(with: channelModel)
@@ -287,11 +297,29 @@ extension ConversationsListViewController: UITableViewDelegate {
         conversationController?.name = cell?.nameLabel.text
         conversationController?.image = cell?.configureImageSubview()
 
-        let channel = ConversationsListViewController.channels[indexPath.row]
-        ConversationViewController.channel = channel
+        let channelDB = fetchedResultsController.object(at: indexPath)
+        let channel = Channel(from: channelDB)
+        conversationController?.channel = channel
 
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationController?.pushViewController(conversationController ?? UIViewController(), animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            // TODO: - Выделить функцию удаления в Стэке в отдельную функцию, и поставить на perform
+            // TODO: - Обработать удаление из нижнего контекста? Проверить, что из БД пропадает объект
+            let channelDB = fetchedResultsController.object(at: indexPath)
+            let channel = Channel(from: channelDB)
+            fbManager.delete(channel: channel.identifier)
+            let context = fetchedResultsController.managedObjectContext
+            let objectToDelete = fetchedResultsController.object(at: indexPath)
+            context.delete(objectToDelete)
+            do {
+                try context.save()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }
 
@@ -301,5 +329,63 @@ extension ConversationsListViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let height = navigationController?.navigationBar.frame.height else { return }
         showNewMessageButton(height >= 96)
+    }
+}
+
+// MARK: - NSFetchedResultsControllerDelegate
+
+extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        guard isVisible else { return }
+        tableView.beginUpdates()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange sectionInfo: NSFetchedResultsSectionInfo,
+                    atSectionIndex sectionIndex: Int,
+                    for type: NSFetchedResultsChangeType) {
+        guard isVisible else { return }
+        let indexSet = IndexSet(integer: sectionIndex)
+        switch type {
+        case .insert:
+            tableView.insertSections(indexSet, with: .automatic)
+        case .delete:
+            tableView.deleteSections(indexSet, with: .automatic)
+        case .move, .update:
+            tableView.reloadSections(indexSet, with: .automatic)
+        default:
+            break
+        }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
+        guard isVisible else { return }
+        switch type {
+        case .insert:
+            guard let newPath = newIndexPath else { return }
+            tableView.insertRows(at: [newPath], with: .automatic)
+        case .delete:
+            guard let path = indexPath else { return }
+            tableView.deleteRows(at: [path], with: .automatic)
+        case .move:
+            guard let path = indexPath,
+                  let newPath = newIndexPath else { return }
+            tableView.deleteRows(at: [path], with: .automatic)
+            tableView.insertRows(at: [newPath], with: .automatic)
+        case .update:
+            guard let path = indexPath else { return }
+            tableView.reloadRows(at: [path], with: .automatic)
+        default:
+            break
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        guard isVisible else { return }
+        tableView.endUpdates()
     }
 }

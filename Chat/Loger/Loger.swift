@@ -12,7 +12,7 @@ class Loger {
     static let appLogIndicator = false
     static let vcLogIndicator = false
     static let buttonLogIndicator = false
-    static let dbLogIndicator = true
+    static let dbLogIndicator = false
     
     static var printAppLog = {(message: String, current: UIApplication.State, function: String) in
         if Loger.appLogIndicator {

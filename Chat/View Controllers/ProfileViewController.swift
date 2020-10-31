@@ -331,7 +331,7 @@ class ProfileViewController: LogViewController {
     @objc private func closeProfileViewController() {
         let navigationVC = self.presentingViewController as? UINavigationController
         let conversationsListVC = navigationVC?.viewControllers.first as? ConversationsListViewController
-        conversationsListVC?.updateProfileImageView()
+        conversationsListVC?.setupRightBarButton()
         self.dismiss(animated: true, completion: nil)
     }
     

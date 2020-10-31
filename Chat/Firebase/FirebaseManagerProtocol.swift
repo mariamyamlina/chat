@@ -14,9 +14,10 @@ protocol FirebaseManagerProtocol: class {
     var reference: CollectionReference { get }
     var universallyUniqueIdentifier: String { get }
     
-    func getChannels(source: () -> Void, completion: @escaping () -> Void)
-    func createChannel(_ name: String, source: () -> Void, completion: @escaping () -> Void)
+    func getChannels()
+    func create(channel name: String)
+    func delete(channel id: String)
     
-    func getMessages(completion: @escaping () -> Void)
-    func createMessage(_ text: String, completion: @escaping () -> Void)
+    func getMessages(in channel: Channel, completion: @escaping () -> Void)
+    func create(message text: String, in channel: Channel, completion: @escaping () -> Void)
 }

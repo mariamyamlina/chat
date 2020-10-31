@@ -31,7 +31,7 @@
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ronald Robertson" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rrY-gc-UJb">
                         <rect key="frame" x="76" y="16" width="208" height="20"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="20" id="YUY-1l-MXU"/>
+                            <constraint firstAttribute="height" priority="999" constant="20" id="YUY-1l-MXU"/>
                         </constraints>
                         <fontDescription key="fontDescription" name="SFProText-Semibold" family="SF Pro Text" pointSize="15"/>
                         <nil key="textColor"/>
@@ -59,7 +59,7 @@
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="eiT-mM-tUf" firstAttribute="top" secondItem="rrY-gc-UJb" secondAttribute="bottom" id="92o-3r-qqu"/>
+                    <constraint firstItem="eiT-mM-tUf" firstAttribute="top" secondItem="rrY-gc-UJb" secondAttribute="bottom" priority="999" id="92o-3r-qqu"/>
                     <constraint firstItem="rrY-gc-UJb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="76" id="G6q-eq-DiH"/>
                     <constraint firstItem="eiT-mM-tUf" firstAttribute="leading" secondItem="GzZ-8x-Fff" secondAttribute="trailing" constant="12.5" id="HZn-2B-P72"/>
                     <constraint firstItem="Sjs-dF-RkU" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="Hpe-9N-x3d"/>
@@ -74,7 +74,7 @@
                     <constraint firstItem="uNF-Mg-K9c" firstAttribute="top" secondItem="GzZ-8x-Fff" secondAttribute="top" constant="1" id="hl7-RL-GTy"/>
                     <constraint firstItem="eiT-mM-tUf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="76" id="lYT-1A-cme"/>
                     <constraint firstAttribute="trailing" secondItem="Sjs-dF-RkU" secondAttribute="trailing" constant="15" id="nqA-ja-4c4"/>
-                    <constraint firstAttribute="bottom" secondItem="GzZ-8x-Fff" secondAttribute="bottom" constant="20" id="pH8-N4-Xey"/>
+                    <constraint firstAttribute="bottom" secondItem="GzZ-8x-Fff" secondAttribute="bottom" priority="999" constant="20" id="pH8-N4-Xey"/>
                     <constraint firstItem="uNF-Mg-K9c" firstAttribute="leading" secondItem="GzZ-8x-Fff" secondAttribute="leading" constant="34" id="qmJ-Zf-emn"/>
                     <constraint firstItem="GzZ-8x-Fff" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15.5" id="wW8-8R-aKt"/>
                 </constraints>
