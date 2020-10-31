@@ -23,7 +23,7 @@ class ConversationViewController: LogViewController {
         guard let message = textField.text else { return }
         if let unwrChannel = channel,
             !containtsOnlyOfWhitespaces(string: message) {
-            fbManager.getMessages(in: unwrChannel, completion: { [weak self] in
+            fbManager.create(message: message, in: unwrChannel, completion: { [weak self] in
                 guard let self = self else { return }
                 if self.lastRowIndex >= 0 {
                     self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
@@ -84,11 +84,6 @@ class ConversationViewController: LogViewController {
                 }
             })
         }
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        fbManager.getChannels()
     }
     
     // MARK: - Theme

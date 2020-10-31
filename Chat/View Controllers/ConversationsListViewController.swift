@@ -67,8 +67,6 @@ class ConversationsListViewController: LogViewController {
         applyTheme()
         setupNavigationBar()
         setupTableView()
-
-        fbManager.getChannels()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,6 +77,7 @@ class ConversationsListViewController: LogViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         isVisible = true
+        fbManager.getChannels()
         guard let height = navigationController?.navigationBar.frame.height else { return }
         showNewMessageButton(height >= 96)
     }
