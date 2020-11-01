@@ -192,6 +192,7 @@ class ConversationViewController: LogViewController {
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
         tableView.allowsMultipleSelection = false
+        tableView.showsVerticalScrollIndicator = false
         
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 14))
         headerView.backgroundColor = .clear
@@ -252,12 +253,19 @@ extension ConversationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let messageDB = fetchedResultsController.object(at: indexPath)
         let message = Message(from: messageDB)
-        let stringMessage = "\(message.senderName)\n\(message.content)"
+        
+        let messageCellFactory = ViewModelFactory()
+        let messageModel: MessageTableViewCell.MessageCellModel
+        if message.senderId == fbManager.universallyUniqueIdentifier {
+            messageModel = messageCellFactory.messageToCell(message, .output)
+        } else {
+            messageModel = messageCellFactory.messageToCell(message, .input)
+        }
 
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16.0) as Any]
-        var estimatedFrame = NSString(string: stringMessage + "\t").boundingRect(with: size, options: options, attributes: attr, context: nil)
+        var estimatedFrame = NSString(string: messageModel.text + "\t").boundingRect(with: size, options: options, attributes: attr, context: nil)
         if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
             let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
             estimatedFrame.size.height = estimatedFrame.height * estimatedFrame.width / newWidth
@@ -268,27 +276,30 @@ extension ConversationViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 25
+        return 28
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 25))
-        view.backgroundColor = .clear
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 28))
+        headerView.backgroundColor = .clear
 
         let sectionInfo = fetchedResultsController.sections?[section]
         let text = sectionInfo?.name ?? ""
 
-        let dateLabel = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 25))
+        let dateLabel = UILabel(frame: CGRect(x: UIScreen.main.bounds.width / 3, y: 4, width: UIScreen.main.bounds.width / 3, height: 20))
+        dateLabel.layer.cornerRadius = dateLabel.bounds.height / 2
+        dateLabel.clipsToBounds = true
         dateLabel.font = UIFont(name: "SFProText-Semibold", size: 13)
         dateLabel.textAlignment = .center
         dateLabel.text = text
 
         let currentTheme = Theme.current.themeOptions
-        dateLabel.textColor = currentTheme.tableViewHeaderColor
+        dateLabel.textColor = currentTheme.tableViewHeaderTextColor
+        dateLabel.backgroundColor = currentTheme.tableViewHeaderColor
 
-        view.addSubview(dateLabel)
+        headerView.addSubview(dateLabel)
         
-        return view
+        return headerView
     }
 }
 

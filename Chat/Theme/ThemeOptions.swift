@@ -32,6 +32,7 @@ protocol ThemeOptions {
     var keyboardAppearance: UIKeyboardAppearance { get }
     
     var tableViewSeparatorColor: UIColor { get }
+    var tableViewHeaderTextColor: UIColor { get }
     var tableViewHeaderColor: UIColor { get }
 }
 
@@ -61,6 +62,7 @@ struct ClassicTheme: ThemeOptions {
     var keyboardAppearance: UIKeyboardAppearance { return .default }
     
     var tableViewSeparatorColor: UIColor { return Colors.tableViewLightSeparatorColor }
+    var tableViewHeaderTextColor: UIColor { return Colors.tableViewHeaderTextLightColor }
     var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderLightColor }
 }
 
@@ -88,6 +90,7 @@ struct DayTheme: ThemeOptions {
     var keyboardAppearance: UIKeyboardAppearance { return .default }
     
     var tableViewSeparatorColor: UIColor { return Colors.tableViewLightSeparatorColor }
+    var tableViewHeaderTextColor: UIColor { return Colors.tableViewHeaderTextLightColor }
     var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderLightColor }
 }
 
@@ -115,5 +118,6 @@ struct NightTheme: ThemeOptions {
     var keyboardAppearance: UIKeyboardAppearance { return .dark }
     
     var tableViewSeparatorColor: UIColor { return Colors.separatorColor() }
+    var tableViewHeaderTextColor: UIColor { return Colors.tableViewHeaderTextDarkColor }
     var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderDarkColor }
 }
