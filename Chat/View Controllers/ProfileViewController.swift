@@ -84,17 +84,12 @@ class ProfileViewController: LogViewController {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        /* Loger.printButtonLog(GCDSaveButton, #function)
-         Почему возникает ошибка "Unexpectedly found nil while implicitly unwrapping an Optional value".
-         View Controller все еще находится в состоянии Unloaded: объект view не создан, IBOutlet и IBAction не назначены.
-         Соответственно, переменная saveButton на момент вызова init имеет значение nil, поэтому при косвенном извлечении опционала вылетает error.
-         Метод loadView, который срабатывает после init, загружает интерфейсный файл, создает все view, кнопки и прочие элементы в нем,
-         а также назначает все связи IBOutlet и IBAction. Завершение настройки происходит в методе viewDidLoad. */
+        Loger.printButtonLog(gcdSaveButton, #function, false)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        Loger.printButtonLog(gcdSaveButton, #function)
+        Loger.printButtonLog(gcdSaveButton, #function, true)
 
         nameTextView.delegate = self
         bioTextView.delegate = self
@@ -120,11 +115,7 @@ class ProfileViewController: LogViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Loger.printButtonLog(gcdSaveButton, #function)
-        /* Почему значения frame отличаются при определенной конфигурации девайсов storyboard/simulator.
-        Так как в .storyboard выбран iPhone SE 2, а запускается проект на iPhone 11/iPhone 11 Pro: они имеют разный размер экранов.
-        В методе viewDidLoad объект view уже создан, но еще не добавлен в иерархию. Настройка элементов происходит в методе viewWillAppear.
-        В состоянии Appearing происходит анимация View Controller в процессе появления. После срабатывает viewDidAppear, при этом view уже имеет свой окончательный внешний вид. */
+        Loger.printButtonLog(gcdSaveButton, #function, true)
     }
     
     // MARK: - Keyboard

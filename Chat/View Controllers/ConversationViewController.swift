@@ -68,7 +68,6 @@ class ConversationViewController: LogViewController {
     
     var image: UIImageView?
     var name: String?
-
     var channel: Channel?
     let fbManager = FirebaseManager.shared
     
@@ -115,13 +114,13 @@ class ConversationViewController: LogViewController {
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
-            tableView.bottomAnchor.constraint(equalTo: messageInputContainer.topAnchor, constant: 0),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            tableView.bottomAnchor.constraint(equalTo: messageInputContainer.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             noMessagesLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 200),
             noMessagesLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            messageInputContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            messageInputContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            messageInputContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            messageInputContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             messageInputContainer.heightAnchor.constraint(equalToConstant: 80)
         ])
         
@@ -190,7 +189,6 @@ class ConversationViewController: LogViewController {
         viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
         viewWithTitle.contentView.backgroundColor = navigationController?.navigationBar.backgroundColor
         viewWithTitle.profileImage.image = titleImageView.image
-        viewWithTitle.profileImage.layer.cornerRadius = viewWithTitle.profileImage.bounds.size.width / 2
         viewWithTitle.nameLabel.text = name
         
         let topView = UIView(frame: CGRect(x: 0, y: 0, width: 236, height: 36))

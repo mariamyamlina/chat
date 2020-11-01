@@ -190,8 +190,7 @@ class ConversationsListViewController: LogViewController {
     }
     
     @objc private func settingsButtonTapped() {
-        let storyboard = UIStoryboard(name: "Themes", bundle: nil)
-        let themesController = storyboard.instantiateViewController(withIdentifier: "Themes VC")
+        let themesController = ThemesViewController()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Chat", style: .plain, target: nil, action: nil)
         tableView.isHidden = true
         navigationController?.pushViewController(themesController, animated: true)
@@ -299,7 +298,6 @@ extension ConversationsListViewController: UITableViewDelegate {
         let channel = Channel(from: channelDB)
         conversationController.channel = channel
 
-        tableView.isHidden = true
         navigationController?.pushViewController(conversationController, animated: true)
     }
     

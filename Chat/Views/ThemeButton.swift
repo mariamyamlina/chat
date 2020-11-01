@@ -13,7 +13,7 @@ class ThemeButton: ButtonWithTouchSize {
     
     var pickHandler: (() -> Void)?
     
-    @IBInspectable var inputMessageColor: UIColor = Colors.inputGrey {
+    @IBInspectable var inputMessageColor: UIColor = Colors.inputGray {
         didSet {
             inputMessageBubble.backgroundColor = inputMessageColor
             setNeedsDisplay()

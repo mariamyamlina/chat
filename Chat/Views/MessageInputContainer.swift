@@ -68,9 +68,9 @@ class MessageInputContainer: UIView {
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            borderLine.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            borderLine.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            borderLine.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
+            borderLine.topAnchor.constraint(equalTo: topAnchor),
+            borderLine.leadingAnchor.constraint(equalTo: leadingAnchor),
+            borderLine.trailingAnchor.constraint(equalTo: trailingAnchor),
             borderLine.heightAnchor.constraint(equalToConstant: 0.5),
             textField.topAnchor.constraint(equalTo: topAnchor, constant: 17),
             textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 50),

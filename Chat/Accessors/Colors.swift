@@ -19,22 +19,22 @@ struct Colors {
 
     static var darkBlue = UIColor(red: 25 / 250, green: 54 / 250, blue: 97 / 250, alpha: 1)
     static var darkGreen = UIColor(red: 10 / 250, green: 75 / 250, blue: 70 / 250, alpha: 1)
-    static var darkGrey = UIColor(red: 84 / 250, green: 84 / 250, blue: 88 / 250, alpha: 0.65)
+    static var darkGray = UIColor(red: 84 / 250, green: 84 / 250, blue: 88 / 250, alpha: 0.65)
     
     static var lightBarColor = UIColor(red: 245 / 250, green: 245 / 250, blue: 245 / 250, alpha: 1.0)
     static var darkBarColor = UIColor.black
     
-    static var timeLightGreyColor = UIColor(red: 0 / 250, green: 0 / 250, blue: 0 / 250, alpha: 0.25)
-    static var timeGreyColor = UIColor(red: 171 / 250, green: 171 / 250, blue: 171 / 250, alpha: 1)
+    static var timeLightGrayColor = UIColor(red: 0 / 250, green: 0 / 250, blue: 0 / 250, alpha: 0.25)
+    static var timeGrayColor = UIColor(red: 171 / 250, green: 171 / 250, blue: 171 / 250, alpha: 1)
     static var timeWhiteColor = UIColor.white
     
-    static var inputGrey = UIColor(red: 223 / 250, green: 223 / 250, blue: 223 / 250, alpha: 1)
-    static var inputLightGrey = UIColor(red: 234 / 250, green: 235 / 250, blue: 237 / 250, alpha: 1)
-    static var inputDarkGrey = UIColor(red: 46 / 250, green: 46 / 250, blue: 46 / 250, alpha: 1)
+    static var inputGray = UIColor(red: 223 / 250, green: 223 / 250, blue: 223 / 250, alpha: 1)
+    static var inputLightGray = UIColor(red: 234 / 250, green: 235 / 250, blue: 237 / 250, alpha: 1)
+    static var inputDarkGray = UIColor(red: 46 / 250, green: 46 / 250, blue: 46 / 250, alpha: 1)
     
     static var outputGreen = UIColor(red: 220 / 250, green: 247 / 250, blue: 197 / 250, alpha: 1)
     static var outputBlue = UIColor(red: 67 / 250, green: 137 / 250, blue: 249 / 250, alpha: 1)
-    static var outputDarkGrey = UIColor(red: 92 / 250, green: 92 / 250, blue: 92 / 250, alpha: 1)
+    static var outputDarkGray = UIColor(red: 92 / 250, green: 92 / 250, blue: 92 / 250, alpha: 1)
     
     static var saveButtonLightColor = UIColor(red: 246 / 250, green: 246 / 250, blue: 246 / 250, alpha: 1)
     static var saveButtonDarkColor = UIColor(red: 27 / 250, green: 27 / 250, blue: 27 / 250, alpha: 1)
@@ -65,4 +65,7 @@ struct Colors {
     
     static var alertDarkColor = UIColor(red: 30 / 250, green: 30 / 250, blue: 30 / 250, alpha: 0.75)
     static var alertLightColor = UIColor.white
+    
+    static let classicAndDayButtonColor = UIColor.white
+    static let nightButtonColor = UIColor(red: 6 / 250, green: 6 / 250, blue: 6 / 250, alpha: 1)
 }

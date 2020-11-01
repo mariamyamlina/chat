@@ -39,7 +39,7 @@ protocol ThemeOptions {
 // MARK: - Theme Set
 
 struct ClassicTheme: ThemeOptions {
-    var inputBubbleColor: UIColor { return Colors.inputGrey }
+    var inputBubbleColor: UIColor { return Colors.inputGray }
     var outputBubbleColor: UIColor { return Colors.outputGreen }
     
     var textColor: UIColor { return .black }
@@ -51,8 +51,8 @@ struct ClassicTheme: ThemeOptions {
     var backgroundColor: UIColor { return .white }
     var settingsBackgroundColor: UIColor { return Colors.darkGreen }
     
-    var inputTimeColor: UIColor { return Colors.timeLightGreyColor }
-    var outputTimeColor: UIColor { return Colors.timeLightGreyColor }
+    var inputTimeColor: UIColor { return Colors.timeLightGrayColor }
+    var outputTimeColor: UIColor { return Colors.timeLightGrayColor }
     
     var textFieldBackgroundColor: UIColor { return Colors.textFieldLightBackgroundColor }
     var textFieldTextColor: UIColor { return Colors.textFieldLightTextColor }
@@ -67,7 +67,7 @@ struct ClassicTheme: ThemeOptions {
 }
 
 struct DayTheme: ThemeOptions {
-    var inputBubbleColor: UIColor { return Colors.inputLightGrey }
+    var inputBubbleColor: UIColor { return Colors.inputLightGray }
     var outputBubbleColor: UIColor { return Colors.outputBlue }
     
     var textColor: UIColor { return .black }
@@ -79,7 +79,7 @@ struct DayTheme: ThemeOptions {
     var backgroundColor: UIColor { return .white }
     var settingsBackgroundColor: UIColor { return Colors.darkBlue }
     
-    var inputTimeColor: UIColor { return Colors.timeGreyColor }
+    var inputTimeColor: UIColor { return Colors.timeGrayColor }
     var outputTimeColor: UIColor { return Colors.timeWhiteColor }
     
     var textFieldBackgroundColor: UIColor { return Colors.textFieldLightBackgroundColor }
@@ -95,8 +95,8 @@ struct DayTheme: ThemeOptions {
 }
 
 struct NightTheme: ThemeOptions {
-    var inputBubbleColor: UIColor { return Colors.inputDarkGrey }
-    var outputBubbleColor: UIColor { return Colors.outputDarkGrey }
+    var inputBubbleColor: UIColor { return Colors.inputDarkGray }
+    var outputBubbleColor: UIColor { return Colors.outputDarkGray }
     
     var textColor: UIColor { return .white }
     var outputTextColor: UIColor { return .white }
@@ -105,7 +105,7 @@ struct NightTheme: ThemeOptions {
     var alertColor: UIColor { return Colors.alertDarkColor }
     var saveButtonColor: UIColor { return Colors.saveButtonDarkColor }
     var backgroundColor: UIColor { return .black }
-    var settingsBackgroundColor: UIColor { return Colors.darkGrey }
+    var settingsBackgroundColor: UIColor { return Colors.darkGray }
     
     var inputTimeColor: UIColor { return Colors.timeWhiteColor }
     var outputTimeColor: UIColor { return Colors.timeWhiteColor }

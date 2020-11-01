@@ -9,7 +9,6 @@
 import UIKit
 
 class MessageTableViewCell: UITableViewCell {
-    
     enum MessageType {
         case input
         case output

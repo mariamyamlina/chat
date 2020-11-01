@@ -19,7 +19,6 @@
 		99454C3B251D49A9005CEEA2 /* ConversationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99454C39251D49A9005CEEA2 /* ConversationTableViewCell.xib */; };
 		994635B92534DE05003DEA03 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994635B82534DE05003DEA03 /* DataManager.swift */; };
 		994AF9D125221D300013B0E0 /* TopViewWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */; };
-		994AF9D525221D560013B0E0 /* TopViewWithTitle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 994AF9D425221D560013B0E0 /* TopViewWithTitle.xib */; };
 		994B4A7E252A79E900A50B5D /* SFProText-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */; };
 		994B4A80252A7C3900A50B5D /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994B4A7F252A7C3900A50B5D /* Theme.swift */; };
 		994B9ADA252799F600A453F2 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994B9AD9252799F600A453F2 /* ThemeManager.swift */; };
@@ -66,7 +65,6 @@
 		99E52A732542FBF4007BD9B6 /* ChannelDBExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A722542FBF4007BD9B6 /* ChannelDBExtension.swift */; };
 		99E5F5C4253C8DDD004C71BF /* FirebaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */; };
 		99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B6962526850C00117A04 /* ThemesViewController.swift */; };
-		99E8B6992526852300117A04 /* Themes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99E8B6982526852300117A04 /* Themes.storyboard */; };
 		99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B69A252689ED00117A04 /* ThemeButton.swift */; };
 		99E8B69D25268A3200117A04 /* ThemeButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99E8B69C25268A3200117A04 /* ThemeButton.xib */; };
 		99EC182525421C980068158C /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EC182425421C980068158C /* Result.swift */; };
@@ -88,7 +86,6 @@
 		99454C39251D49A9005CEEA2 /* ConversationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConversationTableViewCell.xib; sourceTree = "<group>"; };
 		994635B82534DE05003DEA03 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopViewWithTitle.swift; sourceTree = "<group>"; };
-		994AF9D425221D560013B0E0 /* TopViewWithTitle.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TopViewWithTitle.xib; sourceTree = "<group>"; };
 		994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-RegularItalic.ttf"; sourceTree = "<group>"; };
 		994B4A7F252A7C3900A50B5D /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		994B9AD9252799F600A453F2 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
@@ -137,7 +134,6 @@
 		99E52A722542FBF4007BD9B6 /* ChannelDBExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDBExtension.swift; sourceTree = "<group>"; };
 		99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManagerProtocol.swift; sourceTree = "<group>"; };
 		99E8B6962526850C00117A04 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
-		99E8B6982526852300117A04 /* Themes.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Themes.storyboard; sourceTree = "<group>"; };
 		99E8B69A252689ED00117A04 /* ThemeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeButton.swift; sourceTree = "<group>"; };
 		99E8B69C25268A3200117A04 /* ThemeButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ThemeButton.xib; sourceTree = "<group>"; };
 		99EC182425421C980068158C /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
@@ -230,7 +226,6 @@
 				994CF6CC252E0E3200AB0A10 /* ProfileImageView.xib */,
 				9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */,
 				994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */,
-				994AF9D425221D560013B0E0 /* TopViewWithTitle.xib */,
 				9957D96B254F42650073DCA2 /* MessageInputContainer.swift */,
 			);
 			path = Views;
@@ -279,7 +274,6 @@
 				99803F8C250ADD0F000284D9 /* Main.storyboard */,
 				99803F91250ADD11000284D9 /* LaunchScreen.storyboard */,
 				9957F569251EABD2007EB624 /* Profile.storyboard */,
-				99E8B6982526852300117A04 /* Themes.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -419,10 +413,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				994AF9D525221D560013B0E0 /* TopViewWithTitle.xib in Resources */,
 				994B4A7E252A79E900A50B5D /* SFProText-RegularItalic.ttf in Resources */,
 				9957F56A251EABD2007EB624 /* Profile.storyboard in Resources */,
-				99E8B6992526852300117A04 /* Themes.storyboard in Resources */,
 				99803F93250ADD11000284D9 /* LaunchScreen.storyboard in Resources */,
 				99803F90250ADD11000284D9 /* Assets.xcassets in Resources */,
 				9987555B2514244D0080EEAE /* Roboto-Regular.ttf in Resources */,

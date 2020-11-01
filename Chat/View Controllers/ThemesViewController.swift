@@ -21,27 +21,37 @@ class ThemesViewController: LogViewController {
         return title
     }()
     
-    @IBOutlet weak var classicButton: ThemeButton!
-    @IBOutlet weak var dayButton: ThemeButton!
-    @IBOutlet weak var nightButton: ThemeButton!
+    fileprivate lazy var classicButton: ThemeButton = {
+        let button = ThemeButton()
+        button.labelTitle = "Classic"
+        button.backgroundViewColor = Colors.classicAndDayButtonColor
+        button.inputMessageColor = Colors.inputGray
+        button.outputMessageColor = Colors.outputGreen
+        return button
+    }()
+    
+    fileprivate lazy var dayButton: ThemeButton = {
+        let button = ThemeButton()
+        button.labelTitle = "Day"
+        button.backgroundViewColor = Colors.classicAndDayButtonColor
+        button.inputMessageColor = Colors.inputLightGray
+        button.outputMessageColor = Colors.outputBlue
+        return button
+    }()
+    
+    fileprivate lazy var nightButton: ThemeButton = {
+        let button = ThemeButton()
+        button.labelTitle = "Night"
+        button.backgroundViewColor = Colors.nightButtonColor
+        button.inputMessageColor = Colors.inputDarkGray
+        button.outputMessageColor = Colors.outputDarkGray
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        configureNavigationBar()
         createHandler()
-        /*
-         Retain cycle при работе с этом экраном может возникнуть, например, если self в замыкании pickHandler захватывается по сильной ссылке.
-         В таком случае ThemesViewController содержит сильную ссылку на ThemeButton, а ThemeButton - сильную ссылку на self, то есть на ThemesViewController
-         Неверный вариант использования замыкания-обработчика (приведет к retain cycle):
-            myButton.pickHandler = {
-                self....
-            }
-         Верный вариант с применением capture list (захватываем self по слабой ссылке):
-            myButton.pickHandler = { [weak self] in
-                self?....
-            }
-         */
     }
     
     // MARK: - Theme Picker
@@ -134,8 +144,10 @@ class ThemesViewController: LogViewController {
     // MARK: - View
     
     private func setupViews() {
-        themeManager = ThemeManager(themesVC: self)
+        createConstraints()
+        configureNavigationBar()
         
+        themeManager = ThemeManager(themesVC: self)
         applyTheme()
         let currentTheme = Theme.current.themeOptions
         
@@ -161,6 +173,32 @@ class ThemesViewController: LogViewController {
         default:
             break
         }
+    }
+    
+    private func createConstraints() {
+        view.addSubview(classicButton)
+        view.addSubview(dayButton)
+        view.addSubview(nightButton)
+        
+        classicButton.translatesAutoresizingMaskIntoConstraints = false
+        dayButton.translatesAutoresizingMaskIntoConstraints = false
+        nightButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            classicButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 180),
+            classicButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            classicButton.widthAnchor.constraint(equalToConstant: 300),
+            classicButton.heightAnchor.constraint(equalToConstant: 101),
+            classicButton.bottomAnchor.constraint(equalTo: dayButton.topAnchor, constant: -40),
+            dayButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            dayButton.widthAnchor.constraint(equalToConstant: 300),
+            dayButton.heightAnchor.constraint(equalToConstant: 101),
+            dayButton.bottomAnchor.constraint(equalTo: nightButton.topAnchor, constant: -40),
+            nightButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            nightButton.widthAnchor.constraint(equalToConstant: 300),
+            nightButton.heightAnchor.constraint(equalToConstant: 101),
+            nightButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -10)
+        ])
     }
     
     private func setupButtonView(for button: ThemeButton, selected state: Bool) {
