@@ -54,7 +54,7 @@ class CoreDataManager {
     
     func save(messages: [Message],
               inChannel channel: Channel,
-              completion: @escaping () -> Void) {
+              completion: (() -> Void)?) {
         coreDataStack.performSave { context in
             guard let channel = self.load(channel: channel.identifier, from: context) else { return }
             for message in messages {
@@ -74,8 +74,10 @@ class CoreDataManager {
             }
 
             self.delete(compareWithMessages: messages, inChannel: channel, in: context)
+            
+            guard let handler = completion else { return }
             DispatchQueue.main.async {
-                completion()
+                handler()
             }
         }
     }

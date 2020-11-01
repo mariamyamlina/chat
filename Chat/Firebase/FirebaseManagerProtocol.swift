@@ -18,6 +18,6 @@ protocol FirebaseManagerProtocol: class {
     func create(channel name: String)
     func delete(channel id: String)
     
-    func getMessages(in channel: Channel, completion: @escaping () -> Void)
-    func create(message text: String, in channel: Channel, completion: @escaping () -> Void)
+    func getMessages(in channel: Channel, completion: (() -> Void)?)
+    func create(message text: String, in channel: Channel)
 }

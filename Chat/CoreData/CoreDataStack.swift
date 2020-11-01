@@ -98,10 +98,10 @@ class CoreDataStack {
     
     // MARK: - Save Context
 
-    func performSave(_ block: (NSManagedObjectContext) -> Void) {
+    func performSave(_ handler: (NSManagedObjectContext) -> Void) {
         let context = saveContext()
         context.performAndWait {
-            block(context)
+            handler(context)
             if context.hasChanges {
                 performSave(in: context)
             }

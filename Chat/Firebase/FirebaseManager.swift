@@ -34,6 +34,7 @@ class FirebaseManager {
 }
 
 extension FirebaseManager: FirebaseManagerProtocol {
+    
     // MARK: - Channels
         
     func getChannels() {
@@ -71,7 +72,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
 
     // MARK: - Messages
 
-    func getMessages(in channel: Channel, completion: @escaping () -> Void) {
+    func getMessages(in channel: Channel, completion: (() -> Void)? = nil) {
         var messages: [Message] = []
         let id = channel.identifier
         reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
@@ -95,7 +96,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
         }
     }
         
-    func create(message text: String, in channel: Channel, completion: @escaping () -> Void) {
+    func create(message text: String, in channel: Channel) {
         let uuid = universallyUniqueIdentifier
         let name = ProfileViewController.name ?? "Marina Dudarenko"
         let message = ["content": text,
@@ -103,6 +104,6 @@ extension FirebaseManager: FirebaseManagerProtocol {
                        "senderId": uuid,
                        "senderName": name] as [String: Any]
         reference.document(channel.identifier).collection("messages").addDocument(data: message)
-        getMessages(in: channel, completion: completion)
+        getMessages(in: channel)
     }
 }

@@ -17,18 +17,14 @@ class ConversationViewController: LogViewController {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var topConstraint: NSLayoutConstraint!
     @IBOutlet weak var sendButton: UIButton!
+    @IBOutlet weak var noMessagesLabel: UILabel!
     @IBOutlet weak var borderLine: UIView!
     
     @IBAction func sendButtonTapped(_ sender: UIButton) {
         guard let message = textField.text else { return }
         if let unwrChannel = channel,
             !containtsOnlyOfWhitespaces(string: message) {
-            fbManager.create(message: message, in: unwrChannel, completion: { [weak self] in
-                guard let self = self else { return }
-                if self.lastRowIndex >= 0 {
-                    self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: self.lastSectionIndex), at: .bottom, animated: true)
-                }
-            })
+            fbManager.create(message: message, in: unwrChannel)
         }
         textField.text = ""
     }
@@ -76,28 +72,33 @@ class ConversationViewController: LogViewController {
         configureTableView()
         configureMessageInputView()
         addKeyboardNotifications()
-
-        lastSectionIndex = (fetchedResultsController.sections?.count ?? 0) - 1
-        if lastSectionIndex >= 0 {
-            lastRowIndex = (fetchedResultsController.sections?[lastSectionIndex].numberOfObjects ?? 0) - 1
-        }
-
+        
+        countLastRow()
         if let unwrChannel = channel {
             fbManager.getMessages(in: unwrChannel, completion: { [weak self] in
                 guard let self = self else { return }
                 if self.lastRowIndex >= 0 {
+                    self.noMessagesLabel.isHidden = true
                     self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: self.lastSectionIndex), at: .bottom, animated: true)
+                } else {
+                    self.noMessagesLabel.isHidden = false
                 }
             })
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        textField.becomeFirstResponder()
+    }
+    
     // MARK: - Theme
     
     fileprivate func applyTheme() {
+        let currentTheme = Theme.current.themeOptions
+        noMessagesLabel.textColor = currentTheme.textFieldTextColor
         if #available(iOS 13.0, *) {
         } else {
-            let currentTheme = Theme.current.themeOptions
             view.backgroundColor = currentTheme.backgroundColor
             textField.keyboardAppearance = currentTheme.keyboardAppearance
         }
@@ -198,6 +199,13 @@ class ConversationViewController: LogViewController {
         tableView.sectionFooterHeight = 0
         
         tableView?.register(UINib(nibName: "MessageTableViewCell", bundle: nil), forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
+    }
+    
+    private func countLastRow() {
+        lastSectionIndex = (fetchedResultsController.sections?.count ?? 0) - 1
+        if lastSectionIndex >= 0 {
+            lastRowIndex = (fetchedResultsController.sections?[lastSectionIndex].numberOfObjects ?? 0) - 1
+        }
     }
 }
 
@@ -355,8 +363,12 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
 
+        countLastRow()
         if lastRowIndex >= 0 {
+            self.noMessagesLabel.isHidden = true
             tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: self.lastSectionIndex), at: .bottom, animated: true)
+        } else {
+            self.noMessagesLabel.isHidden = false
         }
     }
 }
