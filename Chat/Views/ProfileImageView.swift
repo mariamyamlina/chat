@@ -10,19 +10,38 @@ import UIKit
 
 @IBDesignable
 class ProfileImageView: UIView {
-
-    @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var profileImage: UIImageView!
-    @IBOutlet weak var lettersLabel: UILabel!
-    @IBOutlet weak var profileImageWidthConstraint: NSLayoutConstraint!
-    @IBOutlet weak var profileImageHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var lettersLabelWidthConstraint: NSLayoutConstraint!
-    @IBOutlet weak var lettersLabelHeightConstraint: NSLayoutConstraint!
+    lazy var contentView: UIView = {
+        let contentView = UIView()
+        contentView.isUserInteractionEnabled = false
+        return contentView
+    }()
     
-    static var letters: String?
-    static var fontSize: CGFloat = 120
+    lazy var profileImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = Colors.profileImageGreen
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
     
-    private var touchPath: UIBezierPath {return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius)}
+    lazy var lettersLabel: UILabel = {
+        let label = UILabel()
+        let letters = getLetters(for: ProfileViewController.name ?? "")
+        label.text = letters
+        label.font = UIFont(name: "Roboto-Regular", size: fontSize)
+        label.textColor = Colors.lettersLabelColor
+        label.textAlignment = .center
+        return label
+    }()
+    
+    var profileImageWidthConstraint: NSLayoutConstraint?
+    var profileImageHeightConstraint: NSLayoutConstraint?
+    var lettersLabelWidthConstraint: NSLayoutConstraint?
+    var lettersLabelHeightConstraint: NSLayoutConstraint?
+    
+    var initials: String?
+    var fontSize: CGFloat = 120
+    
+    private var touchPath: UIBezierPath { return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius) }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,25 +58,23 @@ class ProfileImageView: UIView {
         setupView()
         
         if small {
-            profileImageWidthConstraint.constant = 40
-            profileImageHeightConstraint.constant = 40
-            lettersLabelWidthConstraint.constant = 36
-            lettersLabelHeightConstraint.constant = 18
+            profileImageWidthConstraint?.constant = 40
+            profileImageHeightConstraint?.constant = 40
+            lettersLabelWidthConstraint?.constant = 36
+            lettersLabelHeightConstraint?.constant = 18
             
-            ProfileImageView.fontSize = 20
+            fontSize = 20
         } else {
-            profileImageWidthConstraint.constant = 240
-            profileImageHeightConstraint.constant = 240
-            lettersLabelWidthConstraint.constant = 220
-            lettersLabelHeightConstraint.constant = 110
+            profileImageWidthConstraint?.constant = 240
+            profileImageHeightConstraint?.constant = 240
+            lettersLabelWidthConstraint?.constant = 220
+            lettersLabelHeightConstraint?.constant = 110
 
-            ProfileImageView.fontSize = 120
+            fontSize = 120
         }
         
-        lettersLabel.font = lettersLabel.font.withSize(ProfileImageView.fontSize)
-        ProfileImageView.fontSize = 120
-        
-        layer.cornerRadius = profileImageWidthConstraint.constant / 2
+        lettersLabel.font = lettersLabel.font.withSize(fontSize)
+        layer.cornerRadius = (profileImageWidthConstraint?.constant ?? 0) / 2
         clipsToBounds = true
     }
     
@@ -66,47 +83,49 @@ class ProfileImageView: UIView {
     }
     
     func setupView() {
-        let bundle = Bundle(for: ProfileImageView.self)
-        bundle.loadNibNamed("ProfileImageView", owner: self, options: nil)
         addSubview(contentView)
-        contentView.isUserInteractionEnabled = false
-        contentView.frame = self.bounds
-        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         contentView.addSubview(profileImage)
         profileImage.addSubview(lettersLabel)
+
+        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         profileImage.translatesAutoresizingMaskIntoConstraints = false
         lettersLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        profileImageWidthConstraint = NSLayoutConstraint(item: profileImage, attribute: .width, relatedBy: .equal,
+                                                         toItem: nil, attribute: .width, multiplier: 1, constant: 240)
+        profileImageHeightConstraint = NSLayoutConstraint(item: profileImage, attribute: .height, relatedBy: .equal,
+                                                          toItem: nil, attribute: .height, multiplier: 1, constant: 240)
+        lettersLabelWidthConstraint = NSLayoutConstraint(item: lettersLabel, attribute: .width, relatedBy: .greaterThanOrEqual,
+                                                         toItem: nil, attribute: .width, multiplier: 1, constant: 220)
+        lettersLabelHeightConstraint = NSLayoutConstraint(item: lettersLabel, attribute: .height, relatedBy: .equal,
+                                                          toItem: nil, attribute: .height, multiplier: 1, constant: 110)
+        profileImageWidthConstraint?.isActive = true
+        profileImageHeightConstraint?.isActive = true
+        lettersLabelWidthConstraint?.isActive = true
+        lettersLabelHeightConstraint?.isActive = true
+
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor)
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            profileImage.topAnchor.constraint(equalTo: contentView.topAnchor),
+            profileImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            profileImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            profileImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            lettersLabel.centerXAnchor.constraint(equalTo: profileImage.centerXAnchor),
+            lettersLabel.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor)
         ])
-        
-        profileImageWidthConstraint.constant = 240
-        profileImageHeightConstraint.constant = 240
-        lettersLabelWidthConstraint.constant = 220
-        lettersLabelHeightConstraint.constant = 110
 
         loadFromFile(with: GCDDataManager.shared)
 //        loadFromFile(with: OperationDataManager.shared)
         
-        profileImage.contentMode = .scaleAspectFill
         if profileImage.image != nil {
             lettersLabel.isHidden = true
         }
-
-        let letters = getLetters(for: ProfileViewController.name ?? "")
-        lettersLabel.text = letters
-        let attr: [NSAttributedString.Key: Any] = [.font: UIFont(name: "Roboto-Regular", size: ProfileImageView.fontSize) as Any]
-        let attrString = NSMutableAttributedString(string: letters, attributes: attr)
-        lettersLabel.attributedText = attrString
-        lettersLabel.textColor = Colors.lettersLabelColor
-        
-        layer.cornerRadius = profileImageWidthConstraint.constant / 2
+        layer.cornerRadius = (profileImageWidthConstraint?.constant ?? 0) / 2
         clipsToBounds = true
     }
     
@@ -127,11 +146,11 @@ class ProfileImageView: UIView {
         let lettersArray = text.components(separatedBy: .whitespaces)
         if lettersArray.count == 2 {
             let letters = [String(lettersArray[0].first ?? "M"), String(lettersArray[1].first ?? "D")]
-            ProfileImageView.letters = letters[0] + letters[1]
+            initials = letters[0] + letters[1]
         } else {
-            ProfileImageView.letters = ""
+            initials = ""
         }
-        return ProfileImageView.letters ?? ""
+        return initials ?? ""
     }
     
     func updateImage() {

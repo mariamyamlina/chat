@@ -23,7 +23,6 @@
 		994B4A80252A7C3900A50B5D /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994B4A7F252A7C3900A50B5D /* Theme.swift */; };
 		994B9ADA252799F600A453F2 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994B9AD9252799F600A453F2 /* ThemeManager.swift */; };
 		994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */; };
-		994CF6CD252E0E3200AB0A10 /* ProfileImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 994CF6CC252E0E3200AB0A10 /* ProfileImageView.xib */; };
 		994D2DFB2541D8EE00BD5E20 /* ActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994D2DFA2541D8EE00BD5E20 /* ActionType.swift */; };
 		994F1C9A2534C987003FC809 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C992534C987003FC809 /* Colors.swift */; };
 		994F1C9C2534C9A9003FC809 /* ThemeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C9B2534C9A9003FC809 /* ThemeOptions.swift */; };
@@ -66,7 +65,6 @@
 		99E5F5C4253C8DDD004C71BF /* FirebaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */; };
 		99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B6962526850C00117A04 /* ThemesViewController.swift */; };
 		99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B69A252689ED00117A04 /* ThemeButton.swift */; };
-		99E8B69D25268A3200117A04 /* ThemeButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99E8B69C25268A3200117A04 /* ThemeButton.xib */; };
 		99EC182525421C980068158C /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99EC182425421C980068158C /* Result.swift */; };
 		BA51D36F604194656F6CC3D1 /* Pods_Chat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D669EE74477880C6CB0979D /* Pods_Chat.framework */; };
 /* End PBXBuildFile section */
@@ -90,7 +88,6 @@
 		994B4A7F252A7C3900A50B5D /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		994B9AD9252799F600A453F2 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
-		994CF6CC252E0E3200AB0A10 /* ProfileImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileImageView.xib; sourceTree = "<group>"; };
 		994D2DFA2541D8EE00BD5E20 /* ActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionType.swift; sourceTree = "<group>"; };
 		994F1C992534C987003FC809 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		994F1C9B2534C9A9003FC809 /* ThemeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeOptions.swift; sourceTree = "<group>"; };
@@ -135,7 +132,6 @@
 		99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManagerProtocol.swift; sourceTree = "<group>"; };
 		99E8B6962526850C00117A04 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		99E8B69A252689ED00117A04 /* ThemeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeButton.swift; sourceTree = "<group>"; };
-		99E8B69C25268A3200117A04 /* ThemeButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ThemeButton.xib; sourceTree = "<group>"; };
 		99EC182425421C980068158C /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		EF719589154F29D5838B05D3 /* Pods-Chat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.release.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -221,9 +217,7 @@
 			children = (
 				995DEF032534D2E6000BEF15 /* Cells */,
 				99E8B69A252689ED00117A04 /* ThemeButton.swift */,
-				99E8B69C25268A3200117A04 /* ThemeButton.xib */,
 				994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */,
-				994CF6CC252E0E3200AB0A10 /* ProfileImageView.xib */,
 				9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */,
 				994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */,
 				9957D96B254F42650073DCA2 /* MessageInputContainer.swift */,
@@ -420,9 +414,7 @@
 				9987555B2514244D0080EEAE /* Roboto-Regular.ttf in Resources */,
 				99454C3B251D49A9005CEEA2 /* ConversationTableViewCell.xib in Resources */,
 				99875561251427000080EEAE /* SFProDisplay-Bold.ttf in Resources */,
-				994CF6CD252E0E3200AB0A10 /* ProfileImageView.xib in Resources */,
 				992C2ADD2538B5C100005A88 /* GoogleService-Info.plist in Resources */,
-				99E8B69D25268A3200117A04 /* ThemeButton.xib in Resources */,
 				99875565251429290080EEAE /* SFProText-Semibold.ttf in Resources */,
 				9987555E251425610080EEAE /* SFProText-Regular.ttf in Resources */,
 				99803F8E250ADD0F000284D9 /* Main.storyboard in Resources */,

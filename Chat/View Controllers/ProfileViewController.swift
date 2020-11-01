@@ -84,12 +84,12 @@ class ProfileViewController: LogViewController {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        Loger.printButtonLog(gcdSaveButton, #function, false)
+//        Loger.printButtonLog(gcdSaveButton, #function)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        Loger.printButtonLog(gcdSaveButton, #function, true)
+        Loger.printButtonLog(gcdSaveButton, #function)
 
         nameTextView.delegate = self
         bioTextView.delegate = self
@@ -115,7 +115,7 @@ class ProfileViewController: LogViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Loger.printButtonLog(gcdSaveButton, #function, true)
+        Loger.printButtonLog(gcdSaveButton, #function)
     }
     
     // MARK: - Keyboard
