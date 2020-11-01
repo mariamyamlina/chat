@@ -31,10 +31,9 @@
 		994F1C9E2534CA0E003FC809 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C9D2534CA0E003FC809 /* DateFormatter.swift */; };
 		994F1CA02534CAD1003FC809 /* ConfigurableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C9F2534CAD1003FC809 /* ConfigurableView.swift */; };
 		9950733D251F87A500515678 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9950733B251F87A500515678 /* MessageTableViewCell.swift */; };
-		9950733E251F87A500515678 /* MessageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9950733C251F87A500515678 /* MessageTableViewCell.xib */; };
 		99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99569DE32515FD6900F103D4 /* LogViewController.swift */; };
+		9957D96C254F42650073DCA2 /* MessageInputContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9957D96B254F42650073DCA2 /* MessageInputContainer.swift */; };
 		9957F56A251EABD2007EB624 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9957F569251EABD2007EB624 /* Profile.storyboard */; };
-		9957F56C251F67C7007EB624 /* Conversation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9957F56B251F67C7007EB624 /* Conversation.storyboard */; };
 		9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9957F56D251F67DC007EB624 /* ConversationViewController.swift */; };
 		99599C98253731CA00FB2264 /* DataManagerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C97253731C900FB2264 /* DataManagerType.swift */; };
 		99599C9A253731F100FB2264 /* DataManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99599C99253731F100FB2264 /* DataManagerProtocol.swift */; };
@@ -101,10 +100,9 @@
 		994F1C9D2534CA0E003FC809 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		994F1C9F2534CAD1003FC809 /* ConfigurableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableView.swift; sourceTree = "<group>"; };
 		9950733B251F87A500515678 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
-		9950733C251F87A500515678 /* MessageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageTableViewCell.xib; sourceTree = "<group>"; };
 		99569DE32515FD6900F103D4 /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
+		9957D96B254F42650073DCA2 /* MessageInputContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageInputContainer.swift; sourceTree = "<group>"; };
 		9957F569251EABD2007EB624 /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
-		9957F56B251F67C7007EB624 /* Conversation.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Conversation.storyboard; sourceTree = "<group>"; };
 		9957F56D251F67DC007EB624 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		99599C97253731C900FB2264 /* DataManagerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerType.swift; sourceTree = "<group>"; };
 		99599C99253731F100FB2264 /* DataManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerProtocol.swift; sourceTree = "<group>"; };
@@ -233,6 +231,7 @@
 				9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */,
 				994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */,
 				994AF9D425221D560013B0E0 /* TopViewWithTitle.xib */,
+				9957D96B254F42650073DCA2 /* MessageInputContainer.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -259,7 +258,6 @@
 				99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */,
 				99454C39251D49A9005CEEA2 /* ConversationTableViewCell.xib */,
 				9950733B251F87A500515678 /* MessageTableViewCell.swift */,
-				9950733C251F87A500515678 /* MessageTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -281,7 +279,6 @@
 				99803F8C250ADD0F000284D9 /* Main.storyboard */,
 				99803F91250ADD11000284D9 /* LaunchScreen.storyboard */,
 				9957F569251EABD2007EB624 /* Profile.storyboard */,
-				9957F56B251F67C7007EB624 /* Conversation.storyboard */,
 				99E8B6982526852300117A04 /* Themes.storyboard */,
 			);
 			path = Storyboards;
@@ -424,12 +421,10 @@
 			files = (
 				994AF9D525221D560013B0E0 /* TopViewWithTitle.xib in Resources */,
 				994B4A7E252A79E900A50B5D /* SFProText-RegularItalic.ttf in Resources */,
-				9950733E251F87A500515678 /* MessageTableViewCell.xib in Resources */,
 				9957F56A251EABD2007EB624 /* Profile.storyboard in Resources */,
 				99E8B6992526852300117A04 /* Themes.storyboard in Resources */,
 				99803F93250ADD11000284D9 /* LaunchScreen.storyboard in Resources */,
 				99803F90250ADD11000284D9 /* Assets.xcassets in Resources */,
-				9957F56C251F67C7007EB624 /* Conversation.storyboard in Resources */,
 				9987555B2514244D0080EEAE /* Roboto-Regular.ttf in Resources */,
 				99454C3B251D49A9005CEEA2 /* ConversationTableViewCell.xib in Resources */,
 				99875561251427000080EEAE /* SFProDisplay-Bold.ttf in Resources */,
@@ -522,6 +517,7 @@
 				994F1CA02534CAD1003FC809 /* ConfigurableView.swift in Sources */,
 				99E52A712542F88F007BD9B6 /* CoreDataManager.swift in Sources */,
 				99599C98253731CA00FB2264 /* DataManagerType.swift in Sources */,
+				9957D96C254F42650073DCA2 /* MessageInputContainer.swift in Sources */,
 				99E5F5C4253C8DDD004C71BF /* FirebaseManagerProtocol.swift in Sources */,
 				995DEEFA2534D1A1000BEF15 /* WriteOperations.swift in Sources */,
 				994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */,

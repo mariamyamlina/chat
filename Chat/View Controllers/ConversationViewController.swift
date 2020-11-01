@@ -10,24 +10,35 @@ import UIKit
 import CoreData
 
 class ConversationViewController: LogViewController {
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var addButton: UIButton!
-    @IBOutlet weak var messageInputContainer: UIView!
-    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var topConstraint: NSLayoutConstraint!
-    @IBOutlet weak var sendButton: UIButton!
-    @IBOutlet weak var noMessagesLabel: UILabel!
-    @IBOutlet weak var borderLine: UIView!
+    fileprivate lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
+        tableView.allowsMultipleSelection = false
+        tableView.showsVerticalScrollIndicator = false
+        
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 14))
+        headerView.backgroundColor = .clear
+        tableView.tableHeaderView = headerView
+        tableView.sectionFooterHeight = 0
+        
+        tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
+        return tableView
+    }()
     
-    @IBAction func sendButtonTapped(_ sender: UIButton) {
-        guard let message = textField.text else { return }
-        if let unwrChannel = channel,
-            !containtsOnlyOfWhitespaces(string: message) {
-            fbManager.create(message: message, in: unwrChannel)
-        }
-        textField.text = ""
-    }
+    fileprivate lazy var messageInputContainer: MessageInputContainer = { return MessageInputContainer() }()
+    
+    fileprivate lazy var noMessagesLabel: UILabel = {
+        let label = UILabel()
+        label.isHidden = true
+        label.text = "No messages yet"
+        label.font = UIFont(name: "SFProText-Semibold", size: 16.0)
+        label.textAlignment = .center
+        return label
+    }()
     
     fileprivate lazy var fetchedResultsController: NSFetchedResultsController<MessageDB> = {
         let channelId = channel?.identifier ?? ""
@@ -53,10 +64,10 @@ class ConversationViewController: LogViewController {
         return fetchedResultsController
     }()
     
+    var bottomConstraint: NSLayoutConstraint?
+    
     var image: UIImageView?
     var name: String?
-    var lastSectionIndex: Int = -1
-    var lastRowIndex: Int = -1
 
     var channel: Channel?
     let fbManager = FirebaseManager.shared
@@ -67,19 +78,15 @@ class ConversationViewController: LogViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        applyTheme()
-        configureNavigationBar()
-        configureTableView()
-        configureMessageInputView()
+        setupViews()
         addKeyboardNotifications()
         
-        countLastRow()
         if let unwrChannel = channel {
             fbManager.getMessages(in: unwrChannel, completion: { [weak self] in
                 guard let self = self else { return }
-                if self.lastRowIndex >= 0 {
+                if let indexPath = self.countIndexPathForLastRow() {
                     self.noMessagesLabel.isHidden = true
-                    self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: self.lastSectionIndex), at: .bottom, animated: true)
+                    self.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
                 } else {
                     self.noMessagesLabel.isHidden = false
                 }
@@ -89,47 +96,58 @@ class ConversationViewController: LogViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        textField.becomeFirstResponder()
+        messageInputContainer.textField.becomeFirstResponder()
+    }
+    
+    // MARK: - Views
+    
+    func setupViews() {
+        view.addSubview(noMessagesLabel)
+        view.addSubview(tableView)
+        view.addSubview(messageInputContainer)
+
+        noMessagesLabel.translatesAutoresizingMaskIntoConstraints = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        messageInputContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        bottomConstraint = NSLayoutConstraint(item: messageInputContainer, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
+        bottomConstraint?.isActive = true
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
+            tableView.bottomAnchor.constraint(equalTo: messageInputContainer.topAnchor, constant: 0),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            noMessagesLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 200),
+            noMessagesLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            messageInputContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            messageInputContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            messageInputContainer.heightAnchor.constraint(equalToConstant: 80)
+        ])
+        
+        applyTheme()
+        configureNavigationBar()
+        
+        messageInputContainer.textField.delegate = self
+        messageInputContainer.sendHandler = { [weak self] in
+            guard let message = self?.messageInputContainer.textField.text else { return }
+            if let unwrChannel = self?.channel,
+                !containtsOnlyOfWhitespaces(string: message) {
+                self?.fbManager.create(message: message, in: unwrChannel)
+            }
+            self?.messageInputContainer.textField.text = ""
+        }
     }
     
     // MARK: - Theme
     
     fileprivate func applyTheme() {
         let currentTheme = Theme.current.themeOptions
+        view.backgroundColor = currentTheme.backgroundColor
         noMessagesLabel.textColor = currentTheme.textFieldTextColor
-        if #available(iOS 13.0, *) {
-        } else {
-            view.backgroundColor = currentTheme.backgroundColor
-            textField.keyboardAppearance = currentTheme.keyboardAppearance
-        }
     }
     
-    // MARK: - MessageInputView
-    
-    private func configureMessageInputView() {
-        let currentTheme = Theme.current.themeOptions
-        
-        textField.delegate = self
-        textField.autocapitalizationType = .sentences
-        
-        textField.backgroundColor = currentTheme.textFieldBackgroundColor
-        textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
-        attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any, NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
-
-        sendButton.isEnabled = false
-        sendButton.isHidden = true
-        
-        messageInputContainer.backgroundColor = currentTheme.barColor
-        borderLine.backgroundColor = Colors.separatorColor()
-
-        topConstraint.isActive = false
-        topConstraint = messageInputContainer.topAnchor.constraint(equalTo: tableView.bottomAnchor)
-        topConstraint?.isActive = true
-
-        bottomConstraint.isActive = false
-        bottomConstraint = messageInputContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        bottomConstraint?.isActive = true
-    }
+    // MARK: - Keyboard
     
     private func addKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -146,13 +164,12 @@ class ConversationViewController: LogViewController {
             let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
             let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
             bottomConstraint?.constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) : 0
-            
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
             }, completion: { (_) in
                 if isKeyboardShowing {
-                    if self.lastRowIndex >= 0 {
-                        self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: self.lastSectionIndex), at: .bottom, animated: true)
+                    if let indexPath = self.countIndexPathForLastRow() {
+                        self.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
                     }
                 }
             })
@@ -185,27 +202,16 @@ class ConversationViewController: LogViewController {
     
     // MARK: - TableView
     
-    private func configureTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
-        tableView.allowsMultipleSelection = false
-        tableView.showsVerticalScrollIndicator = false
-        
-        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 14))
-        headerView.backgroundColor = .clear
-        tableView.tableHeaderView = headerView
-        tableView.sectionFooterHeight = 0
-        
-        tableView?.register(UINib(nibName: "MessageTableViewCell", bundle: nil), forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
-    }
-    
-    private func countLastRow() {
-        lastSectionIndex = (fetchedResultsController.sections?.count ?? 0) - 1
+    private func countIndexPathForLastRow() -> IndexPath? {
+        let lastSectionIndex = (fetchedResultsController.sections?.count ?? 0) - 1
+        var lastRowIndex: Int = -1
         if lastSectionIndex >= 0 {
             lastRowIndex = (fetchedResultsController.sections?[lastSectionIndex].numberOfObjects ?? 0) - 1
+        }
+        if lastSectionIndex >= 0 && lastRowIndex >= 0 {
+            return IndexPath(row: lastRowIndex, section: lastSectionIndex)
+        } else {
+            return nil
         }
     }
 }
@@ -247,7 +253,7 @@ extension ConversationViewController: UITableViewDataSource {
 
 extension ConversationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        textField.endEditing(true)
+        messageInputContainer.textField.endEditing(true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -298,7 +304,6 @@ extension ConversationViewController: UITableViewDelegate {
         dateLabel.backgroundColor = currentTheme.tableViewHeaderColor
 
         headerView.addSubview(dateLabel)
-        
         return headerView
     }
 }
@@ -307,18 +312,18 @@ extension ConversationViewController: UITableViewDelegate {
 
 extension ConversationViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+        messageInputContainer.textField.resignFirstResponder()
         return true
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        sendButton.isHidden = false
-        sendButton.isEnabled = true
+        messageInputContainer.sendButton.isHidden = false
+        messageInputContainer.sendButton.isEnabled = true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        sendButton.isHidden = true
-        sendButton.isEnabled = false
+        messageInputContainer.sendButton.isHidden = true
+        messageInputContainer.sendButton.isEnabled = false
     }
 }
 
@@ -374,10 +379,9 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
 
-        countLastRow()
-        if lastRowIndex >= 0 {
+        if let indexPath = self.countIndexPathForLastRow() {
             self.noMessagesLabel.isHidden = true
-            tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: self.lastSectionIndex), at: .bottom, animated: true)
+            tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
         } else {
             self.noMessagesLabel.isHidden = false
         }

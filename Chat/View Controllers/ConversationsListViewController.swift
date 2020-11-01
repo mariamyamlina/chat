@@ -288,19 +288,19 @@ extension ConversationsListViewController: UITableViewDataSource {
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        let storyboard = UIStoryboard(name: "Conversation", bundle: nil)
-        let conversationController = storyboard.instantiateViewController(withIdentifier: "Conversation VC") as? ConversationViewController
+
+        let conversationController = ConversationViewController()
         let cell = self.tableView(tableView, cellForRowAt: indexPath) as? ConversationTableViewCell
         
-        conversationController?.name = cell?.nameLabel.text
-        conversationController?.image = cell?.configureImageSubview()
+        conversationController.name = cell?.nameLabel.text
+        conversationController.image = cell?.configureImageSubview()
 
         let channelDB = fetchedResultsController.object(at: indexPath)
         let channel = Channel(from: channelDB)
-        conversationController?.channel = channel
+        conversationController.channel = channel
 
-        navigationController?.pushViewController(conversationController ?? UIViewController(), animated: true)
+        tableView.isHidden = true
+        navigationController?.pushViewController(conversationController, animated: true)
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
