@@ -191,6 +191,10 @@ class ConversationViewController: LogViewController {
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
         tableView.allowsMultipleSelection = false
+        
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 14))
+        headerView.backgroundColor = .clear
+        tableView.tableHeaderView = headerView
         tableView.sectionFooterHeight = 0
         
         tableView?.register(UINib(nibName: "MessageTableViewCell", bundle: nil), forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)

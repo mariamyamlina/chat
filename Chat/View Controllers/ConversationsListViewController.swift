@@ -207,8 +207,9 @@ class ConversationsListViewController: LogViewController {
         let createAction = UIAlertAction(title: "Create", style: .default) { [weak self, weak alertController] _ in
             guard let self = self else { return }
             let answer = alertController?.textFields![0].text
-            if let channelName = answer, !channelName.isEmpty, !containtsOnlyOfWhitespaces(string: channelName) {
-                self.images.append(generateImage())
+            if let channelName = answer,
+                !channelName.isEmpty,
+                !containtsOnlyOfWhitespaces(string: channelName) {
                 self.fbManager.create(channel: channelName)
             }
         }
@@ -246,7 +247,6 @@ class ConversationsListViewController: LogViewController {
 
         tableView?.register(UINib(nibName: "ConversationTableViewCell", bundle: nil), forCellReuseIdentifier: ConversationTableViewCell.reuseIdentifier)
     }
-
 }
 
 // MARK: - UITableViewDataSource
@@ -356,13 +356,24 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             guard let newPath = newIndexPath else { return }
+            if images.count > newPath.row {
+                images.insert(generateImage(), at: newPath.row)
+            }
             tableView.insertRows(at: [newPath], with: .top)
         case .delete:
             guard let path = indexPath else { return }
+            if images.count > path.row {
+                images.insert(generateImage(), at: path.row)
+            }
             tableView.deleteRows(at: [path], with: .top)
         case .move:
             guard let path = indexPath,
                   let newPath = newIndexPath else { return }
+            if images.count > newPath.row, images.count > path.row {
+                let image = images[path.row]
+                images.remove(at: path.row)
+                images.insert(image, at: newPath.row)
+            }
             tableView.deleteRows(at: [path], with: .top)
             tableView.insertRows(at: [newPath], with: .top)
         case .update:
