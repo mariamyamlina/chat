@@ -23,7 +23,7 @@ class MessageTableViewCell: UITableViewCell {
     static let reuseIdentifier = "Message Cell"
     
     lazy var messageTextView: UITextView = {
-       let textView = UITextView()
+        let textView = UITextView()
         textView.backgroundColor = .clear
         textView.isUserInteractionEnabled = false
         textView.font = UIFont(name: "SFProText-Regular", size: 16.0)

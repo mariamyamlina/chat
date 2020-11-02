@@ -205,8 +205,7 @@ class ConversationsListViewController: LogViewController {
     }
     
     @objc private func profileMenuTapped() {
-        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
-        let profileController = storyboard.instantiateViewController(withIdentifier: "Profile VC")
+        let profileController = ProfileViewController()
         let navigationVC = UINavigationController(rootViewController: profileController)
         navigationVC.modalPresentationStyle = UIModalPresentationStyle.pageSheet
         present(navigationVC, animated: true, completion: nil)
