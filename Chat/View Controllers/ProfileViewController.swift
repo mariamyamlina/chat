@@ -69,7 +69,7 @@ class ProfileViewController: LogViewController {
         return textView
     }()
     
-    lazy var profileImageView: ProfileImageView = { return ProfileImageView() }()
+    lazy var profileImageView: ProfileImageView = { return ProfileImageView(small: false) }()
     
     lazy var activityIndicator: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView()

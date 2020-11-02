@@ -43,46 +43,36 @@ class ProfileImageView: UIView {
     
     private var touchPath: UIBezierPath { return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius) }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupView()
-    }
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool { return touchPath.contains(point) }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupView()
+        createConstraints()
     }
     
     init(small: Bool) {
         super.init(frame: CGRect.zero)
-        setupView()
+        createConstraints()
         
         if small {
             profileImageWidthConstraint?.constant = 40
             profileImageHeightConstraint?.constant = 40
             lettersLabelWidthConstraint?.constant = 36
             lettersLabelHeightConstraint?.constant = 18
-            
             fontSize = 20
-        } else {
-            profileImageWidthConstraint?.constant = 240
-            profileImageHeightConstraint?.constant = 240
-            lettersLabelWidthConstraint?.constant = 220
-            lettersLabelHeightConstraint?.constant = 110
-
-            fontSize = 120
         }
-        
-        lettersLabel.font = lettersLabel.font.withSize(fontSize)
+            
+        loadFromFile(with: GCDDataManager.shared)
+//        loadFromFile(with: OperationDataManager.shared)
         layer.cornerRadius = (profileImageWidthConstraint?.constant ?? 0) / 2
         clipsToBounds = true
+        lettersLabel.font = lettersLabel.font.withSize(fontSize)
+        if profileImage.image != nil {
+            lettersLabel.isHidden = true
+        }
     }
     
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        return touchPath.contains(point)
-    }
-    
-    func setupView() {
+    func createConstraints() {
         addSubview(contentView)
         contentView.addSubview(profileImage)
         profileImage.addSubview(lettersLabel)
@@ -118,15 +108,6 @@ class ProfileImageView: UIView {
             lettersLabel.centerXAnchor.constraint(equalTo: profileImage.centerXAnchor),
             lettersLabel.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor)
         ])
-
-        loadFromFile(with: GCDDataManager.shared)
-//        loadFromFile(with: OperationDataManager.shared)
-        
-        if profileImage.image != nil {
-            lettersLabel.isHidden = true
-        }
-        layer.cornerRadius = (profileImageWidthConstraint?.constant ?? 0) / 2
-        clipsToBounds = true
     }
     
     private func loadFromFile(with dataManager: DataManagerProtocol) {
