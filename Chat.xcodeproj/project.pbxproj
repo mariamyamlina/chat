@@ -16,7 +16,6 @@
 		993847022545BEE400D1A40F /* MessageDBExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993847012545BEE400D1A40F /* MessageDBExtension.swift */; };
 		99454C33251D4502005CEEA2 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99454C32251D4502005CEEA2 /* ConversationsListViewController.swift */; };
 		99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */; };
-		99454C3B251D49A9005CEEA2 /* ConversationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 99454C39251D49A9005CEEA2 /* ConversationTableViewCell.xib */; };
 		994635B92534DE05003DEA03 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994635B82534DE05003DEA03 /* DataManager.swift */; };
 		994AF9D125221D300013B0E0 /* TopViewWithTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */; };
 		994B4A7E252A79E900A50B5D /* SFProText-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */; };
@@ -81,7 +80,6 @@
 		993847012545BEE400D1A40F /* MessageDBExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDBExtension.swift; sourceTree = "<group>"; };
 		99454C32251D4502005CEEA2 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
 		99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
-		99454C39251D49A9005CEEA2 /* ConversationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConversationTableViewCell.xib; sourceTree = "<group>"; };
 		994635B82534DE05003DEA03 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopViewWithTitle.swift; sourceTree = "<group>"; };
 		994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-RegularItalic.ttf"; sourceTree = "<group>"; };
@@ -215,7 +213,9 @@
 		995DEF002534D221000BEF15 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				995DEF032534D2E6000BEF15 /* Cells */,
+				994F1C9F2534CAD1003FC809 /* ConfigurableView.swift */,
+				99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */,
+				9950733B251F87A500515678 /* MessageTableViewCell.swift */,
 				99E8B69A252689ED00117A04 /* ThemeButton.swift */,
 				994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */,
 				9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */,
@@ -238,17 +238,6 @@
 				996E04E5254B8CB900281370 /* ContaintsOnlyOfWhitespacesFunc.swift */,
 			);
 			path = Accessors;
-			sourceTree = "<group>";
-		};
-		995DEF032534D2E6000BEF15 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				994F1C9F2534CAD1003FC809 /* ConfigurableView.swift */,
-				99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */,
-				99454C39251D49A9005CEEA2 /* ConversationTableViewCell.xib */,
-				9950733B251F87A500515678 /* MessageTableViewCell.swift */,
-			);
-			path = Cells;
 			sourceTree = "<group>";
 		};
 		995DEF042534D307000BEF15 /* View Controllers */ = {
@@ -412,7 +401,6 @@
 				99803F93250ADD11000284D9 /* LaunchScreen.storyboard in Resources */,
 				99803F90250ADD11000284D9 /* Assets.xcassets in Resources */,
 				9987555B2514244D0080EEAE /* Roboto-Regular.ttf in Resources */,
-				99454C3B251D49A9005CEEA2 /* ConversationTableViewCell.xib in Resources */,
 				99875561251427000080EEAE /* SFProDisplay-Bold.ttf in Resources */,
 				992C2ADD2538B5C100005A88 /* GoogleService-Info.plist in Resources */,
 				99875565251429290080EEAE /* SFProText-Semibold.ttf in Resources */,

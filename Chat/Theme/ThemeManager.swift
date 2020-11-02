@@ -36,23 +36,20 @@ class ThemeManager {
 
         themesViewController?.view.backgroundColor = currentTheme.settingsBackgroundColor
 
-        if #available(iOS 13.0, *) {
-        } else {
-            themesViewController?.navigationController?.navigationBar.barStyle = currentTheme.barStyle
-            themesViewController?.navigationController?.navigationBar.barTintColor = currentTheme.barColor
-            themesViewController?.titleLabel.textColor = currentTheme.textColor
+        themesViewController?.navigationController?.navigationBar.barStyle = currentTheme.barStyle
+        themesViewController?.navigationController?.navigationBar.barTintColor = currentTheme.barColor
+        themesViewController?.titleLabel.textColor = currentTheme.textColor
 
-            let conversationsListVC = themesViewController?.navigationController?.viewControllers.first as? ConversationsListViewController
-            conversationsListVC?.view.backgroundColor = currentTheme.backgroundColor
+        let conversationsListVC = themesViewController?.navigationController?.viewControllers.first as? ConversationsListViewController
+        conversationsListVC?.view.backgroundColor = currentTheme.backgroundColor
 
-            conversationsListVC?.tableView.reloadData()
-            conversationsListVC?.tableView.separatorColor = currentTheme.tableViewSeparatorColor
+        conversationsListVC?.tableView.reloadData()
+        conversationsListVC?.tableView.separatorColor = currentTheme.tableViewSeparatorColor
 
-            conversationsListVC?.navigationController?.navigationBar.barTintColor = currentTheme.barColor
-            conversationsListVC?.navigationController?.navigationBar.barStyle = currentTheme.barStyle
+        conversationsListVC?.navigationController?.navigationBar.barTintColor = currentTheme.barColor
+        conversationsListVC?.navigationController?.navigationBar.barStyle = currentTheme.barStyle
 
-            conversationsListVC?.searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
-        }
+        conversationsListVC?.searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
     }
 }
 

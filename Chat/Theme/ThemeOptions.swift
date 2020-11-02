@@ -14,6 +14,7 @@ protocol ThemeOptions {
     
     var textColor: UIColor { get }
     var outputTextColor: UIColor { get }
+    var messageLabelColor: UIColor { get }
     
     var barColor: UIColor { get }
     var alertColor: UIColor { get }
@@ -41,6 +42,7 @@ protocol ThemeOptions {
 struct ClassicTheme: ThemeOptions {
     var inputBubbleColor: UIColor { return Colors.inputGray }
     var outputBubbleColor: UIColor { return Colors.outputGreen }
+    var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
     
     var textColor: UIColor { return .black }
     var outputTextColor: UIColor { return .black }
@@ -69,6 +71,7 @@ struct ClassicTheme: ThemeOptions {
 struct DayTheme: ThemeOptions {
     var inputBubbleColor: UIColor { return Colors.inputLightGray }
     var outputBubbleColor: UIColor { return Colors.outputBlue }
+    var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
     
     var textColor: UIColor { return .black }
     var outputTextColor: UIColor { return .white }
@@ -97,6 +100,7 @@ struct DayTheme: ThemeOptions {
 struct NightTheme: ThemeOptions {
     var inputBubbleColor: UIColor { return Colors.inputDarkGray }
     var outputBubbleColor: UIColor { return Colors.outputDarkGray }
+    var messageLabelColor: UIColor { return Colors.messageLabelDarkColor }
     
     var textColor: UIColor { return .white }
     var outputTextColor: UIColor { return .white }

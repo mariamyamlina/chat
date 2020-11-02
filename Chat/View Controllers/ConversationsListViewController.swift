@@ -115,15 +115,10 @@ class ConversationsListViewController: LogViewController {
     }
     
     fileprivate func applyTheme(for cell: ConversationTableViewCell?) {
-        cell?.profileImage.layer.cornerRadius = (cell?.profileImage.bounds.size.width ?? 48) / 2
-        cell?.onlineIndicator.layer.cornerRadius = (cell?.onlineIndicator.bounds.width ?? 18) / 2
-        if #available(iOS 13.0, *) {
-        } else {
-            let currentTheme = Theme.current.themeOptions
-            cell?.nameLabel.textColor = currentTheme.textColor
-            cell?.messageLabel.textColor = currentTheme.textFieldTextColor
-            cell?.dateLabel.textColor = currentTheme.textFieldTextColor
-        }
+        let currentTheme = Theme.current.themeOptions
+        cell?.nameLabel.textColor = currentTheme.textColor
+        cell?.messageLabel.textColor = currentTheme.messageLabelColor
+        cell?.dateLabel.textColor = currentTheme.messageLabelColor
     }
     
     // MARK: - Navigation
@@ -243,8 +238,10 @@ class ConversationsListViewController: LogViewController {
         tableView.rowHeight = 88
         tableView.backgroundColor = .clear
         tableView.allowsMultipleSelection = false
+        tableView.showsVerticalScrollIndicator = false
+        tableView.showsHorizontalScrollIndicator = false
 
-        tableView?.register(UINib(nibName: "ConversationTableViewCell", bundle: nil), forCellReuseIdentifier: ConversationTableViewCell.reuseIdentifier)
+        tableView.register(ConversationTableViewCell.self, forCellReuseIdentifier: ConversationTableViewCell.reuseIdentifier)
     }
 }
 

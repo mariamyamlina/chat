@@ -19,6 +19,7 @@ class ConversationViewController: LogViewController {
         tableView.backgroundColor = .clear
         tableView.allowsMultipleSelection = false
         tableView.showsVerticalScrollIndicator = false
+        tableView.showsHorizontalScrollIndicator = false
         
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 14))
         headerView.backgroundColor = .clear

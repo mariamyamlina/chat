@@ -61,12 +61,16 @@ class MessageTableViewCell: UITableViewCell {
         addSubview(timeLabel)
 
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             timeLabel.bottomAnchor.constraint(equalTo: textBubbleView.bottomAnchor, constant: -2),
             timeLabel.trailingAnchor.constraint(equalTo: textBubbleView.trailingAnchor, constant: -8),
             timeLabel.heightAnchor.constraint(equalToConstant: 13),
             timeLabel.widthAnchor.constraint(equalToConstant: 32)
         ])
+        
+        backgroundColor = .clear
+        selectionStyle = .none
     }
 }
 
@@ -92,9 +96,6 @@ extension MessageTableViewCell: ConfigurableView {
         } else {
             messageTextView.text = messageText
         }
-        
-        backgroundColor = .clear
-        selectionStyle = .none
 
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
