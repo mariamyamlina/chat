@@ -26,17 +26,15 @@ class MessageInputContainer: UIView {
     }()
     
     lazy var addButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.tintColor = .systemBlue
+        let button = UIButton(type: .system)
         button.setImage(UIImage(named: "AddIcon"), for: .normal)
         return button
     }()
     
     lazy var sendButton: UIButton = {
-        let button = UIButton(type: .custom)
+        let button = UIButton(type: .system)
         button.isEnabled = false
         button.isHidden = true
-        button.tintColor = .systemBlue
         button.setImage(UIImage(named: "SendIcon"), for: .normal)
         button.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
         return button
@@ -80,10 +78,11 @@ class MessageInputContainer: UIView {
             addButton.trailingAnchor.constraint(equalTo: textField.leadingAnchor, constant: -8),
             addButton.heightAnchor.constraint(equalToConstant: 30),
             addButton.widthAnchor.constraint(equalToConstant: 30),
-            sendButton.centerYAnchor.constraint(equalTo: textField.centerYAnchor),
-            sendButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -37),
-            sendButton.heightAnchor.constraint(equalToConstant: 18),
-            sendButton.widthAnchor.constraint(equalToConstant: 18)
+            sendButton.topAnchor.constraint(equalTo: textField.topAnchor, constant: 2),
+            sendButton.bottomAnchor.constraint(equalTo: textField.bottomAnchor, constant: -6),
+            sendButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -31),
+            sendButton.heightAnchor.constraint(equalToConstant: 24),
+            sendButton.widthAnchor.constraint(equalToConstant: 24)
         ])
 
         applyTheme()

@@ -52,7 +52,6 @@ class ConversationTableViewCell: UITableViewCell {
         indicator.layer.cornerRadius = 9
         indicator.clipsToBounds = true
         indicator.layer.borderWidth = 3
-        indicator.layer.borderColor = UIColor.white.cgColor
         return indicator
     }()
     

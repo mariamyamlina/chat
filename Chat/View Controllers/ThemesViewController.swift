@@ -132,12 +132,14 @@ class ThemesViewController: LogViewController {
         }
     }
     
-    fileprivate func applyTheme() {
+    func applyTheme() {
         let currentTheme = Theme.current.themeOptions
         view.backgroundColor = currentTheme.settingsBackgroundColor
         if #available(iOS 13.0, *) {
         } else {
             titleLabel.textColor = currentTheme.textColor
+            navigationController?.navigationBar.barStyle = currentTheme.barStyle
+            navigationController?.navigationBar.barTintColor = currentTheme.barColor
         }
     }
     

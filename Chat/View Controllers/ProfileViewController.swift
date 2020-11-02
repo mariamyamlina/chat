@@ -83,6 +83,7 @@ class ProfileViewController: LogViewController {
         let button = ButtonWithTouchSize()
         button.setTitle("GCD Save", for: .normal)
         button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
         button.setTitleColor(.lightGray, for: .disabled)
         button.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 19.0)
         button.titleLabel?.textAlignment = .center
@@ -96,6 +97,7 @@ class ProfileViewController: LogViewController {
         let button = ButtonWithTouchSize()
         button.setTitle("Operation Save", for: .normal)
         button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
         button.setTitleColor(.lightGray, for: .disabled)
         button.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 19.0)
         button.titleLabel?.textAlignment = .center
@@ -120,6 +122,7 @@ class ProfileViewController: LogViewController {
         let button = UIButton()
         button.setTitle("Edit", for: .normal)
         button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
         button.setTitleColor(.lightGray, for: .disabled)
         button.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 16.0)
         button.titleLabel?.textAlignment = .center
@@ -346,6 +349,7 @@ class ProfileViewController: LogViewController {
     private func setupEditProfileButtonView(title: String, color: UIColor) {
         editProfileButton.setTitle(title, for: .normal)
         editProfileButton.setTitleColor(color, for: .normal)
+        editProfileButton.setTitleColor(color.withAlphaComponent(0.4), for: .highlighted)
         editProfileButton.setTitleColor(.lightGray, for: .disabled)
     }
     

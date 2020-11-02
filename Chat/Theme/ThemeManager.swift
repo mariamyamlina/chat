@@ -32,24 +32,10 @@ class ThemeManager {
             theme.setActive()
         }
         
-        let currentTheme = Theme.current.themeOptions
-
-        themesViewController?.view.backgroundColor = currentTheme.settingsBackgroundColor
-
-        themesViewController?.navigationController?.navigationBar.barStyle = currentTheme.barStyle
-        themesViewController?.navigationController?.navigationBar.barTintColor = currentTheme.barColor
-        themesViewController?.titleLabel.textColor = currentTheme.textColor
-
+        themesViewController?.applyTheme()
         let conversationsListVC = themesViewController?.navigationController?.viewControllers.first as? ConversationsListViewController
-        conversationsListVC?.view.backgroundColor = currentTheme.backgroundColor
-
+        conversationsListVC?.applyTheme()
         conversationsListVC?.tableView.reloadData()
-        conversationsListVC?.tableView.separatorColor = currentTheme.tableViewSeparatorColor
-
-        conversationsListVC?.navigationController?.navigationBar.barTintColor = currentTheme.barColor
-        conversationsListVC?.navigationController?.navigationBar.barStyle = currentTheme.barStyle
-
-        conversationsListVC?.searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
     }
 }
 

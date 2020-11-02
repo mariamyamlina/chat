@@ -34,8 +34,6 @@ class ConversationsListViewController: LogViewController {
         let searchController = UISearchController(searchResultsController: nil)
         if #available(iOS 13.0, *) {
             let currentTheme = Theme.current.themeOptions
-            searchController.searchBar.searchTextField.backgroundColor = currentTheme.searchBarTextColor
-            searchController.searchBar.searchTextField.leftView?.tintColor = currentTheme.textFieldTextColor
             searchController.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [
                 NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any,
                 NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
@@ -49,6 +47,7 @@ class ConversationsListViewController: LogViewController {
     
     lazy var newMessageButton: UIButton = {
         let button = UIButton(type: .system)
+        button.frame = CGRect(x: 0.0, y: 0.0, width: 24, height: 24)
         button.setImage(UIImage(named: "NewMessageIcon"), for: .normal)
         button.addTarget(self, action: #selector(configureAlertWithTextField), for: .touchUpInside)
         return button
@@ -113,7 +112,6 @@ class ConversationsListViewController: LogViewController {
     
     private func setupViews() {
         view.addSubview(tableView)
-        
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -129,16 +127,19 @@ class ConversationsListViewController: LogViewController {
     
     // MARK: - Theme
     
-    fileprivate func applyTheme() {
+    func applyTheme() {
         let currentTheme = Theme.current.themeOptions
         view.backgroundColor = currentTheme.backgroundColor
-        tableView.backgroundColor = .clear
-        tableView.separatorColor = currentTheme.tableViewSeparatorColor
-        
         navigationController?.navigationBar.barTintColor = currentTheme.barColor
         navigationController?.navigationBar.barStyle = currentTheme.barStyle
+        tableView.separatorColor = currentTheme.tableViewSeparatorColor
         
-        searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
+        if #available(iOS 13.0, *) {
+            searchController.searchBar.searchTextField.backgroundColor = currentTheme.searchBarTextColor
+            searchController.searchBar.searchTextField.leftView?.tintColor = currentTheme.textFieldTextColor
+        } else {
+            searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
+        }
     }
     
     fileprivate func applyTheme(for cell: ConversationTableViewCell?) {
@@ -146,14 +147,16 @@ class ConversationsListViewController: LogViewController {
         cell?.nameLabel.textColor = currentTheme.textColor
         cell?.messageLabel.textColor = currentTheme.messageLabelColor
         cell?.dateLabel.textColor = currentTheme.messageLabelColor
+        cell?.onlineIndicator.layer.borderColor = view.backgroundColor?.cgColor
     }
     
     // MARK: - Navigation
     
     private func setupNavigationBar() {
+        guard let navigationBar = navigationController?.navigationBar else { return }
         definesPresentationContext = true
         navigationItem.largeTitleDisplayMode = .always
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationBar.prefersLargeTitles = true
         navigationItem.searchController = searchController
         navigationItem.title = "Channels"
         
@@ -161,22 +164,29 @@ class ConversationsListViewController: LogViewController {
         searchController.hidesNavigationBarDuringPresentation = true
         
         if #available(iOS 13.0, *) {
-            navigationItem.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+            navigationItem.scrollEdgeAppearance = navigationBar.standardAppearance
         }
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "SettingsIcon"), style: .plain, target: self, action: #selector(settingsButtonTapped))
-        navigationItem.leftBarButtonItem?.tintColor = Colors.settingsIconColor
+        let button = UIButton(type: .system)
+        button.frame = CGRect(x: 0.0, y: 0.0, width: 30, height: 30)
+        button.setImage(UIImage(named: "SettingsIcon")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = Colors.settingsIconColor
+        button.addTarget(self, action: #selector(settingsButtonTapped), for: .touchUpInside)
+        let barbuttonItem = UIBarButtonItem(customView: button)
+        barbuttonItem.customView?.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        barbuttonItem.customView?.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        navigationItem.leftBarButtonItem = barbuttonItem
+        
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         setupRightBarButton()
-        
-        guard let navigationBar = self.navigationController?.navigationBar else { return }
+    
         navigationBar.addSubview(newMessageButton)
         newMessageButton.clipsToBounds = true
         newMessageButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            newMessageButton.rightAnchor.constraint(equalTo: navigationBar.rightAnchor, constant: -21),
-            newMessageButton.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 55),
-            newMessageButton.heightAnchor.constraint(equalToConstant: 30),
+            newMessageButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -24),
+            newMessageButton.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 58),
+            newMessageButton.heightAnchor.constraint(equalToConstant: 24),
             newMessageButton.widthAnchor.constraint(equalTo: newMessageButton.heightAnchor)
         ])
     }
