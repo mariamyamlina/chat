@@ -10,7 +10,20 @@ import UIKit
 import CoreData
 
 class ConversationsListViewController: LogViewController {
-    @IBOutlet weak var tableView: UITableView!
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+
+        tableView.rowHeight = 88
+        tableView.backgroundColor = .clear
+        tableView.allowsMultipleSelection = false
+        tableView.showsVerticalScrollIndicator = false
+        tableView.showsHorizontalScrollIndicator = false
+
+        tableView.register(ConversationTableViewCell.self, forCellReuseIdentifier: ConversationTableViewCell.reuseIdentifier)
+        return tableView
+    }()
     
     var isVisible: Bool = false
 
@@ -64,9 +77,7 @@ class ConversationsListViewController: LogViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        applyTheme()
-        setupNavigationBar()
-        setupTableView()
+        setupViews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,20 +109,36 @@ class ConversationsListViewController: LogViewController {
         showNewMessageButton(height >= 96)
     }
     
+    // MARK: - Setup Views
+    
+    private func setupViews() {
+        view.addSubview(tableView)
+        
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        
+        setupNavigationBar()
+        applyTheme()
+    }
+    
     // MARK: - Theme
     
     fileprivate func applyTheme() {
-        if #available(iOS 13.0, *) {
-        } else {
-            let currentTheme = Theme.current.themeOptions
-            view.backgroundColor = currentTheme.backgroundColor
-            tableView.separatorColor = currentTheme.tableViewSeparatorColor
-            
-            navigationController?.navigationBar.barTintColor = currentTheme.barColor
-            navigationController?.navigationBar.barStyle = currentTheme.barStyle
-            
-            searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
-        }
+        let currentTheme = Theme.current.themeOptions
+        view.backgroundColor = currentTheme.backgroundColor
+        tableView.backgroundColor = .clear
+        tableView.separatorColor = currentTheme.tableViewSeparatorColor
+        
+        navigationController?.navigationBar.barTintColor = currentTheme.barColor
+        navigationController?.navigationBar.barStyle = currentTheme.barStyle
+        
+        searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
     }
     
     fileprivate func applyTheme(for cell: ConversationTableViewCell?) {
@@ -128,6 +155,7 @@ class ConversationsListViewController: LogViewController {
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.searchController = searchController
+        navigationItem.title = "Channels"
         
         navigationItem.hidesSearchBarWhenScrolling = true
         searchController.hidesNavigationBarDuringPresentation = true
@@ -150,7 +178,7 @@ class ConversationsListViewController: LogViewController {
             newMessageButton.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 55),
             newMessageButton.heightAnchor.constraint(equalToConstant: 30),
             newMessageButton.widthAnchor.constraint(equalTo: newMessageButton.heightAnchor)
-            ])
+        ])
     }
     
     private func showNewMessageButton(_ show: Bool) {
@@ -227,21 +255,6 @@ class ConversationsListViewController: LogViewController {
             textField?.backgroundColor = currentTheme.textFieldBackgroundColor
             textField?.keyboardAppearance = currentTheme.keyboardAppearance
         }
-    }
-    
-    // MARK: - TableView
-    
-    private func setupTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-
-        tableView.rowHeight = 88
-        tableView.backgroundColor = .clear
-        tableView.allowsMultipleSelection = false
-        tableView.showsVerticalScrollIndicator = false
-        tableView.showsHorizontalScrollIndicator = false
-
-        tableView.register(ConversationTableViewCell.self, forCellReuseIdentifier: ConversationTableViewCell.reuseIdentifier)
     }
 }
 
