@@ -23,9 +23,9 @@ class CoreDataManager {
     
     func save(channels: [Channel],
               errorHandler: @escaping (String?, String?) -> Void) {
-        coreDataStack.performSave { context in
+        coreDataStack.performSave { [weak self] context in
             for channel in channels {
-                let channelFromDB = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler)
+                let channelFromDB = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler)
                 if channelFromDB == nil {
                     let channelDB = ChannelDB(identifier: channel.identifier,
                                   name: channel.name,
@@ -47,14 +47,14 @@ class CoreDataManager {
                 }
             }
 
-            self.delete(compareWithChannels: channels, errorHandler: errorHandler)
+            self?.delete(compareWithChannels: channels, errorHandler: errorHandler)
         }
     }
     
     func save(channel: Channel,
               errorHandler: @escaping (String?, String?) -> Void) {
-        coreDataStack.performSave { context in
-            guard self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) == nil else { return }
+        coreDataStack.performSave { [weak self] context in
+            guard self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) == nil else { return }
             let channelDB = ChannelDB(identifier: channel.identifier,
                           name: channel.name,
                           lastMessage: channel.lastMessage,
@@ -72,10 +72,10 @@ class CoreDataManager {
               inChannel channel: Channel,
               errorHandler: @escaping (String?, String?) -> Void,
               completion: (() -> Void)?) {
-        coreDataStack.performSave { context in
-            guard let channelDB = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+        coreDataStack.performSave { [weak self] context in
+            guard let channelDB = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
             for message in messages {
-                guard self.load(message: message.identifier, from: context, errorHandler: errorHandler) == nil else { continue }
+                guard self?.load(message: message.identifier, from: context, errorHandler: errorHandler) == nil else { continue }
                 let messageDB = MessageDB(identifier: message.identifier,
                                           content: message.content,
                                           created: message.created,
@@ -90,7 +90,7 @@ class CoreDataManager {
                 channelDB.addToMessages(messageDB)
             }
 
-            self.delete(compareWithMessages: messages, inChannel: channel, errorHandler: errorHandler)
+            self?.delete(compareWithMessages: messages, inChannel: channel, errorHandler: errorHandler)
             
             guard let handler = completion else { return }
             DispatchQueue.main.async {
@@ -102,9 +102,9 @@ class CoreDataManager {
     func save(message: Message,
               inChannel channel: Channel,
               errorHandler: @escaping (String?, String?) -> Void) {
-        coreDataStack.performSave { context in
-            guard let channel = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
-            guard self.load(message: message.identifier, from: context, errorHandler: errorHandler) == nil else { return }
+        coreDataStack.performSave { [weak self] context in
+            guard let channel = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+            guard self?.load(message: message.identifier, from: context, errorHandler: errorHandler) == nil else { return }
             let messageDB = MessageDB(identifier: message.identifier,
                                       content: message.content,
                                       created: message.created,
@@ -124,8 +124,8 @@ class CoreDataManager {
     
     func update(channel: Channel,
                 errorHandler: @escaping (String?, String?) -> Void) {
-        coreDataStack.performSave { context in
-            guard let channelFromDB = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+        coreDataStack.performSave { [weak self] context in
+            guard let channelFromDB = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
             print(channelFromDB.lastActivity != channel.lastActivity && channelFromDB.lastMessage != channel.lastMessage)
             if channelFromDB.lastActivity != channel.lastActivity && channelFromDB.lastMessage != channel.lastMessage {
                 channelFromDB.lastActivity = channel.lastActivity
@@ -188,8 +188,8 @@ class CoreDataManager {
     
     func delete(channel: Channel,
                 errorHandler: @escaping (String?, String?) -> Void) {
-        coreDataStack.performSave { context in
-            guard let channelFromDB = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+        coreDataStack.performSave { [weak self] context in
+            guard let channelFromDB = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
             let object = context.object(with: channelFromDB.objectID)
             context.delete(object)
         }
@@ -199,8 +199,8 @@ class CoreDataManager {
                 inChannel channel: Channel,
                 errorHandler: @escaping (String?, String?) -> Void,
                 completion: (() -> Void)? = nil) {
-        coreDataStack.performSave { context in
-            guard let channelDB = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+        coreDataStack.performSave { [weak self] context in
+            guard let channelDB = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
             
             let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Message")
             let predicate = NSPredicate(format: "channel.identifier = %@", channelDB.identifier)
