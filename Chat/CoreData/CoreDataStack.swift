@@ -12,8 +12,6 @@ import CoreData
 class CoreDataStack {
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
     
-    // MARK: - Singleton
-    
     static var shared: CoreDataStack = {
         return CoreDataStack()
     }()

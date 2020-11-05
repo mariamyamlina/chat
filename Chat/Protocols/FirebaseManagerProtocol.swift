@@ -14,10 +14,14 @@ protocol FirebaseManagerProtocol: class {
     var reference: CollectionReference { get }
     var universallyUniqueIdentifier: String { get }
     
-    func getChannels()
+    func getChannels(errorHandler: @escaping (String?, String?) -> Void)
+    func addChannelsListener(errorHandler: @escaping (String?, String?) -> Void)
+    func removeChannelsListener()
     func create(channel name: String)
     func delete(channel id: String)
     
-    func getMessages(in channel: Channel, completion: (() -> Void)?)
+    func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void, completion: (() -> Void)?)
+    func addMessagesListener(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
+    func removeMessagesListener()
     func create(message text: String, in channel: Channel)
 }

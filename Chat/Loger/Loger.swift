@@ -9,6 +9,11 @@
 import UIKit
 
 class Loger {
+    static var shared: Loger = {
+        return Loger()
+    }()
+    private init() { }
+    
     static let appLogIndicator = false
     static let vcLogIndicator = false
     static let buttonLogIndicator = false

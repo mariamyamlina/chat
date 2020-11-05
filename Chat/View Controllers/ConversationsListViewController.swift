@@ -68,7 +68,7 @@ class ConversationsListViewController: LogViewController {
         do {
             try fetchedResultsController.performFetch()
         } catch {
-            print(error.localizedDescription)
+            configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
         }
         
         return fetchedResultsController
@@ -87,19 +87,18 @@ class ConversationsListViewController: LogViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         isVisible = true
-        fbManager.getChannels()
+        fbManager.getChannels(errorHandler: { [weak self] (errorTitle, errorInfo) in
+            self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
+        })
         guard let height = navigationController?.navigationBar.frame.height else { return }
         showNewMessageButton(height >= 96)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        showNewMessageButton(false)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
         isVisible = false
+        fbManager.removeChannelsListener()
+        showNewMessageButton(false)
     }
     
     override func viewWillLayoutSubviews() {
@@ -232,7 +231,6 @@ class ConversationsListViewController: LogViewController {
     
     @objc private func configureAlertWithTextField() {
         let alertController = UIAlertController(title: "Create new channel", message: nil, preferredStyle: .alert)
-        alertController.pruneNegativeWidthConstraints()
         alertController.addTextField()
         setupTextField(alertController.textFields?[0])
         let createAction = UIAlertAction(title: "Create", style: .default) { [weak self, weak alertController] _ in
@@ -309,8 +307,7 @@ extension ConversationsListViewController: UITableViewDelegate {
 
         let conversationController = ConversationViewController()
         let cell = self.tableView(tableView, cellForRowAt: indexPath) as? ConversationTableViewCell
-        
-        conversationController.name = cell?.nameLabel.text
+
         conversationController.image = cell?.configureImageSubview()
 
         let channelDB = fetchedResultsController.object(at: indexPath)
@@ -354,11 +351,11 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
         let indexSet = IndexSet(integer: sectionIndex)
         switch type {
         case .insert:
-            tableView.insertSections(indexSet, with: .top)
+            tableView.insertSections(indexSet, with: .right)
         case .delete:
-            tableView.deleteSections(indexSet, with: .top)
+            tableView.deleteSections(indexSet, with: .right)
         case .move, .update:
-            tableView.reloadSections(indexSet, with: .top)
+            tableView.reloadSections(indexSet, with: .fade)
         default:
             break
         }
@@ -376,13 +373,13 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
             if images.count > newPath.row {
                 images.insert(generateImage(), at: newPath.row)
             }
-            tableView.insertRows(at: [newPath], with: .top)
+            tableView.insertRows(at: [newPath], with: .right)
         case .delete:
             guard let path = indexPath else { return }
             if images.count > path.row {
                 images.insert(generateImage(), at: path.row)
             }
-            tableView.deleteRows(at: [path], with: .top)
+            tableView.deleteRows(at: [path], with: .right)
         case .move:
             guard let path = indexPath,
                   let newPath = newIndexPath else { return }
@@ -391,11 +388,11 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
                 images.remove(at: path.row)
                 images.insert(image, at: newPath.row)
             }
-            tableView.deleteRows(at: [path], with: .top)
-            tableView.insertRows(at: [newPath], with: .top)
+            tableView.deleteRows(at: [path], with: .right)
+            tableView.insertRows(at: [newPath], with: .right)
         case .update:
             guard let path = indexPath else { return }
-            tableView.reloadRows(at: [path], with: .top)
+            tableView.reloadRows(at: [path], with: .fade)
         default:
             break
         }

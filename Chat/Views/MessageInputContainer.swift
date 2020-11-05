@@ -40,7 +40,7 @@ class MessageInputContainer: UIView {
         return button
     }()
     
-    @objc func sendButtonTapped(_ sender: ThemeButton) {
+    @objc func sendButtonTapped() {
         sendHandler?()
     }
     

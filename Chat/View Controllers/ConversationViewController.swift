@@ -59,7 +59,7 @@ class ConversationViewController: LogViewController {
         do {
             try fetchedResultsController.performFetch()
         } catch {
-            print(error.localizedDescription)
+            configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
         }
         
         return fetchedResultsController
@@ -68,12 +68,12 @@ class ConversationViewController: LogViewController {
     var bottomConstraint: NSLayoutConstraint?
     
     var image: UIImageView?
-    var name: String?
     var channel: Channel?
     let fbManager = FirebaseManager.shared
     
     deinit {
         removeKeyboardNotifications()
+        fbManager.removeMessagesListener()
     }
     
     override func viewDidLoad() {
@@ -82,7 +82,10 @@ class ConversationViewController: LogViewController {
         addKeyboardNotifications()
         
         if let unwrChannel = channel {
-            fbManager.getMessages(in: unwrChannel, completion: { [weak self] in
+            fbManager.getMessages(in: unwrChannel, errorHandler: { [weak self] (errorTitle, errorInfo) in
+                self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
+                },
+                                  completion: { [weak self] in
                 guard let self = self else { return }
                 if let indexPath = self.countIndexPathForLastRow() {
                     self.noMessagesLabel.isHidden = true
@@ -190,7 +193,7 @@ class ConversationViewController: LogViewController {
         viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
         viewWithTitle.contentView.backgroundColor = navigationController?.navigationBar.backgroundColor
         viewWithTitle.profileImage.image = titleImageView.image
-        viewWithTitle.nameLabel.text = name
+        viewWithTitle.nameLabel.text = channel?.name
         
         let topView = UIView(frame: CGRect(x: 0, y: 0, width: 236, height: 36))
         topView.layer.cornerRadius = topView.bounds.width / 2
@@ -312,6 +315,7 @@ extension ConversationViewController: UITableViewDelegate {
 extension ConversationViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         messageInputContainer.textField.resignFirstResponder()
+        messageInputContainer.sendButtonTapped()
         return true
     }
     
@@ -340,11 +344,11 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
         let indexSet = IndexSet(integer: sectionIndex)
         switch type {
         case .insert:
-            tableView.insertSections(indexSet, with: .left)
+            tableView.insertSections(indexSet, with: .right)
         case .delete:
-            tableView.deleteSections(indexSet, with: .left)
+            tableView.deleteSections(indexSet, with: .right)
         case .move, .update:
-            tableView.reloadSections(indexSet, with: .left)
+            tableView.reloadSections(indexSet, with: .fade)
         default:
             break
         }
@@ -369,7 +373,7 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
             tableView.insertRows(at: [newPath], with: .left)
         case .update:
             guard let path = indexPath else { return }
-            tableView.reloadRows(at: [path], with: .left)
+            tableView.reloadRows(at: [path], with: .fade)
         default:
             break
         }

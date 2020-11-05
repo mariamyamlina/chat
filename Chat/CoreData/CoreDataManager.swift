@@ -11,9 +11,7 @@ import CoreData
 
 class CoreDataManager {
     let coreDataStack: CoreDataStack
-    
-    // MARK: - Singleton
-    
+
     static var shared: CoreDataManager = {
         return CoreDataManager(coreDataStack: CoreDataStack.shared)
     }()
@@ -23,10 +21,11 @@ class CoreDataManager {
     
     // MARK: - Save
     
-    func save(channels: [Channel]) {
+    func save(channels: [Channel],
+              errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
             for channel in channels {
-                let channelFromDB = self.load(channel: channel.identifier, from: context)
+                let channelFromDB = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler)
                 if channelFromDB == nil {
                     let channelDB = ChannelDB(identifier: channel.identifier,
                                   name: channel.name,
@@ -36,7 +35,7 @@ class CoreDataManager {
                     do {
                         try context.obtainPermanentIDs(for: [channelDB])
                     } catch {
-                        print(error.localizedDescription)
+                        errorHandler("CoreData", error.localizedDescription)
                     }
                 } else {
                     if channelFromDB?.lastActivity != channel.lastActivity || channelFromDB?.lastMessage != channel.lastMessage {
@@ -48,17 +47,35 @@ class CoreDataManager {
                 }
             }
 
-            self.delete(compareWithChannels: channels, in: context)
+            self.delete(compareWithChannels: channels, errorHandler: errorHandler)
+        }
+    }
+    
+    func save(channel: Channel,
+              errorHandler: @escaping (String?, String?) -> Void) {
+        coreDataStack.performSave { context in
+            guard self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) == nil else { return }
+            let channelDB = ChannelDB(identifier: channel.identifier,
+                          name: channel.name,
+                          lastMessage: channel.lastMessage,
+                          lastActivity: channel.lastActivity,
+                          in: context)
+            do {
+                try context.obtainPermanentIDs(for: [channelDB])
+            } catch {
+                errorHandler("CoreData", error.localizedDescription)
+            }
         }
     }
     
     func save(messages: [Message],
               inChannel channel: Channel,
+              errorHandler: @escaping (String?, String?) -> Void,
               completion: (() -> Void)?) {
         coreDataStack.performSave { context in
-            guard let channel = self.load(channel: channel.identifier, from: context) else { return }
+            guard let channelDB = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
             for message in messages {
-                guard self.load(message: message.identifier, from: context) == nil else { continue }
+                guard self.load(message: message.identifier, from: context, errorHandler: errorHandler) == nil else { continue }
                 let messageDB = MessageDB(identifier: message.identifier,
                                           content: message.content,
                                           created: message.created,
@@ -68,12 +85,12 @@ class CoreDataManager {
                 do {
                     try context.obtainPermanentIDs(for: [messageDB])
                 } catch {
-                    print(error.localizedDescription)
+                    errorHandler("CoreData", error.localizedDescription)
                 }
-                channel.addToMessages(messageDB)
+                channelDB.addToMessages(messageDB)
             }
 
-            self.delete(compareWithMessages: messages, inChannel: channel, in: context)
+            self.delete(compareWithMessages: messages, inChannel: channel, errorHandler: errorHandler)
             
             guard let handler = completion else { return }
             DispatchQueue.main.async {
@@ -82,77 +99,137 @@ class CoreDataManager {
         }
     }
     
+    func save(message: Message,
+              inChannel channel: Channel,
+              errorHandler: @escaping (String?, String?) -> Void) {
+        coreDataStack.performSave { context in
+            guard let channel = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+            guard self.load(message: message.identifier, from: context, errorHandler: errorHandler) == nil else { return }
+            let messageDB = MessageDB(identifier: message.identifier,
+                                      content: message.content,
+                                      created: message.created,
+                                      senderId: message.senderId,
+                                      senderName: message.senderName,
+                                      in: context)
+            do {
+                try context.obtainPermanentIDs(for: [messageDB])
+            } catch {
+                errorHandler("CoreData", error.localizedDescription)
+            }
+            channel.addToMessages(messageDB)
+        }
+    }
+    
+    // MARK: - Update
+    
+    func update(channel: Channel,
+                errorHandler: @escaping (String?, String?) -> Void) {
+        coreDataStack.performSave { context in
+            guard let channelFromDB = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+            print(channelFromDB.lastActivity != channel.lastActivity && channelFromDB.lastMessage != channel.lastMessage)
+            if channelFromDB.lastActivity != channel.lastActivity && channelFromDB.lastMessage != channel.lastMessage {
+                channelFromDB.lastActivity = channel.lastActivity
+                channelFromDB.lastMessage = channel.lastMessage
+            }
+        }
+    }
+    
     // MARK: - Load
     
     func load(channel id: String,
-              from context: NSManagedObjectContext) -> ChannelDB? {
+              from context: NSManagedObjectContext,
+              errorHandler: @escaping (String?, String?) -> Void) -> ChannelDB? {
         let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
         let predicate = NSPredicate(format: "identifier = %@", id)
         request.predicate = predicate
         do {
             return try context.fetch(request).first
         } catch {
-            fatalError(error.localizedDescription)
+            errorHandler("CoreData", error.localizedDescription)
+            return nil
         }
     }
     
     func load(message id: String,
-              from context: NSManagedObjectContext) -> MessageDB? {
+              from context: NSManagedObjectContext,
+              errorHandler: @escaping (String?, String?) -> Void) -> MessageDB? {
         let request: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
         let predicate = NSPredicate(format: "identifier = %@", id)
         request.predicate = predicate
         do {
             return try context.fetch(request).first
         } catch {
-            fatalError(error.localizedDescription)
+            errorHandler("CoreData", error.localizedDescription)
+            return nil
         }
     }
     
     // MARK: - Delete
     
     func delete(compareWithChannels channels: [Channel],
-                in context: NSManagedObjectContext) {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Channel")
-
-        arrayDifference(request: request, arrayOfEntities: channels, in: context).forEach {
-            let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-            let predicate = NSPredicate(format: "identifier = %@", $0)
-            fetchRequest.predicate = predicate
-            do {
-                let channelDB = try context.fetch(fetchRequest).first
-                guard let channel = channelDB else { return }
-                let object = context.object(with: channel.objectID)
-                context.delete(object)
-            } catch {
-                fatalError(error.localizedDescription)
+                errorHandler: @escaping (String?, String?) -> Void) {
+        coreDataStack.performSave { context in
+            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Channel")
+            arrayDifference(request: request, arrayOfEntities: channels, in: context, errorHandler: errorHandler).forEach {
+                let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+                let predicate = NSPredicate(format: "identifier = %@", $0)
+                fetchRequest.predicate = predicate
+                do {
+                    let channelDB = try context.fetch(fetchRequest).first
+                    guard let channel = channelDB else { return }
+                    let object = context.object(with: channel.objectID)
+                    context.delete(object)
+                } catch {
+                    errorHandler("CoreData", error.localizedDescription)
+                }
             }
         }
     }
     
+    func delete(channel: Channel,
+                errorHandler: @escaping (String?, String?) -> Void) {
+        coreDataStack.performSave { context in
+            guard let channelFromDB = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+            let object = context.object(with: channelFromDB.objectID)
+            context.delete(object)
+        }
+    }
+    
     func delete(compareWithMessages messages: [Message],
-                inChannel channelDB: ChannelDB,
-                in context: NSManagedObjectContext) {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Message")
-        let predicate = NSPredicate(format: "channel.identifier = %@", channelDB.identifier)
-        request.predicate = predicate
+                inChannel channel: Channel,
+                errorHandler: @escaping (String?, String?) -> Void,
+                completion: (() -> Void)? = nil) {
+        coreDataStack.performSave { context in
+            guard let channelDB = self.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+            
+            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Message")
+            let predicate = NSPredicate(format: "channel.identifier = %@", channelDB.identifier)
+            request.predicate = predicate
 
-        arrayDifference(request: request, arrayOfEntities: messages, in: context).forEach {
-            let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
-            let predicate = NSPredicate(format: "identifier = %@", $0)
-            fetchRequest.predicate = predicate
-            do {
-                let messageDB = try context.fetch(fetchRequest).first
-                guard let message = messageDB else { return }
-                channelDB.removeFromMessages(message)
-            } catch {
-                fatalError(error.localizedDescription)
+            arrayDifference(request: request, arrayOfEntities: messages, in: context, errorHandler: errorHandler).forEach {
+                let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
+                let predicate = NSPredicate(format: "identifier = %@", $0)
+                fetchRequest.predicate = predicate
+                do {
+                    let messageDB = try context.fetch(fetchRequest).first
+                    guard let message = messageDB else { return }
+                    channelDB.removeFromMessages(message)
+                } catch {
+                    errorHandler("CoreData", error.localizedDescription)
+                }
+            }
+            
+            guard let handler = completion else { return }
+            DispatchQueue.main.async {
+                handler()
             }
         }
     }
     
     func arrayDifference(request: NSFetchRequest<NSFetchRequestResult>,
                          arrayOfEntities: [EntityProtocol],
-                         in context: NSManagedObjectContext) -> [String] {
+                         in context: NSManagedObjectContext,
+                         errorHandler: @escaping (String?, String?) -> Void) -> [String] {
         var decreasing: [String] = []
         var subtrahend: [String] = []
         
@@ -164,7 +241,7 @@ class CoreDataManager {
             guard let result = dict as? [[String: String]] else { return [] }
             decreasing = result.map { ($0["identifier"] ?? "") }
         } catch {
-            fatalError(error.localizedDescription)
+            errorHandler("CoreData", error.localizedDescription)
         }
 
         arrayOfEntities.forEach {
