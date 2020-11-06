@@ -77,9 +77,7 @@ class MessageTableViewCell: UITableViewCell {
 // MARK: - Configuration
 
 extension MessageTableViewCell: ConfigurableView {
-    typealias ConfigurationModel = MessageCellModel
-    
-    func configure(with model: ConfigurationModel) {
+    func configure(with model: MessageCellModel) {
         let currentTheme = Theme.current.themeOptions
         let messageText = model.text
         timeLabel.text = dateFormatter(date: model.time, force: true)

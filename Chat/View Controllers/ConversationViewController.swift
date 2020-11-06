@@ -187,13 +187,13 @@ class ConversationViewController: LogViewController {
             navigationItem.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
-        guard let titleImageView = image else { return }
-        
         let viewWithTitle = TopViewWithTitle()
         viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
         viewWithTitle.contentView.backgroundColor = navigationController?.navigationBar.backgroundColor
-        viewWithTitle.profileImage.image = titleImageView.image
         viewWithTitle.nameLabel.text = channel?.name
+        if let titleImageView = image {
+            viewWithTitle.profileImage.image = titleImageView.image
+        }
         
         let topView = UIView(frame: CGRect(x: 0, y: 0, width: 236, height: 36))
         topView.layer.cornerRadius = topView.bounds.width / 2
@@ -222,8 +222,7 @@ class ConversationViewController: LogViewController {
 
 extension ConversationViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        guard let sections = fetchedResultsController.sections else { return 0 }
-        return sections.count
+        return fetchedResultsController.sections?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -67,9 +67,7 @@ class ProfileImageView: UIView {
         layer.cornerRadius = (profileImageWidthConstraint?.constant ?? 0) / 2
         clipsToBounds = true
         lettersLabel.font = lettersLabel.font.withSize(fontSize)
-        if profileImage.image != nil {
-            lettersLabel.isHidden = true
-        }
+        lettersLabel.isHidden = (profileImage.image != nil)
     }
     
     func createConstraints() {
@@ -79,9 +77,7 @@ class ProfileImageView: UIView {
 
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        profileImage.translatesAutoresizingMaskIntoConstraints = false
-        lettersLabel.translatesAutoresizingMaskIntoConstraints = false
+        [contentView, profileImage, lettersLabel].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         
         profileImageWidthConstraint = NSLayoutConstraint(item: profileImage, attribute: .width, relatedBy: .equal,
                                                          toItem: nil, attribute: .width, multiplier: 1, constant: 240)
@@ -91,10 +87,7 @@ class ProfileImageView: UIView {
                                                          toItem: nil, attribute: .width, multiplier: 1, constant: 220)
         lettersLabelHeightConstraint = NSLayoutConstraint(item: lettersLabel, attribute: .height, relatedBy: .equal,
                                                           toItem: nil, attribute: .height, multiplier: 1, constant: 110)
-        profileImageWidthConstraint?.isActive = true
-        profileImageHeightConstraint?.isActive = true
-        lettersLabelWidthConstraint?.isActive = true
-        lettersLabelHeightConstraint?.isActive = true
+        [profileImageWidthConstraint, profileImageHeightConstraint, lettersLabelWidthConstraint, lettersLabelHeightConstraint].forEach { $0?.isActive = true }
 
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: topAnchor),
@@ -125,21 +118,16 @@ class ProfileImageView: UIView {
     
     private func getLetters(for text: String) -> String {
         let lettersArray = text.components(separatedBy: .whitespaces)
+        initials = ""
         if lettersArray.count == 2 {
             let letters = [String(lettersArray[0].first ?? "M"), String(lettersArray[1].first ?? "D")]
             initials = letters[0] + letters[1]
-        } else {
-            initials = ""
         }
         return initials ?? ""
     }
     
     func updateImage() {
-        if let existingImage = ProfileViewController.image {
-            profileImage.image = existingImage
-        }
-        if profileImage.image != nil {
-            lettersLabel.isHidden = true
-        }
+        profileImage.image = ProfileViewController.image
+        lettersLabel.isHidden = (profileImage.image != nil)
     }
 }

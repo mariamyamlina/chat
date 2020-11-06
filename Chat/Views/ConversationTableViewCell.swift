@@ -98,12 +98,10 @@ class ConversationTableViewCell: UITableViewCell {
                                                            toItem: messageLabel, attribute: .top, multiplier: 1, constant: 0)
         let nameLabelHeightConstraint = NSLayoutConstraint(item: nameLabel, attribute: .height, relatedBy: .equal,
                                                            toItem: nil, attribute: .height, multiplier: 1, constant: 20)
-        profileImageBottomConstraint.priority = UILayoutPriority(rawValue: 999)
-        nameLabelBottomConstraint.priority = UILayoutPriority(rawValue: 999)
-        nameLabelHeightConstraint.priority = UILayoutPriority(rawValue: 999)
-        profileImageBottomConstraint.isActive = true
-        nameLabelBottomConstraint.isActive = true
-        nameLabelHeightConstraint.isActive = true
+        [profileImageBottomConstraint, nameLabelBottomConstraint, nameLabelHeightConstraint].forEach {
+            $0.priority = UILayoutPriority(rawValue: 999)
+            $0.isActive = true
+        }
         NSLayoutConstraint.activate([
             profileImage.topAnchor.constraint(equalTo: topAnchor, constant: 20),
             profileImage.topAnchor.constraint(equalTo: onlineIndicator.topAnchor, constant: 1),
@@ -128,34 +126,19 @@ class ConversationTableViewCell: UITableViewCell {
         backgroundColor = .clear
     }
     
-    func configureImageSubview() -> UIImageView {
-        let viewWithImage = UIImageView(frame: CGRect(x: 0, y: 0, width: 36, height: 36))
-        viewWithImage.clipsToBounds = true
-        viewWithImage.image = profileImage.image
-
-        viewWithImage.addSubview(profileImage)
-
-        profileImage.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            profileImage.topAnchor.constraint(equalTo: viewWithImage.topAnchor),
-            profileImage.bottomAnchor.constraint(equalTo: viewWithImage.bottomAnchor),
-            profileImage.trailingAnchor.constraint(equalTo: viewWithImage.trailingAnchor),
-            profileImage.leadingAnchor.constraint(equalTo: viewWithImage.leadingAnchor),
-            profileImage.heightAnchor.constraint(equalToConstant: 36),
-            profileImage.widthAnchor.constraint(equalToConstant: 36)
-        ])
-        return viewWithImage
+    fileprivate func applyTheme() {
+        let currentTheme = Theme.current.themeOptions
+        nameLabel.textColor = currentTheme.textColor
+        messageLabel.textColor = currentTheme.messageLabelColor
+        dateLabel.textColor = currentTheme.messageLabelColor
+        onlineIndicator.layer.borderColor = currentTheme.backgroundColor.cgColor
     }
-    
 }
 
 // MARK: - Configuration
 
 extension ConversationTableViewCell: ConfigurableView {
-    typealias ConfigurationModel = ConversationCellModel
-    
-    func configure(with model: ConfigurationModel) {
+    func configure(with model: ConversationCellModel) {
         profileImage.image = model.image
         nameLabel.text = model.name
         onlineIndicator.isHidden = !model.isOnline
@@ -173,5 +156,7 @@ extension ConversationTableViewCell: ConfigurableView {
             dateLabel.text = ">"
             messageLabel.font = UIFont(name: "SFProText-RegularItalic", size: 13.0)
         }
+        
+        applyTheme()
     }
 }

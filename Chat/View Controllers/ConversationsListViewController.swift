@@ -141,14 +141,6 @@ class ConversationsListViewController: LogViewController {
         }
     }
     
-    fileprivate func applyTheme(for cell: ConversationTableViewCell?) {
-        let currentTheme = Theme.current.themeOptions
-        cell?.nameLabel.textColor = currentTheme.textColor
-        cell?.messageLabel.textColor = currentTheme.messageLabelColor
-        cell?.dateLabel.textColor = currentTheme.messageLabelColor
-        cell?.onlineIndicator.layer.borderColor = view.backgroundColor?.cgColor
-    }
-    
     // MARK: - Navigation
     
     private func setupNavigationBar() {
@@ -235,8 +227,7 @@ class ConversationsListViewController: LogViewController {
         setupTextField(alertController.textFields?[0])
         let createAction = UIAlertAction(title: "Create", style: .default) { [weak self, weak alertController] _ in
             guard let self = self else { return }
-            let answer = alertController?.textFields![0].text
-            if let channelName = answer,
+            if let channelName = alertController?.textFields![0].text,
                 !channelName.isEmpty,
                 !containtsOnlyOfWhitespaces(string: channelName) {
                 self.fbManager.create(channel: channelName)
@@ -287,14 +278,11 @@ extension ConversationsListViewController: UITableViewDataSource {
         var image: UIImage?
         if images.count > indexPath.row {
             image = images[indexPath.row]
-        } else {
-            image = nil
         }
         
         let channelCellFactory = ViewModelFactory()
         let channelModel = channelCellFactory.channelToCell(channel, image)
         cell?.configure(with: channelModel)
-        applyTheme(for: cell)
         return cell ?? UITableViewCell()
     }
 }
@@ -305,14 +293,12 @@ extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let conversationController = ConversationViewController()
-        let cell = self.tableView(tableView, cellForRowAt: indexPath) as? ConversationTableViewCell
-
-        conversationController.image = cell?.configureImageSubview()
-
         let channelDB = fetchedResultsController.object(at: indexPath)
         let channel = Channel(from: channelDB)
+        
+        let conversationController = ConversationViewController()
         conversationController.channel = channel
+        conversationController.image = UIImageView(image: images[indexPath.row])
 
         navigationController?.pushViewController(conversationController, animated: true)
     }

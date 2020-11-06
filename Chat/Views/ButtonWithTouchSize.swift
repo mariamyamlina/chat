@@ -9,10 +9,7 @@
 import UIKit
 
 class ButtonWithTouchSize: UIButton {
+    private var touchPath: UIBezierPath { return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius) }
     
-    private var touchPath: UIBezierPath {return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius)}
-    
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        return touchPath.contains(point)
-    }
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool { return touchPath.contains(point) }
 }
