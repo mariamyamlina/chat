@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct ClassicTheme: ThemeOptions {
+struct ClassicTheme: ThemeOptionsProtocol {
     var inputBubbleColor: UIColor { return Colors.inputGray }
     var outputBubbleColor: UIColor { return Colors.outputGreen }
     var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
@@ -37,7 +37,7 @@ struct ClassicTheme: ThemeOptions {
     var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderLightColor }
 }
 
-struct DayTheme: ThemeOptions {
+struct DayTheme: ThemeOptionsProtocol {
     var inputBubbleColor: UIColor { return Colors.inputLightGray }
     var outputBubbleColor: UIColor { return Colors.outputBlue }
     var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
@@ -66,7 +66,7 @@ struct DayTheme: ThemeOptions {
     var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderLightColor }
 }
 
-struct NightTheme: ThemeOptions {
+struct NightTheme: ThemeOptionsProtocol {
     var inputBubbleColor: UIColor { return Colors.inputDarkGray }
     var outputBubbleColor: UIColor { return Colors.outputDarkGray }
     var messageLabelColor: UIColor { return Colors.messageLabelDarkColor }

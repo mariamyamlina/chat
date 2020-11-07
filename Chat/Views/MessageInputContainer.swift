@@ -88,6 +88,11 @@ class MessageInputContainer: UIView {
         applyTheme()
     }
     
+    func enableSendButton(_ state: Bool) {
+        sendButton.isHidden = !state
+        sendButton.isEnabled = state
+    }
+    
     // MARK: - Theme
     
     private func applyTheme() {

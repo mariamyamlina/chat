@@ -1,5 +1,5 @@
 //
-//  ConfigurableView.swift
+//  ConfigurableViewProtocol.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 12.10.2020.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ConfigurableView {
+protocol ConfigurableViewProtocol {
     associatedtype ConfigurationModel
     
     func configure(with model: ConfigurationModel)

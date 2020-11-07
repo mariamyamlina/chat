@@ -1,5 +1,5 @@
 //
-//  ThemeOptions.swift
+//  ThemeOptionsProtocol.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 12.10.2020.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ThemeOptions {
+protocol ThemeOptionsProtocol {
     var inputBubbleColor: UIColor { get }
     var outputBubbleColor: UIColor { get }
     

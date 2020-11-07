@@ -26,9 +26,9 @@
 		994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */; };
 		994D2DFB2541D8EE00BD5E20 /* ActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994D2DFA2541D8EE00BD5E20 /* ActionType.swift */; };
 		994F1C9A2534C987003FC809 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C992534C987003FC809 /* Colors.swift */; };
-		994F1C9C2534C9A9003FC809 /* ThemeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C9B2534C9A9003FC809 /* ThemeOptions.swift */; };
+		994F1C9C2534C9A9003FC809 /* ThemeOptionsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C9B2534C9A9003FC809 /* ThemeOptionsProtocol.swift */; };
 		994F1C9E2534CA0E003FC809 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C9D2534CA0E003FC809 /* DateFormatter.swift */; };
-		994F1CA02534CAD1003FC809 /* ConfigurableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C9F2534CAD1003FC809 /* ConfigurableView.swift */; };
+		994F1CA02534CAD1003FC809 /* ConfigurableViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C9F2534CAD1003FC809 /* ConfigurableViewProtocol.swift */; };
 		9950733D251F87A500515678 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9950733B251F87A500515678 /* MessageTableViewCell.swift */; };
 		99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99569DE32515FD6900F103D4 /* LogViewController.swift */; };
 		9957D96C254F42650073DCA2 /* MessageInputContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9957D96B254F42650073DCA2 /* MessageInputContainer.swift */; };
@@ -92,9 +92,9 @@
 		994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		994D2DFA2541D8EE00BD5E20 /* ActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionType.swift; sourceTree = "<group>"; };
 		994F1C992534C987003FC809 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
-		994F1C9B2534C9A9003FC809 /* ThemeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeOptions.swift; sourceTree = "<group>"; };
+		994F1C9B2534C9A9003FC809 /* ThemeOptionsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeOptionsProtocol.swift; sourceTree = "<group>"; };
 		994F1C9D2534CA0E003FC809 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
-		994F1C9F2534CAD1003FC809 /* ConfigurableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableView.swift; sourceTree = "<group>"; };
+		994F1C9F2534CAD1003FC809 /* ConfigurableViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableViewProtocol.swift; sourceTree = "<group>"; };
 		9950733B251F87A500515678 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		99569DE32515FD6900F103D4 /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 		9957D96B254F42650073DCA2 /* MessageInputContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageInputContainer.swift; sourceTree = "<group>"; };
@@ -156,6 +156,16 @@
 				2D669EE74477880C6CB0979D /* Pods_Chat.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		994518DB2556F02D00D5B015 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				99803F86250ADD0F000284D9 /* AppDelegate.swift */,
+				99803F91250ADD11000284D9 /* LaunchScreen.storyboard */,
+				992C2ADC2538B5C100005A88 /* GoogleService-Info.plist */,
+			);
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		994F1CA12534CB10003FC809 /* Theme */ = {
@@ -253,9 +263,9 @@
 		997C86E125505FA700FD16B1 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				994F1C9F2534CAD1003FC809 /* ConfigurableView.swift */,
+				994F1C9F2534CAD1003FC809 /* ConfigurableViewProtocol.swift */,
 				99599C9B253751BD00FB2264 /* ThemesPickerDelegate.swift */,
-				994F1C9B2534C9A9003FC809 /* ThemeOptions.swift */,
+				994F1C9B2534C9A9003FC809 /* ThemeOptionsProtocol.swift */,
 				99599C99253731F100FB2264 /* DataManagerProtocol.swift */,
 				99E5F5C3253C8DDD004C71BF /* FirebaseManagerProtocol.swift */,
 				998ED921254E07EA0030A102 /* EntityProtocol.swift */,
@@ -294,10 +304,8 @@
 		99803F85250ADD0F000284D9 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				99803F86250ADD0F000284D9 /* AppDelegate.swift */,
-				99803F91250ADD11000284D9 /* LaunchScreen.storyboard */,
 				99803F94250ADD11000284D9 /* Info.plist */,
-				992C2ADC2538B5C100005A88 /* GoogleService-Info.plist */,
+				994518DB2556F02D00D5B015 /* Supporting Files */,
 				994F1CA32534CB88003FC809 /* Loger */,
 				995DEF042534D307000BEF15 /* View Controllers */,
 				995DEF002534D221000BEF15 /* Views */,
@@ -498,7 +506,7 @@
 				997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */,
 				998ED922254E07EB0030A102 /* EntityProtocol.swift in Sources */,
 				990FCB9C254C969F00156A48 /* ChannelDB+CoreDataClass.swift in Sources */,
-				994F1CA02534CAD1003FC809 /* ConfigurableView.swift in Sources */,
+				994F1CA02534CAD1003FC809 /* ConfigurableViewProtocol.swift in Sources */,
 				99E52A712542F88F007BD9B6 /* CoreDataManager.swift in Sources */,
 				99599C98253731CA00FB2264 /* DataManagerType.swift in Sources */,
 				9957D96C254F42650073DCA2 /* MessageInputContainer.swift in Sources */,
@@ -516,7 +524,7 @@
 				99846730251B5EA1004E9044 /* ButtonWithTouchSize.swift in Sources */,
 				99E52A732542FBF4007BD9B6 /* ChannelDBExtension.swift in Sources */,
 				99EC182525421C980068158C /* Result.swift in Sources */,
-				994F1C9C2534C9A9003FC809 /* ThemeOptions.swift in Sources */,
+				994F1C9C2534C9A9003FC809 /* ThemeOptionsProtocol.swift in Sources */,
 				994F1C9A2534C987003FC809 /* Colors.swift in Sources */,
 				99803F87250ADD0F000284D9 /* AppDelegate.swift in Sources */,
 				990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */,

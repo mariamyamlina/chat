@@ -46,24 +46,8 @@ class ConversationViewController: LogViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        createRelationships()
         addKeyboardNotifications()
-        
-        if let unwrChannel = channel {
-            fbManager.getMessages(in: unwrChannel,
-                                  errorHandler: { [weak self] (errorTitle, errorInfo) in
-                                    self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
-                                    },
-                                  completion: { [weak self, weak conversationView] in
-                                    guard let self = self else { return }
-                                    guard let unwrView = conversationView else { return }
-                                    if let indexPath = self.countIndexPathForLastRow() {
-                                        unwrView.noMessagesLabel.isHidden = true
-                                        unwrView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
-                                    } else {
-                                        unwrView.noMessagesLabel.isHidden = false
-                                    }
-            })
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -85,7 +69,9 @@ class ConversationViewController: LogViewController {
         ])
 
         configureNavigationBar()
-        
+    }
+    
+    private func createRelationships() {
         conversationView.tableView.delegate = self
         conversationView.tableView.dataSource = self
         
@@ -97,6 +83,23 @@ class ConversationViewController: LogViewController {
                 self?.fbManager.create(message: message, in: unwrChannel)
             }
             conversationView?.messageInputContainer.textField.text = ""
+        }
+        
+        if let unwrChannel = channel {
+            fbManager.getMessages(in: unwrChannel,
+                                  errorHandler: { [weak self] (errorTitle, errorInfo) in
+                                    self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
+                                    },
+                                  completion: { [weak self, weak conversationView] in
+                                    guard let self = self else { return }
+                                    guard let unwrView = conversationView else { return }
+                                    if let indexPath = self.countIndexPathForLastRow() {
+                                        unwrView.noMessagesLabel.isHidden = true
+                                        unwrView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
+                                    } else {
+                                        unwrView.noMessagesLabel.isHidden = false
+                                    }
+            })
         }
     }
     
@@ -204,18 +207,7 @@ extension ConversationViewController: UITableViewDelegate {
         } else {
             messageModel = messageCellFactory.messageToCell(message, .input)
         }
-
-        let size = CGSize(width: 250, height: 1000)
-        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16.0) as Any]
-        var estimatedFrame = NSString(string: messageModel.text + "\t").boundingRect(with: size, options: options, attributes: attr, context: nil)
-        if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
-            let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
-            estimatedFrame.size.height = estimatedFrame.height * estimatedFrame.width / newWidth
-            estimatedFrame.size.width = newWidth
-        }
-        let rect = CGSize(width: view.frame.width, height: estimatedFrame.height + 42)
-        return rect.height
+        return conversationView.calculateHeightForRow(withText: messageModel.text)
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -238,13 +230,11 @@ extension ConversationViewController: UITextFieldDelegate {
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        conversationView.messageInputContainer.sendButton.isHidden = false
-        conversationView.messageInputContainer.sendButton.isEnabled = true
+        conversationView.messageInputContainer.enableSendButton(true)
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        conversationView.messageInputContainer.sendButton.isHidden = true
-        conversationView.messageInputContainer.sendButton.isEnabled = false
+        conversationView.messageInputContainer.enableSendButton(false)
     }
 }
 

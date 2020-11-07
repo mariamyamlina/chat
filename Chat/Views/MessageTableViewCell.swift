@@ -76,7 +76,7 @@ class MessageTableViewCell: UITableViewCell {
 
 // MARK: - Configuration
 
-extension MessageTableViewCell: ConfigurableView {
+extension MessageTableViewCell: ConfigurableViewProtocol {
     func configure(with model: MessageCellModel) {
         let currentTheme = Theme.current.themeOptions
         let messageText = model.text

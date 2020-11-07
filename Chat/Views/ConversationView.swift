@@ -116,4 +116,18 @@ class ConversationView: UIView {
         headerView.addSubview(dateLabel)
         return headerView
     }
+    
+    func calculateHeightForRow(withText text: String) -> CGFloat {
+        let size = CGSize(width: 250, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16.0) as Any]
+        var estimatedFrame = NSString(string: text + "\t").boundingRect(with: size, options: options, attributes: attr, context: nil)
+        if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
+            let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
+            estimatedFrame.size.height = estimatedFrame.height * estimatedFrame.width / newWidth
+            estimatedFrame.size.width = newWidth
+        }
+        let rect = CGSize(width: frame.width, height: estimatedFrame.height + 42)
+        return rect.height
+    }
 }
