@@ -38,6 +38,14 @@ class ConversationViewController: LogViewController {
         return fetchedResultsController
     }()
     
+    init(channel: Channel?, image: UIImageView?) {
+        super.init(nibName: nil, bundle: nil)
+        self.channel = channel
+        self.image = image
+    }
+    
+    required init?(coder: NSCoder) { super.init(coder: coder) }
+    
     deinit {
         removeKeyboardNotifications()
         fbManager.removeMessagesListener()

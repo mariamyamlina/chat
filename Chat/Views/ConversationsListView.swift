@@ -16,6 +16,8 @@ class ConversationsListView: UIView {
     @objc func settingsButtonTapped() { settingsButtonHandler?() }
     @objc func addChannelButtonTapped() { alertWithTextFieldHandler?() }
     
+    var currentTheme = Theme.current.themeOptions
+    
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         if #available(iOS 13.0, *) {
@@ -99,7 +101,7 @@ class ConversationsListView: UIView {
     }
     
     func applyTheme() {
-        let currentTheme = Theme.current.themeOptions
+        currentTheme = Theme.current.themeOptions
         backgroundColor = currentTheme.backgroundColor
         tableView.separatorColor = currentTheme.tableViewSeparatorColor
         tableView.reloadData()
@@ -114,6 +116,16 @@ class ConversationsListView: UIView {
     func showNewMessageButton(_ show: Bool) {
         UIView.animate(withDuration: 0.1) {
             self.newMessageButton.alpha = show ? 1.0 : 0.0
+        }
+    }
+    
+    func setupTextField(_ textField: UITextField?) {
+        textField?.autocapitalizationType = .sentences
+        textField?.attributedPlaceholder = NSAttributedString(string: "Channel name here",
+                                                              attributes: [NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
+        if #available(iOS 13.0, *) { } else {
+            textField?.backgroundColor = currentTheme.textFieldBackgroundColor
+            textField?.keyboardAppearance = currentTheme.keyboardAppearance
         }
     }
 }

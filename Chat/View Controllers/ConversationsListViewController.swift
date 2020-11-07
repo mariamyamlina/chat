@@ -128,10 +128,10 @@ class ConversationsListViewController: LogViewController {
             self?.navigationController?.pushViewController(themesController, animated: true)
         }
         
-        conversationsListView.alertWithTextFieldHandler = { [weak self] in
+        conversationsListView.alertWithTextFieldHandler = { [weak self, weak conversationsListView] in
             let alertController = UIAlertController(title: "Create new channel", message: nil, preferredStyle: .alert)
             alertController.addTextField()
-            self?.setupTextField(alertController.textFields?[0])
+            conversationsListView?.setupTextField(alertController.textFields?[0])
             let createAction = UIAlertAction(title: "Create", style: .default) { [weak self, weak alertController] _ in
                 guard let self = self else { return }
                 if let channelName = alertController?.textFields![0].text,
@@ -149,16 +149,6 @@ class ConversationsListViewController: LogViewController {
                 }
             }
             self?.present(alertController, animated: true, completion: nil)
-        }
-    }
-    
-    private func setupTextField(_ textField: UITextField?) {
-        textField?.autocapitalizationType = .sentences
-        textField?.attributedPlaceholder = NSAttributedString(string: "Channel name here",
-                                                              attributes: [NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
-        if #available(iOS 13.0, *) { } else {
-            textField?.backgroundColor = currentTheme.textFieldBackgroundColor
-            textField?.keyboardAppearance = currentTheme.keyboardAppearance
         }
     }
     
@@ -212,9 +202,7 @@ extension ConversationsListViewController: UITableViewDelegate {
         let channelDB = fetchedResultsController.object(at: indexPath)
         let channel = Channel(from: channelDB)
         
-        let conversationController = ConversationViewController()
-        conversationController.channel = channel
-        conversationController.image = UIImageView(image: images[indexPath.row])
+        let conversationController = ConversationViewController(channel: channel, image: UIImageView(image: images[indexPath.row]))
 
         navigationController?.pushViewController(conversationController, animated: true)
     }
