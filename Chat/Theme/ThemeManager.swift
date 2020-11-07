@@ -35,7 +35,6 @@ class ThemeManager {
         themesViewController?.applyTheme()
         let conversationsListVC = themesViewController?.navigationController?.viewControllers.first as? ConversationsListViewController
         conversationsListVC?.applyTheme()
-        conversationsListVC?.tableView.reloadData()
     }
 }
 

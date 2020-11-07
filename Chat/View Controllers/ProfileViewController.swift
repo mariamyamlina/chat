@@ -89,7 +89,7 @@ class ProfileViewController: LogViewController {
         button.titleLabel?.textAlignment = .center
         button.layer.cornerRadius = 14
         button.clipsToBounds = true
-        button.addTarget(self, action: #selector(gcdSaveButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(saveButtonTapped(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -103,7 +103,7 @@ class ProfileViewController: LogViewController {
         button.titleLabel?.textAlignment = .center
         button.layer.cornerRadius = 14
         button.clipsToBounds = true
-        button.addTarget(self, action: #selector(operationSaveButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(saveButtonTapped(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -395,20 +395,19 @@ class ProfileViewController: LogViewController {
     @objc private func closeProfileViewController() {
         let navigationVC = self.presentingViewController as? UINavigationController
         let conversationsListVC = navigationVC?.viewControllers.first as? ConversationsListViewController
-        conversationsListVC?.setupRightBarButton()
+        conversationsListVC?.navigationItem.rightBarButtonItem = conversationsListVC?.conversationsListView.configureRightBarButtonItem()
         self.dismiss(animated: true, completion: nil)
     }
     
-    @objc func gcdSaveButtonTapped() {
-        gcdButtonTapped = true
+    @objc func saveButtonTapped(_ sender: ButtonWithTouchSize) {
         disableSomeViews()
-        referToFile(action: .save, dataManager: GCDDataManager.shared)
-    }
-    
-    @objc func operationSaveButtonTapped() {
-        operationButtonTapped = true
-        disableSomeViews()
-        referToFile(action: .save, dataManager: OperationDataManager.shared)
+        if sender == gcdSaveButton {
+            gcdButtonTapped = true
+            referToFile(action: .save, dataManager: GCDDataManager.shared)
+        } else {
+            operationButtonTapped = true
+            referToFile(action: .save, dataManager: OperationDataManager.shared)
+        }
     }
     
     @objc func editProfileButtonTapped() {

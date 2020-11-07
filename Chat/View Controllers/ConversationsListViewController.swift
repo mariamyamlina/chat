@@ -10,48 +10,11 @@ import UIKit
 import CoreData
 
 class ConversationsListViewController: LogViewController {
-    lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.delegate = self
-        tableView.dataSource = self
-
-        tableView.rowHeight = 88
-        tableView.backgroundColor = .clear
-        tableView.allowsMultipleSelection = false
-        tableView.showsVerticalScrollIndicator = false
-        tableView.showsHorizontalScrollIndicator = false
-
-        tableView.register(ConversationTableViewCell.self, forCellReuseIdentifier: ConversationTableViewCell.reuseIdentifier)
-        return tableView
-    }()
-    
-    var isVisible: Bool = false
-
-    var images: [UIImage?] = []
-    let fbManager = FirebaseManager.shared
-    
-    lazy var searchController: UISearchController = {
-        let searchController = UISearchController(searchResultsController: nil)
-        if #available(iOS 13.0, *) {
-            let currentTheme = Theme.current.themeOptions
-            searchController.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [
-                NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any,
-                NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
-        } else {
-            searchController.searchBar.placeholder = "Search"
-        }
-        searchController.searchBar.searchBarStyle = .minimal
-        searchController.definesPresentationContext = true
-       return searchController
-    }()
-    
-    lazy var newMessageButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.frame = CGRect(x: 0.0, y: 0.0, width: 24, height: 24)
-        button.setImage(UIImage(named: "NewMessageIcon"), for: .normal)
-        button.addTarget(self, action: #selector(configureAlertWithTextField), for: .touchUpInside)
-        return button
-    }()
+    private var isVisible: Bool = false
+    private var images: [UIImage?] = []
+    var currentTheme = Theme.current.themeOptions
+    private let fbManager = FirebaseManager.shared
+    var conversationsListView = ConversationsListView()
     
     fileprivate lazy var fetchedResultsController: NSFetchedResultsController<ChannelDB> = {
         let fetchRequest = NSFetchRequest<ChannelDB>()
@@ -64,24 +27,23 @@ class ConversationsListViewController: LogViewController {
                                              sectionNameKeyPath: nil,
                                              cacheName: "Channels")
         fetchedResultsController.delegate = self
-
         do {
             try fetchedResultsController.performFetch()
         } catch {
             configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
         }
-        
         return fetchedResultsController
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        createRelationships()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.isHidden = false
+        conversationsListView.tableView.isHidden = false
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -91,161 +53,105 @@ class ConversationsListViewController: LogViewController {
             self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
         })
         guard let height = navigationController?.navigationBar.frame.height else { return }
-        showNewMessageButton(height >= 96)
+        conversationsListView.showNewMessageButton(height >= 96)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         isVisible = false
         fbManager.removeChannelsListener()
-        showNewMessageButton(false)
+        conversationsListView.showNewMessageButton(false)
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         guard let height = navigationController?.navigationBar.frame.height else { return }
-        showNewMessageButton(height >= 96)
+        conversationsListView.showNewMessageButton(height >= 96)
     }
-    
-    // MARK: - Setup Views
     
     private func setupViews() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
+        view.addSubview(conversationsListView)
+        conversationsListView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            conversationsListView.topAnchor.constraint(equalTo: view.topAnchor),
+            conversationsListView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            conversationsListView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            conversationsListView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-        
+
         setupNavigationBar()
-        applyTheme()
     }
-    
-    // MARK: - Theme
-    
-    func applyTheme() {
-        let currentTheme = Theme.current.themeOptions
-        view.backgroundColor = currentTheme.backgroundColor
-        navigationController?.navigationBar.barTintColor = currentTheme.barColor
-        navigationController?.navigationBar.barStyle = currentTheme.barStyle
-        tableView.separatorColor = currentTheme.tableViewSeparatorColor
-        
-        if #available(iOS 13.0, *) {
-            searchController.searchBar.searchTextField.backgroundColor = currentTheme.searchBarTextColor
-            searchController.searchBar.searchTextField.leftView?.tintColor = currentTheme.textFieldTextColor
-        } else {
-            searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
-        }
-    }
-    
-    // MARK: - Navigation
     
     private func setupNavigationBar() {
         guard let navigationBar = navigationController?.navigationBar else { return }
-        definesPresentationContext = true
         navigationItem.largeTitleDisplayMode = .always
         navigationBar.prefersLargeTitles = true
-        navigationItem.searchController = searchController
+        navigationItem.searchController = conversationsListView.searchController
         navigationItem.title = "Channels"
         
         navigationItem.hidesSearchBarWhenScrolling = true
-        searchController.hidesNavigationBarDuringPresentation = true
         
         if #available(iOS 13.0, *) {
             navigationItem.scrollEdgeAppearance = navigationBar.standardAppearance
         }
         
-        let button = UIButton(type: .system)
-        button.frame = CGRect(x: 0.0, y: 0.0, width: 30, height: 30)
-        button.setImage(UIImage(named: "SettingsIcon")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.tintColor = Colors.settingsIconColor
-        button.addTarget(self, action: #selector(settingsButtonTapped), for: .touchUpInside)
-        let barbuttonItem = UIBarButtonItem(customView: button)
-        barbuttonItem.customView?.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        barbuttonItem.customView?.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        navigationItem.leftBarButtonItem = barbuttonItem
+        navigationItem.rightBarButtonItem = conversationsListView.rightBarButtonItem
+        navigationItem.leftBarButtonItem = conversationsListView.leftBarButtonItem
+        navigationItem.backBarButtonItem = conversationsListView.backBarButtonItem
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        setupRightBarButton()
-    
-        navigationBar.addSubview(newMessageButton)
-        newMessageButton.clipsToBounds = true
-        newMessageButton.translatesAutoresizingMaskIntoConstraints = false
+        navigationBar.addSubview(conversationsListView.newMessageButton)
+        conversationsListView.newMessageButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            newMessageButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -24),
-            newMessageButton.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 58),
-            newMessageButton.heightAnchor.constraint(equalToConstant: 24),
-            newMessageButton.widthAnchor.constraint(equalTo: newMessageButton.heightAnchor)
+            conversationsListView.newMessageButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -24),
+            conversationsListView.newMessageButton.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 58),
+            conversationsListView.newMessageButton.heightAnchor.constraint(equalToConstant: 24),
+            conversationsListView.newMessageButton.widthAnchor.constraint(equalTo: conversationsListView.newMessageButton.heightAnchor)
         ])
     }
     
-    private func showNewMessageButton(_ show: Bool) {
-        UIView.animate(withDuration: 0.1) {
-            self.newMessageButton.alpha = show ? 1.0 : 0.0
+    private func createRelationships() {
+        conversationsListView.tableView.delegate = self
+        conversationsListView.tableView.dataSource = self
+        
+        conversationsListView.profileMenuHandler = { [weak self] in
+            let profileController = ProfileViewController()
+            let navigationVC = UINavigationController(rootViewController: profileController)
+            navigationVC.modalPresentationStyle = UIModalPresentationStyle.pageSheet
+            self?.present(navigationVC, animated: true, completion: nil)
         }
-    }
-    
-    func setupRightBarButton() {
-        let profileImage = ProfileImageView(small: true)
-        profileImage.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
-        profileImage.clipsToBounds = true
-        profileImage.contentView.backgroundColor = navigationController?.navigationBar.backgroundColor
-
-        let rightButton = ButtonWithTouchSize()
-        rightButton.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        rightButton.layer.cornerRadius = rightButton.bounds.width / 2
-        rightButton.clipsToBounds = true
-        rightButton.addTarget(self, action: #selector(profileMenuTapped), for: .touchUpInside)
-        profileImage.addSubview(rightButton)
-
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: profileImage)
-    }
-    
-    @objc private func profileMenuTapped() {
-        let profileController = ProfileViewController()
-        let navigationVC = UINavigationController(rootViewController: profileController)
-        navigationVC.modalPresentationStyle = UIModalPresentationStyle.pageSheet
-        present(navigationVC, animated: true, completion: nil)
-    }
-    
-    @objc private func settingsButtonTapped() {
-        let themesController = ThemesViewController()
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Chat", style: .plain, target: nil, action: nil)
-        tableView.isHidden = true
-        navigationController?.pushViewController(themesController, animated: true)
-    }
-    
-    // MARK: - Alert
-    
-    @objc private func configureAlertWithTextField() {
-        let alertController = UIAlertController(title: "Create new channel", message: nil, preferredStyle: .alert)
-        alertController.addTextField()
-        setupTextField(alertController.textFields?[0])
-        let createAction = UIAlertAction(title: "Create", style: .default) { [weak self, weak alertController] _ in
-            guard let self = self else { return }
-            if let channelName = alertController?.textFields![0].text,
-                !channelName.isEmpty,
-                !containtsOnlyOfWhitespaces(string: channelName) {
-                self.fbManager.create(channel: channelName)
+        
+        conversationsListView.settingsButtonHandler = { [weak self] in
+            let themesController = ThemesViewController()
+            self?.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Chat", style: .plain, target: nil, action: nil)
+            self?.conversationsListView.tableView.isHidden = true
+            self?.navigationController?.pushViewController(themesController, animated: true)
+        }
+        
+        conversationsListView.alertWithTextFieldHandler = { [weak self] in
+            let alertController = UIAlertController(title: "Create new channel", message: nil, preferredStyle: .alert)
+            alertController.addTextField()
+            self?.setupTextField(alertController.textFields?[0])
+            let createAction = UIAlertAction(title: "Create", style: .default) { [weak self, weak alertController] _ in
+                guard let self = self else { return }
+                if let channelName = alertController?.textFields![0].text,
+                    !channelName.isEmpty,
+                    !containtsOnlyOfWhitespaces(string: channelName) {
+                    self.fbManager.create(channel: channelName)
+                }
             }
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        [createAction, cancelAction].forEach { alertController.addAction($0) }
-        if #available(iOS 13.0, *) { } else {
-            if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
-                let currentTheme = Theme.current.themeOptions
-                subview.backgroundColor = currentTheme.alertColor
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+            [createAction, cancelAction].forEach { alertController.addAction($0) }
+            if #available(iOS 13.0, *) { } else {
+                if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
+                    let currentTheme = Theme.current.themeOptions
+                    subview.backgroundColor = currentTheme.alertColor
+                }
             }
+            self?.present(alertController, animated: true, completion: nil)
         }
-        self.present(alertController, animated: true, completion: nil)
     }
     
     private func setupTextField(_ textField: UITextField?) {
-        let currentTheme = Theme.current.themeOptions
         textField?.autocapitalizationType = .sentences
         textField?.attributedPlaceholder = NSAttributedString(string: "Channel name here",
                                                               attributes: [NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
@@ -253,6 +159,15 @@ class ConversationsListViewController: LogViewController {
             textField?.backgroundColor = currentTheme.textFieldBackgroundColor
             textField?.keyboardAppearance = currentTheme.keyboardAppearance
         }
+    }
+    
+    // MARK: - Theme
+    
+    func applyTheme() {
+        currentTheme = Theme.current.themeOptions
+        navigationController?.navigationBar.barTintColor = currentTheme.barColor
+        navigationController?.navigationBar.barStyle = currentTheme.barStyle
+        conversationsListView.applyTheme()
     }
 }
 
@@ -317,7 +232,7 @@ extension ConversationsListViewController: UITableViewDelegate {
 extension ConversationsListViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let height = navigationController?.navigationBar.frame.height else { return }
-        showNewMessageButton(height >= 96)
+        conversationsListView.showNewMessageButton(height >= 96)
     }
 }
 
@@ -326,7 +241,7 @@ extension ConversationsListViewController: UIScrollViewDelegate {
 extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard isVisible else { return }
-        tableView.beginUpdates()
+        conversationsListView.tableView.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
@@ -337,11 +252,11 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
         let indexSet = IndexSet(integer: sectionIndex)
         switch type {
         case .insert:
-            tableView.insertSections(indexSet, with: .right)
+            conversationsListView.tableView.insertSections(indexSet, with: .right)
         case .delete:
-            tableView.deleteSections(indexSet, with: .right)
+            conversationsListView.tableView.deleteSections(indexSet, with: .right)
         case .move, .update:
-            tableView.reloadSections(indexSet, with: .fade)
+            conversationsListView.tableView.reloadSections(indexSet, with: .fade)
         default:
             break
         }
@@ -359,13 +274,13 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
             if images.count > newPath.row {
                 images.insert(generateImage(), at: newPath.row)
             }
-            tableView.insertRows(at: [newPath], with: .right)
+            conversationsListView.tableView.insertRows(at: [newPath], with: .right)
         case .delete:
             guard let path = indexPath else { return }
             if images.count > path.row {
                 images.insert(generateImage(), at: path.row)
             }
-            tableView.deleteRows(at: [path], with: .right)
+            conversationsListView.tableView.deleteRows(at: [path], with: .right)
         case .move:
             guard let path = indexPath,
                   let newPath = newIndexPath else { return }
@@ -374,11 +289,11 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
                 images.remove(at: path.row)
                 images.insert(image, at: newPath.row)
             }
-            tableView.deleteRows(at: [path], with: .right)
-            tableView.insertRows(at: [newPath], with: .right)
+            conversationsListView.tableView.deleteRows(at: [path], with: .right)
+            conversationsListView.tableView.insertRows(at: [newPath], with: .right)
         case .update:
             guard let path = indexPath else { return }
-            tableView.reloadRows(at: [path], with: .fade)
+            conversationsListView.tableView.reloadRows(at: [path], with: .fade)
         default:
             break
         }
@@ -386,6 +301,6 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard isVisible else { return }
-        tableView.endUpdates()
+        conversationsListView.tableView.endUpdates()
     }
 }

@@ -14,6 +14,8 @@
 		99248977253C92790095851E /* ViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99248976253C92790095851E /* ViewModelFactory.swift */; };
 		992C2ADD2538B5C100005A88 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 992C2ADC2538B5C100005A88 /* GoogleService-Info.plist */; };
 		993847022545BEE400D1A40F /* MessageDBExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993847012545BEE400D1A40F /* MessageDBExtension.swift */; };
+		994518D82555BA7300D5B015 /* ConversationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994518D72555BA7300D5B015 /* ConversationsListView.swift */; };
+		994518DA2556E40000D5B015 /* ConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994518D92556E40000D5B015 /* ConversationView.swift */; };
 		99454C33251D4502005CEEA2 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99454C32251D4502005CEEA2 /* ConversationsListViewController.swift */; };
 		99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */; };
 		994635B92534DE05003DEA03 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994635B82534DE05003DEA03 /* DataManager.swift */; };
@@ -78,6 +80,8 @@
 		99248976253C92790095851E /* ViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelFactory.swift; sourceTree = "<group>"; };
 		992C2ADC2538B5C100005A88 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		993847012545BEE400D1A40F /* MessageDBExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDBExtension.swift; sourceTree = "<group>"; };
+		994518D72555BA7300D5B015 /* ConversationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListView.swift; sourceTree = "<group>"; };
+		994518D92556E40000D5B015 /* ConversationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationView.swift; sourceTree = "<group>"; };
 		99454C32251D4502005CEEA2 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
 		99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
 		994635B82534DE05003DEA03 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
@@ -206,6 +210,8 @@
 		995DEF002534D221000BEF15 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				994518D72555BA7300D5B015 /* ConversationsListView.swift */,
+				994518D92556E40000D5B015 /* ConversationView.swift */,
 				99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */,
 				9950733B251F87A500515678 /* MessageTableViewCell.swift */,
 				99E8B69A252689ED00117A04 /* ThemeButton.swift */,
@@ -524,9 +530,11 @@
 				99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */,
 				994D2DFB2541D8EE00BD5E20 /* ActionType.swift in Sources */,
 				994635B92534DE05003DEA03 /* DataManager.swift in Sources */,
+				994518DA2556E40000D5B015 /* ConversationView.swift in Sources */,
 				99599C9A253731F100FB2264 /* DataManagerProtocol.swift in Sources */,
 				99599C9C253751BD00FB2264 /* ThemesPickerDelegate.swift in Sources */,
 				99454C33251D4502005CEEA2 /* ConversationsListViewController.swift in Sources */,
+				994518D82555BA7300D5B015 /* ConversationsListView.swift in Sources */,
 				998D297E255085E20041A253 /* ProfileViewControllerExtensions.swift in Sources */,
 				997CEE222530D91500645079 /* OperationDataManager.swift in Sources */,
 				997DA9C1253DE2330021A8F9 /* GenerateImageFunc.swift in Sources */,

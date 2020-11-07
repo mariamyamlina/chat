@@ -10,36 +10,11 @@ import UIKit
 import CoreData
 
 class ConversationViewController: LogViewController {
-    fileprivate lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
-        tableView.allowsMultipleSelection = false
-        tableView.showsVerticalScrollIndicator = false
-        tableView.showsHorizontalScrollIndicator = false
-        
-        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 14))
-        headerView.backgroundColor = .clear
-        tableView.tableHeaderView = headerView
-        tableView.sectionFooterHeight = 0
-        
-        tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
-        return tableView
-    }()
-    
-    fileprivate lazy var messageInputContainer: MessageInputContainer = { return MessageInputContainer() }()
-    
-    fileprivate lazy var noMessagesLabel: UILabel = {
-        let label = UILabel()
-        label.isHidden = true
-        label.text = "No messages yet"
-        label.font = UIFont(name: "SFProText-Semibold", size: 16.0)
-        label.textAlignment = .center
-        return label
-    }()
+    var image: UIImageView?
+    var channel: Channel?
+    private let fbManager = FirebaseManager.shared
+    private var conversationView = ConversationView(withTitle: nil, withImage: nil)
+    let currentTheme = Theme.current.themeOptions
     
     fileprivate lazy var fetchedResultsController: NSFetchedResultsController<MessageDB> = {
         let channelId = channel?.identifier ?? ""
@@ -55,21 +30,13 @@ class ConversationViewController: LogViewController {
                                                                   sectionNameKeyPath: "formattedDate",
                                                                   cacheName: "Messages in channel with id \(channelId)")
         fetchedResultsController.delegate = self
-
         do {
             try fetchedResultsController.performFetch()
         } catch {
             configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
         }
-        
         return fetchedResultsController
     }()
-    
-    var bottomConstraint: NSLayoutConstraint?
-    
-    var image: UIImageView?
-    var channel: Channel?
-    let fbManager = FirebaseManager.shared
     
     deinit {
         removeKeyboardNotifications()
@@ -82,72 +49,55 @@ class ConversationViewController: LogViewController {
         addKeyboardNotifications()
         
         if let unwrChannel = channel {
-            fbManager.getMessages(in: unwrChannel, errorHandler: { [weak self] (errorTitle, errorInfo) in
-                self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
-                },
-                                  completion: { [weak self] in
-                guard let self = self else { return }
-                if let indexPath = self.countIndexPathForLastRow() {
-                    self.noMessagesLabel.isHidden = true
-                    self.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
-                } else {
-                    self.noMessagesLabel.isHidden = false
-                }
+            fbManager.getMessages(in: unwrChannel,
+                                  errorHandler: { [weak self] (errorTitle, errorInfo) in
+                                    self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
+                                    },
+                                  completion: { [weak self, weak conversationView] in
+                                    guard let self = self else { return }
+                                    guard let unwrView = conversationView else { return }
+                                    if let indexPath = self.countIndexPathForLastRow() {
+                                        unwrView.noMessagesLabel.isHidden = true
+                                        unwrView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
+                                    } else {
+                                        unwrView.noMessagesLabel.isHidden = false
+                                    }
             })
         }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        messageInputContainer.textField.becomeFirstResponder()
+        conversationView.messageInputContainer.textField.becomeFirstResponder()
     }
     
     // MARK: - Views
     
     func setupViews() {
-        view.addSubview(noMessagesLabel)
-        view.addSubview(tableView)
-        view.addSubview(messageInputContainer)
-
-        noMessagesLabel.translatesAutoresizingMaskIntoConstraints = false
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        messageInputContainer.translatesAutoresizingMaskIntoConstraints = false
-        
-        bottomConstraint = NSLayoutConstraint(item: messageInputContainer, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
-        bottomConstraint?.isActive = true
-        
+        conversationView = ConversationView(withTitle: channel?.name, withImage: image)
+        view.addSubview(conversationView)
+        conversationView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
-            tableView.bottomAnchor.constraint(equalTo: messageInputContainer.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            noMessagesLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 200),
-            noMessagesLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            messageInputContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            messageInputContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            messageInputContainer.heightAnchor.constraint(equalToConstant: 80)
+            conversationView.topAnchor.constraint(equalTo: view.topAnchor),
+            conversationView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            conversationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            conversationView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-        
-        applyTheme()
+
         configureNavigationBar()
         
-        messageInputContainer.textField.delegate = self
-        messageInputContainer.sendHandler = { [weak self] in
-            guard let message = self?.messageInputContainer.textField.text else { return }
+        conversationView.tableView.delegate = self
+        conversationView.tableView.dataSource = self
+        
+        conversationView.messageInputContainer.textField.delegate = self
+        conversationView.messageInputContainer.sendHandler = { [weak self, weak conversationView] in
+            guard let message = conversationView?.messageInputContainer.textField.text else { return }
             if let unwrChannel = self?.channel,
                 !containtsOnlyOfWhitespaces(string: message) {
                 self?.fbManager.create(message: message, in: unwrChannel)
             }
-            self?.messageInputContainer.textField.text = ""
+            conversationView?.messageInputContainer.textField.text = ""
         }
-    }
-    
-    // MARK: - Theme
-    
-    fileprivate func applyTheme() {
-        let currentTheme = Theme.current.themeOptions
-        view.backgroundColor = currentTheme.backgroundColor
-        noMessagesLabel.textColor = currentTheme.textFieldTextColor
     }
     
     // MARK: - Keyboard
@@ -166,40 +116,27 @@ class ConversationViewController: LogViewController {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
             let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
-            bottomConstraint?.constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) : 0
+            conversationView.bottomConstraint?.constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) : 0
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
             }, completion: { (_) in
                 if isKeyboardShowing {
                     if let indexPath = self.countIndexPathForLastRow() {
-                        self.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
+                        self.conversationView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
                     }
                 }
             })
         }
     }
     
-    // MARK: - Navigation
+    // MARK: - NavigationBar
     
     private func configureNavigationBar() {
         navigationItem.largeTitleDisplayMode = .never
         if #available(iOS 13.0, *) {
             navigationItem.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
-
-        let viewWithTitle = TopViewWithTitle()
-        viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
-        viewWithTitle.contentView.backgroundColor = navigationController?.navigationBar.backgroundColor
-        viewWithTitle.nameLabel.text = channel?.name
-        if let titleImageView = image {
-            viewWithTitle.profileImage.image = titleImageView.image
-        }
-        
-        let topView = UIView(frame: CGRect(x: 0, y: 0, width: 236, height: 36))
-        topView.layer.cornerRadius = topView.bounds.width / 2
-        topView.clipsToBounds = true
-        topView.addSubview(viewWithTitle)
-        navigationItem.titleView = viewWithTitle
+        navigationItem.titleView = conversationView.viewWithTitle
     }
     
     // MARK: - TableView
@@ -237,7 +174,6 @@ extension ConversationViewController: UITableViewDataSource {
         
         let messageCellFactory = ViewModelFactory()
         let messageModel: MessageTableViewCell.MessageCellModel
-        let currentTheme = Theme.current.themeOptions
         if message.senderId == fbManager.universallyUniqueIdentifier {
             cell?.textBubbleView.backgroundColor = currentTheme.outputBubbleColor
             messageModel = messageCellFactory.messageToCell(message, .output)
@@ -254,7 +190,7 @@ extension ConversationViewController: UITableViewDataSource {
 
 extension ConversationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        messageInputContainer.textField.endEditing(true)
+        conversationView.messageInputContainer.textField.endEditing(true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -287,25 +223,8 @@ extension ConversationViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 28))
-        headerView.backgroundColor = .clear
-
         let sectionInfo = fetchedResultsController.sections?[section]
-        let text = sectionInfo?.name ?? ""
-
-        let dateLabel = UILabel(frame: CGRect(x: UIScreen.main.bounds.width / 3, y: 4, width: UIScreen.main.bounds.width / 3, height: 20))
-        dateLabel.layer.cornerRadius = dateLabel.bounds.height / 2
-        dateLabel.clipsToBounds = true
-        dateLabel.font = UIFont(name: "SFProText-Semibold", size: 13)
-        dateLabel.textAlignment = .center
-        dateLabel.text = text
-
-        let currentTheme = Theme.current.themeOptions
-        dateLabel.textColor = currentTheme.tableViewHeaderTextColor
-        dateLabel.backgroundColor = currentTheme.tableViewHeaderColor
-
-        headerView.addSubview(dateLabel)
-        return headerView
+        return conversationView.configureViewForHeaderInSection(sectionInfo: sectionInfo?.name ?? "")
     }
 }
 
@@ -313,19 +232,19 @@ extension ConversationViewController: UITableViewDelegate {
 
 extension ConversationViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        messageInputContainer.textField.resignFirstResponder()
-        messageInputContainer.sendButtonTapped()
+        conversationView.messageInputContainer.textField.resignFirstResponder()
+        conversationView.messageInputContainer.sendButtonTapped()
         return true
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        messageInputContainer.sendButton.isHidden = false
-        messageInputContainer.sendButton.isEnabled = true
+        conversationView.messageInputContainer.sendButton.isHidden = false
+        conversationView.messageInputContainer.sendButton.isEnabled = true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        messageInputContainer.sendButton.isHidden = true
-        messageInputContainer.sendButton.isEnabled = false
+        conversationView.messageInputContainer.sendButton.isHidden = true
+        conversationView.messageInputContainer.sendButton.isEnabled = false
     }
 }
 
@@ -333,7 +252,7 @@ extension ConversationViewController: UITextFieldDelegate {
 
 extension ConversationViewController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
+        conversationView.tableView.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
@@ -343,11 +262,11 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
         let indexSet = IndexSet(integer: sectionIndex)
         switch type {
         case .insert:
-            tableView.insertSections(indexSet, with: .right)
+            conversationView.tableView.insertSections(indexSet, with: .right)
         case .delete:
-            tableView.deleteSections(indexSet, with: .right)
+            conversationView.tableView.deleteSections(indexSet, with: .right)
         case .move, .update:
-            tableView.reloadSections(indexSet, with: .fade)
+            conversationView.tableView.reloadSections(indexSet, with: .fade)
         default:
             break
         }
@@ -361,31 +280,31 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             guard let newPath = newIndexPath else { return }
-            tableView.insertRows(at: [newPath], with: .left)
+            conversationView.tableView.insertRows(at: [newPath], with: .left)
         case .delete:
             guard let path = indexPath else { return }
-            tableView.deleteRows(at: [path], with: .left)
+            conversationView.tableView.deleteRows(at: [path], with: .left)
         case .move:
             guard let path = indexPath,
                   let newPath = newIndexPath else { return }
-            tableView.deleteRows(at: [path], with: .left)
-            tableView.insertRows(at: [newPath], with: .left)
+            conversationView.tableView.deleteRows(at: [path], with: .left)
+            conversationView.tableView.insertRows(at: [newPath], with: .left)
         case .update:
             guard let path = indexPath else { return }
-            tableView.reloadRows(at: [path], with: .fade)
+            conversationView.tableView.reloadRows(at: [path], with: .fade)
         default:
             break
         }
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
+        conversationView.tableView.endUpdates()
 
         if let indexPath = self.countIndexPathForLastRow() {
-            self.noMessagesLabel.isHidden = true
-            tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
+            conversationView.noMessagesLabel.isHidden = true
+            conversationView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
         } else {
-            self.noMessagesLabel.isHidden = false
+            conversationView.noMessagesLabel.isHidden = false
         }
     }
 }
