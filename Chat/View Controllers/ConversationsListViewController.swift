@@ -23,9 +23,9 @@ class ConversationsListViewController: LogViewController {
         fetchRequest.sortDescriptors = [sortDescriptor]
         fetchRequest.fetchBatchSize = 20
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                             managedObjectContext: CoreDataStack.shared.mainContext,
-                                             sectionNameKeyPath: nil,
-                                             cacheName: "Channels")
+                                                                  managedObjectContext: CoreDataStack.shared.mainContext,
+                                                                  sectionNameKeyPath: nil,
+                                                                  cacheName: "Channels")
         fetchedResultsController.delegate = self
         do {
             try fetchedResultsController.performFetch()

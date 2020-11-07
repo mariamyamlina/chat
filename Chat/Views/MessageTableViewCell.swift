@@ -45,7 +45,7 @@ class MessageTableViewCell: UITableViewCell {
         label.font = UIFont(name: "SFProText-Regular", size: 11.0)
         label.textAlignment = .right
         
-        addSubview(label)
+        textBubbleView.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             label.bottomAnchor.constraint(equalTo: textBubbleView.bottomAnchor, constant: -2),
@@ -105,14 +105,16 @@ extension MessageTableViewCell: ConfigurableViewProtocol {
         let estimatedHeight = estimatedFrame.height
         let estimatedWidth = estimatedFrame.width
         
-        if textBubbleView.backgroundColor == currentTheme.outputBubbleColor {
+        if model.type == .output {
             messageTextView.textColor = currentTheme.outputTextColor
             timeLabel.textColor = currentTheme.outputTimeColor
+            textBubbleView.backgroundColor = currentTheme.outputBubbleColor
             messageTextView.frame = CGRect(x: UIScreen.main.bounds.width - 28 - estimatedWidth - 16, y: 0, width: estimatedWidth + 16, height: estimatedHeight + 28)
             textBubbleView.frame = CGRect(x: UIScreen.main.bounds.width - 20 - estimatedWidth - 16 - 8, y: 0, width: estimatedWidth + 16 + 8, height: estimatedHeight + 28)
         } else {
             messageTextView.textColor = currentTheme.textColor
             timeLabel.textColor = currentTheme.inputTimeColor
+            textBubbleView.backgroundColor = currentTheme.inputBubbleColor
             messageTextView.frame = CGRect(x: 28, y: 0, width: estimatedWidth + 16, height: estimatedHeight + 28)
             textBubbleView.frame = CGRect(x: 20, y: 0, width: estimatedWidth + 16 + 8, height: estimatedHeight + 28)
         }

@@ -40,12 +40,14 @@ class MessageInputContainer: UIView {
         NSLayoutConstraint.activate([
             textField.topAnchor.constraint(equalTo: topAnchor, constant: 17),
             textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 50),
+            textField.leadingAnchor.constraint(equalTo: addButton.trailingAnchor, constant: 8),
             textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -19),
-            textField.heightAnchor.constraint(equalToConstant: 32)
+            textField.heightAnchor.constraint(equalToConstant: 32),
+            textField.centerYAnchor.constraint(equalTo: addButton.centerYAnchor)
         ])
         return textField
     }()
-    
+
     lazy var addButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "AddIcon"), for: .normal)
@@ -53,10 +55,8 @@ class MessageInputContainer: UIView {
         addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            button.centerYAnchor.constraint(equalTo: textField.centerYAnchor),
-            button.trailingAnchor.constraint(equalTo: textField.leadingAnchor, constant: -8),
             button.heightAnchor.constraint(equalToConstant: 30),
-            button.widthAnchor.constraint(equalToConstant: 30)
+            button.widthAnchor.constraint(equalTo: button.heightAnchor)
         ])
         return button
     }()

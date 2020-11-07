@@ -14,7 +14,6 @@ class ConversationViewController: LogViewController {
     var channel: Channel?
     private let fbManager = FirebaseManager.shared
     private var conversationView = ConversationView(withTitle: nil, withImage: nil)
-    let currentTheme = Theme.current.themeOptions
     
     fileprivate lazy var fetchedResultsController: NSFetchedResultsController<MessageDB> = {
         let channelId = channel?.identifier ?? ""
@@ -186,10 +185,8 @@ extension ConversationViewController: UITableViewDataSource {
         let messageCellFactory = ViewModelFactory()
         let messageModel: MessageTableViewCell.MessageCellModel
         if message.senderId == fbManager.universallyUniqueIdentifier {
-            cell?.textBubbleView.backgroundColor = currentTheme.outputBubbleColor
             messageModel = messageCellFactory.messageToCell(message, .output)
         } else {
-            cell?.textBubbleView.backgroundColor = currentTheme.inputBubbleColor
             messageModel = messageCellFactory.messageToCell(message, .input)
         }
         cell?.configure(with: messageModel)
