@@ -37,7 +37,7 @@ class ConversationsListViewController: LogViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupViews()
+        setupView()
         createRelationships()
     }
     
@@ -69,7 +69,7 @@ class ConversationsListViewController: LogViewController {
         conversationsListView.showNewMessageButton(height >= 96)
     }
     
-    private func setupViews() {
+    private func setupView() {
         view.addSubview(conversationsListView)
         conversationsListView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -80,6 +80,7 @@ class ConversationsListViewController: LogViewController {
         ])
 
         setupNavigationBar()
+        applyTheme()
     }
     
     private func setupNavigationBar() {

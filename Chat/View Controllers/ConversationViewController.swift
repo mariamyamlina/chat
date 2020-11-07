@@ -45,7 +45,7 @@ class ConversationViewController: LogViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupViews()
+        setupView()
         createRelationships()
         addKeyboardNotifications()
     }
@@ -57,7 +57,7 @@ class ConversationViewController: LogViewController {
     
     // MARK: - Views
     
-    func setupViews() {
+    func setupView() {
         conversationView = ConversationView(withTitle: channel?.name, withImage: image)
         view.addSubview(conversationView)
         conversationView.translatesAutoresizingMaskIntoConstraints = false

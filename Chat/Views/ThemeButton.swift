@@ -92,44 +92,15 @@ class ThemeButton: ButtonWithTouchSize {
         return bubble
     }()
     
-    var inputMessageColor: UIColor = Colors.inputGray {
-        didSet {
-            inputMessageBubble.backgroundColor = inputMessageColor
-            setNeedsDisplay()
-        }
-    }
-    
-    var outputMessageColor: UIColor = Colors.outputGreen {
-        didSet {
-            outputMessageBubble.backgroundColor = outputMessageColor
-            setNeedsDisplay()
-        }
-    }
-    
-    var backgroundViewColor: UIColor = .white {
-        didSet {
-            backgroundView.backgroundColor = backgroundViewColor
-            setNeedsDisplay()
-        }
-    }
-    
-    var labelTitle: String = "Classic" {
-        didSet {
-            themeNameLabel.text = labelTitle
-            setNeedsDisplay()
-        }
-    }
-    
     required init?(coder: NSCoder) { super.init(coder: coder) }
-    
     override init(frame: CGRect) { super.init(frame: frame) }
     
-    init(title: String, backgroundColor: UIColor, inputColor: UIColor, outputColor: UIColor) {
+    init(titleLabel: String, backgroundColor: UIColor, inputColor: UIColor, outputColor: UIColor) {
         super.init(frame: CGRect.zero)
-        labelTitle = title
-        backgroundViewColor = backgroundColor
-        inputMessageColor = inputColor
-        outputMessageColor = outputColor
+        themeNameLabel.text = titleLabel
+        backgroundView.backgroundColor = backgroundColor
+        inputMessageBubble.backgroundColor = inputColor
+        outputMessageBubble.backgroundColor = outputColor
         setupView()
     }
     

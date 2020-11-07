@@ -16,6 +16,7 @@
 		993847022545BEE400D1A40F /* MessageDBExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993847012545BEE400D1A40F /* MessageDBExtension.swift */; };
 		994518D82555BA7300D5B015 /* ConversationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994518D72555BA7300D5B015 /* ConversationsListView.swift */; };
 		994518DA2556E40000D5B015 /* ConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994518D92556E40000D5B015 /* ConversationView.swift */; };
+		994518DD255725AB00D5B015 /* ThemesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994518DC255725AB00D5B015 /* ThemesView.swift */; };
 		99454C33251D4502005CEEA2 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99454C32251D4502005CEEA2 /* ConversationsListViewController.swift */; };
 		99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */; };
 		994635B92534DE05003DEA03 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994635B82534DE05003DEA03 /* DataManager.swift */; };
@@ -82,6 +83,7 @@
 		993847012545BEE400D1A40F /* MessageDBExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDBExtension.swift; sourceTree = "<group>"; };
 		994518D72555BA7300D5B015 /* ConversationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListView.swift; sourceTree = "<group>"; };
 		994518D92556E40000D5B015 /* ConversationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationView.swift; sourceTree = "<group>"; };
+		994518DC255725AB00D5B015 /* ThemesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesView.swift; sourceTree = "<group>"; };
 		99454C32251D4502005CEEA2 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
 		99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
 		994635B82534DE05003DEA03 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
@@ -221,14 +223,15 @@
 			isa = PBXGroup;
 			children = (
 				994518D72555BA7300D5B015 /* ConversationsListView.swift */,
-				994518D92556E40000D5B015 /* ConversationView.swift */,
 				99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */,
+				994518D92556E40000D5B015 /* ConversationView.swift */,
 				9950733B251F87A500515678 /* MessageTableViewCell.swift */,
+				994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */,
+				9957D96B254F42650073DCA2 /* MessageInputContainer.swift */,
+				994518DC255725AB00D5B015 /* ThemesView.swift */,
 				99E8B69A252689ED00117A04 /* ThemeButton.swift */,
 				994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */,
 				9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */,
-				994AF9D025221D300013B0E0 /* TopViewWithTitle.swift */,
-				9957D96B254F42650073DCA2 /* MessageInputContainer.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -526,6 +529,7 @@
 				99EC182525421C980068158C /* Result.swift in Sources */,
 				994F1C9C2534C9A9003FC809 /* ThemeOptionsProtocol.swift in Sources */,
 				994F1C9A2534C987003FC809 /* Colors.swift in Sources */,
+				994518DD255725AB00D5B015 /* ThemesView.swift in Sources */,
 				99803F87250ADD0F000284D9 /* AppDelegate.swift in Sources */,
 				990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */,
 				996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */,
