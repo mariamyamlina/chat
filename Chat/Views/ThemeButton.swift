@@ -10,11 +10,22 @@ import UIKit
 
 class ThemeButton: ButtonWithTouchSize {
     var pickHandler: (() -> Void)?
+    @objc func pickButtonTapped(_ sender: ThemeButton) { pickHandler?() }
     
     lazy var contentView: UIView = {
         let contentView = UIView()
         contentView.backgroundColor = .clear
         contentView.isUserInteractionEnabled = false
+        
+        addSubview(contentView)
+        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
         return contentView
     }()
     
@@ -22,6 +33,13 @@ class ThemeButton: ButtonWithTouchSize {
         let label = UILabel()
         label.textColor = .white
         label.font = UIFont(name: "SFProText-Semibold", size: 19)
+        
+        contentView.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
+        ])
         return label
     }()
     
@@ -29,6 +47,15 @@ class ThemeButton: ButtonWithTouchSize {
         let backgroundView = UIView()
         backgroundView.layer.cornerRadius = 14
         backgroundView.clipsToBounds = true
+        
+        contentView.addSubview(backgroundView)
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: themeNameLabel.topAnchor, constant: -20),
+            backgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+        ])
         return backgroundView
     }()
     
@@ -36,6 +63,16 @@ class ThemeButton: ButtonWithTouchSize {
         let bubble = UIView()
         bubble.layer.cornerRadius = 8
         bubble.clipsToBounds = true
+        
+        backgroundView.addSubview(bubble)
+        bubble.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            bubble.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 14),
+            bubble.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -18),
+            bubble.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 30),
+            bubble.trailingAnchor.constraint(equalTo: outputMessageBubble.leadingAnchor, constant: -6),
+            bubble.widthAnchor.constraint(equalToConstant: 117)
+        ])
         return bubble
     }()
     
@@ -43,6 +80,15 @@ class ThemeButton: ButtonWithTouchSize {
         let bubble = UIView()
         bubble.layer.cornerRadius = 8
         bubble.clipsToBounds = true
+        
+        backgroundView.addSubview(bubble)
+        bubble.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            bubble.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 22),
+            bubble.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -10),
+            bubble.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -30),
+            bubble.widthAnchor.constraint(equalToConstant: 117)
+        ])
         return bubble
     }()
     
@@ -74,59 +120,22 @@ class ThemeButton: ButtonWithTouchSize {
         }
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupView()
-    }
+    required init?(coder: NSCoder) { super.init(coder: coder) }
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
+    override init(frame: CGRect) { super.init(frame: frame) }
+    
+    init(title: String, backgroundColor: UIColor, inputColor: UIColor, outputColor: UIColor) {
+        super.init(frame: CGRect.zero)
+        labelTitle = title
+        backgroundViewColor = backgroundColor
+        inputMessageColor = inputColor
+        outputMessageColor = outputColor
         setupView()
     }
     
     private func setupView() {
-        addSubview(contentView)
-        contentView.addSubview(themeNameLabel)
-        contentView.addSubview(backgroundView)
-        backgroundView.addSubview(inputMessageBubble)
-        backgroundView.addSubview(outputMessageBubble)
-
-        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        themeNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        inputMessageBubble.translatesAutoresizingMaskIntoConstraints = false
-        outputMessageBubble.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            backgroundView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: themeNameLabel.topAnchor, constant: -20),
-            backgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            themeNameLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            themeNameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            inputMessageBubble.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 14),
-            inputMessageBubble.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -18),
-            inputMessageBubble.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 30),
-            inputMessageBubble.trailingAnchor.constraint(equalTo: outputMessageBubble.leadingAnchor, constant: -6),
-            inputMessageBubble.widthAnchor.constraint(equalToConstant: 117),
-            outputMessageBubble.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 22),
-            outputMessageBubble.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -10),
-            outputMessageBubble.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -30),
-            outputMessageBubble.widthAnchor.constraint(equalToConstant: 117)
-        ])
-        
         layer.cornerRadius = 14
         clipsToBounds = true
         addTarget(self, action: #selector(pickButtonTapped(_:)), for: .touchUpInside)
-    }
-    
-    @objc func pickButtonTapped(_ sender: ThemeButton) {
-        pickHandler?()
     }
 }

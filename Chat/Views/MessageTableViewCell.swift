@@ -27,6 +27,7 @@ class MessageTableViewCell: UITableViewCell {
         textView.backgroundColor = .clear
         textView.isUserInteractionEnabled = false
         textView.font = UIFont(name: "SFProText-Regular", size: 16.0)
+        addSubview(textView)
         return textView
     }()
     
@@ -34,6 +35,7 @@ class MessageTableViewCell: UITableViewCell {
         let view = UIView()
         view.layer.cornerRadius = 8
         view.clipsToBounds = true
+        addSubview(view)
         return view
     }()
     
@@ -42,33 +44,26 @@ class MessageTableViewCell: UITableViewCell {
         label.text = "22:22"
         label.font = UIFont(name: "SFProText-Regular", size: 11.0)
         label.textAlignment = .right
+        
+        addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.bottomAnchor.constraint(equalTo: textBubbleView.bottomAnchor, constant: -2),
+            label.trailingAnchor.constraint(equalTo: textBubbleView.trailingAnchor, constant: -8),
+            label.heightAnchor.constraint(equalToConstant: 13),
+            label.widthAnchor.constraint(equalToConstant: 32)
+        ])
         return label
     }()
     
+    required init?(coder: NSCoder) { super.init(coder: coder) }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupViews()
+        setupView()
     }
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupViews()
-    }
-    
-    func setupViews() {
-        addSubview(textBubbleView)
-        addSubview(messageTextView)
-        addSubview(timeLabel)
-
-        timeLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            timeLabel.bottomAnchor.constraint(equalTo: textBubbleView.bottomAnchor, constant: -2),
-            timeLabel.trailingAnchor.constraint(equalTo: textBubbleView.trailingAnchor, constant: -8),
-            timeLabel.heightAnchor.constraint(equalToConstant: 13),
-            timeLabel.widthAnchor.constraint(equalToConstant: 32)
-        ])
-        
+    func setupView() {
         backgroundColor = .clear
         selectionStyle = .none
     }

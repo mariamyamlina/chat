@@ -9,7 +9,19 @@
 import UIKit
 
 class TopViewWithTitle: UIView {
-    lazy var contentView: UIView = { return UIView() }()
+    lazy var contentView: UIView = {
+        let contentView = UIView()
+        addSubview(contentView)
+        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
+        return contentView
+    }()
     
     lazy var profileImage: UIImageView = {
         let imageView = UIImageView()
@@ -17,6 +29,17 @@ class TopViewWithTitle: UIView {
         imageView.backgroundColor = Colors.profileImageGreen
         imageView.layer.cornerRadius = 18
         imageView.clipsToBounds = true
+
+        contentView.addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: -10),
+            imageView.widthAnchor.constraint(equalToConstant: 36),
+            imageView.heightAnchor.constraint(equalToConstant: 36)
+        ])
         return imageView
     }()
     
@@ -25,44 +48,18 @@ class TopViewWithTitle: UIView {
         let currentTheme = Theme.current.themeOptions
         label.textColor = currentTheme.textColor
         label.font = UIFont(name: "SFProText-Semibold", size: 16)
+        
+        contentView.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: contentView.topAnchor),
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+        ])
         return label
     }()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupView()
-    }
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupView()
-    }
-    
-    private func setupView() {
-        addSubview(contentView)
-        contentView.addSubview(profileImage)
-        contentView.addSubview(nameLabel)
+    required init?(coder: NSCoder) { super.init(coder: coder) }
 
-        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        profileImage.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            profileImage.topAnchor.constraint(equalTo: contentView.topAnchor),
-            profileImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            profileImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            profileImage.trailingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: -10),
-            profileImage.widthAnchor.constraint(equalToConstant: 36),
-            profileImage.heightAnchor.constraint(equalToConstant: 36),
-            nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            nameLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
-    }
+    override init(frame: CGRect) { super.init(frame: frame) }
 }

@@ -12,6 +12,9 @@ class ConversationsListView: UIView {
     var profileMenuHandler: (() -> Void)?
     var settingsButtonHandler: (() -> Void)?
     var alertWithTextFieldHandler: (() -> Void)?
+    @objc func profileMenuTapped() { profileMenuHandler?() }
+    @objc func settingsButtonTapped() { settingsButtonHandler?() }
+    @objc func addChannelButtonTapped() { alertWithTextFieldHandler?() }
     
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
@@ -71,10 +74,6 @@ class ConversationsListView: UIView {
         ])
         return tableView
     }()
-    
-    @objc func profileMenuTapped() { profileMenuHandler?() }
-    @objc func settingsButtonTapped() { settingsButtonHandler?() }
-    @objc func addChannelButtonTapped() { alertWithTextFieldHandler?() }
     
     required init?(coder: NSCoder) { super.init(coder: coder) }
     

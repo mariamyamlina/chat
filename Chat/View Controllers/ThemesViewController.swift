@@ -22,35 +22,60 @@ class ThemesViewController: LogViewController {
     }()
     
     fileprivate lazy var classicButton: ThemeButton = {
-        let button = ThemeButton()
-        button.labelTitle = "Classic"
-        button.backgroundViewColor = Colors.classicAndDayButtonColor
-        button.inputMessageColor = Colors.inputGray
-        button.outputMessageColor = Colors.outputGreen
-        return button
+        let classicButton = ThemeButton(title: "Classic",
+                                 backgroundColor: Colors.classicAndDayButtonColor,
+                                 inputColor: Colors.inputGray,
+                                 outputColor: Colors.outputGreen)
+        
+        view.addSubview(classicButton)
+        classicButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            classicButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 180),
+            classicButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            classicButton.widthAnchor.constraint(equalToConstant: 300),
+            classicButton.heightAnchor.constraint(equalToConstant: 101),
+            classicButton.bottomAnchor.constraint(equalTo: dayButton.topAnchor, constant: -40)
+        ])
+        return classicButton
     }()
     
     fileprivate lazy var dayButton: ThemeButton = {
-        let button = ThemeButton()
-        button.labelTitle = "Day"
-        button.backgroundViewColor = Colors.classicAndDayButtonColor
-        button.inputMessageColor = Colors.inputLightGray
-        button.outputMessageColor = Colors.outputBlue
-        return button
+        let dayButton = ThemeButton(title: "Day",
+                                 backgroundColor: Colors.classicAndDayButtonColor,
+                                 inputColor: Colors.inputLightGray,
+                                 outputColor: Colors.outputBlue)
+        
+        view.addSubview(dayButton)
+        dayButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            dayButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            dayButton.widthAnchor.constraint(equalToConstant: 300),
+            dayButton.heightAnchor.constraint(equalToConstant: 101),
+            dayButton.bottomAnchor.constraint(equalTo: nightButton.topAnchor, constant: -40)
+        ])
+        return dayButton
     }()
     
     fileprivate lazy var nightButton: ThemeButton = {
-        let button = ThemeButton()
-        button.labelTitle = "Night"
-        button.backgroundViewColor = Colors.nightButtonColor
-        button.inputMessageColor = Colors.inputDarkGray
-        button.outputMessageColor = Colors.outputDarkGray
-        return button
+        let nightButton = ThemeButton(title: "Night",
+                                 backgroundColor: Colors.nightButtonColor,
+                                 inputColor: Colors.inputDarkGray,
+                                 outputColor: Colors.outputDarkGray)
+        
+        view.addSubview(nightButton)
+        nightButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            nightButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            nightButton.widthAnchor.constraint(equalToConstant: 300),
+            nightButton.heightAnchor.constraint(equalToConstant: 101),
+            nightButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -10)
+        ])
+        return nightButton
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupViews()
+        setupView()
         createHandler()
     }
     
@@ -145,8 +170,7 @@ class ThemesViewController: LogViewController {
     
     // MARK: - View
     
-    private func setupViews() {
-        createConstraints()
+    private func setupView() {
         configureNavigationBar()
         
         themeManager = ThemeManager(themesVC: self)
@@ -175,32 +199,6 @@ class ThemesViewController: LogViewController {
         default:
             break
         }
-    }
-    
-    private func createConstraints() {
-        view.addSubview(classicButton)
-        view.addSubview(dayButton)
-        view.addSubview(nightButton)
-        
-        classicButton.translatesAutoresizingMaskIntoConstraints = false
-        dayButton.translatesAutoresizingMaskIntoConstraints = false
-        nightButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            classicButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 180),
-            classicButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            classicButton.widthAnchor.constraint(equalToConstant: 300),
-            classicButton.heightAnchor.constraint(equalToConstant: 101),
-            classicButton.bottomAnchor.constraint(equalTo: dayButton.topAnchor, constant: -40),
-            dayButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            dayButton.widthAnchor.constraint(equalToConstant: 300),
-            dayButton.heightAnchor.constraint(equalToConstant: 101),
-            dayButton.bottomAnchor.constraint(equalTo: nightButton.topAnchor, constant: -40),
-            nightButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            nightButton.widthAnchor.constraint(equalToConstant: 300),
-            nightButton.heightAnchor.constraint(equalToConstant: 101),
-            nightButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -10)
-        ])
     }
     
     private func setupButtonView(for button: ThemeButton, selected state: Bool) {
