@@ -94,8 +94,8 @@ class ProfileViewController: LogViewController {
     
     // MARK: - Profile Editing
     
-    func saveCompletion(_ succeed: Result) {
-        if succeed == .success {
+    func saveCompletion(_ succeed: Bool) {
+        if succeed {
             profileView.saveSucceedCompletion()
             configureAlert("Data has been successfully saved", nil, false)
         } else {

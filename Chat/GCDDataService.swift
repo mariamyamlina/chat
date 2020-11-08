@@ -14,7 +14,7 @@ class GCDDataService: DataService {
 }
 
 extension GCDDataService: DataServiceProtocol {
-    func saveToFile(completion: @escaping (Result) -> Void) {
+    func saveToFile(completion: @escaping (Bool) -> Void) {
         let group = DispatchGroup()
 
         var nameSaved = true
@@ -63,13 +63,8 @@ extension GCDDataService: DataServiceProtocol {
         
         group.notify(queue: queue) {
             self.mainQueue.async {
-                let succeded: Result
-                if nameSaved && bioSaved && imageSaved {
-                    succeded = .success
-                } else {
-                    succeded = .error
-                }
-                completion(succeded)
+                let result = nameSaved && bioSaved && imageSaved
+                completion(result)
             }
         }
     }

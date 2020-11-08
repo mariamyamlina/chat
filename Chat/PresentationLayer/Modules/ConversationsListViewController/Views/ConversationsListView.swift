@@ -77,7 +77,9 @@ class ConversationsListView: UIView {
         return tableView
     }()
     
-    required init?(coder: NSCoder) { super.init(coder: coder) }
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     init() {
         super.init(frame: CGRect(origin: UIScreen.main.bounds.origin, size: UIScreen.main.bounds.size))

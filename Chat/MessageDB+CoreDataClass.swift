@@ -10,6 +10,4 @@ import Foundation
 import CoreData
 
 @objc(MessageDB)
-public class MessageDB: NSManagedObject {
-
-}
+public class MessageDB: NSManagedObject { }

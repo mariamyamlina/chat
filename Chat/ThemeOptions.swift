@@ -1,5 +1,5 @@
 //
-//  ThemeOptions.swift
+//  ThemeSettings.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 02.11.2020.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ThemeOptionsProtocol {
+protocol ThemeSettingsProtocol {
     var inputBubbleColor: UIColor { get }
     var outputBubbleColor: UIColor { get }
     
@@ -37,7 +37,7 @@ protocol ThemeOptionsProtocol {
     var tableViewHeaderColor: UIColor { get }
 }
 
-struct ClassicTheme: ThemeOptionsProtocol {
+struct ClassicTheme: ThemeSettingsProtocol {
     var inputBubbleColor: UIColor { return Colors.inputGray }
     var outputBubbleColor: UIColor { return Colors.outputGreen }
     var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
@@ -66,7 +66,7 @@ struct ClassicTheme: ThemeOptionsProtocol {
     var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderLightColor }
 }
 
-struct DayTheme: ThemeOptionsProtocol {
+struct DayTheme: ThemeSettingsProtocol {
     var inputBubbleColor: UIColor { return Colors.inputLightGray }
     var outputBubbleColor: UIColor { return Colors.outputBlue }
     var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
@@ -95,7 +95,7 @@ struct DayTheme: ThemeOptionsProtocol {
     var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderLightColor }
 }
 
-struct NightTheme: ThemeOptionsProtocol {
+struct NightTheme: ThemeSettingsProtocol {
     var inputBubbleColor: UIColor { return Colors.inputDarkGray }
     var outputBubbleColor: UIColor { return Colors.outputDarkGray }
     var messageLabelColor: UIColor { return Colors.messageLabelDarkColor }

@@ -9,11 +9,8 @@
 import Foundation
 
 protocol ServicesAssemblyProtocol {
-//    var tracksService: TracksServiceProtocol { get }
-//    var cardsService: CardsServiceProtocol { get }
     var firebaseService: FirebaseServiceProtocol { get }
     var themeService: ThemesServiceProtocol { get }
-//    var fetchService: FetchServiceProtocol { get }
     func fetchService(with channel: Channel?) -> FetchServiceProtocol
 }
 
@@ -28,7 +25,6 @@ class ServicesAssembly: ServicesAssemblyProtocol {
 //    lazy var cardsService: CardsServiceProtocol = CardsService(imageStorage: self.coreAssembly.diskImageStorage)
     lazy var firebaseService: FirebaseServiceProtocol = FirebaseService()
     lazy var themeService: ThemesServiceProtocol = ThemesService()
-//    lazy var fetchService: FetchServiceProtocol = FetchService()
     func fetchService(with channel: Channel? = nil) -> FetchServiceProtocol {
         return FetchService(channel: channel)
     }

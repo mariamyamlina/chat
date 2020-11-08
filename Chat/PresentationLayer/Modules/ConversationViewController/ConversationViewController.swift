@@ -13,7 +13,7 @@ class ConversationViewController: LogViewController {
     // MARK: - UI
     // TODO: - Убрать изображение внутрь канала
     var image: UIImageView?
-    private var conversationView = ConversationView(withTitle: nil, withImage: nil)
+    private var conversationView = ConversationView()
     
     // MARK: - Dependencies
     private let presentationAssembly: PresentationAssemblyProtocol
@@ -54,7 +54,6 @@ class ConversationViewController: LogViewController {
     // MARK: - Views
     
     func setupView() {
-        conversationView = ConversationView(withTitle: model.channel?.name, withImage: image)
         view.addSubview(conversationView)
         conversationView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -126,7 +125,7 @@ class ConversationViewController: LogViewController {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
             let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
-            conversationView.bottomConstraint?.constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) : 0
+            conversationView.messageInputContainerBottomConstraint?.constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) : 0
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
             }, completion: { (_) in
@@ -146,7 +145,7 @@ class ConversationViewController: LogViewController {
         if #available(iOS 13.0, *) {
             navigationItem.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
-        navigationItem.titleView = conversationView.viewWithTitle
+        navigationItem.titleView = conversationView.configureTopView(text: model.channel?.name, imageView: image)
     }
     
     // MARK: - TableView
@@ -290,7 +289,6 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         conversationView.tableView.endUpdates()
-
         if let indexPath = self.countIndexPathForLastRow() {
             conversationView.noMessagesLabel.isHidden = true
             conversationView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)

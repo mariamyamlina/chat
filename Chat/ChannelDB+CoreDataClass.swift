@@ -10,6 +10,4 @@ import Foundation
 import CoreData
 
 @objc(ChannelDB)
-public class ChannelDB: NSManagedObject {
-
-}
+public class ChannelDB: NSManagedObject { }

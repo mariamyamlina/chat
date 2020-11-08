@@ -9,9 +9,7 @@
 import UIKit
 
 class ConversationView: UIView {
-    var bottomConstraint: NSLayoutConstraint?
-    var image: UIImageView?
-    var title: String?
+    var messageInputContainerBottomConstraint: NSLayoutConstraint?
     var currentTheme = Theme.current.themeOptions
     
     lazy var tableView: UITableView = {
@@ -30,7 +28,7 @@ class ConversationView: UIView {
         addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: topAnchor, constant: 88),
+            tableView.topAnchor.constraint(equalTo: topAnchor, constant: UIApplication.shared.statusBarFrame.height + 44),
             tableView.bottomAnchor.constraint(equalTo: messageInputContainer.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor)
@@ -44,8 +42,9 @@ class ConversationView: UIView {
         addSubview(messageContainer)
         messageContainer.translatesAutoresizingMaskIntoConstraints = false
         
-        bottomConstraint = NSLayoutConstraint(item: messageContainer, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: 0)
-        bottomConstraint?.isActive = true
+        messageInputContainerBottomConstraint = NSLayoutConstraint(item: messageContainer, attribute: .bottom,
+                                                                   relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: 0)
+        messageInputContainerBottomConstraint?.isActive = true
         
         NSLayoutConstraint.activate([
             messageContainer.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -73,21 +72,10 @@ class ConversationView: UIView {
         return label
     }()
     
-    lazy var viewWithTitle: TopViewWithTitle = {
-        let viewWithTitle = TopViewWithTitle()
-        viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
-        viewWithTitle.contentView.backgroundColor = .clear
-        viewWithTitle.nameLabel.text = title
-        viewWithTitle.profileImage.image = image?.image
-        return viewWithTitle
-    }()
-    
     required init?(coder: NSCoder) { super.init(coder: coder) }
     
-    init(withTitle title: String?, withImage image: UIImageView?) {
+    init() {
         super.init(frame: CGRect(origin: UIScreen.main.bounds.origin, size: UIScreen.main.bounds.size))
-        self.title = title
-        self.image = image
         applyTheme()
     }
     
@@ -95,6 +83,15 @@ class ConversationView: UIView {
         currentTheme = Theme.current.themeOptions
         backgroundColor = currentTheme.backgroundColor
         noMessagesLabel.textColor = currentTheme.textFieldTextColor
+    }
+    
+    func configureTopView(text: String?, imageView: UIImageView?) -> TopView {
+        let viewWithTitle = TopView()
+        viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
+        viewWithTitle.contentView.backgroundColor = .clear
+        viewWithTitle.nameLabel.text = text
+        viewWithTitle.profileImage.image = imageView?.image
+        return viewWithTitle
     }
     
     func configureViewForHeaderInSection(sectionInfo: String) -> UIView {

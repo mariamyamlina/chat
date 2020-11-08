@@ -14,16 +14,11 @@ class OperationDataService: DataService {
 }
 
 extension OperationDataService: DataServiceProtocol {
-    func saveToFile(completion: @escaping (Result) -> Void) {
+    func saveToFile(completion: @escaping (Bool) -> Void) {
         let writeOperation = WriteOperation()
         let completionOperation = BlockOperation {
-            let succeeded: Result
-            if writeOperation.nameSaved && writeOperation.bioSaved && writeOperation.imageSaved {
-                succeeded = .success
-            } else {
-                succeeded = .error
-            }
-            completion(succeeded)
+            let result = writeOperation.nameSaved && writeOperation.bioSaved && writeOperation.imageSaved
+            completion(result)
         }
         
         completionOperation.addDependency(writeOperation)

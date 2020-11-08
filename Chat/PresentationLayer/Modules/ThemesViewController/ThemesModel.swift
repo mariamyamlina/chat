@@ -9,20 +9,10 @@
 import UIKit
 
 protocol ThemesModelProtocol: class {
-    // TODO: - Разобраться с делегатом
-    var delegate: ThemesModelDelegate? { get set }
-//    var changeThemeHandler: ((_ theme: Theme) -> Void)? { get set }
     func applyTheme(for: Theme, completion: () -> Void)
 }
 
-protocol ThemesModelDelegate: class {
-    func changeTheme(for theme: Theme)
-}
-
 class ThemesModel: ThemesModelProtocol {
-    weak var delegate: ThemesModelDelegate?
-//    var changeThemeHandler: ((_ theme: Theme) -> Void)?
-//    weak var delegate: ThemesPickerDelegate?
     var themeService: ThemesServiceProtocol
     
     init(themeService: ThemesServiceProtocol) {

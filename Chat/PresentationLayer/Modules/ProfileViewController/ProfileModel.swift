@@ -10,13 +10,11 @@ import Foundation
 
 protocol ProfileModelProtocol: class {
     var delegate: ProfileModelDelegate? { get set }
-//    func fetchNewApps()
-//    func fetchTopTracks()
 }
 
 protocol ProfileModelDelegate: class {
 //    func setup(dataSource: [???])
-    func show(error message: String)
+//    func show(error message: String)
 }
 
 class ProfileModel: ProfileModelProtocol {
@@ -29,12 +27,4 @@ class ProfileModel: ProfileModelProtocol {
         self.cardsService = cardsService
         self.tracksService = tracksService
     }
-//
-//    func fetchNewApps() {
-//        cardsService.foo()
-//    }
-//
-//    func fetchTopTracks() {
-//        tracksService.bar()
-//    }
 }

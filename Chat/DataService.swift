@@ -9,7 +9,7 @@
 import UIKit
 
 protocol DataServiceProtocol: class {
-    func saveToFile(completion: @escaping (Result) -> Void)
+    func saveToFile(completion: @escaping (Bool) -> Void)
     func loadFromFile(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
 }
 

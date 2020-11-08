@@ -13,7 +13,7 @@ enum Theme: Int {
     case day
     case night
 
-    var themeOptions: ThemeOptionsProtocol {
+    var themeOptions: ThemeSettingsProtocol {
         switch self {
         case .classic:
             return ClassicTheme()

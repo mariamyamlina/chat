@@ -10,12 +10,11 @@ import UIKit
 
 class ChannelModelFactory {
     func channelToCell(_ channel: Channel, _ image: UIImage?) -> ConversationCellModel {
-        let cellModel = ConversationCellModel(name: channel.name,
+        return ConversationCellModel(name: channel.name,
                                      message: channel.lastMessage ?? "No messages yet",
                                      date: channel.lastActivity,
                                      image: image,
                                      isOnline: true,
                                      hasUnreadMessages: false)
-        return cellModel
     }
 }

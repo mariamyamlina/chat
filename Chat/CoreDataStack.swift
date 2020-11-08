@@ -12,7 +12,6 @@ import CoreData
 class CoreDataStack {
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
     
-    // TODO: - Убрать синглтон
     static var shared: CoreDataStack = {
         return CoreDataStack()
     }()

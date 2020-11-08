@@ -1,5 +1,5 @@
 //
-//  TopViewWithTitle.swift
+//  TopView.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 28.09.2020.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TopViewWithTitle: UIView {
+class TopView: UIView {
     let currentTheme = Theme.current.themeOptions
     
     lazy var contentView: UIView = {

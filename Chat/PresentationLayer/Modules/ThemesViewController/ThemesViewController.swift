@@ -9,9 +9,6 @@
 import UIKit
 
 class ThemesViewController: LogViewController {
-//    var changeThemeHandler: ((_ theme: Theme) -> Void)?
-//    weak var delegate: ThemesPickerDelegate?
-//    private var themeManager: ThemesService?
     // MARK: - UI
     var themesView = ThemesView()
     var currentTheme = Theme.current.themeOptions
