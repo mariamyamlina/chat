@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol ConfigurableViewProtocol {
+    associatedtype ConfigurationModel
+    func configure(with model: ConfigurationModel)
+}
+
 class ConversationTableViewCell: UITableViewCell {
     lazy var profileImage: UIImageView = {
         let profileImage = UIImageView()

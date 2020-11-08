@@ -24,7 +24,6 @@ protocol ConversationModelProtocol: class {
     func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void, completion: (() -> Void)?)
     func createMessage(withText text: String, inChannel channel: Channel)
     func removeListener()
-//    func setupFetchedController()
     func fetchMessages() -> NSFetchedResultsController<MessageDB>?
 }
 
@@ -61,10 +60,6 @@ class ConversationModel: ConversationModelProtocol {
     func removeListener() {
         firebaseService.removeMessagesListener()
     }
-    
-//    func setupFetchedController() {
-//        return fetchService.setupMessagesFetchedResultsController(with: channel)
-//    }
     
     func fetchMessages() -> NSFetchedResultsController<MessageDB>? {
         return fetchService.messagesFetchedResultsController

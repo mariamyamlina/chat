@@ -9,37 +9,52 @@
 import UIKit
 
 class ThemesViewController: LogViewController {
-    var changeThemeHandler: ((_ theme: Theme) -> Void)?
-    weak var delegate: ThemesPickerDelegate?
-    private var themeManager: ThemeService?
+//    var changeThemeHandler: ((_ theme: Theme) -> Void)?
+//    weak var delegate: ThemesPickerDelegate?
+//    private var themeManager: ThemesService?
+    // MARK: - UI
     var themesView = ThemesView()
     var currentTheme = Theme.current.themeOptions
+    
+    // MARK: - Dependencies
+    private let presentationAssembly: PresentationAssemblyProtocol
+    private let model: ThemesModelProtocol
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init(model: ThemesModelProtocol, presentationAssembly: PresentationAssemblyProtocol) {
+        self.model = model
+        self.presentationAssembly = presentationAssembly
+        super.init(nibName: nil, bundle: nil)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        createRelationships()
+        createHandlers()
     }
     
     // MARK: - Theme Picker
     
-    private func createRelationships() {
+    private func createHandlers() {
         themesView.classicButton.pickHandler = { [weak self, weak themesView] in
+            guard let self = self else { return }
             themesView?.pickButtonTapped(themesView?.classicButton ?? ThemeButton())
-            self?.changeThemeHandler?(.classic)
-            self?.delegate?.changeTheme(for: .classic)
+            self.model.applyTheme(for: .classic, completion: self.applyTheme)
         }
         
         themesView.dayButton.pickHandler = { [weak self, weak themesView] in
+            guard let self = self else { return }
             themesView?.pickButtonTapped(themesView?.dayButton ?? ThemeButton())
-            self?.changeThemeHandler?(.day)
-            self?.delegate?.changeTheme(for: .day)
+            self.model.applyTheme(for: .day, completion: self.applyTheme)
         }
         
         themesView.nightButton.pickHandler = { [weak self, weak themesView] in
+            guard let self = self else { return }
             themesView?.pickButtonTapped(themesView?.nightButton ?? ThemeButton())
-            self?.changeThemeHandler?(.night)
-            self?.delegate?.changeTheme(for: .night)
+            self.model.applyTheme(for: .night, completion: self.applyTheme)
         }
     }
     
@@ -66,7 +81,7 @@ class ThemesViewController: LogViewController {
         ])
         
         setupNavigationBar()
-        themeManager = ThemeService(themesVC: self)
+//        model.createThemeService() = ThemesService(themesVC: self)
         applyTheme()
     }
     

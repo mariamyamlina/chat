@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum Theme: Int, CaseIterable {
+enum Theme: Int {
     case classic = 0
     case day
     case night
@@ -50,9 +50,7 @@ extension Theme {
 
     func setActive() {
         save()
-
         guard #available(iOS 13.0, *) else { return }
-
         UIApplication.shared.windows
             .forEach { $0.overrideUserInterfaceStyle = userInterfaceStyle }
     }

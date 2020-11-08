@@ -64,6 +64,13 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     // MARK: - ThemesViewController
     
     func themesViewController() -> ThemesViewController {
-        return ThemesViewController()
+        let model = themesModel()
+        let themesVC = ThemesViewController(model: model, presentationAssembly: self)
+//        model.delegate = themesVC
+        return themesVC
+    }
+    
+    private func themesModel() -> ThemesModel {
+        return ThemesModel(themeService: serviceAssembly.themeService)
     }
 }

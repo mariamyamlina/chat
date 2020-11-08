@@ -43,6 +43,7 @@ class ConversationsListViewController: LogViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         conversationsListView.tableView.isHidden = false
+        applyTheme()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -50,6 +51,7 @@ class ConversationsListViewController: LogViewController {
         model.getChannels(errorHandler: { [weak self] (errorTitle, errorInfo) in
             self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
         })
+        // TODO: - Убрать?
         guard let height = navigationController?.navigationBar.frame.height else { return }
         conversationsListView.showNewMessageButton(height >= 96)
     }
@@ -77,7 +79,7 @@ class ConversationsListViewController: LogViewController {
         ])
 
         setupNavigationBar()
-        applyTheme()
+//        applyTheme()
     }
     
     private func setupNavigationBar() {
@@ -130,10 +132,11 @@ class ConversationsListViewController: LogViewController {
         }
         
         conversationsListView.settingsButtonHandler = { [weak self] in
-            let themesController = ThemesViewController()
-            self?.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Chat", style: .plain, target: nil, action: nil)
-            self?.conversationsListView.tableView.isHidden = true
-            self?.navigationController?.pushViewController(themesController, animated: true)
+            guard let self = self else { return }
+            let themesController = self.presentationAssembly.themesViewController()
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Chat", style: .plain, target: nil, action: nil)
+            self.conversationsListView.tableView.isHidden = true
+            self.navigationController?.pushViewController(themesController, animated: true)
         }
         
         conversationsListView.alertWithTextFieldHandler = { [weak self, weak model, weak conversationsListView] in
@@ -163,8 +166,10 @@ class ConversationsListViewController: LogViewController {
     
     func applyTheme() {
         currentTheme = Theme.current.themeOptions
-        navigationController?.navigationBar.barTintColor = currentTheme.barColor
-        navigationController?.navigationBar.barStyle = currentTheme.barStyle
+        if #available(iOS 13.0, *) { } else {
+            navigationController?.navigationBar.barTintColor = currentTheme.barColor
+            navigationController?.navigationBar.barStyle = currentTheme.barStyle
+        }
         conversationsListView.applyTheme()
     }
 }
@@ -301,6 +306,8 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
         conversationsListView.tableView.endUpdates()
     }
 }
+
+// MARK: - ConversationsListModelDelegate
 
 extension ConversationsListViewController: ConversationsListModelDelegate {
     func setup(dataSource: [ConversationCellModel]) {

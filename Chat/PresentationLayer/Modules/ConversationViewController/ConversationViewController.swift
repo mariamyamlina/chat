@@ -300,6 +300,8 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
     }
 }
 
+// MARK: - ConversationModelDelegate
+
 extension ConversationViewController: ConversationModelDelegate {
     func setup(dataSource: [MessageCellModel]) {
         self.dataSource = dataSource

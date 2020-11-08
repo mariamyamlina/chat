@@ -76,7 +76,7 @@ class ConversationView: UIView {
     lazy var viewWithTitle: TopViewWithTitle = {
         let viewWithTitle = TopViewWithTitle()
         viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
-        viewWithTitle.contentView.backgroundColor = currentTheme.barColor
+        viewWithTitle.contentView.backgroundColor = .clear
         viewWithTitle.nameLabel.text = title
         viewWithTitle.profileImage.image = image?.image
         return viewWithTitle
