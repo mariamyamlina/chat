@@ -10,6 +10,14 @@ import UIKit
 
 @IBDesignable
 class ProfileImageView: UIView {
+    var profileImageWidthConstraint: NSLayoutConstraint?
+    var profileImageHeightConstraint: NSLayoutConstraint?
+    var lettersLabelWidthConstraint: NSLayoutConstraint?
+    var lettersLabelHeightConstraint: NSLayoutConstraint?
+    
+    var initials: String?
+    var fontSize: CGFloat = 120
+    
     lazy var contentView: UIView = {
         let contentView = UIView()
         contentView.isUserInteractionEnabled = false
@@ -33,21 +41,12 @@ class ProfileImageView: UIView {
         return label
     }()
     
-    var profileImageWidthConstraint: NSLayoutConstraint?
-    var profileImageHeightConstraint: NSLayoutConstraint?
-    var lettersLabelWidthConstraint: NSLayoutConstraint?
-    var lettersLabelHeightConstraint: NSLayoutConstraint?
-    
-    var initials: String?
-    var fontSize: CGFloat = 120
-    
     private var touchPath: UIBezierPath { return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius) }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool { return touchPath.contains(point) }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        createConstraints()
+        fatalError("init(coder:) has not been implemented")
     }
     
     init(small: Bool) {
@@ -62,8 +61,9 @@ class ProfileImageView: UIView {
             fontSize = 20
         }
             
-        loadFromFile(with: GCDDataService())
-//        loadFromFile(with: OperationDataService())
+        // TODO: - Переместить загрузку в СщnversationsListVC
+        loadFromFile(with: GCDDataManager())
+//        loadFromFile(with: OperationDataManager())
         layer.cornerRadius = (profileImageWidthConstraint?.constant ?? 0) / 2
         clipsToBounds = true
         lettersLabel.font = lettersLabel.font.withSize(fontSize)
@@ -103,8 +103,8 @@ class ProfileImageView: UIView {
         ])
     }
     
-    private func loadFromFile(with dataManager: DataServiceProtocol) {
-        dataManager.loadFromFile(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: loadImageCompletion(_:_:_:))
+    private func loadFromFile(with dataManager: DataManagerProtocol) {
+        dataManager.load(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: loadImageCompletion(_:_:_:))
     }
     
     func loadImageCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {

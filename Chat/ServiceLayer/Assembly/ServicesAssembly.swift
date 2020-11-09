@@ -12,6 +12,7 @@ protocol ServicesAssemblyProtocol {
     var firebaseService: FirebaseServiceProtocol { get }
     var themeService: ThemesServiceProtocol { get }
     func fetchService(with channel: Channel?) -> FetchServiceProtocol
+    var dataService: DataServiceProtocol { get }
 }
 
 class ServicesAssembly: ServicesAssemblyProtocol {
@@ -21,11 +22,10 @@ class ServicesAssembly: ServicesAssemblyProtocol {
         self.coreAssembly = coreAssembly
     }
     
-//    lazy var tracksService: TracksServiceProtocol = TracksService(imageStorage: self.coreAssembly.secureImageStorage)
-//    lazy var cardsService: CardsServiceProtocol = CardsService(imageStorage: self.coreAssembly.diskImageStorage)
     lazy var firebaseService: FirebaseServiceProtocol = FirebaseService()
     lazy var themeService: ThemesServiceProtocol = ThemesService()
     func fetchService(with channel: Channel? = nil) -> FetchServiceProtocol {
         return FetchService(channel: channel)
     }
+    lazy var dataService: DataServiceProtocol = DataService(gcdDataStorage: self.coreAssembly.gcdDataStorage, operationDataStorage: self.coreAssembly.operationDataStorage)
 }

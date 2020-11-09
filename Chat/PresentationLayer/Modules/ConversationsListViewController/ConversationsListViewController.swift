@@ -125,10 +125,11 @@ class ConversationsListViewController: LogViewController {
     
     private func createHandlers() {
         conversationsListView.profileMenuHandler = { [weak self] in
-            let profileController = ProfileViewController()
+            guard let self = self else { return }
+            let profileController = self.presentationAssembly.profileViewController()
             let navigationVC = UINavigationController(rootViewController: profileController)
             navigationVC.modalPresentationStyle = UIModalPresentationStyle.pageSheet
-            self?.present(navigationVC, animated: true, completion: nil)
+            self.present(navigationVC, animated: true, completion: nil)
         }
         
         conversationsListView.settingsButtonHandler = { [weak self] in

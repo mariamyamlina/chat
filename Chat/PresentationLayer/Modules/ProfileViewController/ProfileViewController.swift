@@ -9,8 +9,24 @@
 import UIKit
 
 class ProfileViewController: LogViewController {
-    let profileView = ProfileView()
+    // MARK: - UI
+    var profileView = ProfileView()
     var currentTheme = Theme.current.themeOptions
+    
+    // MARK: - Dependencies
+    private let presentationAssembly: PresentationAssemblyProtocol
+    private let model: ProfileModelProtocol
+    
+    required init?(coder: NSCoder) {
+//        Loger.printButtonLog(gcdSaveButton, #function)
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init(model: ProfileModelProtocol, presentationAssembly: PresentationAssemblyProtocol) {
+        self.model = model
+        self.presentationAssembly = presentationAssembly
+        super.init(nibName: nil, bundle: nil)
+    }
     
     static var name: String?
     static var bio: String?
@@ -28,13 +44,6 @@ class ProfileViewController: LogViewController {
     }()
     
     deinit { removeKeyboardNotifications() }
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) { super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil) }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-//        Loger.printButtonLog(gcdSaveButton, #function)
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -104,18 +113,15 @@ class ProfileViewController: LogViewController {
     }
     
     func loadCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {
-        if mustOverwriteName { profileView.nameTextView.text = ProfileViewController.name }
-        if mustOverwriteBio { profileView.bioTextView.text = ProfileViewController.bio }
-        if mustOverwriteImage { profileView.profileImageView.updateImage() }
-    }
-    
-    func load(dataManager: DataServiceProtocol) {
-        dataManager.loadFromFile(mustReadName: true, mustReadBio: true, mustReadImage: true, completion: loadCompletion(_:_:_:))
-        loadCompletion(true, true, true)
-    }
-    
-    func save(dataManager: DataServiceProtocol) {
-        dataManager.saveToFile(completion: saveCompletion(_:))
+        if mustOverwriteName {
+            profileView.nameTextView.text = ProfileViewController.name
+        }
+        if mustOverwriteBio {
+            profileView.bioTextView.text = ProfileViewController.bio
+        }
+        if mustOverwriteImage {
+            profileView.profileImageView.updateImage()
+        }
     }
     
     // MARK: - Views
@@ -129,9 +135,9 @@ class ProfileViewController: LogViewController {
             profileView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             profileView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-
-        load(dataManager: GCDDataService())
-//        load(dataManager: OperationDataService())
+        
+        model.loadWithGCD(mustReadName: true, mustReadBio: true, mustReadImage: true, completion: loadCompletion(_:_:_:))
+//        model.loadWithOperations(mustReadName: true, mustReadBio: true, mustReadImage: true, completion: loadCompletion(_:_:_:))
 
         applyTheme()
         setupNavigationBar()
@@ -141,14 +147,15 @@ class ProfileViewController: LogViewController {
         profileView.nameTextView.delegate = self
         profileView.bioTextView.delegate = self
         
-        profileView.saveButtonHandler = { [weak self, weak profileView] sender in
+        profileView.saveButtonHandler = { [weak self, weak model, weak profileView] sender in
+            guard let self = self else { return }
             profileView?.disableSomeViews()
             if sender == profileView?.gcdSaveButton {
                 profileView?.gcdButtonTapped = true
-                self?.save(dataManager: GCDDataService())
+                model?.saveWithGCD(completion: self.saveCompletion(_:))
             } else {
                 profileView?.operationButtonTapped = true
-                self?.save(dataManager: OperationDataService())
+                model?.saveWithOperations(completion: self.saveCompletion(_:))
             }
         }
         
@@ -219,13 +226,13 @@ class ProfileViewController: LogViewController {
         alertController.addAction(cancelAction)
         
         if twoActions {
-            let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self, weak profileView] (_: UIAlertAction) in
+            let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self, weak model, weak profileView] (_: UIAlertAction) in
                 guard let self = self else { return }
                 guard let unwrView = profileView else { return }
                 if unwrView.gcdButtonTapped {
-                    self.save(dataManager: GCDDataService())
+                    model?.saveWithGCD(completion: self.saveCompletion(_:))
                 } else if unwrView.operationButtonTapped {
-                    self.save(dataManager: OperationDataService())
+                    model?.saveWithOperations(completion: self.saveCompletion(_:))
                 }
             })
             alertController.addAction(repeatAction)

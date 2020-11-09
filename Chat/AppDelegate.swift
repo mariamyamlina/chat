@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let controller = rootAssembly.presentationAssembly.conversationsListViewController()
-        window?.rootViewController = UINavigationController(rootViewController: controller)
+        window?.rootViewController = controller.embedInNavigationController()
         window?.makeKeyAndVisible()
         window?.initTheme()
         

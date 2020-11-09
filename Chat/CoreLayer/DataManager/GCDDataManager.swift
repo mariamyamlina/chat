@@ -1,5 +1,5 @@
 //
-//  GCDDataService.swift
+//  GCDDataManager.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 09.10.2020.
@@ -8,13 +8,13 @@
 
 import UIKit
 
-class GCDDataService: DataService {
+class GCDDataManager {
     private let mainQueue = DispatchQueue.main
     private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
 }
 
-extension GCDDataService: DataServiceProtocol {
-    func saveToFile(completion: @escaping (Bool) -> Void) {
+extension GCDDataManager: DataManagerProtocol {
+    func save(completion: @escaping (Bool) -> Void) {
         let group = DispatchGroup()
 
         var nameSaved = true
@@ -69,7 +69,7 @@ extension GCDDataService: DataServiceProtocol {
         }
     }
     
-    func loadFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
+    func load(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
         let group = DispatchGroup()
         
         group.enter()

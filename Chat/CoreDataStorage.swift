@@ -1,5 +1,5 @@
 //
-//  CoreDataService.swift
+//  CoreDataStorage.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 23.10.2020.
@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-class CoreDataService {
+class CoreDataStorage {
     let coreDataStack: CoreDataStack
 
     init(coreDataStack: CoreDataStack) {
@@ -123,7 +123,6 @@ class CoreDataService {
                 errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { [weak self] context in
             guard let channelFromDB = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
-            print(channelFromDB.lastActivity != channel.lastActivity && channelFromDB.lastMessage != channel.lastMessage)
             if channelFromDB.lastActivity != channel.lastActivity && channelFromDB.lastMessage != channel.lastMessage {
                 channelFromDB.lastActivity = channel.lastActivity
                 channelFromDB.lastMessage = channel.lastMessage

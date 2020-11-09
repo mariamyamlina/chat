@@ -49,17 +49,15 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     // MARK: - ProfileViewController
     
     func profileViewController() -> ProfileViewController {
-//        let model = profileModel()
-//        let profileVC = ProfileViewController(model: model, presentationAssembly: self)
+        let model = profileModel()
+        let profileVC = ProfileViewController(model: model, presentationAssembly: self)
 //        model.delegate = profileVC
-//        return profileVC
-        return ProfileViewController()
+        return profileVC
     }
     
-//    private func profileModel() -> ProfileModelProtocol {
-//        return ProfileModel(cardsService: serviceAssembly.cardsService,
-//                         tracksService: serviceAssembly.tracksService)
-//    }
+    private func profileModel() -> ProfileModelProtocol {
+        return ProfileModel(dataService: serviceAssembly.dataService)
+    }
     
     // MARK: - ThemesViewController
     

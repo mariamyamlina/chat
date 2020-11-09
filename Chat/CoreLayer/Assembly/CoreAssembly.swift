@@ -9,11 +9,11 @@
 import Foundation
 
 protocol CoreAssemblyProtocol {
-//    var diskImageStorage: ImageStorage { get }
-//    var secureImageStorage: ImageStorage { get }
+    var gcdDataManager: DataManagerProtocol { get }
+    var operationDataManager: DataManagerProtocol { get }
 }
 
 class CoreAssembly: CoreAssemblyProtocol {
-//    lazy var diskImageStorage: ImageStorage = ImageDiskStorage()
-//    lazy var secureImageStorage: ImageStorage = SecureImageStorage()
+    lazy var gcdDataManager: DataManagerProtocol = GCDDataManager()
+    lazy var operationDataManager: DataManagerProtocol = OperationDataManager()
 }

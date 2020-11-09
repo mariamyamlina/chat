@@ -9,22 +9,40 @@
 import Foundation
 
 protocol ProfileModelProtocol: class {
+    // TODO
     var delegate: ProfileModelDelegate? { get set }
+    func saveWithGCD(completion: @escaping (Bool) -> Void)
+    func loadWithGCD(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
+    func saveWithOperations(completion: @escaping (Bool) -> Void)
+    func loadWithOperations(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
 }
 
 protocol ProfileModelDelegate: class {
-//    func setup(dataSource: [???])
-//    func show(error message: String)
+    // TODO
 }
 
 class ProfileModel: ProfileModelProtocol {
+    // TODO
     weak var delegate: ProfileModelDelegate?
+    let dataService: DataServiceProtocol
     
-    let cardsService: CardsServiceProtocol
-    let tracksService: TracksServiceProtocol
+    init(dataService: DataServiceProtocol) {
+        self.dataService = dataService
+    }
     
-    init(cardsService: CardsServiceProtocol, tracksService: TracksServiceProtocol) {
-        self.cardsService = cardsService
-        self.tracksService = tracksService
+    func saveWithGCD(completion: @escaping (Bool) -> Void) {
+        dataService.save(dataManager: dataService.gcdDataStorage, completion: completion)
+    }
+    
+    func loadWithGCD(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
+        dataService.load(dataManager: dataService.gcdDataStorage, mustReadName: mustReadName, mustReadBio: mustReadBio, mustReadImage: mustReadImage, completion: completion)
+    }
+    
+    func saveWithOperations(completion: @escaping (Bool) -> Void) {
+        dataService.save(dataManager: dataService.operationDataStorage, completion: completion)
+    }
+    
+    func loadWithOperations(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
+        dataService.load(dataManager: dataService.operationDataStorage, mustReadName: mustReadName, mustReadBio: mustReadBio, mustReadImage: mustReadImage, completion: completion)
     }
 }

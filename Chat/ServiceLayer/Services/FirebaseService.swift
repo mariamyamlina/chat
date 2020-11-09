@@ -27,7 +27,7 @@ protocol FirebaseServiceProtocol: class {
 class FirebaseService {
     lazy var db = Firestore.firestore()
     lazy var reference = db.collection("channels")
-    let dbService = CoreDataService(coreDataStack: CoreDataStack.shared)
+    let dbService = CoreDataStorage(coreDataStack: CoreDataStack.shared)
     
     var channelsListener: ListenerRegistration?
     var messagesListener: ListenerRegistration?
