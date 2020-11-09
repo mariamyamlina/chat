@@ -12,7 +12,7 @@ import Firebase
 extension UIWindow {
     func initTheme() {
         guard #available(iOS 13.0, *) else { return }
-//        overrideUserInterfaceStyle = Theme.current.userInterfaceStyle
+        overrideUserInterfaceStyle = Theme.current.userInterfaceStyle
     }
 }
 
@@ -34,9 +34,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let controller = rootAssembly.presentationAssembly.conversationsListViewController()
         window?.rootViewController = controller.embedInNavigationController()
-        window?.makeKeyAndVisible()
         window?.initTheme()
-        
+        window?.makeKeyAndVisible()
+
         return true
     }
     

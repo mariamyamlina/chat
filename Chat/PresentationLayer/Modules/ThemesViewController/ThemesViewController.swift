@@ -55,12 +55,7 @@ class ThemesViewController: LogViewController {
     }
     
     func applyTheme() {
-        let currentTheme = Theme.current.themeOptions
-        if #available(iOS 13.0, *) {
-        } else {
-            navigationController?.navigationBar.barStyle = currentTheme.barStyle
-            navigationController?.navigationBar.barTintColor = currentTheme.barColor
-        }
+        navigationController?.applyTheme()
         themesView.applyTheme()
     }
     

@@ -165,13 +165,7 @@ class ConversationsListViewController: LogViewController {
     // MARK: - Theme
     
     func applyTheme() {
-        let currentTheme = Theme.current.themeOptions
-//        if #available(iOS 13.0, *) { } else {
-        navigationController?.navigationBar.barTintColor = currentTheme.barColor
-        navigationController?.navigationBar.barStyle = .black //currentTheme.barStyle
-//        }
-        navigationController?.navigationBar.isTranslucent = true
-        navigationController?.navigationBar.layoutIfNeeded()
+        navigationController?.applyTheme()
         conversationsListView.applyTheme()
     }
 }

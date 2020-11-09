@@ -10,6 +10,18 @@ import UIKit
 
 extension UIViewController {
     func embedInNavigationController() -> UINavigationController {
-        return UINavigationController(rootViewController: self)
+        let navigationVC = UINavigationController(rootViewController: self)
+        navigationVC.applyTheme()
+        return navigationVC
+    }
+}
+
+extension UINavigationController {
+    func applyTheme() {
+        let currentTheme = Theme.current.themeOptions
+        if #available(iOS 13.0, *) { } else {
+            self.navigationBar.barTintColor = currentTheme.barColor
+            self.navigationBar.barStyle = currentTheme.barStyle
+        }
     }
 }
