@@ -16,6 +16,29 @@ struct MessageCellModel {
     let type: MessageTableViewCell.MessageType
 }
 
+class MessageModelFactory {
+    func messageToCell(_ message: Message, _ messageType: MessageTableViewCell.MessageType) -> MessageCellModel {
+        var messageModel = MessageCellModel(text: message.content,
+                                        time: message.created,
+                                        type: .input)
+        switch messageType {
+        case .input:
+            var senderName = message.senderName
+            if containtsOnlyOfWhitespaces(string: message.senderName) {
+                senderName = "UNKNOWN SENDER"
+            }
+            messageModel = MessageCellModel(text: "\(senderName)\n\(message.content)",
+                                                                time: message.created,
+                                                                type: .input)
+        case .output:
+            messageModel = MessageCellModel(text: message.content,
+                                        time: message.created,
+                                        type: .output)
+        }
+        return messageModel
+    }
+}
+
 protocol ConversationModelProtocol: class {
     // TODO: - Разобраться с делегатом дважды
     var delegate: ConversationModelDelegate? { get set }

@@ -9,8 +9,20 @@
 import Foundation
 import CoreData
 
-class CoreDataStack {
+protocol CoreDataStackProtocol {
+    var delegate: CoreDataStackDelegate? { get set }
+}
+
+protocol CoreDataStackDelegate {
+    func printLog(_ modificationType: String, _ count: Int)
+    func printStatLog(_ channelsCount: Int, _ messagesCount: Int, _ infoAbout: [String])
+}
+
+class CoreDataStack: CoreDataStackProtocol {
+    var delegate: CoreDataStackDelegate?
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
+    
+    // MARK: - Init / deinit
     
     static var shared: CoreDataStack = {
         return CoreDataStack()
@@ -142,15 +154,15 @@ class CoreDataStack {
         didUpdateDataBase?(self)
         
         if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
-            Loger.printDBLog("Deleted", deletes.count)
+            delegate?.printLog("Deleted", deletes.count)
         }
         
         if let inserts = userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>, inserts.count > 0 {
-            Loger.printDBLog("Added", inserts.count)
+            delegate?.printLog("Added", inserts.count)
         }
 
         if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>, updates.count > 0 {
-            Loger.printDBLog("Updated", updates.count)
+            delegate?.printLog("Updated", updates.count)
         }
     }
     
@@ -172,7 +184,7 @@ class CoreDataStack {
                     messagesCount += $0.messages?.count ?? 0
                     description.append($0.about)
                 }
-                Loger.printDBStatLog(channelsCount, messagesCount, description)
+                self.delegate?.printStatLog(channelsCount, messagesCount, description)
             } catch {
                 fatalError(error.localizedDescription)
             }

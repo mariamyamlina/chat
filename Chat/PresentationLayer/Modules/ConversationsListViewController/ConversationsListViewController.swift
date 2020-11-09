@@ -28,7 +28,7 @@ class ConversationsListViewController: LogViewController {
     init(model: ConversationsListModelProtocol, presentationAssembly: PresentationAssemblyProtocol) {
         self.model = model
         self.presentationAssembly = presentationAssembly
-        super.init(nibName: nil, bundle: nil)
+        super.init(model: presentationAssembly.logModel())
     }
     
     override func viewDidLoad() {
@@ -50,9 +50,6 @@ class ConversationsListViewController: LogViewController {
         model.getChannels(errorHandler: { [weak self] (errorTitle, errorInfo) in
             self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
         })
-        // TODO: - Убрать?
-        guard let height = navigationController?.navigationBar.frame.height else { return }
-        conversationsListView.showNewMessageButton(height >= 96)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -150,7 +147,6 @@ class ConversationsListViewController: LogViewController {
             conversationsListView?.setupTextField(alertController.textFields?[0])
             let createAction = UIAlertAction(title: "Create", style: .default) { [weak model, weak alertController] _ in
                 if let channelName = alertController?.textFields![0].text,
-                    !channelName.isEmpty,
                     !containtsOnlyOfWhitespaces(string: channelName) {
                     model?.createChannel(withName: channelName)
                 }

@@ -13,6 +13,7 @@ protocol ServicesAssemblyProtocol {
     var themeService: ThemesServiceProtocol { get }
     func fetchService(with channel: Channel?) -> FetchServiceProtocol
     var dataService: DataServiceProtocol { get }
+    var loger: LogerProtocol { get }
 }
 
 class ServicesAssembly: ServicesAssemblyProtocol {
@@ -28,4 +29,5 @@ class ServicesAssembly: ServicesAssemblyProtocol {
         return FetchService(channel: channel)
     }
     lazy var dataService: DataServiceProtocol = DataService(gcdDataManager: self.coreAssembly.gcdDataManager, operationDataManager: self.coreAssembly.operationDataManager)
+    lazy var loger: LogerProtocol = Loger(coreDataStack: self.coreAssembly.coreDataStack)
 }

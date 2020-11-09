@@ -24,7 +24,7 @@ class ProfileViewController: LogViewController {
     init(model: ProfileModelProtocol, presentationAssembly: PresentationAssemblyProtocol) {
         self.model = model
         self.presentationAssembly = presentationAssembly
-        super.init(nibName: nil, bundle: nil)
+        super.init(model: presentationAssembly.logModel())
     }
     
     static var name: String?
@@ -46,7 +46,7 @@ class ProfileViewController: LogViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        Loger.printButtonLog(profileView.gcdSaveButton, #function)
+        model.buttonLog(profileView.gcdSaveButton, #function)
         setupView()
         createRelationships()
         addKeyboardNotifications()
@@ -63,7 +63,7 @@ class ProfileViewController: LogViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Loger.printButtonLog(profileView.gcdSaveButton, #function)
+        model.buttonLog(profileView.gcdSaveButton, #function)
     }
     
     // MARK: - Keyboard

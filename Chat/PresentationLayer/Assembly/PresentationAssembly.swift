@@ -13,12 +13,19 @@ protocol PresentationAssemblyProtocol {
     func conversationViewController(channel: Channel?) -> ConversationViewController
     func profileViewController() -> ProfileViewController
     func themesViewController() -> ThemesViewController
+    func logModel() -> LogModelProtocol
 }
 
 class PresentationAssembly: PresentationAssemblyProtocol {
     private let serviceAssembly: ServicesAssemblyProtocol
     
     init(serviceAssembly: ServicesAssemblyProtocol) { self.serviceAssembly = serviceAssembly }
+    
+    // MARK: - LogViewController
+        
+        func logModel() -> LogModelProtocol {
+            return LogModel(loger: serviceAssembly.loger)
+        }
     
     // MARK: - ConversationsListViewController
     
@@ -58,7 +65,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     private func profileModel() -> ProfileModelProtocol {
-        return ProfileModel(dataService: serviceAssembly.dataService)
+        return ProfileModel(dataService: serviceAssembly.dataService, loger: serviceAssembly.loger)
     }
     
     // MARK: - ThemesViewController

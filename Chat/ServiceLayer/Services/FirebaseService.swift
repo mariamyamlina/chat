@@ -80,7 +80,8 @@ extension FirebaseService: FirebaseServiceProtocol {
             snapshot.documentChanges.forEach { diff in
                 let docData = diff.document.data()
                 let docId = diff.document.documentID
-                if let nameFromFB = docData["name"] as? String, !containtsOnlyOfWhitespaces(string: nameFromFB) {
+                if let nameFromFB = docData["name"] as? String,
+                    !containtsOnlyOfWhitespaces(string: nameFromFB) {
                    let lastMessageFromFB = docData["lastMessage"] as? String
                    let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
                     let channel = Channel(identifier: docId,

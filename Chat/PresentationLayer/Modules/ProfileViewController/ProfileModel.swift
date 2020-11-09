@@ -6,7 +6,7 @@
 //  Copyright © 2020 Maria Myamlina. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 protocol ProfileModelProtocol: class {
     // TODO
@@ -15,6 +15,7 @@ protocol ProfileModelProtocol: class {
     func loadWithGCD(completion: @escaping () -> Void)
     func saveWithOperations(completion: @escaping (Bool) -> Void)
     func loadWithOperations(completion: @escaping () -> Void)
+    func buttonLog(_ button: UIButton, _ function: String)
 }
 
 protocol ProfileModelDelegate: class {
@@ -25,9 +26,11 @@ class ProfileModel: ProfileModelProtocol {
     // TODO
     weak var delegate: ProfileModelDelegate?
     let dataService: DataServiceProtocol
+    let loger: LogerProtocol
     
-    init(dataService: DataServiceProtocol) {
+    init(dataService: DataServiceProtocol, loger: LogerProtocol) {
         self.dataService = dataService
+        self.loger = loger
     }
     
     func saveWithGCD(completion: @escaping (Bool) -> Void) {
@@ -44,5 +47,9 @@ class ProfileModel: ProfileModelProtocol {
     
     func loadWithOperations(completion: @escaping () -> Void) {
         dataService.load(dataManager: dataService.operationDataManager, mustReadBio: true, completion: completion)
+    }
+    
+    func buttonLog(_ button: UIButton, _ function: String) {
+        loger.printButtonLog(button, function)
     }
 }

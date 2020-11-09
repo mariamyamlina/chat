@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+// TODO: - Сделать как расширение даты
 func dateFormatter(date: Date, force onlyTime: Bool) -> String {
     let formatter = DateFormatter()
     if isToday(date: date) || onlyTime {

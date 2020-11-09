@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let rootAssembly = RootAssembly()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Loger.printAppLog("Application moved from 'not running state' to 'inactive state':", application.applicationState, #function)
+        rootAssembly.loger.printAppLog("Application moved from 'not running state' to 'inactive state':", application.applicationState, #function)
         
         FirebaseApp.configure()
 
@@ -41,23 +41,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        Loger.printAppLog("Application moved from 'inactive state' to 'active state':", application.applicationState, #function)
+        rootAssembly.loger.printAppLog("Application moved from 'inactive state' to 'active state':", application.applicationState, #function)
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
-        Loger.printAppLog("Application is about to move from 'active state' to 'inactive state':", application.applicationState, #function)
+        rootAssembly.loger.printAppLog("Application is about to move from 'active state' to 'inactive state':", application.applicationState, #function)
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        Loger.printAppLog("Application is about to move from 'background' to 'inactive state':", application.applicationState, #function)
+        rootAssembly.loger.printAppLog("Application is about to move from 'background' to 'inactive state':", application.applicationState, #function)
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
-        Loger.printAppLog("Application moved from 'inactive state' to 'background':", application.applicationState, #function)
+        rootAssembly.loger.printAppLog("Application moved from 'inactive state' to 'background':", application.applicationState, #function)
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        Loger.printAppLog("Application is about to terminate:", application.applicationState, #function)
+        rootAssembly.loger.printAppLog("Application is about to terminate:", application.applicationState, #function)
     }
 
 }

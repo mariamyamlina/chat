@@ -19,6 +19,17 @@ struct ConversationCellModel {
     let hasUnreadMessages: Bool
 }
 
+class ChannelModelFactory {
+    func channelToCell(_ channel: Channel, _ image: UIImage?) -> ConversationCellModel {
+        return ConversationCellModel(name: channel.name,
+                                     message: channel.lastMessage ?? "No messages yet",
+                                     date: channel.lastActivity,
+                                     image: image,
+                                     isOnline: true,
+                                     hasUnreadMessages: false)
+    }
+}
+
 protocol ConversationsListModelProtocol: class {
     var delegate: ConversationsListModelDelegate? { get set }
     func getChannels(errorHandler: @escaping (String?, String?) -> Void)

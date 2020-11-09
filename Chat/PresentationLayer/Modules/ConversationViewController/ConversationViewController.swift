@@ -29,7 +29,7 @@ class ConversationViewController: LogViewController {
     init(model: ConversationModelProtocol, presentationAssembly: PresentationAssemblyProtocol) {
         self.model = model
         self.presentationAssembly = presentationAssembly
-        super.init(nibName: nil, bundle: nil)
+        super.init(model: presentationAssembly.logModel())
     }
     
     deinit {

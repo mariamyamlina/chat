@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+// TODO: - Сделать как расширение String
 func containtsOnlyOfWhitespaces(string: String) -> Bool {
     return string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 }

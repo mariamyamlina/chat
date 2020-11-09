@@ -23,7 +23,7 @@ class ThemesViewController: LogViewController {
     init(model: ThemesModelProtocol, presentationAssembly: PresentationAssemblyProtocol) {
         self.model = model
         self.presentationAssembly = presentationAssembly
-        super.init(nibName: nil, bundle: nil)
+        super.init(model: presentationAssembly.logModel())
     }
     
     override func viewDidLoad() {

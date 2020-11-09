@@ -13,7 +13,6 @@ protocol FetchServiceProtocol {
     var channel: Channel? { get }
     var channelsFetchedResultsController: NSFetchedResultsController<ChannelDB> { get }
     var messagesFetchedResultsController: NSFetchedResultsController<MessageDB> { get }
-    
 }
 
 class FetchService: FetchServiceProtocol {
