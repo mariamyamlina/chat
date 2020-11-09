@@ -11,7 +11,6 @@ import UIKit
 class ThemesViewController: LogViewController {
     // MARK: - UI
     var themesView = ThemesView()
-    var currentTheme = Theme.current.themeOptions
     
     // MARK: - Dependencies
     private let presentationAssembly: PresentationAssemblyProtocol
@@ -37,26 +36,26 @@ class ThemesViewController: LogViewController {
     
     private func createHandlers() {
         themesView.classicButton.pickHandler = { [weak self, weak themesView] in
-            guard let self = self else { return }
-            themesView?.pickButtonTapped(themesView?.classicButton ?? ThemeButton())
+            guard let self = self, let view = themesView else { return }
+            view.pickButtonTapped(view.classicButton)
             self.model.applyTheme(for: .classic, completion: self.applyTheme)
         }
         
         themesView.dayButton.pickHandler = { [weak self, weak themesView] in
-            guard let self = self else { return }
-            themesView?.pickButtonTapped(themesView?.dayButton ?? ThemeButton())
+            guard let self = self, let view = themesView else { return }
+            view.pickButtonTapped(view.dayButton)
             self.model.applyTheme(for: .day, completion: self.applyTheme)
         }
         
         themesView.nightButton.pickHandler = { [weak self, weak themesView] in
-            guard let self = self else { return }
-            themesView?.pickButtonTapped(themesView?.nightButton ?? ThemeButton())
+            guard let self = self, let view = themesView else { return }
+            view.pickButtonTapped(view.nightButton)
             self.model.applyTheme(for: .night, completion: self.applyTheme)
         }
     }
     
     func applyTheme() {
-        currentTheme = Theme.current.themeOptions
+        let currentTheme = Theme.current.themeOptions
         if #available(iOS 13.0, *) {
         } else {
             navigationController?.navigationBar.barStyle = currentTheme.barStyle
@@ -78,7 +77,6 @@ class ThemesViewController: LogViewController {
         ])
         
         setupNavigationBar()
-//        model.createThemeService() = ThemesService(themesVC: self)
         applyTheme()
     }
     

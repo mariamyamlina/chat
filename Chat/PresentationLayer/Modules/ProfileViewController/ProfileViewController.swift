@@ -11,7 +11,6 @@ import UIKit
 class ProfileViewController: LogViewController {
     // MARK: - UI
     var profileView = ProfileView()
-    var currentTheme = Theme.current.themeOptions
     
     // MARK: - Dependencies
     private let presentationAssembly: PresentationAssemblyProtocol
@@ -85,8 +84,7 @@ class ProfileViewController: LogViewController {
             let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
 
             let constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) - 20 : -20
-            profileView.gcdSaveButtonBottomConstraint?.constant = constant
-            profileView.operationSaveButtonBottomConstraint?.constant = constant
+            profileView.changeConstraintsConstants(for: constant)
             
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
@@ -130,10 +128,8 @@ class ProfileViewController: LogViewController {
             profileView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
-        model.loadWithGCD(mustReadBio: true, completion: loadCompletion)
-//        model.loadWithOperations(mustReadBio: true, completion: loadCompletion)
-
-        applyTheme()
+        model.loadWithGCD(completion: loadCompletion)
+//        model.loadWithOperations(completion: loadCompletion)
         setupNavigationBar()
     }
     
@@ -166,12 +162,7 @@ class ProfileViewController: LogViewController {
                 alertController.dismiss(animated: true, completion: nil)
             }
             [galeryAction, takePhotoAction, cancelAction].forEach { alertController.addAction($0) }
-            if #available(iOS 13.0, *) { } else {
-                if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
-                    let currentTheme = Theme.current.themeOptions
-                    subview.backgroundColor = currentTheme.alertColor
-                }
-            }
+            alertController.applyTheme()
             self?.present(alertController, animated: true, completion: nil)
         }
         
@@ -181,14 +172,6 @@ class ProfileViewController: LogViewController {
             conversationsListVC.navigationItem.rightBarButtonItem = conversationsListVC.conversationsListView.configureRightBarButtonItem()
             conversationsListVC.updateImageView() 
             self?.dismiss(animated: true, completion: nil)
-        }
-    }
-    
-    func applyTheme() {
-        currentTheme = Theme.current.themeOptions
-        if #available(iOS 13.0, *) { } else {
-            navigationController?.navigationBar.barStyle = currentTheme.barStyle
-            imagePicker.navigationBar.barStyle = currentTheme.barStyle
         }
     }
     
@@ -222,8 +205,7 @@ class ProfileViewController: LogViewController {
         
         if twoActions {
             let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self, weak model, weak profileView] (_: UIAlertAction) in
-                guard let self = self else { return }
-                guard let unwrView = profileView else { return }
+                guard let self = self, let unwrView = profileView else { return }
                 if unwrView.gcdButtonTapped {
                     model?.saveWithGCD(completion: self.saveCompletion(_:))
                 } else if unwrView.operationButtonTapped {
@@ -232,12 +214,7 @@ class ProfileViewController: LogViewController {
             })
             alertController.addAction(repeatAction)
         }
-        
-        if #available(iOS 13.0, *) { } else {
-            if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
-                subview.backgroundColor = currentTheme.alertColor
-            }
-        }
+        alertController.applyTheme()
         self.present(alertController, animated: true, completion: nil)
     }
 }

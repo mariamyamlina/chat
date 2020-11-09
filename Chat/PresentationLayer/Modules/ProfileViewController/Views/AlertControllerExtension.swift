@@ -1,5 +1,5 @@
 //
-//  AlertExtension.swift
+//  AlertControllerExtension.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 16.10.2020.
@@ -19,6 +19,15 @@ extension UIAlertController {
         for subview in self.view.subviews {
             for constraint in subview.constraints where constraint.debugDescription.contains("width == - 16") {
                 subview.removeConstraint(constraint)
+            }
+        }
+    }
+    
+    func applyTheme() {
+        if #available(iOS 13.0, *) { } else {
+            let currentTheme = Theme.current.themeOptions
+            if let subview = self.view.subviews.first?.subviews.first?.subviews.first {
+                subview.backgroundColor = currentTheme.alertColor
             }
         }
     }

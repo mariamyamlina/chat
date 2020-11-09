@@ -12,7 +12,6 @@ import CoreData
 class ConversationsListViewController: LogViewController {
     // MARK: - UI
     private var images: [UIImage?] = []
-    var currentTheme = Theme.current.themeOptions
     var conversationsListView = ConversationsListView()
     
     // MARK: - Dependencies
@@ -79,11 +78,10 @@ class ConversationsListViewController: LogViewController {
         ])
 
         setupNavigationBar()
-//        applyTheme()
     }
     
     func updateImageView() {
-        model.loadWithGCD(mustReadBio: false, completion: conversationsListView.profileImage.loadImageCompletion)
+        model.loadWithGCD(completion: conversationsListView.profileImage.loadImageCompletion)
     }
     
     private func setupNavigationBar() {
@@ -159,12 +157,7 @@ class ConversationsListViewController: LogViewController {
             }
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
             [createAction, cancelAction].forEach { alertController.addAction($0) }
-            if #available(iOS 13.0, *) { } else {
-                if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
-                    let currentTheme = Theme.current.themeOptions
-                    subview.backgroundColor = currentTheme.alertColor
-                }
-            }
+            alertController.applyTheme()
             self?.present(alertController, animated: true, completion: nil)
         }
     }
@@ -172,11 +165,13 @@ class ConversationsListViewController: LogViewController {
     // MARK: - Theme
     
     func applyTheme() {
-        currentTheme = Theme.current.themeOptions
-        if #available(iOS 13.0, *) { } else {
-            navigationController?.navigationBar.barTintColor = currentTheme.barColor
-            navigationController?.navigationBar.barStyle = currentTheme.barStyle
-        }
+        let currentTheme = Theme.current.themeOptions
+//        if #available(iOS 13.0, *) { } else {
+        navigationController?.navigationBar.barTintColor = currentTheme.barColor
+        navigationController?.navigationBar.barStyle = .black //currentTheme.barStyle
+//        }
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.layoutIfNeeded()
         conversationsListView.applyTheme()
     }
 }

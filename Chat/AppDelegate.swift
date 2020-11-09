@@ -12,7 +12,7 @@ import Firebase
 extension UIWindow {
     func initTheme() {
         guard #available(iOS 13.0, *) else { return }
-        overrideUserInterfaceStyle = Theme.current.userInterfaceStyle
+//        overrideUserInterfaceStyle = Theme.current.userInterfaceStyle
     }
 }
 

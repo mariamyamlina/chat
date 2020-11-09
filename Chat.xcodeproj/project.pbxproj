@@ -36,7 +36,7 @@
 		995C84B2253B09DA0036B067 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995C84B1253B09DA0036B067 /* Message.swift */; };
 		995DEEFA2534D1A1000BEF15 /* WriteOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995DEEF92534D1A1000BEF15 /* WriteOperations.swift */; };
 		995DEEFC2534D1E0000BEF15 /* ReadOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995DEEFB2534D1E0000BEF15 /* ReadOperations.swift */; };
-		996941142539082500819078 /* AlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996941132539082500819078 /* AlertExtension.swift */; };
+		996941142539082500819078 /* AlertControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996941132539082500819078 /* AlertControllerExtension.swift */; };
 		996E04E6254B8CBA00281370 /* ContaintsOnlyOfWhitespacesFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996E04E5254B8CB900281370 /* ContaintsOnlyOfWhitespacesFunc.swift */; };
 		996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996FA7B3253FAB4B007EC8AA /* Channel.swift */; };
 		997C86E32550602600FD16B1 /* ThemeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997C86E22550602600FD16B1 /* ThemeOptions.swift */; };
@@ -105,7 +105,7 @@
 		995C84B1253B09DA0036B067 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		995DEEF92534D1A1000BEF15 /* WriteOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteOperations.swift; sourceTree = "<group>"; };
 		995DEEFB2534D1E0000BEF15 /* ReadOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOperations.swift; sourceTree = "<group>"; };
-		996941132539082500819078 /* AlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertExtension.swift; sourceTree = "<group>"; };
+		996941132539082500819078 /* AlertControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertControllerExtension.swift; sourceTree = "<group>"; };
 		996E04E5254B8CB900281370 /* ContaintsOnlyOfWhitespacesFunc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContaintsOnlyOfWhitespacesFunc.swift; sourceTree = "<group>"; };
 		996FA7B3253FAB4B007EC8AA /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		997C86E22550602600FD16B1 /* ThemeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeOptions.swift; sourceTree = "<group>"; };
@@ -270,7 +270,7 @@
 			children = (
 				994518DE25572B0900D5B015 /* ProfileView.swift */,
 				994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */,
-				996941132539082500819078 /* AlertExtension.swift */,
+				996941132539082500819078 /* AlertControllerExtension.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -584,7 +584,7 @@
 				99A5733F253C7B3E00899AAC /* FirebaseService.swift in Sources */,
 				9950733D251F87A500515678 /* MessageTableViewCell.swift in Sources */,
 				990FCB98254C969800156A48 /* MessageDB+CoreDataClass.swift in Sources */,
-				996941142539082500819078 /* AlertExtension.swift in Sources */,
+				996941142539082500819078 /* AlertControllerExtension.swift in Sources */,
 				994B4A80252A7C3900A50B5D /* Theme.swift in Sources */,
 				99846730251B5EA1004E9044 /* ButtonWithTouchSize.swift in Sources */,
 				994518DF25572B0900D5B015 /* ProfileView.swift in Sources */,

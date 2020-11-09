@@ -301,6 +301,11 @@ class ProfileView: UIView {
         setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
     }
     
+    func changeConstraintsConstants(for constant: CGFloat) {
+        gcdSaveButtonBottomConstraint?.constant = constant
+        operationSaveButtonBottomConstraint?.constant = constant
+    }
+    
     // MARK: - Theme
     
     func applyTheme() {

@@ -51,8 +51,8 @@ extension Theme {
     func setActive() {
         save()
         guard #available(iOS 13.0, *) else { return }
-        UIApplication.shared.windows
-            .forEach { $0.overrideUserInterfaceStyle = userInterfaceStyle }
+//        UIApplication.shared.windows
+//            .forEach { $0.overrideUserInterfaceStyle = userInterfaceStyle }
     }
 }
 

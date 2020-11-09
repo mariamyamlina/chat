@@ -21,7 +21,6 @@ class ConversationsListView: UIView {
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         if #available(iOS 13.0, *) {
-            let currentTheme = Theme.current.themeOptions
             searchController.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [
                 NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any,
                 NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
