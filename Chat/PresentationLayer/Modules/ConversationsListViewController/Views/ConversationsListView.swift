@@ -77,6 +77,14 @@ class ConversationsListView: UIView {
         return tableView
     }()
     
+    lazy var profileImage: ProfileImageView = {
+        let profileImage = ProfileImageView(small: true)
+        profileImage.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
+        profileImage.clipsToBounds = true
+        return profileImage
+    }()
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -87,18 +95,12 @@ class ConversationsListView: UIView {
     }
     
     func configureRightBarButtonItem() -> UIBarButtonItem {
-        let profileImage = ProfileImageView(small: true)
-        profileImage.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
-        profileImage.clipsToBounds = true
-
         let rightButton = ButtonWithTouchSize()
         rightButton.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         rightButton.layer.cornerRadius = rightButton.bounds.width / 2
         rightButton.clipsToBounds = true
         rightButton.addTarget(self, action: #selector(profileMenuTapped), for: .touchUpInside)
         profileImage.addSubview(rightButton)
-
         return UIBarButtonItem(customView: profileImage)
     }
     

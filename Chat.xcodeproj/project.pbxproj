@@ -11,6 +11,7 @@
 		990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB97254C969800156A48 /* MessageDB+CoreDataProperties.swift */; };
 		990FCB9C254C969F00156A48 /* ChannelDB+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB9A254C969F00156A48 /* ChannelDB+CoreDataClass.swift */; };
 		990FCB9D254C969F00156A48 /* ChannelDB+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB9B254C969F00156A48 /* ChannelDB+CoreDataProperties.swift */; };
+		991CEB432559C6BB006EDC72 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991CEB422559C6BB006EDC72 /* DataManager.swift */; };
 		99248977253C92790095851E /* MessageModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99248976253C92790095851E /* MessageModelFactory.swift */; };
 		992800F725599ABC00C19545 /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992800F625599ABC00C19545 /* ViewControllerExtension.swift */; };
 		992C2ADD2538B5C100005A88 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 992C2ADC2538B5C100005A88 /* GoogleService-Info.plist */; };
@@ -79,6 +80,7 @@
 		990FCB97254C969800156A48 /* MessageDB+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MessageDB+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		990FCB9A254C969F00156A48 /* ChannelDB+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ChannelDB+CoreDataClass.swift"; sourceTree = "<group>"; };
 		990FCB9B254C969F00156A48 /* ChannelDB+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ChannelDB+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		991CEB422559C6BB006EDC72 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		99248976253C92790095851E /* MessageModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModelFactory.swift; sourceTree = "<group>"; };
 		992800F625599ABC00C19545 /* ViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExtension.swift; sourceTree = "<group>"; };
 		992C2ADC2538B5C100005A88 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 		992800F825599BA200C19545 /* DataManager */ = {
 			isa = PBXGroup;
 			children = (
+				991CEB422559C6BB006EDC72 /* DataManager.swift */,
 				997CEE1F2530D8EF00645079 /* GCDDataManager.swift */,
 				997CEE212530D91500645079 /* OperationDataManager.swift */,
 				995DEEFD2534D1FE000BEF15 /* Operations */,
@@ -247,7 +250,6 @@
 			children = (
 				994518D72555BA7300D5B015 /* ConversationsListView.swift */,
 				99454C38251D49A9005CEEA2 /* ConversationTableViewCell.swift */,
-				992800F625599ABC00C19545 /* ViewControllerExtension.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -375,6 +377,7 @@
 				99454C32251D4502005CEEA2 /* ConversationsListViewController.swift */,
 				99ED328A25581254008848D0 /* ConversationsListModel.swift */,
 				99ED3292255814CC008848D0 /* ChannelModelFactory.swift */,
+				992800F625599ABC00C19545 /* ViewControllerExtension.swift */,
 			);
 			path = ConversationsListViewController;
 			sourceTree = "<group>";
@@ -598,6 +601,7 @@
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,
 				99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */,
 				994AF9D125221D300013B0E0 /* TopView.swift in Sources */,
+				991CEB432559C6BB006EDC72 /* DataManager.swift in Sources */,
 				99A0E5A925587ED000742613 /* ThemesModel.swift in Sources */,
 				99ED328D25581271008848D0 /* ConversationModel.swift in Sources */,
 				99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */,

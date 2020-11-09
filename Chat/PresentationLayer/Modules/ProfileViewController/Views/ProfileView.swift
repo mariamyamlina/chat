@@ -296,7 +296,7 @@ class ProfileView: UIView {
     
     func saveSucceedCompletion() {
         activityIndicator.stopAnimating()
-        profileImageView.loadImageCompletion(true, true, true)
+        profileImageView.loadImageCompletion()
         editProfileButton.isEnabled = true
         setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
     }

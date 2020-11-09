@@ -20,7 +20,9 @@ extension MessageDB {
     @NSManaged public var senderId: String
     @NSManaged public var senderName: String
     @NSManaged public var channel: ChannelDB?
-    
+}
+
+extension MessageDB {
     @objc var formattedDate: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium

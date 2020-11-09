@@ -34,7 +34,9 @@ extension ChannelDB {
 
     @objc(removeMessages:)
     @NSManaged public func removeFromMessages(_ values: NSSet)
+}
 
+extension ChannelDB {
     convenience init(identifier: String,
                      name: String,
                      lastMessage: String?,

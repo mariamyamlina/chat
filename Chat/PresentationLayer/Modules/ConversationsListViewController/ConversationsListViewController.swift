@@ -82,6 +82,10 @@ class ConversationsListViewController: LogViewController {
 //        applyTheme()
     }
     
+    func updateImageView() {
+        model.loadWithGCD(mustReadBio: false, completion: conversationsListView.profileImage.loadImageCompletion)
+    }
+    
     private func setupNavigationBar() {
         guard let navigationBar = navigationController?.navigationBar else { return }
         navigationItem.largeTitleDisplayMode = .always
@@ -107,6 +111,8 @@ class ConversationsListViewController: LogViewController {
             conversationsListView.newMessageButton.heightAnchor.constraint(equalToConstant: 24),
             conversationsListView.newMessageButton.widthAnchor.constraint(equalTo: conversationsListView.newMessageButton.heightAnchor)
         ])
+        
+        updateImageView()
     }
     
     private func setupTableView() {

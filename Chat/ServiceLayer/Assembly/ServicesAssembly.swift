@@ -27,5 +27,5 @@ class ServicesAssembly: ServicesAssemblyProtocol {
     func fetchService(with channel: Channel? = nil) -> FetchServiceProtocol {
         return FetchService(channel: channel)
     }
-    lazy var dataService: DataServiceProtocol = DataService(gcdDataStorage: self.coreAssembly.gcdDataStorage, operationDataStorage: self.coreAssembly.operationDataStorage)
+    lazy var dataService: DataServiceProtocol = DataService(gcdDataManager: self.coreAssembly.gcdDataManager, operationDataManager: self.coreAssembly.operationDataManager)
 }

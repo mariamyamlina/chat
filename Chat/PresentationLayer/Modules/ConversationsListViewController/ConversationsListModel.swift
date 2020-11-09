@@ -26,6 +26,8 @@ protocol ConversationsListModelProtocol: class {
     func deleteChannel(withId id: String)
     func removeListener()
     func fetchChannels() -> NSFetchedResultsController<ChannelDB>
+    func loadWithGCD(completion: @escaping () -> Void)
+    func loadWithOperations(completion: @escaping () -> Void)
 }
 
 protocol ConversationsListModelDelegate: class {
@@ -37,10 +39,12 @@ class ConversationsListModel: ConversationsListModelProtocol {
     weak var delegate: ConversationsListModelDelegate?
     let firebaseService: FirebaseServiceProtocol
     let fetchService: FetchServiceProtocol
+    let dataService: DataServiceProtocol
     
-    init(firebaseService: FirebaseServiceProtocol, fetchService: FetchServiceProtocol) {
+    init(firebaseService: FirebaseServiceProtocol, fetchService: FetchServiceProtocol, dataService: DataServiceProtocol) {
         self.firebaseService = firebaseService
         self.fetchService = fetchService
+        self.dataService = dataService
     }
     
     func getChannels(errorHandler: @escaping (String?, String?) -> Void) {
@@ -61,5 +65,13 @@ class ConversationsListModel: ConversationsListModelProtocol {
     
     func fetchChannels() -> NSFetchedResultsController<ChannelDB> {
         return fetchService.channelsFetchedResultsController
+    }
+    // TODO: - DRY
+    func loadWithGCD(completion: @escaping () -> Void) {
+        dataService.load(dataManager: dataService.gcdDataManager, mustReadBio: false, completion: completion)
+    }
+    
+    func loadWithOperations(completion: @escaping () -> Void) {
+        dataService.load(dataManager: dataService.operationDataManager, mustReadBio: false, completion: completion)
     }
 }

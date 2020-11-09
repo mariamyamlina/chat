@@ -60,10 +60,7 @@ class ProfileImageView: UIView {
             lettersLabelHeightConstraint?.constant = 18
             fontSize = 20
         }
-            
-        // TODO: - Переместить загрузку в СщnversationsListVC
-        loadFromFile(with: GCDDataManager())
-//        loadFromFile(with: OperationDataManager())
+
         layer.cornerRadius = (profileImageWidthConstraint?.constant ?? 0) / 2
         clipsToBounds = true
         lettersLabel.font = lettersLabel.font.withSize(fontSize)
@@ -103,17 +100,10 @@ class ProfileImageView: UIView {
         ])
     }
     
-    private func loadFromFile(with dataManager: DataManagerProtocol) {
-        dataManager.load(mustReadName: true, mustReadBio: false, mustReadImage: true, completion: loadImageCompletion(_:_:_:))
-    }
-    
-    func loadImageCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {
-        if mustOverwriteName {
-            lettersLabel.text = getLetters(for: ProfileViewController.name ?? "")
-        }
-        if mustOverwriteImage {
-            updateImage()
-        }
+    func loadImageCompletion() {
+        lettersLabel.text = getLetters(for: ProfileViewController.name ?? "")
+        profileImage.image = ProfileViewController.image
+        lettersLabel.isHidden = (profileImage.image != nil)
     }
     
     private func getLetters(for text: String) -> String {
@@ -124,10 +114,5 @@ class ProfileImageView: UIView {
             initials = letters[0] + letters[1]
         }
         return initials ?? ""
-    }
-    
-    func updateImage() {
-        profileImage.image = ProfileViewController.image
-        lettersLabel.isHidden = (profileImage.image != nil)
     }
 }

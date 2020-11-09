@@ -8,11 +8,6 @@
 
 import UIKit
 
-protocol DataManagerProtocol: class {
-    func save(completion: @escaping (Bool) -> Void)
-    func load(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
-}
-
 class OperationDataManager {
     private let operationQueue = OperationQueue()
     private let mainOperationQueue = OperationQueue.main
@@ -31,12 +26,12 @@ extension OperationDataManager: DataManagerProtocol {
         mainOperationQueue.addOperation(completionOperation)
     }
     
-    func load(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
+    func load(mustReadBio: Bool = true, completion: @escaping () -> Void) {
         let readNameOperation = ReadNameOperation()
         let readBioOperation = ReadBioOperation()
         let readImageOperation = ReadImageOperation()
         let completionOperation = BlockOperation {
-            completion(mustReadName, mustReadBio, mustReadImage)
+            completion()
         }
 
         completionOperation.addDependency(readNameOperation)

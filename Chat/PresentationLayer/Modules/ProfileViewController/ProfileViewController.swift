@@ -112,16 +112,10 @@ class ProfileViewController: LogViewController {
         }
     }
     
-    func loadCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {
-        if mustOverwriteName {
-            profileView.nameTextView.text = ProfileViewController.name
-        }
-        if mustOverwriteBio {
-            profileView.bioTextView.text = ProfileViewController.bio
-        }
-        if mustOverwriteImage {
-            profileView.profileImageView.updateImage()
-        }
+    func loadCompletion() {
+        profileView.nameTextView.text = ProfileViewController.name
+        profileView.bioTextView.text = ProfileViewController.bio
+        profileView.profileImageView.loadImageCompletion()
     }
     
     // MARK: - Views
@@ -136,8 +130,8 @@ class ProfileViewController: LogViewController {
             profileView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
-        model.loadWithGCD(mustReadName: true, mustReadBio: true, mustReadImage: true, completion: loadCompletion(_:_:_:))
-//        model.loadWithOperations(mustReadName: true, mustReadBio: true, mustReadImage: true, completion: loadCompletion(_:_:_:))
+        model.loadWithGCD(mustReadBio: true, completion: loadCompletion)
+//        model.loadWithOperations(mustReadBio: true, completion: loadCompletion)
 
         applyTheme()
         setupNavigationBar()
@@ -183,8 +177,9 @@ class ProfileViewController: LogViewController {
         
         profileView.closeProfileHandler = { [weak self] in
             let navigationVC = self?.presentingViewController as? UINavigationController
-            let conversationsListVC = navigationVC?.viewControllers.first as? ConversationsListViewController
-            conversationsListVC?.navigationItem.rightBarButtonItem = conversationsListVC?.conversationsListView.configureRightBarButtonItem()
+            guard let conversationsListVC = navigationVC?.viewControllers.first as? ConversationsListViewController else { return }
+            conversationsListVC.navigationItem.rightBarButtonItem = conversationsListVC.conversationsListView.configureRightBarButtonItem()
+            conversationsListVC.updateImageView() 
             self?.dismiss(animated: true, completion: nil)
         }
     }

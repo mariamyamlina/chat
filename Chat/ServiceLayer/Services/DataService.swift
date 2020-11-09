@@ -9,10 +9,10 @@
 import UIKit
 
 protocol DataServiceProtocol: class {
-    var gcdDataStorage: DataManagerProtocol { get }
-    var operationDataStorage: DataManagerProtocol { get }
+    var gcdDataManager: DataManagerProtocol { get }
+    var operationDataManager: DataManagerProtocol { get }
     func save(dataManager: DataManagerProtocol, completion: @escaping (Bool) -> Void)
-    func load(dataManager: DataManagerProtocol, mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
+    func load(dataManager: DataManagerProtocol, mustReadBio: Bool, completion: @escaping () -> Void)
 }
 
 class DataService: DataServiceProtocol {
@@ -26,19 +26,19 @@ class DataService: DataServiceProtocol {
     static var bioFileURL: URL = DataService.urlDir?.appendingPathComponent(DataService.bioFile) ?? URL(fileURLWithPath: "")
     static var imageFileURL: URL = DataService.urlDir?.appendingPathComponent(DataService.imageFile) ?? URL(fileURLWithPath: "")
     
-    let gcdDataStorage: DataManagerProtocol
-    let operationDataStorage: DataManagerProtocol
+    let gcdDataManager: DataManagerProtocol
+    let operationDataManager: DataManagerProtocol
 
-    init(gcdDataStorage: DataManagerProtocol, operationDataStorage: DataManagerProtocol) {
-        self.gcdDataStorage = gcdDataStorage
-        self.operationDataStorage = operationDataStorage
+    init(gcdDataManager: DataManagerProtocol, operationDataManager: DataManagerProtocol) {
+        self.gcdDataManager = gcdDataManager
+        self.operationDataManager = operationDataManager
     }
     
     func save(dataManager: DataManagerProtocol, completion: @escaping (Bool) -> Void) {
         dataManager.save(completion: completion)
     }
     
-    func load(dataManager: DataManagerProtocol, mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
-        dataManager.load(mustReadName: true, mustReadBio: true, mustReadImage: true, completion: completion)
+    func load(dataManager: DataManagerProtocol, mustReadBio: Bool, completion: @escaping () -> Void) {
+        dataManager.load(mustReadBio: mustReadBio, completion: completion)
     }
 }

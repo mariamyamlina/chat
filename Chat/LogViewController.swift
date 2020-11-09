@@ -40,6 +40,8 @@ class LogViewController: UIViewController {
     }
 }
 
+// MARK: - LogAlert
+
 extension LogViewController {
     func configureLogAlert(withTitle title: String? = nil, withMessage message: String? = nil) {
         let alertController = UIAlertController(title: (title ?? "") + " Error", message: message, preferredStyle: .alert)

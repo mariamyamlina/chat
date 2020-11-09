@@ -30,7 +30,9 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     private func conversationsListModel() -> ConversationsListModelProtocol {
-        return ConversationsListModel(firebaseService: serviceAssembly.firebaseService, fetchService: serviceAssembly.fetchService(with: nil))
+        return ConversationsListModel(firebaseService: serviceAssembly.firebaseService,
+                                      fetchService: serviceAssembly.fetchService(with: nil),
+                                      dataService: serviceAssembly.dataService)
     }
     
     // MARK: - ConversationViewController

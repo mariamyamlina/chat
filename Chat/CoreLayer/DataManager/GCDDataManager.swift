@@ -69,20 +69,18 @@ extension GCDDataManager: DataManagerProtocol {
         }
     }
     
-    func load(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
+    func load(mustReadBio: Bool = true, completion: @escaping () -> Void) {
         let group = DispatchGroup()
         
         group.enter()
         queue.async {
-            if mustReadName {
-                do {
-                    let nameFromFile = try String(data: Data(contentsOf: DataService.nameFileURL), encoding: .utf8)
-                    if let name = nameFromFile {
-                        ProfileViewController.name = name
-                    }
-                } catch {
-                    ProfileViewController.name = "Marina Dudarenko"
+            do {
+                let nameFromFile = try String(data: Data(contentsOf: DataService.nameFileURL), encoding: .utf8)
+                if let name = nameFromFile {
+                    ProfileViewController.name = name
                 }
+            } catch {
+                ProfileViewController.name = "Marina Dudarenko"
             }
             group.leave()
         }
@@ -104,21 +102,19 @@ extension GCDDataManager: DataManagerProtocol {
         
         group.enter()
         queue.async {
-            if mustReadImage {
-                do {
-                    let imageFromFile = try UIImage(data: Data(contentsOf: DataService.imageFileURL))
-                    if let image = imageFromFile {
-                        ProfileViewController.image = image
-                    }
-                } catch {
-                    ProfileViewController.image = nil
+            do {
+                let imageFromFile = try UIImage(data: Data(contentsOf: DataService.imageFileURL))
+                if let image = imageFromFile {
+                    ProfileViewController.image = image
                 }
+            } catch {
+                ProfileViewController.image = nil
             }
             group.leave()
         }
         
         group.notify(queue: .main) {
-            completion(mustReadName, mustReadBio, mustReadImage)
+            completion()
         }
     }
 }
