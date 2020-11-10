@@ -83,30 +83,8 @@ class ConversationsListViewController: LogViewController {
     
     private func setupNavigationBar() {
         guard let navigationBar = navigationController?.navigationBar else { return }
-        navigationItem.largeTitleDisplayMode = .always
-        navigationBar.prefersLargeTitles = true
-        navigationItem.searchController = conversationsListView.searchController
-        navigationItem.title = "Channels"
-        
-        navigationItem.hidesSearchBarWhenScrolling = true
-        
-        if #available(iOS 13.0, *) {
-            navigationItem.scrollEdgeAppearance = navigationBar.standardAppearance
-        }
-        
-        navigationItem.rightBarButtonItem = conversationsListView.rightBarButtonItem
-        navigationItem.leftBarButtonItem = conversationsListView.leftBarButtonItem
-        navigationItem.backBarButtonItem = conversationsListView.backBarButtonItem
-        
-        navigationBar.addSubview(conversationsListView.newMessageButton)
-        conversationsListView.newMessageButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            conversationsListView.newMessageButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -24),
-            conversationsListView.newMessageButton.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 58),
-            conversationsListView.newMessageButton.heightAnchor.constraint(equalToConstant: 24),
-            conversationsListView.newMessageButton.widthAnchor.constraint(equalTo: conversationsListView.newMessageButton.heightAnchor)
-        ])
-        
+        conversationsListView.setupNavigationItem(navigationItem: navigationItem)
+        conversationsListView.setupNavigationBar(navigationBar: navigationBar)
         updateImageView()
     }
     

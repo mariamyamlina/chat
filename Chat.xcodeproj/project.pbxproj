@@ -172,8 +172,8 @@
 			isa = PBXGroup;
 			children = (
 				99CB3DF5255B19B800DDD117 /* Extensions */,
-				99803F8F250ADD11000284D9 /* Assets.xcassets */,
 				9987556625142AC90080EEAE /* Fonts */,
+				99803F8F250ADD11000284D9 /* Assets.xcassets */,
 				99803F91250ADD11000284D9 /* LaunchScreen.storyboard */,
 				992C2ADC2538B5C100005A88 /* GoogleService-Info.plist */,
 			);

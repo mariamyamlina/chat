@@ -55,23 +55,6 @@ class ConversationView: UIView {
         return messageContainer
     }()
     
-    lazy var noMessagesLabel: UILabel = {
-        let label = UILabel()
-        label.isHidden = true
-        label.text = "No messages yet"
-        label.font = UIFont(name: "SFProText-Semibold", size: 16.0)
-        label.textAlignment = .center
-        
-        addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 200),
-            label.centerXAnchor.constraint(equalTo: centerXAnchor)
-        ])
-
-        return label
-    }()
-    
     required init?(coder: NSCoder) { super.init(coder: coder) }
     
     init() {
@@ -82,7 +65,6 @@ class ConversationView: UIView {
     fileprivate func applyTheme() {
         currentTheme = Theme.current.themeOptions
         backgroundColor = currentTheme.backgroundColor
-        noMessagesLabel.textColor = currentTheme.textFieldTextColor
     }
     
     func configureTopView(text: String?, imageView: UIImageView?) -> TopView {

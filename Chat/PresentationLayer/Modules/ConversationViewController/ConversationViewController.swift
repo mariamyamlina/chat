@@ -221,6 +221,9 @@ extension ConversationViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         conversationView.messageInputContainer.enableSendButton(true)
+        if let indexPath = self.countIndexPathForLastRow() {
+            conversationView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
+        }
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
@@ -280,10 +283,7 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         conversationView.tableView.endUpdates()
         if let indexPath = self.countIndexPathForLastRow() {
-            conversationView.noMessagesLabel.isHidden = true
             conversationView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
-        } else {
-            conversationView.noMessagesLabel.isHidden = false
         }
     }
 }

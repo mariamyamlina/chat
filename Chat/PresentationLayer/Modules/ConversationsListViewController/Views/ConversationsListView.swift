@@ -131,4 +131,26 @@ class ConversationsListView: UIView {
             textField?.keyboardAppearance = currentTheme.keyboardAppearance
         }
     }
+    
+    func setupNavigationBar(navigationBar: UINavigationBar) {
+        navigationBar.prefersLargeTitles = true
+        navigationBar.addSubview(newMessageButton)
+        newMessageButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            newMessageButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -24),
+            newMessageButton.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 58),
+            newMessageButton.heightAnchor.constraint(equalToConstant: 24),
+            newMessageButton.widthAnchor.constraint(equalTo: newMessageButton.heightAnchor)
+        ])
+    }
+    
+    func setupNavigationItem(navigationItem: UINavigationItem) {
+        navigationItem.largeTitleDisplayMode = .always
+        navigationItem.searchController = searchController
+        navigationItem.title = "Channels"
+        navigationItem.hidesSearchBarWhenScrolling = true
+        navigationItem.rightBarButtonItem = rightBarButtonItem
+        navigationItem.leftBarButtonItem = leftBarButtonItem
+        navigationItem.backBarButtonItem = backBarButtonItem
+    }
 }
