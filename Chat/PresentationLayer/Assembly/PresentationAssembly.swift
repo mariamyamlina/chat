@@ -37,9 +37,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     private func conversationsListModel() -> ConversationsListModelProtocol {
-        return ConversationsListModel(firebaseService: serviceAssembly.firebaseService,
-                                      fetchService: serviceAssembly.fetchService(with: nil),
-                                      dataService: serviceAssembly.dataService)
+        return ConversationsListModel(channelService: serviceAssembly.channelService, dataService: serviceAssembly.dataService)
     }
     
     // MARK: - ConversationViewController
@@ -52,7 +50,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     private func conversationModel(channel: Channel?) -> ConversationModelProtocol {
-        return ConversationModel(firebaseService: serviceAssembly.firebaseService, fetchService: serviceAssembly.fetchService(with: channel), channel: channel)
+        return ConversationModel(messageService: serviceAssembly.messageService(with: channel), channel: channel)
     }
     
     // MARK: - ProfileViewController

@@ -12,20 +12,25 @@ import CoreData
 protocol ChannelServiceProtocol {
     var channelsFetchedResultsController: NSFetchedResultsController<ChannelDB> { get }
     
-    func save(channels: [Channel], errorHandler: @escaping (String?, String?) -> Void)
-    func save(channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
-    func update(channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
-    func delete(channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
+    func getChannels(errorHandler: @escaping (String?, String?) -> Void)
+    func addChannelsListener(errorHandler: @escaping (String?, String?) -> Void)
+    func removeChannelsListener()
+    func create(channel name: String)
+    func delete(channel id: String)
 }
 
 class ChannelService: ChannelServiceProtocol {
     let coreDataStack: CoreDataStackProtocol
+    let firebaseManager: FirebaseManagerProtocol
     
     // MARK: - Init / deinit
 
-    init(coreDataStack: CoreDataStackProtocol) {
+    init(coreDataStack: CoreDataStackProtocol, firebaseManager: FirebaseManagerProtocol) {
         self.coreDataStack = coreDataStack
+        self.firebaseManager = firebaseManager
     }
+    
+    // MARK: - FetchResultsController
     
     lazy var channelsFetchedResultsController: NSFetchedResultsController<ChannelDB> = {
         let fetchRequest = NSFetchRequest<ChannelDB>()
@@ -39,11 +44,42 @@ class ChannelService: ChannelServiceProtocol {
                                           cacheName: "Channels")
     }()
     
+    // MARK: -
+    
+    func getChannels(errorHandler: @escaping (String?, String?) -> Void) {
+        firebaseManager.getChannels(completion: { [weak self] channels in
+            self?.save(channels: channels, errorHandler: errorHandler)
+            self?.addChannelsListener(errorHandler: errorHandler)},
+                                    errorHandler: errorHandler)
+    }
+    
+    func addChannelsListener(errorHandler: @escaping (String?, String?) -> Void) {
+        firebaseManager.addChannelsListener(completion: { [weak self] (type, channel) in
+            if type == .added { self?.save(channel: channel, errorHandler: errorHandler) }
+            if type == .modified { self?.update(channel: channel, errorHandler: errorHandler) }
+            if type == .removed { self?.delete(channel: channel, errorHandler: errorHandler) }},
+                                            errorHandler: errorHandler)
+    }
+    
+    func removeChannelsListener() {
+        firebaseManager.removeChannelsListener()
+    }
+    
+    func create(channel name: String) {
+        firebaseManager.create(channel: name)
+    }
+    
+    func delete(channel id: String) {
+        firebaseManager.delete(channel: id)
+    }
+    
+    // MARK: - Save
+    
     func save(channels: [Channel],
               errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { [weak self] context in
             for channel in channels {
-                let channelFromDB = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler)
+                let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler)
                 if channelFromDB == nil {
                     let channelDB = ChannelDB(identifier: channel.identifier,
                                   name: channel.name,
@@ -71,8 +107,8 @@ class ChannelService: ChannelServiceProtocol {
     
     func save(channel: Channel,
               errorHandler: @escaping (String?, String?) -> Void) {
-        coreDataStack.performSave { [weak self] context in
-            guard self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) == nil else { return }
+        coreDataStack.performSave { context in
+            guard coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) == nil else { return }
             let channelDB = ChannelDB(identifier: channel.identifier,
                           name: channel.name,
                           lastMessage: channel.lastMessage,
@@ -86,10 +122,12 @@ class ChannelService: ChannelServiceProtocol {
         }
     }
     
+    // MARK: - Update
+    
     func update(channel: Channel,
                 errorHandler: @escaping (String?, String?) -> Void) {
-        coreDataStack.performSave { [weak self] context in
-            guard let channelFromDB = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+        coreDataStack.performSave { context in
+            guard let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
             if channelFromDB.lastActivity != channel.lastActivity && channelFromDB.lastMessage != channel.lastMessage {
                 channelFromDB.lastActivity = channel.lastActivity
                 channelFromDB.lastMessage = channel.lastMessage
@@ -97,25 +135,12 @@ class ChannelService: ChannelServiceProtocol {
         }
     }
     
-    private func load(channel id: String,
-              from context: NSManagedObjectContext,
-              errorHandler: @escaping (String?, String?) -> Void) -> ChannelDB? {
-        let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-        let predicate = NSPredicate(format: "identifier = %@", id)
-        request.predicate = predicate
-        do {
-            return try context.fetch(request).first
-        } catch {
-            errorHandler("CoreData", error.localizedDescription)
-            return nil
-        }
-    }
+    // MARK: - Delete
     
     private func delete(compareWithChannels channels: [Channel],
-                errorHandler: @escaping (String?, String?) -> Void) {
+                        errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
-            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Channel")
-            arrayDifference(request: request, arrayOfEntities: channels, in: context, errorHandler: errorHandler).forEach {
+            coreDataStack.arrayDifference(entityType: .channel, predicate: nil, arrayOfEntities: channels, in: context, errorHandler: errorHandler).forEach {
                 let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
                 let predicate = NSPredicate(format: "identifier = %@", $0)
                 fetchRequest.predicate = predicate
@@ -133,35 +158,10 @@ class ChannelService: ChannelServiceProtocol {
     
     func delete(channel: Channel,
                 errorHandler: @escaping (String?, String?) -> Void) {
-        coreDataStack.performSave { [weak self] context in
-            guard let channelFromDB = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+        coreDataStack.performSave { context in
+            guard let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
             let object = context.object(with: channelFromDB.objectID)
             context.delete(object)
         }
-    }
-    
-    private func arrayDifference(request: NSFetchRequest<NSFetchRequestResult>,
-                         arrayOfEntities: [EntityProtocol],
-                         in context: NSManagedObjectContext,
-                         errorHandler: @escaping (String?, String?) -> Void) -> [String] {
-        var decreasing: [String] = []
-        var subtrahend: [String] = []
-        
-        request.propertiesToFetch = ["identifier"]
-        request.returnsDistinctResults = true
-        request.resultType = .dictionaryResultType
-        do {
-            let dict = try context.fetch(request)
-            guard let result = dict as? [[String: String]] else { return [] }
-            decreasing = result.map { ($0["identifier"] ?? "") }
-        } catch {
-            errorHandler("CoreData", error.localizedDescription)
-        }
-
-        arrayOfEntities.forEach {
-            subtrahend.append($0.identifier)
-        }
-
-        return Array(Set(decreasing).subtracting(subtrahend))
     }
 }

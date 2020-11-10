@@ -48,34 +48,32 @@ protocol ConversationsListModelDelegate: class {
 
 class ConversationsListModel: ConversationsListModelProtocol {
     weak var delegate: ConversationsListModelDelegate?
-    let firebaseService: FirebaseServiceProtocol
-    let fetchService: FetchServiceProtocol
+    let channelService: ChannelServiceProtocol
     let dataService: DataServiceProtocol
     
-    init(firebaseService: FirebaseServiceProtocol, fetchService: FetchServiceProtocol, dataService: DataServiceProtocol) {
-        self.firebaseService = firebaseService
-        self.fetchService = fetchService
+    init(channelService: ChannelServiceProtocol, dataService: DataServiceProtocol) {
+        self.channelService = channelService
         self.dataService = dataService
     }
     
     func getChannels(errorHandler: @escaping (String?, String?) -> Void) {
-        firebaseService.getChannels(errorHandler: errorHandler)
+        channelService.getChannels(errorHandler: errorHandler)
     }
     
     func createChannel(withName name: String) {
-        firebaseService.create(channel: name)
+        channelService.create(channel: name)
     }
     
     func deleteChannel(withId id: String) {
-        firebaseService.delete(channel: id)
+        channelService.delete(channel: id)
     }
     
     func removeListener() {
-        firebaseService.removeChannelsListener()
+        channelService.removeChannelsListener()
     }
     
     func fetchChannels() -> NSFetchedResultsController<ChannelDB> {
-        return fetchService.channelsFetchedResultsController
+        return channelService.channelsFetchedResultsController
     }
     // TODO: - DRY
     func loadWithGCD(completion: @escaping () -> Void) {

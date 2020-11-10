@@ -9,12 +9,12 @@
 import Foundation
 
 protocol ServicesAssemblyProtocol {
-    var firebaseService: FirebaseServiceProtocol { get }
+    var channelService: ChannelServiceProtocol { get }
+    func messageService(with channel: Channel?) -> MessageServiceProtocol
+    
     var themeService: ThemesServiceProtocol { get }
-    func fetchService(with channel: Channel?) -> FetchServiceProtocol
     var dataService: DataServiceProtocol { get }
     var loger: LogerProtocol { get }
-    var coreDataService: CoreDataServiceProtocol { get }
 }
 
 class ServicesAssembly: ServicesAssemblyProtocol {
@@ -24,12 +24,12 @@ class ServicesAssembly: ServicesAssemblyProtocol {
         self.coreAssembly = coreAssembly
     }
     
-    lazy var firebaseService: FirebaseServiceProtocol = FirebaseService(firebaseManager: self.coreAssembly.firebaseManager, serviceAssembly: self)
-    lazy var themeService: ThemesServiceProtocol = ThemesService()
-    func fetchService(with channel: Channel? = nil) -> FetchServiceProtocol {
-        return FetchService(channel: channel)
+    lazy var channelService: ChannelServiceProtocol = ChannelService(coreDataStack: self.coreAssembly.coreDataStack, firebaseManager: self.coreAssembly.firebaseManager)
+    func messageService(with channel: Channel?) -> MessageServiceProtocol {
+        return MessageService(coreDataStack: self.coreAssembly.coreDataStack, firebaseManager: self.coreAssembly.firebaseManager, channel: channel)
     }
+    
+    lazy var themeService: ThemesServiceProtocol = ThemesService()
     lazy var dataService: DataServiceProtocol = DataService(gcdDataManager: self.coreAssembly.gcdDataManager, operationDataManager: self.coreAssembly.operationDataManager)
     lazy var loger: LogerProtocol = Loger(coreDataStack: self.coreAssembly.coreDataStack)
-    lazy var coreDataService: CoreDataServiceProtocol = CoreDataService(coreDataStack: self.coreAssembly.coreDataStack)
 }

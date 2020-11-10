@@ -13,8 +13,12 @@ protocol CoreDataStackProtocol {
     var delegate: CoreDataStackDelegate? { get set }
     var didUpdateDataBase: ((CoreDataStack) -> Void)? { get set }
     func performSave(_ handler: (NSManagedObjectContext) -> Void)
+    func load(channel id: String, from context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> ChannelDB?
+    func load(message id: String, from context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> MessageDB?
     func enableObservers()
     func printDatabaseStatistics()
+    func arrayDifference(entityType: EntityType, predicate: String?, arrayOfEntities: [EntityProtocol],
+                         in context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> [String]
 }
 
 protocol CoreDataStackDelegate {
@@ -139,6 +143,36 @@ class CoreDataStack: CoreDataStackProtocol {
         }
     }
     
+    // MARK: - Load Context
+    
+    func load(channel id: String,
+              from context: NSManagedObjectContext,
+              errorHandler: @escaping (String?, String?) -> Void) -> ChannelDB? {
+        let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+        let predicate = NSPredicate(format: "identifier = %@", id)
+        request.predicate = predicate
+        do {
+            return try context.fetch(request).first
+        } catch {
+            errorHandler("CoreData", error.localizedDescription)
+            return nil
+        }
+    }
+    
+    func load(message id: String,
+              from context: NSManagedObjectContext,
+              errorHandler: @escaping (String?, String?) -> Void) -> MessageDB? {
+        let request: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
+        let predicate = NSPredicate(format: "identifier = %@", id)
+        request.predicate = predicate
+        do {
+            return try context.fetch(request).first
+        } catch {
+            errorHandler("CoreData", error.localizedDescription)
+            return nil
+        }
+    }
+    
     // MARK: - Observers
     
     func enableObservers() {
@@ -197,5 +231,42 @@ class CoreDataStack: CoreDataStackProtocol {
                 fatalError(error.localizedDescription)
             }
         }
+    }
+    
+    // MARK: - Array Difference
+    
+    func arrayDifference(entityType: EntityType,
+                         predicate: String?,
+                         arrayOfEntities: [EntityProtocol],
+                         in context: NSManagedObjectContext,
+                         errorHandler: @escaping (String?, String?) -> Void) -> [String] {
+        let request: NSFetchRequest<NSFetchRequestResult>
+        if entityType == .channel {
+            request = NSFetchRequest<NSFetchRequestResult>(entityName: "Channel")
+        } else {
+            request = NSFetchRequest<NSFetchRequestResult>(entityName: "Message")
+            let predicate = NSPredicate(format: "channel.identifier = %@", predicate ?? "")
+            request.predicate = predicate
+        }
+        
+        var decreasing: [String] = []
+        var subtrahend: [String] = []
+        
+        request.propertiesToFetch = ["identifier"]
+        request.returnsDistinctResults = true
+        request.resultType = .dictionaryResultType
+        do {
+            let dict = try context.fetch(request)
+            guard let result = dict as? [[String: String]] else { return [] }
+            decreasing = result.map { ($0["identifier"] ?? "") }
+        } catch {
+            errorHandler("CoreData", error.localizedDescription)
+        }
+
+        arrayOfEntities.forEach {
+            subtrahend.append($0.identifier)
+        }
+
+        return Array(Set(decreasing).subtracting(subtrahend))
     }
 }

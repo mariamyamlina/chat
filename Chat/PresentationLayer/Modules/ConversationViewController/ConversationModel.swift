@@ -59,32 +59,30 @@ protocol ConversationModelDelegate: class {
 class ConversationModel: ConversationModelProtocol {
     weak var delegate: ConversationModelDelegate?
     var channel: Channel?
-    let firebaseService: FirebaseServiceProtocol
-    let fetchService: FetchServiceProtocol
+    let messageService: MessageServiceProtocol
     
-    init(firebaseService: FirebaseServiceProtocol, fetchService: FetchServiceProtocol, channel: Channel?) {
-        self.firebaseService = firebaseService
-        self.fetchService = fetchService
+    init(messageService: MessageServiceProtocol, channel: Channel?) {
+        self.messageService = messageService
         self.channel = channel
     }
     
     func universallyUniqueIdentifier() -> String {
-        return firebaseService.universallyUniqueIdentifier
+        return messageService.universallyUniqueIdentifier
     }
     
     func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
-        firebaseService.getMessages(in: channel, errorHandler: errorHandler)
+        messageService.getMessages(in: channel, errorHandler: errorHandler)
     }
     
     func createMessage(withText text: String, inChannel channel: Channel) {
-        firebaseService.create(message: text, in: channel)
+        messageService.create(message: text, in: channel)
     }
     
     func removeListener() {
-        firebaseService.removeMessagesListener()
+        messageService.removeMessagesListener()
     }
     
     func fetchMessages() -> NSFetchedResultsController<MessageDB>? {
-        return fetchService.messagesFetchedResultsController
+        return messageService.messagesFetchedResultsController
     }
 }

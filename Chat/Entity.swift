@@ -8,6 +8,11 @@
 
 import Foundation
 
+enum EntityType {
+    case channel
+    case message
+}
+
 protocol EntityProtocol {
     var identifier: String { get }
 }
