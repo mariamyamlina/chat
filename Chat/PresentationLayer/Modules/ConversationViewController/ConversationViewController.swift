@@ -85,7 +85,7 @@ class ConversationViewController: LogViewController {
         conversationView.messageInputContainer.sendHandler = { [weak self, weak conversationView] in
             guard let message = conversationView?.messageInputContainer.textField.text else { return }
             if let unwrChannel = self?.model.channel,
-                !containtsOnlyOfWhitespaces(string: message) {
+                !message.containtsOnlyOfWhitespaces() {
                 self?.model.createMessage(withText: message, inChannel: unwrChannel)
             }
             conversationView?.messageInputContainer.textField.text = ""

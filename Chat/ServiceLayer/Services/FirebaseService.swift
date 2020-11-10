@@ -56,7 +56,7 @@ extension FirebaseService: FirebaseServiceProtocol {
                 let docData = document.data()
                 let docId = document.documentID
                 guard let nameFromFB = docData["name"] as? String,
-                      !containtsOnlyOfWhitespaces(string: nameFromFB) else { continue }
+                    !nameFromFB.containtsOnlyOfWhitespaces() else { continue }
                 let lastMessageFromFB = docData["lastMessage"] as? String
                 let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
                 let channel = Channel(identifier: docId,
@@ -81,7 +81,7 @@ extension FirebaseService: FirebaseServiceProtocol {
                 let docData = diff.document.data()
                 let docId = diff.document.documentID
                 if let nameFromFB = docData["name"] as? String,
-                    !containtsOnlyOfWhitespaces(string: nameFromFB) {
+                    !nameFromFB.containtsOnlyOfWhitespaces() {
                    let lastMessageFromFB = docData["lastMessage"] as? String
                    let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
                     let channel = Channel(identifier: docId,

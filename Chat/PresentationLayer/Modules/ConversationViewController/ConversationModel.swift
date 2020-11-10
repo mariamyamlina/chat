@@ -24,7 +24,7 @@ class MessageModelFactory {
         switch messageType {
         case .input:
             var senderName = message.senderName
-            if containtsOnlyOfWhitespaces(string: message.senderName) {
+            if message.senderName.containtsOnlyOfWhitespaces() {
                 senderName = "UNKNOWN SENDER"
             }
             messageModel = MessageCellModel(text: "\(senderName)\n\(message.content)",

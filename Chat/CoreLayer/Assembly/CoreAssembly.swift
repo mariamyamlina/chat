@@ -13,6 +13,7 @@ protocol CoreAssemblyProtocol {
     var operationDataManager: DataManagerProtocol { get }
     // TODO
     var coreDataStack: CoreDataStackProtocol { get }
+    var coreDataStorage: CoreDataStorageProtocol { get }
 }
 
 class CoreAssembly: CoreAssemblyProtocol {
@@ -20,4 +21,5 @@ class CoreAssembly: CoreAssemblyProtocol {
     lazy var operationDataManager: DataManagerProtocol = OperationDataManager()
     // TODO
     lazy var coreDataStack: CoreDataStackProtocol = CoreDataStack.shared
+    lazy var coreDataStorage: CoreDataStorageProtocol = CoreDataStorage(coreDataStack: coreDataStack)
 }

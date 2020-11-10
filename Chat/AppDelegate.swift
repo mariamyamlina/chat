@@ -26,10 +26,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FirebaseApp.configure()
 
-        CoreDataStack.shared.didUpdateDataBase = { stack in
-            stack.printDatabaseStatistics()
-        }
-        CoreDataStack.shared.enableObservers()
+//        rootAssembly.coreDataStack.didUpdateDataBase = { stack in
+//            stack.printDatabaseStatistics()
+//        }
+        rootAssembly.coreDataStack.enableObservers()
 
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let controller = rootAssembly.presentationAssembly.conversationsListViewController()

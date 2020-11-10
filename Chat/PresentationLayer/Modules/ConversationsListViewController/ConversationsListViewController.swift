@@ -147,7 +147,7 @@ class ConversationsListViewController: LogViewController {
             conversationsListView?.setupTextField(alertController.textFields?[0])
             let createAction = UIAlertAction(title: "Create", style: .default) { [weak model, weak alertController] _ in
                 if let channelName = alertController?.textFields![0].text,
-                    !containtsOnlyOfWhitespaces(string: channelName) {
+                    !channelName.containtsOnlyOfWhitespaces() {
                     model?.createChannel(withName: channelName)
                 }
             }

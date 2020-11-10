@@ -9,10 +9,16 @@
 import Foundation
 import CoreData
 
-class CoreDataStorage {
-    let coreDataStack: CoreDataStack
+protocol CoreDataStorageProtocol {
+    // TODO
+}
 
-    init(coreDataStack: CoreDataStack) {
+class CoreDataStorage: CoreDataStorageProtocol {
+    let coreDataStack: CoreDataStackProtocol
+    
+    // MARK: - Init / deinit
+
+    init(coreDataStack: CoreDataStackProtocol) {
         self.coreDataStack = coreDataStack
     }
     

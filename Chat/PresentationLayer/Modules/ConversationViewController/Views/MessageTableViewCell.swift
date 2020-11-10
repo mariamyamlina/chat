@@ -69,7 +69,7 @@ extension MessageTableViewCell: ConfigurableViewProtocol {
     func configure(with model: MessageCellModel) {
         let currentTheme = Theme.current.themeOptions
         let messageText = model.text
-        timeLabel.text = dateFormatter(date: model.time, force: true)
+        timeLabel.text = model.time.dateFormatter(onlyTimeMode: true)
 
         if let index = messageText.firstIndex(of: "\n"), model.type == .input {
             let nameSubstring = String(messageText[..<index])

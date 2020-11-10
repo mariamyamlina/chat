@@ -140,7 +140,7 @@ extension ConversationTableViewCell: ConfigurableViewProtocol {
 
         if let message = model.message, let date = model.date {
             messageLabel.text = message
-            dateLabel.text = dateFormatter(date: date, force: false) + "  >"
+            dateLabel.text = date.dateFormatter(onlyTimeMode: false) + "  >"
             if model.hasUnreadMessages == true {
                 messageLabel.font = UIFont(name: "SFProText-Semibold", size: 13.0)
             } else {

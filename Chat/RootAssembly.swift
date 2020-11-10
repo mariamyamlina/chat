@@ -12,6 +12,10 @@ protocol LogerAssemblyProtocol {
     var loger: LogerProtocol { get }
 }
 
+protocol CoreDataStackAssemblyProtocol {
+    var coreDataStack: CoreDataStackProtocol { get }
+}
+
 class RootAssembly {
     lazy var presentationAssembly: PresentationAssemblyProtocol = PresentationAssembly(serviceAssembly: self.serviceAssembly)
     private lazy var serviceAssembly: ServicesAssemblyProtocol = ServicesAssembly(coreAssembly: self.coreAssembly)
@@ -20,4 +24,8 @@ class RootAssembly {
 
 extension RootAssembly: LogerAssemblyProtocol {
     var loger: LogerProtocol { return serviceAssembly.loger }
+}
+
+extension RootAssembly: CoreDataStackAssemblyProtocol {
+    var coreDataStack: CoreDataStackProtocol { return coreAssembly.coreDataStack }
 }

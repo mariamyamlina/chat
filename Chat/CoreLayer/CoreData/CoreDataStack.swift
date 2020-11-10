@@ -11,6 +11,10 @@ import CoreData
 
 protocol CoreDataStackProtocol {
     var delegate: CoreDataStackDelegate? { get set }
+    var didUpdateDataBase: ((CoreDataStack) -> Void)? { get set }
+    func performSave(_ handler: (NSManagedObjectContext) -> Void)
+    func enableObservers()
+    func printDatabaseStatistics()
 }
 
 protocol CoreDataStackDelegate {
@@ -27,7 +31,11 @@ class CoreDataStack: CoreDataStackProtocol {
     static var shared: CoreDataStack = {
         return CoreDataStack()
     }()
-    private init() { }
+    private init() {
+        didUpdateDataBase = { stack in
+            stack.printDatabaseStatistics()
+        }
+    }
     
     deinit {
         disableObservers()

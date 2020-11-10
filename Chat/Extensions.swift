@@ -1,5 +1,5 @@
 //
-//  ViewControllerExtension.swift
+//  Extensions.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 09.11.2020.
@@ -65,5 +65,30 @@ extension UINavigationController {
             self.navigationBar.barTintColor = currentTheme.barColor
             self.navigationBar.barStyle = currentTheme.barStyle
         }
+    }
+}
+
+extension String {
+    func containtsOnlyOfWhitespaces() -> Bool {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+}
+
+extension Date {
+    func dateFormatter(onlyTimeMode timeMode: Bool) -> String {
+        let formatter = DateFormatter()
+        if self.isToday() || timeMode {
+            formatter.dateFormat = "HH:mm"
+        } else {
+            formatter.dateFormat = "dd MMM"
+        }
+        return formatter.string(from: self)
+    }
+
+    func isToday() -> Bool {
+        let today = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: self) == formatter.string(from: today)
     }
 }
