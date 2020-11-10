@@ -9,6 +9,18 @@
 import UIKit
 
 class GCDDataManager {
+    var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    
+    lazy var nameFileURL: URL = {
+        urlDir?.appendingPathComponent("ProfileName.txt") ?? URL(fileURLWithPath: "")
+    }()
+    lazy var bioFileURL: URL = {
+        urlDir?.appendingPathComponent("ProfileBio.txt") ?? URL(fileURLWithPath: "")
+    }()
+    lazy var imageFileURL: URL = {
+        urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "")
+    }()
+    
     private let mainQueue = DispatchQueue.main
     private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
 }
@@ -25,7 +37,7 @@ extension GCDDataManager: DataManagerProtocol {
         queue.async {
             if ProfileViewController.nameDidChange {
                 do {
-                    try ProfileViewController.name?.write(to: DataService.nameFileURL, atomically: false, encoding: .utf8)
+                    try ProfileViewController.name?.write(to: self.nameFileURL, atomically: false, encoding: .utf8)
                 } catch {
                     nameSaved = false
                 }
@@ -38,7 +50,7 @@ extension GCDDataManager: DataManagerProtocol {
         queue.async {
             if ProfileViewController.bioDidChange {
                 do {
-                    try ProfileViewController.bio?.write(to: DataService.bioFileURL, atomically: false, encoding: .utf8)
+                    try ProfileViewController.bio?.write(to: self.bioFileURL, atomically: false, encoding: .utf8)
                 } catch {
                     bioSaved = false
                 }
@@ -52,7 +64,7 @@ extension GCDDataManager: DataManagerProtocol {
             if let data = ProfileViewController.image?.jpegData(compressionQuality: 0.5),
                 ProfileViewController.imageDidChange {
                 do {
-                    try data.write(to: DataService.imageFileURL)
+                    try data.write(to: self.imageFileURL)
                 } catch {
                     imageSaved = false
                 }
@@ -75,7 +87,7 @@ extension GCDDataManager: DataManagerProtocol {
         group.enter()
         queue.async {
             do {
-                let nameFromFile = try String(data: Data(contentsOf: DataService.nameFileURL), encoding: .utf8)
+                let nameFromFile = try String(data: Data(contentsOf: self.nameFileURL), encoding: .utf8)
                 if let name = nameFromFile {
                     ProfileViewController.name = name
                 }
@@ -89,7 +101,7 @@ extension GCDDataManager: DataManagerProtocol {
         queue.async {
             if mustReadBio {
                 do {
-                    let bioFromFile = try String(data: Data(contentsOf: DataService.bioFileURL), encoding: .utf8)
+                    let bioFromFile = try String(data: Data(contentsOf: self.bioFileURL), encoding: .utf8)
                     if let bio = bioFromFile {
                         ProfileViewController.bio = bio
                     }
@@ -103,7 +115,7 @@ extension GCDDataManager: DataManagerProtocol {
         group.enter()
         queue.async {
             do {
-                let imageFromFile = try UIImage(data: Data(contentsOf: DataService.imageFileURL))
+                let imageFromFile = try UIImage(data: Data(contentsOf: self.imageFileURL))
                 if let image = imageFromFile {
                     ProfileViewController.image = image
                 }

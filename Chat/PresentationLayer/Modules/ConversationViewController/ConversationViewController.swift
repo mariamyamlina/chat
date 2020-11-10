@@ -95,17 +95,7 @@ class ConversationViewController: LogViewController {
             model.getMessages(inChannel: unwrChannel,
                                   errorHandler: { [weak self] (errorTitle, errorInfo) in
                                     self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
-                                    },
-                                  completion: { [weak self, weak conversationView] in
-                                    guard let self = self else { return }
-                                    guard let unwrView = conversationView else { return }
-                                    if let indexPath = self.countIndexPathForLastRow() {
-                                        unwrView.noMessagesLabel.isHidden = true
-                                        unwrView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
-                                    } else {
-                                        unwrView.noMessagesLabel.isHidden = false
-                                    }
-            })
+                                    })
         }
     }
     

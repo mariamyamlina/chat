@@ -44,7 +44,7 @@ protocol ConversationModelProtocol: class {
     var delegate: ConversationModelDelegate? { get set }
     var channel: Channel? { get }
     func universallyUniqueIdentifier() -> String
-    func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void, completion: (() -> Void)?)
+    func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
     func createMessage(withText text: String, inChannel channel: Channel)
     func removeListener()
     func fetchMessages() -> NSFetchedResultsController<MessageDB>?
@@ -72,8 +72,8 @@ class ConversationModel: ConversationModelProtocol {
         return firebaseService.universallyUniqueIdentifier
     }
     
-    func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void, completion: (() -> Void)?) {
-        firebaseService.getMessages(in: channel, errorHandler: errorHandler, completion: completion)
+    func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
+        firebaseService.getMessages(in: channel, errorHandler: errorHandler)
     }
     
     func createMessage(withText text: String, inChannel channel: Channel) {

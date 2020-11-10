@@ -1,5 +1,5 @@
 //
-//  CoreDataStorage.swift
+//  CoreDataService.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 23.10.2020.
@@ -9,11 +9,16 @@
 import Foundation
 import CoreData
 
-protocol CoreDataStorageProtocol {
-    // TODO
+protocol CoreDataServiceProtocol {
+    func save(channels: [Channel], errorHandler: @escaping (String?, String?) -> Void)
+    func save(channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
+    func save(messages: [Message], inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
+    func save(message: Message, inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
+    func update(channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
+    func delete(channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
 }
 
-class CoreDataStorage: CoreDataStorageProtocol {
+class CoreDataService: CoreDataServiceProtocol {
     let coreDataStack: CoreDataStackProtocol
     
     // MARK: - Init / deinit
@@ -73,8 +78,7 @@ class CoreDataStorage: CoreDataStorageProtocol {
     
     func save(messages: [Message],
               inChannel channel: Channel,
-              errorHandler: @escaping (String?, String?) -> Void,
-              completion: (() -> Void)?) {
+              errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { [weak self] context in
             guard let channelDB = self?.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
             for message in messages {
@@ -94,11 +98,6 @@ class CoreDataStorage: CoreDataStorageProtocol {
             }
 
             self?.delete(compareWithMessages: messages, inChannel: channel, errorHandler: errorHandler)
-            
-            guard let handler = completion else { return }
-            DispatchQueue.main.async {
-                handler()
-            }
         }
     }
     

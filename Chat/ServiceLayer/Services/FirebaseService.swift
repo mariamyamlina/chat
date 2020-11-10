@@ -2,14 +2,13 @@
 //  FirebaseService.swift
 //  Chat
 //
-//  Created by Maria Myamlina on 18.10.2020.
+//  Created by Maria Myamlina on 10.11.2020.
 //  Copyright © 2020 Maria Myamlina. All rights reserved.
 //
 
-import UIKit
-import Firebase
+import Foundation
 
-protocol FirebaseServiceProtocol: class {
+protocol FirebaseServiceProtocol {
     var universallyUniqueIdentifier: String { get }
     
     func getChannels(errorHandler: @escaping (String?, String?) -> Void)
@@ -18,172 +17,72 @@ protocol FirebaseServiceProtocol: class {
     func create(channel name: String)
     func delete(channel id: String)
     
-    func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void, completion: (() -> Void)?)
+    func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
     func addMessagesListener(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
     func removeMessagesListener()
     func create(message text: String, in channel: Channel)
 }
 
-class FirebaseService {
-    lazy var db = Firestore.firestore()
-    lazy var reference = db.collection("channels")
-    let dbService = CoreDataStorage(coreDataStack: CoreDataStack.shared)
+class FirebaseService: FirebaseServiceProtocol {
+    let firebaseManager: FirebaseManagerProtocol
+    let serviceAssembly: ServicesAssembly
+    var universallyUniqueIdentifier: String
     
-    var channelsListener: ListenerRegistration?
-    var messagesListener: ListenerRegistration?
-    
-    lazy var universallyUniqueIdentifier: String = {
-        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            return uuid
-        } else {
-            return UUID().uuidString
-        }
-    }()
-}
+    // MARK: - Init / deinit
 
-extension FirebaseService: FirebaseServiceProtocol {
-    // MARK: - Channels
-        
+    init(firebaseManager: FirebaseManagerProtocol, serviceAssembly: ServicesAssembly) {
+        self.firebaseManager = firebaseManager
+        self.serviceAssembly = serviceAssembly
+        self.universallyUniqueIdentifier = firebaseManager.universallyUniqueIdentifier
+    }
+    
     func getChannels(errorHandler: @escaping (String?, String?) -> Void) {
-        var channels: [Channel] = []
-        reference.getDocuments { (querySnapshot, error) in
-            guard error == nil else {
-                errorHandler("Firebase", error?.localizedDescription)
-                return
-            }
-            guard let snapshot = querySnapshot else { return }
-            for document in snapshot.documents {
-                let docData = document.data()
-                let docId = document.documentID
-                guard let nameFromFB = docData["name"] as? String,
-                    !nameFromFB.containtsOnlyOfWhitespaces() else { continue }
-                let lastMessageFromFB = docData["lastMessage"] as? String
-                let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                let channel = Channel(identifier: docId,
-                                      name: nameFromFB,
-                                      lastMessage: lastMessageFromFB,
-                                      lastActivity: lastActivityFromFB)
-                channels.append(channel)
-            }
-            self.dbService.save(channels: channels, errorHandler: errorHandler)
-            self.addChannelsListener(errorHandler: errorHandler)
-        }
+        firebaseManager.getChannels(completion: { [weak self] channels in
+                self?.serviceAssembly.coreDataService.save(channels: channels, errorHandler: errorHandler)
+                self?.addChannelsListener(errorHandler: errorHandler)},
+                                    errorHandler: errorHandler)
     }
     
     func addChannelsListener(errorHandler: @escaping (String?, String?) -> Void) {
-        channelsListener = reference.addSnapshotListener(includeMetadataChanges: true) { querySnapshot, error in
-            guard error == nil else {
-                errorHandler("Firebase", error?.localizedDescription)
-                return
-            }
-            guard let snapshot = querySnapshot else { return }
-            snapshot.documentChanges.forEach { diff in
-                let docData = diff.document.data()
-                let docId = diff.document.documentID
-                if let nameFromFB = docData["name"] as? String,
-                    !nameFromFB.containtsOnlyOfWhitespaces() {
-                   let lastMessageFromFB = docData["lastMessage"] as? String
-                   let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                    let channel = Channel(identifier: docId,
-                                          name: nameFromFB,
-                                          lastMessage: lastMessageFromFB,
-                                          lastActivity: lastActivityFromFB)
-                    if diff.type == .added {
-                        self.dbService.save(channel: channel, errorHandler: errorHandler)
-                    }
-                    if diff.type == .modified {
-                        self.dbService.update(channel: channel, errorHandler: errorHandler)
-                    }
-                    if diff.type == .removed {
-                        self.dbService.delete(channel: channel, errorHandler: errorHandler)
-                    }
-                }
-            }
-        }
+        firebaseManager.addChannelsListener(completion: { [weak self] (type, channel) in
+                if type == .added { self?.serviceAssembly.coreDataService.save(channel: channel, errorHandler: errorHandler) }
+                if type == .modified { self?.serviceAssembly.coreDataService.update(channel: channel, errorHandler: errorHandler) }
+                if type == .removed { self?.serviceAssembly.coreDataService.delete(channel: channel, errorHandler: errorHandler) }},
+                                            errorHandler: errorHandler)
     }
     
     func removeChannelsListener() {
-        channelsListener?.remove()
+        firebaseManager.removeChannelsListener()
     }
-
+    
     func create(channel name: String) {
-        let channel = ["name": name] as [String: Any]
-        reference.addDocument(data: channel)
+        firebaseManager.create(channel: name)
     }
     
     func delete(channel id: String) {
-        reference.document(id).delete()
+        firebaseManager.delete(channel: id)
     }
-
-    // MARK: - Messages
-
-    func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void, completion: (() -> Void)? = nil) {
-        var messages: [Message] = []
-        let id = channel.identifier
-        reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
-            guard error == nil else {
-                errorHandler("Firebase", error?.localizedDescription)
-                return
-            }
-            guard let snapshot = querySnapshot else { return }
-            for document in snapshot.documents {
-                let docData = document.data()
-                let docId = document.documentID
-                guard let contentFromFB = docData["content"] as? String,
-                      let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
-                      let senderIdFromFB = docData["senderId"] as? String,
-                      let senderNameFromFB = docData["senderName"] as? String else { continue }
-                let message = Message(identifier: docId,
-                                      content: contentFromFB,
-                                      created: dateFromFB,
-                                      senderId: senderIdFromFB,
-                                      senderName: senderNameFromFB)
-                messages.append(message)
-            }
-            self.dbService.save(messages: messages, inChannel: channel, errorHandler: errorHandler, completion: completion)
-            self.addMessagesListener(in: channel, errorHandler: errorHandler)
-        }
+    
+    func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
+        firebaseManager.getMessages(in: channel, completion: { [weak self] messages in
+                self?.serviceAssembly.coreDataService.save(messages: messages, inChannel: channel, errorHandler: errorHandler)
+                self?.addMessagesListener(in: channel, errorHandler: errorHandler)},
+                                    errorHandler: errorHandler)
     }
     
     func addMessagesListener(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
-        let id = channel.identifier
-        channelsListener = reference.document(id).collection("messages").addSnapshotListener(includeMetadataChanges: true) { querySnapshot, error in
-            guard error == nil else {
-                errorHandler("Firebase", error?.localizedDescription)
-                return
-            }
-            guard let snapshot = querySnapshot else { return }
-            snapshot.documentChanges.forEach { diff in
-                let docData = diff.document.data()
-                let docId = diff.document.documentID
-                if let contentFromFB = docData["content"] as? String,
-                   let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
-                   let senderIdFromFB = docData["senderId"] as? String,
-                   let senderNameFromFB = docData["senderName"] as? String {
-                    let message = Message(identifier: docId,
-                                          content: contentFromFB,
-                                          created: dateFromFB,
-                                          senderId: senderIdFromFB,
-                                          senderName: senderNameFromFB)
-                    if diff.type == .added {
-                        self.dbService.save(message: message, inChannel: channel, errorHandler: errorHandler)
-                    }
-                    if diff.type == .modified { }
-                    if diff.type == .removed { }
-                }
-            }
-        }
+        firebaseManager.addMessagesListener(in: channel, completion: { [weak self] (type, message) in
+                if type == .added { self?.serviceAssembly.coreDataService.save(message: message, inChannel: channel, errorHandler: errorHandler) }
+                if type == .modified { }
+                if type == .removed { }},
+                                            errorHandler: errorHandler)
     }
     
     func removeMessagesListener() {
-        messagesListener?.remove()
+        firebaseManager.removeMessagesListener()
     }
-        
+    
     func create(message text: String, in channel: Channel) {
-        let message = ["content": text,
-                       "created": Timestamp(date: Date()),
-                       "senderId": universallyUniqueIdentifier,
-                       "senderName": ProfileViewController.name ?? "Marina Dudarenko"] as [String: Any]
-        reference.document(channel.identifier).collection("messages").addDocument(data: message)
+        firebaseManager.create(message: text, in: channel)
     }
 }
