@@ -11,27 +11,24 @@ import CoreData
 
 protocol ChannelServiceProtocol {
     var channelsFetchedResultsController: NSFetchedResultsController<ChannelDB> { get }
-    
     func getChannels(errorHandler: @escaping (String?, String?) -> Void)
-    func addChannelsListener(errorHandler: @escaping (String?, String?) -> Void)
-    func removeChannelsListener()
+    func addListener(errorHandler: @escaping (String?, String?) -> Void)
+    func removeListener()
     func create(channel name: String)
     func delete(channel id: String)
 }
 
-class ChannelService: ChannelServiceProtocol {
+class ChannelService {
     let coreDataStack: CoreDataStackProtocol
     let firebaseManager: FirebaseManagerProtocol
     
     // MARK: - Init / deinit
-
     init(coreDataStack: CoreDataStackProtocol, firebaseManager: FirebaseManagerProtocol) {
         self.coreDataStack = coreDataStack
         self.firebaseManager = firebaseManager
     }
     
     // MARK: - FetchResultsController
-    
     lazy var channelsFetchedResultsController: NSFetchedResultsController<ChannelDB> = {
         let fetchRequest = NSFetchRequest<ChannelDB>()
         fetchRequest.entity = ChannelDB.entity()
@@ -44,39 +41,10 @@ class ChannelService: ChannelServiceProtocol {
                                           cacheName: "Channels")
     }()
     
-    // MARK: -
-    
-    func getChannels(errorHandler: @escaping (String?, String?) -> Void) {
-        firebaseManager.getChannels(completion: { [weak self] channels in
-            self?.save(channels: channels, errorHandler: errorHandler)
-            self?.addChannelsListener(errorHandler: errorHandler)},
-                                    errorHandler: errorHandler)
-    }
-    
-    func addChannelsListener(errorHandler: @escaping (String?, String?) -> Void) {
-        firebaseManager.addChannelsListener(completion: { [weak self] (type, channel) in
-            if type == .added { self?.save(channel: channel, errorHandler: errorHandler) }
-            if type == .modified { self?.update(channel: channel, errorHandler: errorHandler) }
-            if type == .removed { self?.delete(channel: channel, errorHandler: errorHandler) }},
-                                            errorHandler: errorHandler)
-    }
-    
-    func removeChannelsListener() {
-        firebaseManager.removeChannelsListener()
-    }
-    
-    func create(channel name: String) {
-        firebaseManager.create(channel: name)
-    }
-    
-    func delete(channel id: String) {
-        firebaseManager.delete(channel: id)
-    }
-    
     // MARK: - Save
     
-    func save(channels: [Channel],
-              errorHandler: @escaping (String?, String?) -> Void) {
+    private func save(channels: [Channel],
+                      errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { [weak self] context in
             for channel in channels {
                 let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler)
@@ -85,6 +53,7 @@ class ChannelService: ChannelServiceProtocol {
                                   name: channel.name,
                                   lastMessage: channel.lastMessage,
                                   lastActivity: channel.lastActivity,
+                                  profileImage: channel.profileImage?.jpegData(compressionQuality: 1.0),
                                   in: context)
                     do {
                         try context.obtainPermanentIDs(for: [channelDB])
@@ -105,14 +74,15 @@ class ChannelService: ChannelServiceProtocol {
         }
     }
     
-    func save(channel: Channel,
-              errorHandler: @escaping (String?, String?) -> Void) {
+    private func save(channel: Channel,
+                      errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
             guard coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) == nil else { return }
             let channelDB = ChannelDB(identifier: channel.identifier,
                           name: channel.name,
                           lastMessage: channel.lastMessage,
                           lastActivity: channel.lastActivity,
+                          profileImage: channel.profileImage?.jpegData(compressionQuality: 1.0),
                           in: context)
             do {
                 try context.obtainPermanentIDs(for: [channelDB])
@@ -124,8 +94,8 @@ class ChannelService: ChannelServiceProtocol {
     
     // MARK: - Update
     
-    func update(channel: Channel,
-                errorHandler: @escaping (String?, String?) -> Void) {
+    private func update(channel: Channel,
+                        errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
             guard let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
             if channelFromDB.lastActivity != channel.lastActivity && channelFromDB.lastMessage != channel.lastMessage {
@@ -156,12 +126,42 @@ class ChannelService: ChannelServiceProtocol {
         }
     }
     
-    func delete(channel: Channel,
-                errorHandler: @escaping (String?, String?) -> Void) {
+    private func delete(channel: Channel,
+                        errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
             guard let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
             let object = context.object(with: channelFromDB.objectID)
             context.delete(object)
         }
+    }
+}
+
+// MARK: - ChannelServiceProtocol
+extension ChannelService: ChannelServiceProtocol {
+    func getChannels(errorHandler: @escaping (String?, String?) -> Void) {
+        firebaseManager.getChannels(completion: { [weak self] channels in
+            self?.save(channels: channels, errorHandler: errorHandler)
+            self?.addListener(errorHandler: errorHandler)},
+                                    errorHandler: errorHandler)
+    }
+    
+    func addListener(errorHandler: @escaping (String?, String?) -> Void) {
+        firebaseManager.addChannelsListener(completion: { [weak self] (type, channel) in
+            if type == .added { self?.save(channel: channel, errorHandler: errorHandler) }
+            if type == .modified { self?.update(channel: channel, errorHandler: errorHandler) }
+            if type == .removed { self?.delete(channel: channel, errorHandler: errorHandler) }},
+                                            errorHandler: errorHandler)
+    }
+    
+    func removeListener() {
+        firebaseManager.removeChannelsListener()
+    }
+    
+    func create(channel name: String) {
+        firebaseManager.create(channel: name)
+    }
+    
+    func delete(channel id: String) {
+        firebaseManager.delete(channel: id)
     }
 }

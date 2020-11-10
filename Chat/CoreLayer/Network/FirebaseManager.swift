@@ -61,10 +61,10 @@ extension FirebaseManager: FirebaseManagerProtocol {
                 let channel = Channel(identifier: docId,
                                       name: nameFromFB,
                                       lastMessage: lastMessageFromFB,
-                                      lastActivity: lastActivityFromFB)
+                                      lastActivity: lastActivityFromFB,
+                                      profileImage: self.generateImage())
                 channels.append(channel)
             }
-            // TODO
             completion(channels)
         }
     }
@@ -86,7 +86,8 @@ extension FirebaseManager: FirebaseManagerProtocol {
                     let channel = Channel(identifier: docId,
                                           name: nameFromFB,
                                           lastMessage: lastMessageFromFB,
-                                          lastActivity: lastActivityFromFB)
+                                          lastActivity: lastActivityFromFB,
+                                          profileImage: self.generateImage())
                     completion(diff.type, channel)
                 }
             }
@@ -171,5 +172,47 @@ extension FirebaseManager: FirebaseManagerProtocol {
                        "senderId": universallyUniqueIdentifier,
                        "senderName": ProfileViewController.name ?? "Marina Dudarenko"] as [String: Any]
         reference.document(channel.identifier).collection("messages").addDocument(data: message)
+    }
+    
+    private func generateImage() -> UIImage? {
+        let randNum = Int(arc4random_uniform(15))
+        let image: UIImage?
+        switch randNum {
+        case 0:
+            image = UIImage(named: "Butters")
+        case 1:
+            image = UIImage(named: "Chef")
+        case 2:
+            image = UIImage(named: "Craig")
+        case 3:
+            image = UIImage(named: "Eric")
+        case 4:
+            image = UIImage(named: "Ike")
+        case 5:
+            image = UIImage(named: "Jimmy")
+        case 6:
+            image = UIImage(named: "Kenny")
+        case 7:
+            image = UIImage(named: "Kyle")
+        case 8:
+            image = UIImage(named: "Lien")
+        case 9:
+            image = UIImage(named: "Randy")
+        case 10:
+            image = UIImage(named: "Sheila")
+        case 11:
+            image = UIImage(named: "Sheron")
+        case 12:
+            image = UIImage(named: "Stan")
+        case 13:
+            image = UIImage(named: "Timmy")
+        case 14:
+            image = UIImage(named: "Token")
+        case 15:
+            image = UIImage(named: "Wendy")
+        default:
+            image = nil
+        }
+        return image
     }
 }

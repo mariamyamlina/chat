@@ -11,7 +11,6 @@ import CoreData
 
 class ConversationsListViewController: LogViewController {
     // MARK: - UI
-    private var images: [UIImage?] = []
     var conversationsListView = ConversationsListView()
     
     // MARK: - Dependencies
@@ -21,6 +20,7 @@ class ConversationsListViewController: LogViewController {
     // MARK: - DisplayModel
     private var dataSource: [ConversationCellModel] = []
     
+    // MARK: - Init / deinit
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -148,13 +148,7 @@ class ConversationsListViewController: LogViewController {
 
 extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let count = model.fetchChannels().sections?[section].numberOfObjects ?? 0
-        if images.isEmpty {
-            for _ in 0..<count {
-                images.append(generateImage())
-            }
-        }
-        return count
+        return model.fetchChannels().sections?[section].numberOfObjects ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -162,14 +156,9 @@ extension ConversationsListViewController: UITableViewDataSource {
         
         let channelDB = model.fetchChannels().object(at: indexPath)
         let channel = Channel(from: channelDB)
-        
-        var image: UIImage?
-        if images.count > indexPath.row {
-            image = images[indexPath.row]
-        }
-        
+
         let channelCellFactory = ChannelModelFactory()
-        let channelModel = channelCellFactory.channelToCell(channel, image)
+        let channelModel = channelCellFactory.channelToCell(channel)
         cell?.configure(with: channelModel)
         return cell ?? UITableViewCell()
     }
@@ -243,24 +232,13 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             guard let newPath = newIndexPath else { return }
-            if images.count > newPath.row {
-                images.insert(generateImage(), at: newPath.row)
-            }
             conversationsListView.tableView.insertRows(at: [newPath], with: .right)
         case .delete:
             guard let path = indexPath else { return }
-            if images.count > path.row {
-                images.insert(generateImage(), at: path.row)
-            }
             conversationsListView.tableView.deleteRows(at: [path], with: .right)
         case .move:
             guard let path = indexPath,
-                  let newPath = newIndexPath else { return }
-            if images.count > newPath.row, images.count > path.row {
-                let image = images[path.row]
-                images.remove(at: path.row)
-                images.insert(image, at: newPath.row)
-            }
+                let newPath = newIndexPath else { return }
             conversationsListView.tableView.deleteRows(at: [path], with: .right)
             conversationsListView.tableView.insertRows(at: [newPath], with: .right)
         case .update:

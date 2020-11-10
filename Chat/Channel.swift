@@ -13,15 +13,18 @@ struct Channel: EntityProtocol {
     let name: String
     let lastMessage: String?
     let lastActivity: Date?
+    let profileImage: UIImage?
     
     init(identifier: String,
          name: String,
          lastMessage: String?,
-         lastActivity: Date?) {
+         lastActivity: Date?,
+         profileImage: UIImage?) {
         self.identifier = identifier
         self.name = name
         self.lastMessage = lastMessage
         self.lastActivity = lastActivity
+        self.profileImage = profileImage
     }
     
     init(from entity: ChannelDB) {
@@ -29,5 +32,6 @@ struct Channel: EntityProtocol {
         self.name = entity.name
         self.lastMessage = entity.lastMessage
         self.lastActivity = entity.lastActivity
+        self.profileImage = UIImage(data: entity.profileImage ?? Data())
     }
 }

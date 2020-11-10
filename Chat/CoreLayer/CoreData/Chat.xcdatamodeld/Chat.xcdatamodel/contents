@@ -5,6 +5,7 @@
         <attribute name="lastActivity" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="lastMessage" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
+        <attribute name="profileImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="channel" inverseEntity="Message"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -26,7 +27,7 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="Channel" positionX="-253.47265625" positionY="-92.3203125" width="114.65234375" height="118"/>
+        <element name="Channel" positionX="-253.47265625" positionY="-92.3203125" width="114.65234375" height="133"/>
         <element name="Message" positionX="-54" positionY="-9" width="128" height="133"/>
     </elements>
 </model>

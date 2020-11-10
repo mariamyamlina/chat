@@ -20,11 +20,11 @@ struct ConversationCellModel {
 }
 
 class ChannelModelFactory {
-    func channelToCell(_ channel: Channel, _ image: UIImage?) -> ConversationCellModel {
+    func channelToCell(_ channel: Channel) -> ConversationCellModel {
         return ConversationCellModel(name: channel.name,
                                      message: channel.lastMessage ?? "No messages yet",
                                      date: channel.lastActivity,
-                                     image: image,
+                                     image: channel.profileImage,
                                      isOnline: true,
                                      hasUnreadMessages: false)
     }
@@ -69,7 +69,7 @@ class ConversationsListModel: ConversationsListModelProtocol {
     }
     
     func removeListener() {
-        channelService.removeChannelsListener()
+        channelService.removeListener()
     }
     
     func fetchChannels() -> NSFetchedResultsController<ChannelDB> {

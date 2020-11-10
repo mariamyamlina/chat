@@ -79,7 +79,7 @@ class ConversationModel: ConversationModelProtocol {
     }
     
     func removeListener() {
-        messageService.removeMessagesListener()
+        messageService.removeListener()
     }
     
     func fetchMessages() -> NSFetchedResultsController<MessageDB>? {

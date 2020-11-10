@@ -15,15 +15,19 @@ protocol DataServiceProtocol: class {
     func load(dataManager: DataManagerProtocol, mustReadBio: Bool, completion: @escaping () -> Void)
 }
 
-class DataService: DataServiceProtocol {
+class DataService {
     let gcdDataManager: DataManagerProtocol
     let operationDataManager: DataManagerProtocol
 
+    // MARK: - Init / deinit
     init(gcdDataManager: DataManagerProtocol, operationDataManager: DataManagerProtocol) {
         self.gcdDataManager = gcdDataManager
         self.operationDataManager = operationDataManager
     }
-    
+}
+
+// MARK: - DataServiceProtocol
+extension DataService: DataServiceProtocol {
     func save(dataManager: DataManagerProtocol, completion: @escaping (Bool) -> Void) {
         dataManager.save(completion: completion)
     }

@@ -19,6 +19,7 @@ extension ChannelDB {
     @NSManaged public var lastMessage: String?
     @NSManaged public var name: String
     @NSManaged public var messages: NSSet?
+    @NSManaged public var profileImage: Data?
 }
 
 // MARK: Generated accessors for messages
@@ -41,12 +42,14 @@ extension ChannelDB {
                      name: String,
                      lastMessage: String?,
                      lastActivity: Date?,
+                     profileImage: Data?,
                      in context: NSManagedObjectContext) {
         self.init(context: context)
         self.identifier = identifier
         self.name = name
         self.lastMessage = lastMessage
         self.lastActivity = lastActivity
+        self.profileImage = profileImage
     }
     
     var about: String {

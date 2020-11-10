@@ -18,14 +18,12 @@ protocol LogerProtocol {
 
 class Loger {
     var coreDataStack: CoreDataStackProtocol
-    
     let appLogIndicator = false
     let vcLogIndicator = false
     let buttonLogIndicator = false
     let dbLogIndicator = false
     
     // MARK: - Init / deinit
-    
     init(coreDataStack: CoreDataStackProtocol) {
         self.coreDataStack = coreDataStack
         self.coreDataStack.delegate = self
@@ -33,7 +31,6 @@ class Loger {
 }
 
 // MARK: - LogerProtocol
-
 extension Loger: LogerProtocol {
     func printAppLog(_ message: String, _ current: UIApplication.State, _ function: String) {
         if appLogIndicator {
@@ -86,7 +83,6 @@ extension Loger: LogerProtocol {
 }
 
 // MARK: - CoreDataStackDelegate
-
 extension Loger: CoreDataStackDelegate {
     func printLog(_ modificationType: String, _ count: Int) {
         printDBLog(modificationType, count)
