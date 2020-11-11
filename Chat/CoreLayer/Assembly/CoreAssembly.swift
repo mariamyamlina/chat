@@ -20,7 +20,7 @@ protocol CoreAssemblyProtocol {
 class CoreAssembly: CoreAssemblyProtocol {
     lazy var gcdDataManager: DataManagerProtocol = GCDDataManager(settingsStorage: self.settingsStorage)
     lazy var operationDataManager: DataManagerProtocol = OperationDataManager(settingsStorage: self.settingsStorage)
-    lazy var coreDataStack: CoreDataStackProtocol = CoreDataStack.shared
+    lazy var coreDataStack: CoreDataStackProtocol = CoreDataStack()
     lazy var firebaseManager: FirebaseManagerProtocol = FirebaseManager(settingsStorage: self.settingsStorage)
     lazy var themeStorage: ThemeStorageProtocol = ThemeStorage()
     lazy var settingsStorage: SettingsStorageProtocol = SettingsStorage(themeStorage: self.themeStorage)

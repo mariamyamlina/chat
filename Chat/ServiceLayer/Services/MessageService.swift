@@ -33,22 +33,6 @@ class MessageService {
         self.universallyUniqueIdentifier = firebaseManager.universallyUniqueIdentifier
     }
     
-//    // MARK: - FetchResultsController
-//    lazy var messagesFetchedResultsController: NSFetchedResultsController<MessageDB> = {
-//        let channelId = channel?.identifier ?? ""
-//        let fetchRequest = NSFetchRequest<MessageDB>()
-//        fetchRequest.entity = MessageDB.entity()
-//        let predicate = NSPredicate(format: "channel.identifier = %@", channelId)
-//        fetchRequest.predicate = predicate
-//        let sortDescriptor = NSSortDescriptor(key: "created", ascending: true)
-//        fetchRequest.sortDescriptors = [sortDescriptor]
-//        fetchRequest.fetchBatchSize = 20
-//        return NSFetchedResultsController(fetchRequest: fetchRequest,
-//                                          managedObjectContext: CoreDataStack.shared.mainContext,
-//                                          sectionNameKeyPath: "formattedDate",
-//                                          cacheName: "Messages in channel with id \(channelId)")
-//    }()
-    
     // MARK: - Save
     private func save(messages: [Message],
                       inChannel channel: Channel,

@@ -33,7 +33,7 @@ extension FetchService: FetchServiceProtocol {
                                     sectionNameKeyPath: String?,
                                     cacheName: String?) -> NSFetchedResultsController<T> {
         return NSFetchedResultsController(fetchRequest: coreDataStack.fetchRequest(for: entityType, channelId: channelId),
-                                          managedObjectContext: CoreDataStack.shared.mainContext,
+                                          managedObjectContext: coreDataStack.mainContext,
                                           sectionNameKeyPath: sectionNameKeyPath,
                                           cacheName: cacheName)
     }

@@ -12,6 +12,7 @@ import CoreData
 protocol CoreDataStackProtocol {
     var delegate: CoreDataStackDelegate? { get set }
     var didUpdateDataBase: ((CoreDataStack) -> Void)? { get set }
+    var mainContext: NSManagedObjectContext { get }
     func performSave(_ handler: (NSManagedObjectContext) -> Void)
     func load(channel id: String, from context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> ChannelDB?
     func load(message id: String, from context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> MessageDB?
@@ -33,10 +34,7 @@ class CoreDataStack: CoreDataStackProtocol {
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
     
     // MARK: - Init / deinit
-    static var shared: CoreDataStack = {
-        return CoreDataStack()
-    }()
-    private init() {
+    init() {
         didUpdateDataBase = { stack in
             stack.printDatabaseStatistics()
         }
