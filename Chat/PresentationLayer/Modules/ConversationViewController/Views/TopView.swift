@@ -61,7 +61,6 @@ class TopView: UIView {
     }
     
     required init?(coder: NSCoder) {
-        self.theme = .classic
         fatalError("init(coder:) has not been implemented")
     }
     

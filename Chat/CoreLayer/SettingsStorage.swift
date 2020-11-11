@@ -20,7 +20,6 @@ protocol SettingsStorageProtocol {
 
 class SettingsStorage: SettingsStorageProtocol {
     // MARK: - Dependencies
-    // TODO
     private let themeStorage: ThemeStorageProtocol
 
     // MARK: - Init / deinit
@@ -29,7 +28,6 @@ class SettingsStorage: SettingsStorageProtocol {
     }
     
     // MARK: - SettingsStorageProtocol
-    // TODO: - Убрать static
     var currentTheme: Theme { return Theme(rawValue: themeStorage.load()) ?? .classic }
     var name: String?
     var bio: String?

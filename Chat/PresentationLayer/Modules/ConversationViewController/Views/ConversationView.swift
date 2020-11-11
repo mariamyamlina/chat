@@ -58,8 +58,7 @@ class ConversationView: UIView {
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
-        self.theme = .classic
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     init(theme: Theme) {

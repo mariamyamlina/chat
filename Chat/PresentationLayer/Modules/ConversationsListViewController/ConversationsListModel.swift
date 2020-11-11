@@ -88,7 +88,7 @@ extension ConversationsListModel: ConversationsListModelProtocol {
     func fetchChannels() -> NSFetchedResultsController<ChannelDB> {
         return channelService.channelsFetchedResultsController
     }
-    // TODO: - DRY
+    
     func loadWithGCD(completion: @escaping () -> Void) {
         dataService.load(dataManager: dataService.gcdDataManager, mustReadBio: false, completion: completion)
     }

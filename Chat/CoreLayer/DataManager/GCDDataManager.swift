@@ -74,9 +74,6 @@ extension GCDDataManager: DataManagerProtocol {
         
         group.notify(queue: queue) {
             self.mainQueue.async {
-                print(nameSaved)
-                print(bioSaved)
-                print(imageSaved)
                 completion(nameSaved, bioSaved, imageSaved)
             }
         }

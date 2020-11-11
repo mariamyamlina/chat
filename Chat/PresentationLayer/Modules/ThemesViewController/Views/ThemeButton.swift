@@ -96,7 +96,7 @@ class ThemeButton: ButtonWithTouchSize {
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     init(titleLabel: String, backgroundColor: UIColor, inputColor: UIColor, outputColor: UIColor) {

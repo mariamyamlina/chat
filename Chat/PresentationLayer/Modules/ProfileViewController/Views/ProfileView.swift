@@ -263,11 +263,7 @@ class ProfileView: UIView {
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
-        self.theme = .classic
-        self.name = "Marina Dudarenko"
-        self.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
-        self.image = nil
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     init(theme: Theme, name: String?, bio: String?, image: UIImage?) {

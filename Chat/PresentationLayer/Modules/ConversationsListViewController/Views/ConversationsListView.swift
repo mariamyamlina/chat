@@ -90,10 +90,7 @@ class ConversationsListView: UIView {
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
-        self.theme = .classic
-        self.name = "Marina Dudarenko"
-        self.image = nil
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     init(theme: Theme, name: String?, image: UIImage?) {
