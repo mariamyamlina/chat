@@ -9,6 +9,6 @@
 import Foundation
 
 protocol DataManagerProtocol: class {
-    func save(completion: @escaping (Bool) -> Void)
+    func save(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
     func load(mustReadBio: Bool, completion: @escaping () -> Void)
 }

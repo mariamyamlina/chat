@@ -11,7 +11,7 @@ import UIKit
 protocol DataServiceProtocol: class {
     var gcdDataManager: DataManagerProtocol { get }
     var operationDataManager: DataManagerProtocol { get }
-    func save(dataManager: DataManagerProtocol, completion: @escaping (Bool) -> Void)
+    func save(dataManager: DataManagerProtocol, nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
     func load(dataManager: DataManagerProtocol, mustReadBio: Bool, completion: @escaping () -> Void)
 }
 
@@ -28,11 +28,15 @@ class DataService {
 
 // MARK: - DataServiceProtocol
 extension DataService: DataServiceProtocol {
-    func save(dataManager: DataManagerProtocol, completion: @escaping (Bool) -> Void) {
-        dataManager.save(completion: completion)
+    func save(dataManager: DataManagerProtocol, nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
+        dataManager.save(nameDidChange: nameDidChange,
+                         bioDidChange: bioDidChange,
+                         imageDidChange: imageDidChange,
+                         completion: completion)
     }
     
     func load(dataManager: DataManagerProtocol, mustReadBio: Bool, completion: @escaping () -> Void) {
-        dataManager.load(mustReadBio: mustReadBio, completion: completion)
+        dataManager.load(mustReadBio: mustReadBio,
+                         completion: completion)
     }
 }

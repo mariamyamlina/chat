@@ -10,7 +10,10 @@ import UIKit
 
 class ProfileViewController: LogViewController {
     // MARK: - UI
-    lazy var profileView = ProfileView(theme: model.currentTheme, name: model.name, bio: model.bio, image: model.image)
+    lazy var profileView = ProfileView(theme: model.currentTheme,
+                                       name: model.name,
+                                       bio: model.bio,
+                                       image: model.image)
     
     // MARK: - Dependencies
     private let presentationAssembly: PresentationAssemblyProtocol
@@ -23,6 +26,7 @@ class ProfileViewController: LogViewController {
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
 //        Loger.printButtonLog(gcdSaveButton, #function)
+        // TODO
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -100,8 +104,11 @@ class ProfileViewController: LogViewController {
     }
     
     // MARK: - Profile Editing
-    func saveCompletion(_ succeed: Bool) {
-        if succeed {
+    func saveCompletion(nameSaved: Bool, bioSaved: Bool, imageSaved: Bool) {
+        ProfileViewController.nameDidChange = !nameSaved
+        ProfileViewController.bioDidChange = !bioSaved
+        ProfileViewController.imageDidChange = !imageSaved
+        if nameSaved && bioSaved && imageSaved {
             profileView.saveSucceedCompletion(name: model.name, image: model.image)
             configureAlert("Data has been successfully saved", nil, false)
         } else {
@@ -140,10 +147,16 @@ class ProfileViewController: LogViewController {
             profileView?.disableSomeViews()
             if sender == profileView?.gcdSaveButton {
                 profileView?.gcdButtonTapped = true
-                model?.saveWithGCD(completion: self.saveCompletion(_:))
+                model?.saveWithGCD(nameDidChange: ProfileViewController.nameDidChange,
+                                   bioDidChange: ProfileViewController.bioDidChange,
+                                   imageDidChange: ProfileViewController.imageDidChange,
+                                   completion: self.saveCompletion)
             } else {
                 profileView?.operationButtonTapped = true
-                model?.saveWithOperations(completion: self.saveCompletion(_:))
+                model?.saveWithOperations(nameDidChange: ProfileViewController.nameDidChange,
+                                          bioDidChange: ProfileViewController.bioDidChange,
+                                          imageDidChange: ProfileViewController.imageDidChange,
+                                          completion: self.saveCompletion)
             }
         }
         
@@ -191,9 +204,6 @@ class ProfileViewController: LogViewController {
                 }
                 unwrView.editProfileButton.isEnabled = true
                 unwrView.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-                ProfileViewController.nameDidChange = false
-                ProfileViewController.bioDidChange = false
-                ProfileViewController.imageDidChange = false
             }
         })
         alertController.addAction(cancelAction)
@@ -202,9 +212,15 @@ class ProfileViewController: LogViewController {
             let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self, weak model, weak profileView] (_: UIAlertAction) in
                 guard let self = self, let unwrView = profileView else { return }
                 if unwrView.gcdButtonTapped {
-                    model?.saveWithGCD(completion: self.saveCompletion(_:))
+                    model?.saveWithGCD(nameDidChange: ProfileViewController.nameDidChange,
+                                       bioDidChange: ProfileViewController.bioDidChange,
+                                       imageDidChange: ProfileViewController.imageDidChange,
+                                       completion: self.saveCompletion)
                 } else if unwrView.operationButtonTapped {
-                    model?.saveWithOperations(completion: self.saveCompletion(_:))
+                    model?.saveWithOperations(nameDidChange: ProfileViewController.nameDidChange,
+                                              bioDidChange: ProfileViewController.bioDidChange,
+                                              imageDidChange: ProfileViewController.imageDidChange,
+                                              completion: self.saveCompletion)
                 }
             })
             alertController.addAction(repeatAction)
@@ -218,14 +234,11 @@ class ProfileViewController: LogViewController {
 extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            guard let compressData = pickedImage.jpegData(compressionQuality: 0.5) else { return }
-            let compressedImage = UIImage(data: compressData)
-            profileView.profileImageView.profileImage.image = compressedImage
+            profileView.profileImageView.profileImage.image = pickedImage
             profileView.profileImageView.lettersLabel.isHidden = true
             profileView.setSaveButtonsEnable(flag: true)
             ProfileViewController.imageDidChange = true
-            model.changeImage(for: compressedImage)
-//            model.image = compressedImage
+            model.changeImage(for: pickedImage)
         }
         dismiss(animated: true, completion: nil)
     }
@@ -254,10 +267,8 @@ extension ProfileViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView == profileView.nameTextView {
             model.changeName(for: textView.text)
-//            model.name = textView.text
         } else {
             model.changeBio(for: textView.text)
-//            model.bio = textView.text
         }
     }
     

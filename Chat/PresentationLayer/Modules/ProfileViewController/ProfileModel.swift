@@ -11,9 +11,9 @@ import UIKit
 protocol ProfileModelProtocol: class {
     // TODO
     var delegate: ProfileModelDelegate? { get set }
-    func saveWithGCD(completion: @escaping (Bool) -> Void)
+    func saveWithGCD(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
     func loadWithGCD(completion: @escaping () -> Void)
-    func saveWithOperations(completion: @escaping (Bool) -> Void)
+    func saveWithOperations(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
     func loadWithOperations(completion: @escaping () -> Void)
     func buttonLog(_ button: UIButton, _ function: String)
     var currentTheme: Theme { get }
@@ -47,16 +47,24 @@ class ProfileModel {
 
 // MARK: - ProfileModelProtocol
 extension ProfileModel: ProfileModelProtocol {    
-    func saveWithGCD(completion: @escaping (Bool) -> Void) {
-        dataService.save(dataManager: dataService.gcdDataManager, completion: completion)
+    func saveWithGCD(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
+        dataService.save(dataManager: dataService.gcdDataManager,
+                         nameDidChange: nameDidChange,
+                         bioDidChange: bioDidChange,
+                         imageDidChange: imageDidChange,
+                         completion: completion)
     }
     
     func loadWithGCD(completion: @escaping () -> Void) {
         dataService.load(dataManager: dataService.gcdDataManager, mustReadBio: true, completion: completion)
     }
     
-    func saveWithOperations(completion: @escaping (Bool) -> Void) {
-        dataService.save(dataManager: dataService.operationDataManager, completion: completion)
+    func saveWithOperations(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
+        dataService.save(dataManager: dataService.operationDataManager,
+                         nameDidChange: nameDidChange,
+                         bioDidChange: bioDidChange,
+                         imageDidChange: imageDidChange,
+                         completion: completion)
     }
     
     func loadWithOperations(completion: @escaping () -> Void) {

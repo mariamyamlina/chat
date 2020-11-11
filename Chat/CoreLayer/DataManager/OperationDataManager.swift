@@ -23,11 +23,13 @@ class OperationDataManager {
 
 // MARK: - DataManagerProtocol
 extension OperationDataManager: DataManagerProtocol {
-    func save(completion: @escaping (Bool) -> Void) {
-        let writeOperation = WriteOperation(settingsStorage: settingsStorage)
+    func save(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
+        let writeOperation = WriteOperation(settingsStorage: settingsStorage,
+                                            nameDidChange: nameDidChange,
+                                            bioDidChange: bioDidChange,
+                                            imageDidChange: imageDidChange)
         let completionOperation = BlockOperation {
-            let result = writeOperation.nameSaved && writeOperation.bioSaved && writeOperation.imageSaved
-            completion(result)
+            completion(writeOperation.nameSaved, writeOperation.bioSaved, writeOperation.imageSaved)
         }
         
         completionOperation.addDependency(writeOperation)
@@ -60,10 +62,16 @@ class WriteOperation: Operation {
     
     // MARK: - Dependencies
     let settingsStorage: SettingsStorageProtocol
+    let nameDidChange: Bool
+    let bioDidChange: Bool
+    let imageDidChange: Bool
 
     // MARK: - Init / deinit
-    init(settingsStorage: SettingsStorageProtocol) {
+    init(settingsStorage: SettingsStorageProtocol, nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool) {
         self.settingsStorage = settingsStorage
+        self.nameDidChange = nameDidChange
+        self.bioDidChange = bioDidChange
+        self.imageDidChange = imageDidChange
     }
     
     var nameSaved = true
@@ -73,32 +81,29 @@ class WriteOperation: Operation {
     override func main() {
         if isCancelled { return }
         do {
-            if ProfileViewController.nameDidChange {
+            if nameDidChange {
                 try settingsStorage.name?.write(to: nameFileURL, atomically: false, encoding: .utf8)
             }
         } catch {
             nameSaved = false
         }
-        ProfileViewController.nameDidChange = !nameSaved
         
         do {
-            if ProfileViewController.bioDidChange {
+            if bioDidChange {
                 try settingsStorage.bio?.write(to: bioFileURL, atomically: false, encoding: .utf8)
             }
         } catch {
             bioSaved = false
         }
-        ProfileViewController.bioDidChange = !bioSaved
         
         do {
             if let data = settingsStorage.image?.jpegData(compressionQuality: 0.5),
-                ProfileViewController.imageDidChange {
+                imageDidChange {
                 try data.write(to: imageFileURL)
             }
         } catch {
             imageSaved = false
         }
-        ProfileViewController.imageDidChange = !imageSaved
     }
 }
 

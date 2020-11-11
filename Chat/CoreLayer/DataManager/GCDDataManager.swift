@@ -28,7 +28,7 @@ class GCDDataManager {
 
 // MARK: - DataManagerProtocol
 extension GCDDataManager: DataManagerProtocol {
-    func save(completion: @escaping (Bool) -> Void) {
+    func save(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
         let group = DispatchGroup()
 
         var nameSaved = true
@@ -37,26 +37,24 @@ extension GCDDataManager: DataManagerProtocol {
         
         group.enter()
         queue.async {
-            if ProfileViewController.nameDidChange {
+            if nameDidChange {
                 do {
                     try self.settingsStorage.name?.write(to: self.nameFileURL, atomically: false, encoding: .utf8)
                 } catch {
                     nameSaved = false
                 }
-                ProfileViewController.nameDidChange = !nameSaved
             }
             group.leave()
         }
         
         group.enter()
         queue.async {
-            if ProfileViewController.bioDidChange {
+            if bioDidChange {
                 do {
                     try self.settingsStorage.bio?.write(to: self.bioFileURL, atomically: false, encoding: .utf8)
                 } catch {
                     bioSaved = false
                 }
-                ProfileViewController.bioDidChange = !bioSaved
             }
             group.leave()
         }
@@ -64,21 +62,22 @@ extension GCDDataManager: DataManagerProtocol {
         group.enter()
         queue.async {
             if let data = self.settingsStorage.image?.jpegData(compressionQuality: 0.5),
-                ProfileViewController.imageDidChange {
+                imageDidChange {
                 do {
                     try data.write(to: self.imageFileURL)
                 } catch {
                     imageSaved = false
                 }
-                ProfileViewController.imageDidChange = !imageSaved
             }
             group.leave()
         }
         
         group.notify(queue: queue) {
             self.mainQueue.async {
-                let result = nameSaved && bioSaved && imageSaved
-                completion(result)
+                print(nameSaved)
+                print(bioSaved)
+                print(imageSaved)
+                completion(nameSaved, bioSaved, imageSaved)
             }
         }
     }
