@@ -7,7 +7,6 @@
 //
 
 import UIKit
-// TODO: - Убрать CoreData отсюда
 import CoreData
 
 // MARK: - MessageCellModel
@@ -43,8 +42,6 @@ class MessageModelFactory {
 
 // MARK: - ConversationModel
 protocol ConversationModelProtocol: class {
-    // TODO: - Разобраться с делегатом дважды
-    var delegate: ConversationModelDelegate? { get set }
     var channel: Channel? { get }
     func universallyUniqueIdentifier() -> String
     func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
@@ -54,15 +51,8 @@ protocol ConversationModelProtocol: class {
     var currentTheme: Theme { get }
 }
 
-protocol ConversationModelDelegate: class {
-    func setup(dataSource: [MessageCellModel])
-    // TODO: - Разобраться с этой функцией дважды
-    func show(error message: String)
-}
-
 class ConversationModel {
     // MARK: - Dependencies
-    weak var delegate: ConversationModelDelegate?
     var channel: Channel?
     let messageService: MessageServiceProtocol
     var settingsService: SettingsServiceProtocol

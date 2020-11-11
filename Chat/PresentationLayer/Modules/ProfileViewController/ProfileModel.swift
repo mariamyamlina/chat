@@ -9,8 +9,6 @@
 import UIKit
 
 protocol ProfileModelProtocol: class {
-    // TODO
-    var delegate: ProfileModelDelegate? { get set }
     func saveWithGCD(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
     func loadWithGCD(completion: @escaping () -> Void)
     func saveWithOperations(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
@@ -25,14 +23,8 @@ protocol ProfileModelProtocol: class {
     func changeImage(for image: UIImage?)
 }
 
-protocol ProfileModelDelegate: class {
-    // TODO
-}
-
 class ProfileModel {
-    // TODO
     // MARK: - Dependencies
-    weak var delegate: ProfileModelDelegate?
     let dataService: DataServiceProtocol
     let loger: LogerProtocol
     var settingsService: SettingsServiceProtocol

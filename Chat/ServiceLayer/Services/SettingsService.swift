@@ -30,7 +30,9 @@ class SettingsService {
 
 // MARK: - SettingsServiceProtocol
 extension SettingsService: SettingsServiceProtocol {
-    var currentTheme: Theme { settingsStorage.currentTheme }
+    var currentTheme: Theme {
+        return settingsStorage.currentTheme
+    }
     var name: String? { settingsStorage.name }
     var bio: String? { settingsStorage.bio }
     var image: UIImage? { settingsStorage.image }

@@ -16,9 +16,6 @@ class ConversationsListViewController: LogViewController {
     // MARK: - Dependencies
     private let presentationAssembly: PresentationAssemblyProtocol
     private let model: ConversationsListModelProtocol
-
-    // MARK: - DisplayModel
-    private var dataSource: [ConversationCellModel] = []
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
@@ -82,6 +79,8 @@ class ConversationsListViewController: LogViewController {
     func applyTheme(theme: Theme) {
         navigationController?.applyTheme(theme: theme)
         conversationsListView.applyTheme(theme: theme)
+        guard #available(iOS 13.0, *) else { return }
+        UIApplication.shared.windows.forEach { $0.overrideUserInterfaceStyle = model.currentTheme.userInterfaceStyle }
     }
     
     private func setupNavigationBar() {
@@ -107,8 +106,8 @@ class ConversationsListViewController: LogViewController {
     
     // MARK: - Handlers
     func loadCompletion() {
-            conversationsListView.profileImage.loadImageCompletion(name: model.name, image: model.image)
-        }
+        conversationsListView.profileImage.loadImageCompletion(name: model.name, image: model.image)
+    }
         
     func updateImageView() {
         model.loadWithGCD(completion: loadCompletion)
@@ -118,10 +117,9 @@ class ConversationsListViewController: LogViewController {
     private func createHandlers() {
         conversationsListView.profileMenuHandler = { [weak self] in
             guard let self = self else { return }
-            let profileController = self.presentationAssembly.profileViewController()
-            let navigationVC = UINavigationController(rootViewController: profileController)
-            navigationVC.modalPresentationStyle = UIModalPresentationStyle.pageSheet
-            self.present(navigationVC, animated: true, completion: nil)
+            let profileController = self.presentationAssembly.profileViewController().embedInNavigationController()
+            profileController.modalPresentationStyle = UIModalPresentationStyle.pageSheet
+            self.present(profileController, animated: true, completion: nil)
         }
         
         conversationsListView.settingsButtonHandler = { [weak self] in
@@ -158,13 +156,7 @@ extension ConversationsListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.reuseIdentifier, for: indexPath) as? ConversationTableViewCell
-        
-        let channelDB = model.frc.object(at: indexPath)
-        let channel = Channel(from: channelDB)
-
-        let channelCellFactory = ChannelModelFactory()
-        let channelModel = channelCellFactory.channelToCell(channel)
-        cell?.configure(with: channelModel, theme: model.currentTheme)
+        cell?.configure(with: model.channelModel(at: indexPath), theme: model.currentTheme)
         return cell ?? UITableViewCell()
     }
 }
@@ -172,20 +164,13 @@ extension ConversationsListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        let channelDB = model.frc.object(at: indexPath)
-        let channel = Channel(from: channelDB)
-        
-        let conversationController = presentationAssembly.conversationViewController(channel: channel)
+        let conversationController = presentationAssembly.conversationViewController(channel: model.channel(at: indexPath))
         navigationController?.pushViewController(conversationController, animated: true)
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let channelDB = model.frc.object(at: indexPath)
-            let channel = Channel(from: channelDB)
-            model.deleteChannel(withId: channel.identifier)
+            model.deleteChannel(at: indexPath)
         }
     }
 }
@@ -252,16 +237,5 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard navigationController?.topViewController == self else { return }
         conversationsListView.tableView.endUpdates()
-    }
-}
-
-// MARK: - ConversationsListModelDelegate
-extension ConversationsListViewController: ConversationsListModelDelegate {
-    func setup(dataSource: [ConversationCellModel]) {
-        self.dataSource = dataSource
-    }
-    
-    func show(error message: String) {
-        
     }
 }

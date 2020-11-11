@@ -7,7 +7,6 @@
 //
 
 import UIKit
-// TODO: - Убрать CoreData отсюда
 import CoreData
 
 // MARK: - ConversationCellModel
@@ -34,10 +33,9 @@ class ChannelModelFactory {
 
 // MARK: - ConversationsListModel
 protocol ConversationsListModelProtocol: class {
-    var delegate: ConversationsListModelDelegate? { get set }
     func getChannels(errorHandler: @escaping (String?, String?) -> Void)
     func createChannel(withName name: String)
-    func deleteChannel(withId id: String)
+    func deleteChannel(at indexPath: IndexPath)
     func removeListener()
     var frc: NSFetchedResultsController<ChannelDB> { get }
     func loadWithGCD(completion: @escaping () -> Void)
@@ -45,16 +43,12 @@ protocol ConversationsListModelProtocol: class {
     var currentTheme: Theme { get }
     var name: String? { get }
     var image: UIImage? { get }
-}
-
-protocol ConversationsListModelDelegate: class {
-    func setup(dataSource: [ConversationCellModel])
-    func show(error message: String)
+    func channel(at indexPath: IndexPath) -> Channel
+    func channelModel(at indexPath: IndexPath) -> ConversationCellModel
 }
 
 class ConversationsListModel {
     // MARK: - Dependencies
-    weak var delegate: ConversationsListModelDelegate?
     let channelService: ChannelServiceProtocol
     let dataService: DataServiceProtocol
     var settingsService: SettingsServiceProtocol
@@ -82,9 +76,9 @@ extension ConversationsListModel: ConversationsListModelProtocol {
     func createChannel(withName name: String) {
         channelService.create(channel: name)
     }
-    
-    func deleteChannel(withId id: String) {
-        channelService.delete(channel: id)
+
+    func deleteChannel(at indexPath: IndexPath) {
+        channelService.delete(channel: channel(at: indexPath).identifier)
     }
     
     func removeListener() {
@@ -109,5 +103,15 @@ extension ConversationsListModel: ConversationsListModelProtocol {
     
     var image: UIImage? {
         return settingsService.image
+    }
+    
+    func channel(at indexPath: IndexPath) -> Channel {
+        let channelDB = frc.object(at: indexPath)
+        return Channel(from: channelDB)
+    }
+    
+    func channelModel(at indexPath: IndexPath) -> ConversationCellModel {
+        let channelCellFactory = ChannelModelFactory()
+        return channelCellFactory.channelToCell(channel(at: indexPath))
     }
 }

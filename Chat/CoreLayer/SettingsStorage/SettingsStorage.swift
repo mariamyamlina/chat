@@ -28,7 +28,10 @@ class SettingsStorage: SettingsStorageProtocol {
     }
     
     // MARK: - SettingsStorageProtocol
-    var currentTheme: Theme { return Theme(rawValue: themeStorage.load()) ?? .classic }
+    var currentTheme: Theme {
+        let theme = Theme(rawValue: themeStorage.load()) ?? .classic
+        return theme
+    }
     var name: String?
     var bio: String?
     var image: UIImage?

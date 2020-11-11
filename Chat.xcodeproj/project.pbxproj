@@ -232,7 +232,6 @@
 				99803F86250ADD0F000284D9 /* AppDelegate.swift */,
 				99ED328025580FC8008848D0 /* RootAssembly.swift */,
 				994518DB2556F02D00D5B015 /* Supporting Files */,
-				990AC647255C8305006A60D4 /* Entity */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -369,6 +368,7 @@
 			isa = PBXGroup;
 			children = (
 				99ED327C25580F63008848D0 /* Assembly */,
+				990AC647255C8305006A60D4 /* Entity */,
 				99ED327B25580F5B008848D0 /* Services */,
 			);
 			path = ServiceLayer;

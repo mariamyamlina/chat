@@ -58,9 +58,7 @@ extension ThemesModel: ThemesModelProtocol {
         UIApplication.shared.windows.forEach { $0.overrideUserInterfaceStyle = theme.userInterfaceStyle }
     }
     
-    var currentTheme: Theme {
-        return settingsService.currentTheme
-    }
+    var currentTheme: Theme { return settingsService.currentTheme }
 }
 
 // MARK: - ThemeSettings

@@ -34,7 +34,6 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     func conversationsListViewController() -> ConversationsListViewController {
         let model = conversationsListModel()
         let conversationsListVC = ConversationsListViewController(model: model, presentationAssembly: self)
-        model.delegate = conversationsListVC
         return conversationsListVC
     }
     
@@ -49,7 +48,6 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     func conversationViewController(channel: Channel?) -> ConversationViewController {
         let model = conversationModel(channel: channel)
         let conversationVC = ConversationViewController(model: model, presentationAssembly: self)
-        model.delegate = conversationVC
         return conversationVC
     }
     
@@ -64,7 +62,6 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     func profileViewController() -> ProfileViewController {
         let model = profileModel()
         let profileVC = ProfileViewController(model: model, presentationAssembly: self)
-//        model.delegate = profileVC
         return profileVC
     }
     
@@ -76,7 +73,6 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     func themesViewController() -> ThemesViewController {
         let model = themesModel()
         let themesVC = ThemesViewController(model: model, presentationAssembly: self)
-//        model.delegate = themesVC
         return themesVC
     }
     

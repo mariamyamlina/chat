@@ -159,20 +159,11 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - Requests
-    // TODO
     func fetchRequest<T: NSManagedObject>(for entity: EntityType, with identifier: String) -> NSFetchRequest<T> {
-        switch entity {
-        case .channel:
-            let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-            let predicate = NSPredicate(format: "identifier = %@", identifier)
-            fetchRequest.predicate = predicate
-            return fetchRequest as? NSFetchRequest<T> ?? NSFetchRequest<T>()
-        case .message:
-            let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
-            let predicate = NSPredicate(format: "identifier = %@", identifier)
-            fetchRequest.predicate = predicate
-            return fetchRequest as? NSFetchRequest<T> ?? NSFetchRequest<T>()
-        }
+        let fetchRequest = NSFetchRequest<T>()
+        let predicate = NSPredicate(format: "identifier = %@", identifier)
+        fetchRequest.predicate = predicate
+        return fetchRequest
     }
     
     func fetchRequest<T: NSManagedObject>(for entity: EntityType, channelId: String?) -> NSFetchRequest<T> {
