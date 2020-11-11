@@ -11,7 +11,7 @@ import CoreData
 
 class ConversationsListViewController: LogViewController {
     // MARK: - UI
-    var conversationsListView = ConversationsListView()
+    lazy var conversationsListView = ConversationsListView(theme: model.currentTheme, name: model.name, image: model.image)
     
     // MARK: - Dependencies
     private let presentationAssembly: PresentationAssemblyProtocol
@@ -43,7 +43,7 @@ class ConversationsListViewController: LogViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         conversationsListView.tableView.isHidden = false
-        applyTheme()
+        applyTheme(theme: model.currentTheme)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -79,8 +79,13 @@ class ConversationsListViewController: LogViewController {
         setupNavigationBar()
     }
     
+    func loadCompletion() {
+        conversationsListView.profileImage.loadImageCompletion(name: model.name, image: model.image)
+    }
+    
     func updateImageView() {
-        model.loadWithGCD(completion: conversationsListView.profileImage.loadImageCompletion)
+        model.loadWithGCD(completion: loadCompletion)
+//        model.loadWithOperations(completion: loadCompletion)
     }
     
     private func setupNavigationBar() {
@@ -133,14 +138,14 @@ class ConversationsListViewController: LogViewController {
             }
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
             [createAction, cancelAction].forEach { alertController.addAction($0) }
-            alertController.applyTheme()
+            alertController.applyTheme(theme: model?.currentTheme ?? .classic)
             self?.present(alertController, animated: true, completion: nil)
         }
     }
     
-    func applyTheme() {
-        navigationController?.applyTheme()
-        conversationsListView.applyTheme()
+    func applyTheme(theme: Theme) {
+        navigationController?.applyTheme(theme: theme)
+        conversationsListView.applyTheme(theme: theme)
     }
 }
 
@@ -158,7 +163,7 @@ extension ConversationsListViewController: UITableViewDataSource {
 
         let channelCellFactory = ChannelModelFactory()
         let channelModel = channelCellFactory.channelToCell(channel)
-        cell?.configure(with: channelModel)
+        cell?.configure(with: channelModel, theme: model.currentTheme)
         return cell ?? UITableViewCell()
     }
 }
@@ -172,8 +177,6 @@ extension ConversationsListViewController: UITableViewDelegate {
         let channel = Channel(from: channelDB)
         
         let conversationController = presentationAssembly.conversationViewController(channel: channel)
-//        let conversationController = ConversationViewController(channel: channel, image: UIImageView(image: images[indexPath.row]))
-
         navigationController?.pushViewController(conversationController, animated: true)
     }
     

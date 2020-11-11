@@ -16,23 +16,37 @@ protocol ProfileModelProtocol: class {
     func saveWithOperations(completion: @escaping (Bool) -> Void)
     func loadWithOperations(completion: @escaping () -> Void)
     func buttonLog(_ button: UIButton, _ function: String)
+    var currentTheme: Theme { get }
+    var name: String? { get }
+    var bio: String? { get }
+    var image: UIImage? { get }
+    func changeName(for name: String?)
+    func changeBio(for bio: String?)
+    func changeImage(for image: UIImage?)
 }
 
 protocol ProfileModelDelegate: class {
     // TODO
 }
 
-class ProfileModel: ProfileModelProtocol {
+class ProfileModel {
     // TODO
+    // MARK: - Dependencies
     weak var delegate: ProfileModelDelegate?
     let dataService: DataServiceProtocol
     let loger: LogerProtocol
+    var settingsService: SettingsServiceProtocol
     
-    init(dataService: DataServiceProtocol, loger: LogerProtocol) {
+    // MARK: - Init / deinit
+    init(dataService: DataServiceProtocol, loger: LogerProtocol, settingsService: SettingsServiceProtocol) {
         self.dataService = dataService
         self.loger = loger
+        self.settingsService = settingsService
     }
-    
+}
+
+// MARK: - ProfileModelProtocol
+extension ProfileModel: ProfileModelProtocol {    
     func saveWithGCD(completion: @escaping (Bool) -> Void) {
         dataService.save(dataManager: dataService.gcdDataManager, completion: completion)
     }
@@ -51,5 +65,33 @@ class ProfileModel: ProfileModelProtocol {
     
     func buttonLog(_ button: UIButton, _ function: String) {
         loger.printButtonLog(button, function)
+    }
+    
+    var currentTheme: Theme {
+        return settingsService.currentTheme
+    }
+    
+    var name: String? {
+        return settingsService.name
+    }
+    
+    var bio: String? {
+        return settingsService.bio
+    }
+    
+    var image: UIImage? {
+        return settingsService.image
+    }
+    
+    func changeName(for name: String?) {
+        settingsService.changeName(for: name)
+    }
+    
+    func changeBio(for bio: String?) {
+        settingsService.changeBio(for: bio)
+    }
+    
+    func changeImage(for image: UIImage?) {
+        settingsService.changeImage(for: image)
     }
 }

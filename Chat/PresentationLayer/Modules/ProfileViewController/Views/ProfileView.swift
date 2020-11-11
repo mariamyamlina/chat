@@ -9,20 +9,13 @@
 import UIKit
 
 class ProfileView: UIView {
-    var saveButtonHandler: ((ButtonWithTouchSize) -> Void)?
-    var actionSheetHandler: (() -> Void)?
-    var closeProfileHandler: (() -> Void)?
-    @objc func saveButtonTapped(_ sender: ButtonWithTouchSize) { saveButtonHandler?(sender) }
-    @objc func configureActionSheet() { actionSheetHandler?() }
-    @objc func closeProfileViewController() { closeProfileHandler?() }
-    
-    var currentTheme = Settings.currentTheme.themeSettings
-    
+    // MARK: - UI
+    var theme: Theme
+    var name: String?
+    var bio: String?
+    var image: UIImage?
     var gcdSaveButtonBottomConstraint: NSLayoutConstraint?
     var operationSaveButtonBottomConstraint: NSLayoutConstraint?
-    
-    var gcdButtonTapped = false
-    var operationButtonTapped = false
     
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -58,7 +51,7 @@ class ProfileView: UIView {
         nameTextView.textAlignment = .center
         nameTextView.isScrollEnabled = false
         nameTextView.autocapitalizationType = .words
-        nameTextView.text = Settings.name ?? "Marina Dudarenko"
+        nameTextView.text = name ?? "Marina Dudarenko"
         nameTextView.font = UIFont(name: "SFProDisplay-Bold", size: 24)
         nameTextView.autocorrectionType = .no
         nameTextView.backgroundColor = backgroundColor
@@ -85,7 +78,7 @@ class ProfileView: UIView {
         bioTextView.textAlignment = .left
         bioTextView.autocapitalizationType = .sentences
         bioTextView.textAlignment = .left
-        bioTextView.text = Settings.bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
+        bioTextView.text = bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
         bioTextView.font = UIFont(name: "SFProText-Regular", size: 16)
         bioTextView.autocorrectionType = .no
         bioTextView.backgroundColor = backgroundColor
@@ -102,7 +95,7 @@ class ProfileView: UIView {
     }()
     
     lazy var profileImageView: ProfileImageView = {
-        let profileImageView = ProfileImageView(small: false)
+        let profileImageView = ProfileImageView(small: false, name: name, image: image)
         scrollViewContentView.addSubview(profileImageView)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -226,7 +219,7 @@ class ProfileView: UIView {
         let leftViewLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 115, height: 22))
         leftViewLabel.text = "My Profile"
         if #available(iOS 13.0, *) { } else {
-            leftViewLabel.textColor = currentTheme.textColor
+            leftViewLabel.textColor = theme.themeSettings.textColor
         }
         leftViewLabel.font = UIFont(name: "SFProDisplay-Bold", size: 26)
         return UIBarButtonItem(customView: leftViewLabel)
@@ -239,6 +232,16 @@ class ProfileView: UIView {
         rightBarButtonItem.setTitleTextAttributes(attr, for: .highlighted)
         return rightBarButtonItem
     }()
+    
+    // MARK: - Handlers
+    var saveButtonHandler: ((ButtonWithTouchSize) -> Void)?
+    var actionSheetHandler: (() -> Void)?
+    var closeProfileHandler: (() -> Void)?
+    @objc func saveButtonTapped(_ sender: ButtonWithTouchSize) { saveButtonHandler?(sender) }
+    @objc func configureActionSheet() { actionSheetHandler?() }
+    @objc func closeProfileViewController() { closeProfileHandler?() }
+    var gcdButtonTapped = false
+    var operationButtonTapped = false
     
     @objc func editProfileButtonTapped() {
         if editProfileButton.titleLabel?.text == "Edit Profile" {
@@ -258,16 +261,28 @@ class ProfileView: UIView {
         }
     }
     
-    required init?(coder: NSCoder) { super.init(coder: coder) }
+    // MARK: - Init / deinit
+    required init?(coder: NSCoder) {
+        self.theme = .classic
+        self.name = "Marina Dudarenko"
+        self.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
+        self.image = nil
+        super.init(coder: coder)
+    }
     
-    init() {
+    init(theme: Theme, name: String?, bio: String?, image: UIImage?) {
+        self.theme = theme
+        self.name = name
+        self.bio = bio
+        self.image = image
         super.init(frame: CGRect(origin: UIScreen.main.bounds.origin, size: UIScreen.main.bounds.size))
-        applyTheme()
+        applyTheme(theme: theme)
         setTextViewsEditable(flag: false)
         setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
         setSaveButtonsEnable(flag: false)
     }
     
+    // MARK: - Setup View
     func setupEditProfileButtonView(title: String, color: UIColor) {
         editProfileButton.setTitle(title, for: .normal)
         editProfileButton.setTitleColor(color, for: .normal)
@@ -294,9 +309,11 @@ class ProfileView: UIView {
         operationSaveButton.isEnabled = flag
     }
     
-    func saveSucceedCompletion() {
+    func saveSucceedCompletion(name: String?, image: UIImage?) {
+        self.name = name
+        self.image = image
         activityIndicator.stopAnimating()
-        profileImageView.loadImageCompletion()
+        profileImageView.loadImageCompletion(name: name, image: image)
         editProfileButton.isEnabled = true
         setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
     }
@@ -306,16 +323,14 @@ class ProfileView: UIView {
         operationSaveButtonBottomConstraint?.constant = constant
     }
     
-    // MARK: - Theme
-    
-    func applyTheme() {
-        currentTheme = Settings.currentTheme.themeSettings
-        [self, scrollViewContentView].forEach { $0?.backgroundColor = currentTheme.backgroundColor }
-        [nameTextView, bioTextView].forEach { $0?.textColor = currentTheme.textColor }
-        activityIndicator.color = currentTheme.textColor
-        [gcdSaveButton, operationSaveButton, editProfileButton].forEach { $0?.backgroundColor = currentTheme.saveButtonColor }
+    func applyTheme(theme: Theme) {
+        self.theme = theme
+        [self, scrollViewContentView].forEach { $0?.backgroundColor = theme.themeSettings.backgroundColor }
+        [nameTextView, bioTextView].forEach { $0?.textColor = theme.themeSettings.textColor }
+        activityIndicator.color = theme.themeSettings.textColor
+        [gcdSaveButton, operationSaveButton, editProfileButton].forEach { $0?.backgroundColor = theme.themeSettings.saveButtonColor }
         if #available(iOS 13.0, *) { } else {
-            [nameTextView, bioTextView].forEach { $0?.keyboardAppearance = currentTheme.keyboardAppearance }
+            [nameTextView, bioTextView].forEach { $0?.keyboardAppearance = theme.themeSettings.keyboardAppearance }
         }
     }
 }

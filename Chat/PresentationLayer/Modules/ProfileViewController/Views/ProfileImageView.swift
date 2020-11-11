@@ -10,6 +10,7 @@ import UIKit
 
 @IBDesignable
 class ProfileImageView: UIView {
+    // MARK: - UI
     var profileImageWidthConstraint: NSLayoutConstraint?
     var profileImageHeightConstraint: NSLayoutConstraint?
     var lettersLabelWidthConstraint: NSLayoutConstraint?
@@ -17,6 +18,8 @@ class ProfileImageView: UIView {
     
     var initials: String?
     var fontSize: CGFloat = 120
+    var name: String?
+    var image: UIImage?
     
     lazy var contentView: UIView = {
         let contentView = UIView()
@@ -33,7 +36,7 @@ class ProfileImageView: UIView {
     
     lazy var lettersLabel: UILabel = {
         let label = UILabel()
-        let letters = getLetters(for: Settings.name ?? "")
+        let letters = getLetters(for: name ?? "")
         label.text = letters
         label.font = UIFont(name: "Roboto-Regular", size: fontSize)
         label.textColor = Colors.lettersLabelColor
@@ -45,11 +48,14 @@ class ProfileImageView: UIView {
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool { return touchPath.contains(point) }
     
+    // MARK: - Init / deinit
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(small: Bool) {
+    init(small: Bool, name: String?, image: UIImage?) {
+        self.name = name
+        self.image = image
         super.init(frame: CGRect.zero)
         createConstraints()
         
@@ -67,6 +73,7 @@ class ProfileImageView: UIView {
         lettersLabel.isHidden = (profileImage.image != nil)
     }
     
+    // MARK: - Setup View
     func createConstraints() {
         addSubview(contentView)
         contentView.addSubview(profileImage)
@@ -100,9 +107,11 @@ class ProfileImageView: UIView {
         ])
     }
     
-    func loadImageCompletion() {
-        lettersLabel.text = getLetters(for: Settings.name ?? "")
-        profileImage.image = Settings.image
+    func loadImageCompletion(name: String?, image: UIImage?) {
+        self.name = name
+        self.image = image
+        lettersLabel.text = getLetters(for: name ?? "")
+        profileImage.image = image
         lettersLabel.isHidden = (profileImage.image != nil)
     }
     

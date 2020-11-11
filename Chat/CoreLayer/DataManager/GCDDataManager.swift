@@ -10,21 +10,23 @@ import UIKit
 
 class GCDDataManager {
     var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-    
-    lazy var nameFileURL: URL = {
-        urlDir?.appendingPathComponent("ProfileName.txt") ?? URL(fileURLWithPath: "")
-    }()
-    lazy var bioFileURL: URL = {
-        urlDir?.appendingPathComponent("ProfileBio.txt") ?? URL(fileURLWithPath: "")
-    }()
-    lazy var imageFileURL: URL = {
-        urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "")
-    }()
+    lazy var nameFileURL: URL = { urlDir?.appendingPathComponent("ProfileName.txt") ?? URL(fileURLWithPath: "") }()
+    lazy var bioFileURL: URL = { urlDir?.appendingPathComponent("ProfileBio.txt") ?? URL(fileURLWithPath: "") }()
+    lazy var imageFileURL: URL = { urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "") }()
     
     private let mainQueue = DispatchQueue.main
     private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
+    
+    // MARK: - Dependencies
+    var settingsStorage: SettingsStorageProtocol
+
+    // MARK: - Init / deinit
+    init(settingsStorage: SettingsStorageProtocol) {
+        self.settingsStorage = settingsStorage
+    }
 }
 
+// MARK: - DataManagerProtocol
 extension GCDDataManager: DataManagerProtocol {
     func save(completion: @escaping (Bool) -> Void) {
         let group = DispatchGroup()
@@ -37,7 +39,7 @@ extension GCDDataManager: DataManagerProtocol {
         queue.async {
             if ProfileViewController.nameDidChange {
                 do {
-                    try Settings.name?.write(to: self.nameFileURL, atomically: false, encoding: .utf8)
+                    try self.settingsStorage.name?.write(to: self.nameFileURL, atomically: false, encoding: .utf8)
                 } catch {
                     nameSaved = false
                 }
@@ -50,7 +52,7 @@ extension GCDDataManager: DataManagerProtocol {
         queue.async {
             if ProfileViewController.bioDidChange {
                 do {
-                    try Settings.bio?.write(to: self.bioFileURL, atomically: false, encoding: .utf8)
+                    try self.settingsStorage.bio?.write(to: self.bioFileURL, atomically: false, encoding: .utf8)
                 } catch {
                     bioSaved = false
                 }
@@ -61,7 +63,7 @@ extension GCDDataManager: DataManagerProtocol {
         
         group.enter()
         queue.async {
-            if let data = Settings.image?.jpegData(compressionQuality: 0.5),
+            if let data = self.settingsStorage.image?.jpegData(compressionQuality: 0.5),
                 ProfileViewController.imageDidChange {
                 do {
                     try data.write(to: self.imageFileURL)
@@ -81,7 +83,7 @@ extension GCDDataManager: DataManagerProtocol {
         }
     }
     
-    func load(mustReadBio: Bool = true, completion: @escaping () -> Void) {
+    func load(mustReadBio: Bool, completion: @escaping () -> Void) {
         let group = DispatchGroup()
         
         group.enter()
@@ -89,10 +91,10 @@ extension GCDDataManager: DataManagerProtocol {
             do {
                 let nameFromFile = try String(data: Data(contentsOf: self.nameFileURL), encoding: .utf8)
                 if let name = nameFromFile {
-                    Settings.name = name
+                    self.settingsStorage.name = name
                 }
             } catch {
-                Settings.name = "Marina Dudarenko"
+                self.settingsStorage.name = "Marina Dudarenko"
             }
             group.leave()
         }
@@ -103,10 +105,10 @@ extension GCDDataManager: DataManagerProtocol {
                 do {
                     let bioFromFile = try String(data: Data(contentsOf: self.bioFileURL), encoding: .utf8)
                     if let bio = bioFromFile {
-                        Settings.bio = bio
+                        self.settingsStorage.bio = bio
                     }
                 } catch {
-                    Settings.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
+                    self.settingsStorage.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
                 }
             }
             group.leave()
@@ -117,10 +119,10 @@ extension GCDDataManager: DataManagerProtocol {
             do {
                 let imageFromFile = try UIImage(data: Data(contentsOf: self.imageFileURL))
                 if let image = imageFromFile {
-                    Settings.image = image
+                    self.settingsStorage.image = image
                 }
             } catch {
-                Settings.image = nil
+                self.settingsStorage.image = nil
             }
             group.leave()
         }

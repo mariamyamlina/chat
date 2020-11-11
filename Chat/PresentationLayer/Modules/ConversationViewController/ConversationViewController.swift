@@ -11,7 +11,7 @@ import CoreData
 
 class ConversationViewController: LogViewController {
     // MARK: - UI
-    private var conversationView = ConversationView()
+    lazy private var conversationView = ConversationView(theme: model.currentTheme)
     
     // MARK: - Dependencies
     private let presentationAssembly: PresentationAssemblyProtocol
@@ -173,7 +173,7 @@ extension ConversationViewController: UITableViewDataSource {
         } else {
             messageModel = messageCellFactory.messageToCell(message, .input)
         }
-        cell?.configure(with: messageModel)
+        cell?.configure(with: messageModel, theme: model.currentTheme)
         return cell ?? UITableViewCell()
     }
 }

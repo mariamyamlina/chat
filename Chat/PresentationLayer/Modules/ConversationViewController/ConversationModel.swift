@@ -51,6 +51,7 @@ protocol ConversationModelProtocol: class {
     func createMessage(withText text: String, inChannel channel: Channel)
     func removeListener()
     func fetchMessages() -> NSFetchedResultsController<MessageDB>?
+    var currentTheme: Theme { get }
 }
 
 protocol ConversationModelDelegate: class {
@@ -64,11 +65,13 @@ class ConversationModel {
     weak var delegate: ConversationModelDelegate?
     var channel: Channel?
     let messageService: MessageServiceProtocol
+    var settingsService: SettingsServiceProtocol
     
     // MARK: - Init / deinit
-    init(messageService: MessageServiceProtocol, channel: Channel?) {
+    init(messageService: MessageServiceProtocol, settingsService: SettingsServiceProtocol, channel: Channel?) {
         self.messageService = messageService
         self.channel = channel
+        self.settingsService = settingsService
     }
 }
 
@@ -92,5 +95,9 @@ extension ConversationModel: ConversationModelProtocol {
     
     func fetchMessages() -> NSFetchedResultsController<MessageDB>? {
         return messageService.messagesFetchedResultsController
+    }
+    
+    var currentTheme: Theme {
+        return settingsService.currentTheme
     }
 }

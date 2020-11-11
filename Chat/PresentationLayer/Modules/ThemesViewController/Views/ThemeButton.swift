@@ -9,9 +9,7 @@
 import UIKit
 
 class ThemeButton: ButtonWithTouchSize {
-    var pickHandler: (() -> Void)?
-    @objc func pickButtonTapped(_ sender: ThemeButton) { pickHandler?() }
-    
+    // MARK: - UI
     lazy var contentView: UIView = {
         let contentView = UIView()
         contentView.backgroundColor = .clear
@@ -92,8 +90,14 @@ class ThemeButton: ButtonWithTouchSize {
         return bubble
     }()
     
-    required init?(coder: NSCoder) { super.init(coder: coder) }
-    override init(frame: CGRect) { super.init(frame: frame) }
+    // MARK: - Handlers
+    var pickHandler: (() -> Void)?
+    @objc func pickButtonTapped(_ sender: ThemeButton) { pickHandler?() }
+    
+    // MARK: - Init / deinit
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     init(titleLabel: String, backgroundColor: UIColor, inputColor: UIColor, outputColor: UIColor) {
         super.init(frame: CGRect.zero)
@@ -104,6 +108,7 @@ class ThemeButton: ButtonWithTouchSize {
         setupView()
     }
     
+    // MARK: - Setup View
     private func setupView() {
         layer.cornerRadius = 14
         clipsToBounds = true

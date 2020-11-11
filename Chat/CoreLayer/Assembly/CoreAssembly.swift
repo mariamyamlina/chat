@@ -15,13 +15,15 @@ protocol CoreAssemblyProtocol {
     var coreDataStack: CoreDataStackProtocol { get }
     var firebaseManager: FirebaseManagerProtocol { get }
     var themeStorage: ThemeStorageProtocol { get }
+    var settingsStorage: SettingsStorageProtocol { get }
 }
 
 class CoreAssembly: CoreAssemblyProtocol {
-    lazy var gcdDataManager: DataManagerProtocol = GCDDataManager()
-    lazy var operationDataManager: DataManagerProtocol = OperationDataManager()
+    lazy var gcdDataManager: DataManagerProtocol = GCDDataManager(settingsStorage: self.settingsStorage)
+    lazy var operationDataManager: DataManagerProtocol = OperationDataManager(settingsStorage: self.settingsStorage)
     // TODO
     lazy var coreDataStack: CoreDataStackProtocol = CoreDataStack.shared
-    lazy var firebaseManager: FirebaseManagerProtocol = FirebaseManager()
+    lazy var firebaseManager: FirebaseManagerProtocol = FirebaseManager(settingsStorage: self.settingsStorage)
     lazy var themeStorage: ThemeStorageProtocol = ThemeStorage()
+    lazy var settingsStorage: SettingsStorageProtocol = SettingsStorage(themeStorage: self.themeStorage)
 }

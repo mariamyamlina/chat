@@ -10,6 +10,8 @@ import UIKit
 
 class MessageInputContainer: UIView {
     // MARK: - UI
+    var theme: Theme
+    
     lazy var borderLine: UIView = {
         let line = UIView()
         addSubview(line)
@@ -26,9 +28,9 @@ class MessageInputContainer: UIView {
     lazy var textField: UITextField = {
         let textField = UITextField()
         textField.autocapitalizationType = .sentences
-        let currentTheme = Settings.currentTheme.themeSettings
         textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
-        attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any, NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
+        attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any,
+                     NSAttributedString.Key.foregroundColor: theme.themeSettings.textFieldTextColor])
         textField.textAlignment = .left
         textField.font = UIFont(name: "SFProText-Regular", size: 17)
         textField.borderStyle = .roundedRect
@@ -84,12 +86,14 @@ class MessageInputContainer: UIView {
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
+        self.theme = .classic
         super.init(coder: coder)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        applyTheme()
+    init(theme: Theme) {
+        self.theme = theme
+        super.init(frame: CGRect.zero)
+        applyTheme(theme: theme)
     }
     
     // MARK: - Setup View
@@ -98,15 +102,15 @@ class MessageInputContainer: UIView {
         sendButton.isEnabled = state
     }
     
-    private func applyTheme() {
-        let currentTheme = Settings.currentTheme.themeSettings
-        backgroundColor = currentTheme.barColor
+    private func applyTheme(theme: Theme) {
+        self.theme = theme
+        backgroundColor = theme.themeSettings.barColor
         borderLine.backgroundColor = Colors.separatorColor()
-        textField.backgroundColor = currentTheme.textFieldBackgroundColor
+        textField.backgroundColor = theme.themeSettings.textFieldBackgroundColor
         if #available(iOS 13.0, *) {
         } else {
-            textField.keyboardAppearance = currentTheme.keyboardAppearance
-            textField.textColor = currentTheme.textColor
+            textField.keyboardAppearance = theme.themeSettings.keyboardAppearance
+            textField.textColor = theme.themeSettings.textColor
         }
     }
 }

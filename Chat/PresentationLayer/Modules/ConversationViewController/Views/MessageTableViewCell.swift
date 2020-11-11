@@ -70,8 +70,7 @@ class MessageTableViewCell: UITableViewCell {
 
 // MARK: - Configuration
 extension MessageTableViewCell: ConfigurableViewProtocol {
-    func configure(with model: MessageCellModel) {
-        let currentTheme = Settings.currentTheme.themeSettings
+    func configure(with model: MessageCellModel, theme: Theme) {
         let messageText = model.text
         timeLabel.text = model.time.dateFormatter(onlyTimeMode: true)
 
@@ -104,15 +103,15 @@ extension MessageTableViewCell: ConfigurableViewProtocol {
         let estimatedWidth = estimatedFrame.width
         
         if model.type == .output {
-            messageTextView.textColor = currentTheme.outputTextColor
-            timeLabel.textColor = currentTheme.outputTimeColor
-            textBubbleView.backgroundColor = currentTheme.outputBubbleColor
+            messageTextView.textColor = theme.themeSettings.outputTextColor
+            timeLabel.textColor = theme.themeSettings.outputTimeColor
+            textBubbleView.backgroundColor = theme.themeSettings.outputBubbleColor
             messageTextView.frame = CGRect(x: UIScreen.main.bounds.width - 28 - estimatedWidth - 16, y: 0, width: estimatedWidth + 16, height: estimatedHeight + 28)
             textBubbleView.frame = CGRect(x: UIScreen.main.bounds.width - 20 - estimatedWidth - 16 - 8, y: 0, width: estimatedWidth + 16 + 8, height: estimatedHeight + 28)
         } else {
-            messageTextView.textColor = currentTheme.textColor
-            timeLabel.textColor = currentTheme.inputTimeColor
-            textBubbleView.backgroundColor = currentTheme.inputBubbleColor
+            messageTextView.textColor = theme.themeSettings.textColor
+            timeLabel.textColor = theme.themeSettings.inputTimeColor
+            textBubbleView.backgroundColor = theme.themeSettings.inputBubbleColor
             messageTextView.frame = CGRect(x: 28, y: 0, width: estimatedWidth + 16, height: estimatedHeight + 28)
             textBubbleView.frame = CGRect(x: 20, y: 0, width: estimatedWidth + 16 + 8, height: estimatedHeight + 28)
         }

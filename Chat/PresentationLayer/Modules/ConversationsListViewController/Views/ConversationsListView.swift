@@ -10,14 +10,16 @@ import UIKit
 
 class ConversationsListView: UIView {
     // MARK: - UI
-    var currentTheme = Settings.currentTheme.themeSettings
+    var theme: Theme
+    var name: String?
+    var image: UIImage?
     
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         if #available(iOS 13.0, *) {
             searchController.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [
                 NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any,
-                NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
+                NSAttributedString.Key.foregroundColor: theme.themeSettings.textFieldTextColor])
         } else {
             searchController.searchBar.placeholder = "Search"
         }
@@ -71,7 +73,7 @@ class ConversationsListView: UIView {
     }()
     
     lazy var profileImage: ProfileImageView = {
-        let profileImage = ProfileImageView(small: true)
+        let profileImage = ProfileImageView(small: true, name: name, image: image)
         profileImage.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
         profileImage.clipsToBounds = true
@@ -88,25 +90,30 @@ class ConversationsListView: UIView {
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
+        self.theme = .classic
+        self.name = "Marina Dudarenko"
+        self.image = nil
         super.init(coder: coder)
     }
     
-    init() {
+    init(theme: Theme, name: String?, image: UIImage?) {
+        self.theme = theme
+        self.name = name
+        self.image = image
         super.init(frame: CGRect(origin: UIScreen.main.bounds.origin, size: UIScreen.main.bounds.size))
-        applyTheme()
+        applyTheme(theme: theme)
     }
     
     // MARK: - Setup View
-    func applyTheme() {
-        currentTheme = Settings.currentTheme.themeSettings
-        backgroundColor = currentTheme.backgroundColor
-        tableView.separatorColor = currentTheme.tableViewSeparatorColor
+    func applyTheme(theme: Theme) {
+        backgroundColor = theme.themeSettings.backgroundColor
+        tableView.separatorColor = theme.themeSettings.tableViewSeparatorColor
         tableView.reloadData()
         if #available(iOS 13.0, *) {
-            searchController.searchBar.searchTextField.backgroundColor = currentTheme.searchBarTextColor
-            searchController.searchBar.searchTextField.leftView?.tintColor = currentTheme.textFieldTextColor
+            searchController.searchBar.searchTextField.backgroundColor = theme.themeSettings.searchBarTextColor
+            searchController.searchBar.searchTextField.leftView?.tintColor = theme.themeSettings.textFieldTextColor
         } else {
-            searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
+            searchController.searchBar.keyboardAppearance = theme.themeSettings.keyboardAppearance
         }
     }
     
@@ -129,10 +136,10 @@ class ConversationsListView: UIView {
     func setupTextField(_ textField: UITextField?) {
         textField?.autocapitalizationType = .sentences
         textField?.attributedPlaceholder = NSAttributedString(string: "Channel name here",
-                                                              attributes: [NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
+                                                              attributes: [NSAttributedString.Key.foregroundColor: theme.themeSettings.textFieldTextColor])
         if #available(iOS 13.0, *) { } else {
-            textField?.backgroundColor = currentTheme.textFieldBackgroundColor
-            textField?.keyboardAppearance = currentTheme.keyboardAppearance
+            textField?.backgroundColor = theme.themeSettings.textFieldBackgroundColor
+            textField?.keyboardAppearance = theme.themeSettings.keyboardAppearance
         }
     }
     

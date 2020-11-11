@@ -34,20 +34,32 @@ enum Theme: Int {
 
 // MARK: - ThemesModel
 protocol ThemesModelProtocol: class {
-    func applyTheme(for: Theme, completion: () -> Void)
+    func applyTheme(for: Theme, completion: (Int) -> Void)
+    var currentTheme: Theme { get }
 }
 
-class ThemesModel: ThemesModelProtocol {
+class ThemesModel {
+    // MARK: - Dependencies
     var themeService: ThemesServiceProtocol
+    var settingsService: SettingsServiceProtocol
     
-    init(themeService: ThemesServiceProtocol) {
+    // MARK: - Init / deinir
+    init(themeService: ThemesServiceProtocol, settingsService: SettingsServiceProtocol) {
         self.themeService = themeService
+        self.settingsService = settingsService
     }
-    
-    func applyTheme(for theme: Theme, completion: () -> Void) {
+}
+
+// MARK: - ThemesModelProtocol
+extension ThemesModel: ThemesModelProtocol {
+    func applyTheme(for theme: Theme, completion: (Int) -> Void) {
         themeService.applyTheme(for: theme, completion: completion)
         guard #available(iOS 13.0, *) else { return }
         UIApplication.shared.windows.forEach { $0.overrideUserInterfaceStyle = theme.userInterfaceStyle }
+    }
+    
+    var currentTheme: Theme {
+        return settingsService.currentTheme
     }
 }
 

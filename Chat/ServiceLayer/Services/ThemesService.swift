@@ -9,7 +9,7 @@
 import UIKit
 
 protocol ThemesServiceProtocol {
-    func applyTheme(for theme: Theme, completion: () -> Void)
+    func applyTheme(for theme: Theme, completion: (Int) -> Void)
 }
 
 class ThemesService {
@@ -23,7 +23,7 @@ class ThemesService {
 
 // MARK: - ThemesServiceProtocol
 extension ThemesService: ThemesServiceProtocol {
-    func applyTheme(for theme: Theme, completion: () -> Void) {
+    func applyTheme(for theme: Theme, completion: (Int) -> Void) {
         themeStorage.save(themeRawValue: theme.rawValue, completion: completion)
     }
 }

@@ -11,11 +11,20 @@ import UIKit
 class OperationDataManager {
     private let operationQueue = OperationQueue()
     private let mainOperationQueue = OperationQueue.main
+    
+    // MARK: - Dependencies
+    let settingsStorage: SettingsStorageProtocol
+
+    // MARK: - Init / deinit
+    init(settingsStorage: SettingsStorageProtocol) {
+        self.settingsStorage = settingsStorage
+    }
 }
 
+// MARK: - DataManagerProtocol
 extension OperationDataManager: DataManagerProtocol {
     func save(completion: @escaping (Bool) -> Void) {
-        let writeOperation = WriteOperation()
+        let writeOperation = WriteOperation(settingsStorage: settingsStorage)
         let completionOperation = BlockOperation {
             let result = writeOperation.nameSaved && writeOperation.bioSaved && writeOperation.imageSaved
             completion(result)
@@ -27,9 +36,9 @@ extension OperationDataManager: DataManagerProtocol {
     }
     
     func load(mustReadBio: Bool = true, completion: @escaping () -> Void) {
-        let readNameOperation = ReadNameOperation()
-        let readBioOperation = ReadBioOperation()
-        let readImageOperation = ReadImageOperation()
+        let readNameOperation = ReadNameOperation(settingsStorage: settingsStorage)
+        let readBioOperation = ReadBioOperation(settingsStorage: settingsStorage)
+        let readImageOperation = ReadImageOperation(settingsStorage: settingsStorage)
         let completionOperation = BlockOperation {
             completion()
         }
@@ -42,18 +51,20 @@ extension OperationDataManager: DataManagerProtocol {
     }
 }
 
+// MARK: - WriteOperation
 class WriteOperation: Operation {
     var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    lazy var nameFileURL: URL = { urlDir?.appendingPathComponent("ProfileName.txt") ?? URL(fileURLWithPath: "") }()
+    lazy var bioFileURL: URL = { urlDir?.appendingPathComponent("ProfileBio.txt") ?? URL(fileURLWithPath: "") }()
+    lazy var imageFileURL: URL = { urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "") }()
     
-    lazy var nameFileURL: URL = {
-        urlDir?.appendingPathComponent("ProfileName.txt") ?? URL(fileURLWithPath: "")
-    }()
-    lazy var bioFileURL: URL = {
-        urlDir?.appendingPathComponent("ProfileBio.txt") ?? URL(fileURLWithPath: "")
-    }()
-    lazy var imageFileURL: URL = {
-        urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "")
-    }()
+    // MARK: - Dependencies
+    let settingsStorage: SettingsStorageProtocol
+
+    // MARK: - Init / deinit
+    init(settingsStorage: SettingsStorageProtocol) {
+        self.settingsStorage = settingsStorage
+    }
     
     var nameSaved = true
     var bioSaved = true
@@ -63,7 +74,7 @@ class WriteOperation: Operation {
         if isCancelled { return }
         do {
             if ProfileViewController.nameDidChange {
-                try Settings.name?.write(to: nameFileURL, atomically: false, encoding: .utf8)
+                try settingsStorage.name?.write(to: nameFileURL, atomically: false, encoding: .utf8)
             }
         } catch {
             nameSaved = false
@@ -72,7 +83,7 @@ class WriteOperation: Operation {
         
         do {
             if ProfileViewController.bioDidChange {
-                try Settings.bio?.write(to: bioFileURL, atomically: false, encoding: .utf8)
+                try settingsStorage.bio?.write(to: bioFileURL, atomically: false, encoding: .utf8)
             }
         } catch {
             bioSaved = false
@@ -80,7 +91,7 @@ class WriteOperation: Operation {
         ProfileViewController.bioDidChange = !bioSaved
         
         do {
-            if let data = Settings.image?.jpegData(compressionQuality: 0.5),
+            if let data = settingsStorage.image?.jpegData(compressionQuality: 0.5),
                 ProfileViewController.imageDidChange {
                 try data.write(to: imageFileURL)
             }
@@ -91,21 +102,30 @@ class WriteOperation: Operation {
     }
 }
 
+// MARK: - ReadOperations
 class ReadNameOperation: Operation {
     lazy var nameFileURL: URL = {
         var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return urlDir?.appendingPathComponent("ProfileName.txt") ?? URL(fileURLWithPath: "")
     }()
     
+    // MARK: - Dependencies
+    var settingsStorage: SettingsStorageProtocol
+
+    // MARK: - Init / deinit
+    init(settingsStorage: SettingsStorageProtocol) {
+        self.settingsStorage = settingsStorage
+    }
+    
     override func main() {
         if isCancelled { return }
         do {
             let nameFromFile = try String(data: Data(contentsOf: nameFileURL), encoding: .utf8)
             if let name = nameFromFile {
-                Settings.name = name
+                settingsStorage.name = name
             }
         } catch {
-            Settings.name = "Marina Dudarenko"
+            settingsStorage.name = "Marina Dudarenko"
         }
     }
 }
@@ -116,15 +136,23 @@ class ReadBioOperation: Operation {
         return urlDir?.appendingPathComponent("ProfileBio.txt") ?? URL(fileURLWithPath: "")
     }()
     
+    // MARK: - Dependencies
+    var settingsStorage: SettingsStorageProtocol
+
+    // MARK: - Init / deinit
+    init(settingsStorage: SettingsStorageProtocol) {
+        self.settingsStorage = settingsStorage
+    }
+    
     override func main() {
         if isCancelled { return }
         do {
             let bioFromFile = try String(data: Data(contentsOf: bioFileURL), encoding: .utf8)
             if let bio = bioFromFile {
-                Settings.bio = bio
+                settingsStorage.bio = bio
             }
         } catch {
-            Settings.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
+            settingsStorage.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
         }
     }
 }
@@ -135,15 +163,23 @@ class ReadImageOperation: Operation {
         return urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "")
     }()
     
+    // MARK: - Dependencies
+    var settingsStorage: SettingsStorageProtocol
+
+    // MARK: - Init / deinit
+    init(settingsStorage: SettingsStorageProtocol) {
+        self.settingsStorage = settingsStorage
+    }
+    
     override func main() {
         if isCancelled { return }
         do {
             let imageFromFile = try UIImage(data: Data(contentsOf: imageFileURL))
             if let image = imageFromFile {
-                Settings.image = image
+                settingsStorage.image = image
             }
         } catch {
-            Settings.image = nil
+            settingsStorage.image = nil
         }
     }
 }

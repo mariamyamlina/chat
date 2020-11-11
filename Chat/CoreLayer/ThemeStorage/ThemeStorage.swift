@@ -9,19 +9,19 @@
 import Foundation
 
 protocol ThemeStorageProtocol {
-    func save(themeRawValue: Int, completion: () -> Void)
-    func get() -> Int
+    func save(themeRawValue: Int, completion: (Int) -> Void)
+    func load() -> Int
 }
 
 class ThemeStorage: ThemeStorageProtocol {
-    func save(themeRawValue: Int, completion: () -> Void) {
+    func save(themeRawValue: Int, completion: (Int) -> Void) {
         DispatchQueue(label: "com.chat.theme", qos: .userInteractive).sync {
             UserDefaults.standard.set(themeRawValue, forKey: "app_theme")
         }
-        completion()
+        completion(themeRawValue)
     }
     
-    func get() -> Int {
+    func load() -> Int {
         return UserDefaults.standard.object(forKey: "app_theme") as? Int ?? Theme.classic.rawValue
     }
 }

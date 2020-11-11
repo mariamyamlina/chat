@@ -60,12 +60,7 @@ extension LogViewController {
         let alertController = UIAlertController(title: (title ?? "") + " Error", message: message, preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "OK", style: .cancel)
         alertController.addAction(cancelAction)
-        if #available(iOS 13.0, *) { } else {
-            if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
-                let currentTheme = Settings.currentTheme.themeSettings
-                subview.backgroundColor = currentTheme.alertColor
-            }
-        }
+        alertController.applyTheme(theme: model.currentTheme)
         self.present(alertController, animated: true, completion: nil)
     }
 }

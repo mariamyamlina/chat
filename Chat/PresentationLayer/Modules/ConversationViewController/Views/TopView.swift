@@ -9,7 +9,7 @@
 import UIKit
 
 class TopView: UIView {
-    let currentTheme = Settings.currentTheme.themeSettings
+    let theme: Theme
     
     lazy var contentView: UIView = {
         let contentView = UIView()
@@ -27,7 +27,7 @@ class TopView: UIView {
     
     lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.textColor = currentTheme.textColor
+        label.textColor = theme.themeSettings.textColor
         label.font = UIFont(name: "SFProText-Semibold", size: 16)
         
         contentView.addSubview(label)
@@ -58,5 +58,15 @@ class TopView: UIView {
             imageView.widthAnchor.constraint(equalToConstant: 36),
             imageView.heightAnchor.constraint(equalToConstant: 36)
         ])
+    }
+    
+    required init?(coder: NSCoder) {
+        self.theme = .classic
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init(theme: Theme) {
+        self.theme = theme
+        super.init(frame: CGRect.zero)
     }
 }

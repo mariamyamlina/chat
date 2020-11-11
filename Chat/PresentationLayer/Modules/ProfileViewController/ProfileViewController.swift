@@ -10,12 +10,17 @@ import UIKit
 
 class ProfileViewController: LogViewController {
     // MARK: - UI
-    var profileView = ProfileView()
+    lazy var profileView = ProfileView(theme: model.currentTheme, name: model.name, bio: model.bio, image: model.image)
     
     // MARK: - Dependencies
     private let presentationAssembly: PresentationAssemblyProtocol
     private let model: ProfileModelProtocol
+    // TODO
+    static var nameDidChange = false
+    static var bioDidChange = false
+    static var imageDidChange = false
     
+    // MARK: - Init / deinit
     required init?(coder: NSCoder) {
 //        Loger.printButtonLog(gcdSaveButton, #function)
         fatalError("init(coder:) has not been implemented")
@@ -27,10 +32,11 @@ class ProfileViewController: LogViewController {
         super.init(model: presentationAssembly.logModel())
     }
     
-    static var nameDidChange = false
-    static var bioDidChange = false
-    static var imageDidChange = false
+    deinit {
+        removeKeyboardNotifications()
+    }
     
+    // MARK: - ImagePicker
     lazy var imagePicker: UIImagePickerController = {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -38,10 +44,7 @@ class ProfileViewController: LogViewController {
         return imagePicker
     }()
     
-    deinit {
-        removeKeyboardNotifications()
-    }
-    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         model.buttonLog(profileView.gcdSaveButton, #function)
@@ -65,7 +68,6 @@ class ProfileViewController: LogViewController {
     }
     
     // MARK: - Keyboard
-    
     func addKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -98,10 +100,9 @@ class ProfileViewController: LogViewController {
     }
     
     // MARK: - Profile Editing
-    
     func saveCompletion(_ succeed: Bool) {
         if succeed {
-            profileView.saveSucceedCompletion()
+            profileView.saveSucceedCompletion(name: model.name, image: model.image)
             configureAlert("Data has been successfully saved", nil, false)
         } else {
             configureAlert("Error", "Failed to save data", true)
@@ -109,13 +110,12 @@ class ProfileViewController: LogViewController {
     }
     
     func loadCompletion() {
-        profileView.nameTextView.text = Settings.name
-        profileView.bioTextView.text = Settings.bio
-        profileView.profileImageView.loadImageCompletion()
+        profileView.nameTextView.text = model.name
+        profileView.bioTextView.text = model.bio
+        profileView.profileImageView.loadImageCompletion(name: model.name, image: model.image)
     }
     
-    // MARK: - Views
-    
+    // MARK: - Setup View
     private func setupView() {
         view.addSubview(profileView)
         profileView.translatesAutoresizingMaskIntoConstraints = false
@@ -160,7 +160,7 @@ class ProfileViewController: LogViewController {
                 alertController.dismiss(animated: true, completion: nil)
             }
             [galeryAction, takePhotoAction, cancelAction].forEach { alertController.addAction($0) }
-            alertController.applyTheme()
+            alertController.applyTheme(theme: self?.model.currentTheme ?? .classic)
             self?.present(alertController, animated: true, completion: nil)
         }
         
@@ -173,15 +173,12 @@ class ProfileViewController: LogViewController {
         }
     }
     
-    // MARK: - NavigationBar
-    
     private func setupNavigationBar() {
         navigationItem.leftBarButtonItem = profileView.leftBarButtonItem
         navigationItem.rightBarButtonItem = profileView.rightBarButtonItem
     }
     
     // MARK: - Alert
-    
     func configureAlert(_ title: String, _ message: String?, _ twoActions: Bool) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: { [weak profileView] (_: UIAlertAction) in
@@ -212,13 +209,12 @@ class ProfileViewController: LogViewController {
             })
             alertController.addAction(repeatAction)
         }
-        alertController.applyTheme()
+        alertController.applyTheme(theme: model.currentTheme)
         self.present(alertController, animated: true, completion: nil)
     }
 }
 
 // MARK: - ImagePicker, UINavigationControllerDelegate, UIImagePickerControllerDelegate
-
 extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
@@ -228,7 +224,8 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
             profileView.profileImageView.lettersLabel.isHidden = true
             profileView.setSaveButtonsEnable(flag: true)
             ProfileViewController.imageDidChange = true
-            Settings.image = compressedImage
+            model.changeImage(for: compressedImage)
+//            model.image = compressedImage
         }
         dismiss(animated: true, completion: nil)
     }
@@ -244,7 +241,6 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
 }
 
 // MARK: - UITextViewDelegate
-
 extension ProfileViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         profileView.setSaveButtonsEnable(flag: true)
@@ -257,9 +253,11 @@ extension ProfileViewController: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView == profileView.nameTextView {
-            Settings.name = textView.text
+            model.changeName(for: textView.text)
+//            model.name = textView.text
         } else {
-            Settings.bio = textView.text
+            model.changeBio(for: textView.text)
+//            model.bio = textView.text
         }
     }
     

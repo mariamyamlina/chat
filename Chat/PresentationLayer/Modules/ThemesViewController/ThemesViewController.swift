@@ -10,12 +10,13 @@ import UIKit
 
 class ThemesViewController: LogViewController {
     // MARK: - UI
-    var themesView = ThemesView()
+    lazy var themesView = ThemesView(theme: model.currentTheme)
     
     // MARK: - Dependencies
     private let presentationAssembly: PresentationAssemblyProtocol
     private let model: ThemesModelProtocol
     
+    // MARK: - Init / deinit
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -26,14 +27,14 @@ class ThemesViewController: LogViewController {
         super.init(model: presentationAssembly.logModel())
     }
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         createHandlers()
     }
     
-    // MARK: - Theme Picker
-    
+    // MARK: - Setup View
     private func createHandlers() {
         themesView.classicButton.pickHandler = { [weak self, weak themesView] in
             guard let self = self, let view = themesView else { return }
@@ -54,12 +55,10 @@ class ThemesViewController: LogViewController {
         }
     }
     
-    func applyTheme() {
-        navigationController?.applyTheme()
-        themesView.applyTheme()
+    func applyTheme(themeRawValue: Int) {
+        navigationController?.applyTheme(theme: Theme(rawValue: themeRawValue) ?? .classic)
+        themesView.applyTheme(theme: Theme(rawValue: themeRawValue) ?? .classic)
     }
-    
-    // MARK: - View
     
     private func setupView() {
         view.addSubview(themesView)
@@ -72,10 +71,8 @@ class ThemesViewController: LogViewController {
         ])
         
         setupNavigationBar()
-        applyTheme()
+        applyTheme(themeRawValue: model.currentTheme.rawValue)
     }
-    
-    // MARK: - NavigationBar
     
     private func setupNavigationBar() {
         navigationItem.largeTitleDisplayMode = .never

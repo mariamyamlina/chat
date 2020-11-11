@@ -10,15 +10,22 @@ import Foundation
 
 protocol LogModelProtocol: class {
     func printLog(_ message: String, _ function: String)
+    var currentTheme: Theme { get }
 }
 
 class LogModel {
     // MARK: - Dependencies
     let loger: LogerProtocol
+    let settingsService: SettingsServiceProtocol
     
     // MARK: - Init / deinit
-    init(loger: LogerProtocol) {
+    init(loger: LogerProtocol, settingsService: SettingsServiceProtocol) {
         self.loger = loger
+        self.settingsService = settingsService
+    }
+    
+    var currentTheme: Theme {
+        return settingsService.currentTheme
     }
 }
 

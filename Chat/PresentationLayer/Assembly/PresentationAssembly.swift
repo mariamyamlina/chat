@@ -27,7 +27,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     
     // MARK: - LogViewController
     func logModel() -> LogModelProtocol {
-        return LogModel(loger: serviceAssembly.loger)
+        return LogModel(loger: serviceAssembly.loger, settingsService: serviceAssembly.settingsService)
     }
     
     // MARK: - ConversationsListViewController
@@ -39,7 +39,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     private func conversationsListModel() -> ConversationsListModelProtocol {
-        return ConversationsListModel(channelService: serviceAssembly.channelService, dataService: serviceAssembly.dataService)
+        return ConversationsListModel(channelService: serviceAssembly.channelService, dataService: serviceAssembly.dataService, settingsService: serviceAssembly.settingsService)
     }
     
     // MARK: - ConversationViewController
@@ -51,7 +51,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     private func conversationModel(channel: Channel?) -> ConversationModelProtocol {
-        return ConversationModel(messageService: serviceAssembly.messageService(with: channel), channel: channel)
+        return ConversationModel(messageService: serviceAssembly.messageService(with: channel), settingsService: serviceAssembly.settingsService, channel: channel)
     }
     
     // MARK: - ProfileViewController
@@ -63,7 +63,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     private func profileModel() -> ProfileModelProtocol {
-        return ProfileModel(dataService: serviceAssembly.dataService, loger: serviceAssembly.loger)
+        return ProfileModel(dataService: serviceAssembly.dataService, loger: serviceAssembly.loger, settingsService: serviceAssembly.settingsService)
     }
     
     // MARK: - ThemesViewController
@@ -75,6 +75,6 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     private func themesModel() -> ThemesModel {
-        return ThemesModel(themeService: serviceAssembly.themeService)
+        return ThemesModel(themeService: serviceAssembly.themeService, settingsService: serviceAssembly.settingsService)
     }
 }

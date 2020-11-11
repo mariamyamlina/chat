@@ -23,11 +23,10 @@ extension UIAlertController {
         }
     }
     
-    func applyTheme() {
+    func applyTheme(theme: Theme) {
         if #available(iOS 13.0, *) { } else {
-            let currentTheme = Settings.currentTheme.themeSettings
             if let subview = self.view.subviews.first?.subviews.first?.subviews.first {
-                subview.backgroundColor = currentTheme.alertColor
+                subview.backgroundColor = theme.themeSettings.alertColor
             }
         }
     }

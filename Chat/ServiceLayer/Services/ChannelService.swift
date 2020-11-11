@@ -42,7 +42,6 @@ class ChannelService {
     }()
     
     // MARK: - Save
-    
     private func save(channels: [Channel],
                       errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { [weak self] context in
@@ -93,7 +92,6 @@ class ChannelService {
     }
     
     // MARK: - Update
-    
     private func update(channel: Channel,
                         errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
@@ -106,7 +104,6 @@ class ChannelService {
     }
     
     // MARK: - Delete
-    
     private func delete(compareWithChannels channels: [Channel],
                         errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in

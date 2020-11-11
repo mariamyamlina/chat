@@ -10,7 +10,7 @@ import UIKit
 
 protocol ConfigurableViewProtocol {
     associatedtype ConfigurationModel
-    func configure(with model: ConfigurationModel)
+    func configure(with model: ConfigurationModel, theme: Theme)
 }
 
 class ConversationTableViewCell: UITableViewCell {
@@ -127,8 +127,8 @@ class ConversationTableViewCell: UITableViewCell {
         onlineIndicator.backgroundColor = Colors.onlineIndicatorGreen
     }
     
-    fileprivate func applyTheme() {
-        let currentTheme = Settings.currentTheme.themeSettings
+    fileprivate func applyTheme(theme: Theme) {
+        let currentTheme = theme.themeSettings
         backgroundColor = .clear
         nameLabel.textColor = currentTheme.textColor
         messageLabel.textColor = currentTheme.messageLabelColor
@@ -139,7 +139,7 @@ class ConversationTableViewCell: UITableViewCell {
 
 // MARK: - Configuration
 extension ConversationTableViewCell: ConfigurableViewProtocol {
-    func configure(with model: ConversationCellModel) {
+    func configure(with model: ConversationCellModel, theme: Theme) {
         profileImage.image = model.image
         nameLabel.text = model.name
         onlineIndicator.isHidden = !model.isOnline
@@ -158,6 +158,6 @@ extension ConversationTableViewCell: ConfigurableViewProtocol {
             messageLabel.font = UIFont(name: "SFProText-RegularItalic", size: 13.0)
         }
         
-        applyTheme()
+        applyTheme(theme: theme)
     }
 }

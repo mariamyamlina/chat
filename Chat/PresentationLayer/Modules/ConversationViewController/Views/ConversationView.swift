@@ -11,7 +11,7 @@ import UIKit
 class ConversationView: UIView {
     // MARK: - UI
     var messageInputContainerBottomConstraint: NSLayoutConstraint?
-    var currentTheme = Settings.currentTheme.themeSettings
+    var theme: Theme
     
     lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -39,7 +39,7 @@ class ConversationView: UIView {
     }()
     
     lazy var messageInputContainer: MessageInputContainer = {
-        let messageContainer = MessageInputContainer()
+        let messageContainer = MessageInputContainer(theme: theme)
         addSubview(messageContainer)
         messageContainer.translatesAutoresizingMaskIntoConstraints = false
         
@@ -58,22 +58,23 @@ class ConversationView: UIView {
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
+        self.theme = .classic
         super.init(coder: coder)
     }
     
-    init() {
+    init(theme: Theme) {
+        self.theme = theme
         super.init(frame: CGRect(origin: UIScreen.main.bounds.origin, size: UIScreen.main.bounds.size))
-        applyTheme()
+        applyTheme(theme: theme)
     }
     
     // MARK: - Setup View
-    fileprivate func applyTheme() {
-        currentTheme = Settings.currentTheme.themeSettings
-        backgroundColor = currentTheme.backgroundColor
+    fileprivate func applyTheme(theme: Theme) {
+        backgroundColor = theme.themeSettings.backgroundColor
     }
     
     func configureTopView(text: String?, image: UIImage?) -> TopView {
-        let viewWithTitle = TopView()
+        let viewWithTitle = TopView(theme: self.theme)
         viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
         viewWithTitle.contentView.backgroundColor = .clear
         viewWithTitle.nameLabel.text = text
@@ -92,8 +93,8 @@ class ConversationView: UIView {
         dateLabel.textAlignment = .center
         dateLabel.text = sectionInfo
 
-        dateLabel.textColor = currentTheme.tableViewHeaderTextColor
-        dateLabel.backgroundColor = currentTheme.tableViewHeaderColor
+        dateLabel.textColor = theme.themeSettings.tableViewHeaderTextColor
+        dateLabel.backgroundColor = theme.themeSettings.tableViewHeaderColor
 
         headerView.addSubview(dateLabel)
         return headerView

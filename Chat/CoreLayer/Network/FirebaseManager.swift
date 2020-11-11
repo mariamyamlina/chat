@@ -38,6 +38,14 @@ class FirebaseManager {
             return UUID().uuidString
         }
     }()
+    
+    // MARK: - Dependencies
+    private let settingsStorage: SettingsStorageProtocol
+
+    // MARK: - Init / deinit
+    init(settingsStorage: SettingsStorageProtocol) {
+        self.settingsStorage = settingsStorage
+    }
 }
 
 extension FirebaseManager: FirebaseManagerProtocol {
@@ -170,7 +178,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
         let message = ["content": text,
                        "created": Timestamp(date: Date()),
                        "senderId": universallyUniqueIdentifier,
-                       "senderName": Settings.name ?? "Marina Dudarenko"] as [String: Any]
+                       "senderName": settingsStorage.name ?? "Marina Dudarenko"] as [String: Any]
         reference.document(channel.identifier).collection("messages").addDocument(data: message)
     }
     

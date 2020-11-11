@@ -9,7 +9,8 @@
 import UIKit
 
 class ThemesView: UIView {
-    var currentTheme = Settings.currentTheme.themeSettings
+    // MARK: - UI
+    var theme: Theme
     
     lazy var titleLabel: UILabel = {
         let title = UILabel()
@@ -71,18 +72,29 @@ class ThemesView: UIView {
         return nightButton
     }()
     
-    func applyTheme() {
-        currentTheme = Settings.currentTheme.themeSettings
-        backgroundColor = currentTheme.settingsBackgroundColor
+    // MARK: - Init / deinit
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init(theme: Theme) {
+        self.theme = theme
+        super.init(frame: CGRect.zero)
+    }
+    
+    // MARK: - Setup View
+    func applyTheme(theme: Theme) {
+        self.theme = theme
+        backgroundColor = theme.themeSettings.settingsBackgroundColor
         if #available(iOS 13.0, *) {
         } else {
-            titleLabel.textColor = currentTheme.textColor
+            titleLabel.textColor = theme.themeSettings.textColor
         }
         chooseSelectedButton()
     }
     
     func chooseSelectedButton() {
-        switch currentTheme {
+        switch theme.themeSettings {
         case is ClassicTheme:
             classicButton.isSelected = true
             dayButton.isSelected = false

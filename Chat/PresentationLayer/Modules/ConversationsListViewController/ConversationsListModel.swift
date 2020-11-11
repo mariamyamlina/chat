@@ -42,6 +42,9 @@ protocol ConversationsListModelProtocol: class {
     func fetchChannels() -> NSFetchedResultsController<ChannelDB>
     func loadWithGCD(completion: @escaping () -> Void)
     func loadWithOperations(completion: @escaping () -> Void)
+    var currentTheme: Theme { get }
+    var name: String? { get }
+    var image: UIImage? { get }
 }
 
 protocol ConversationsListModelDelegate: class {
@@ -54,11 +57,13 @@ class ConversationsListModel {
     weak var delegate: ConversationsListModelDelegate?
     let channelService: ChannelServiceProtocol
     let dataService: DataServiceProtocol
+    var settingsService: SettingsServiceProtocol
     
     // MARK: - Init / deinit
-    init(channelService: ChannelServiceProtocol, dataService: DataServiceProtocol) {
+    init(channelService: ChannelServiceProtocol, dataService: DataServiceProtocol, settingsService: SettingsServiceProtocol) {
         self.channelService = channelService
         self.dataService = dataService
+        self.settingsService = settingsService
     }
 }
 
@@ -90,5 +95,17 @@ extension ConversationsListModel: ConversationsListModelProtocol {
     
     func loadWithOperations(completion: @escaping () -> Void) {
         dataService.load(dataManager: dataService.operationDataManager, mustReadBio: false, completion: completion)
+    }
+    
+    var currentTheme: Theme {
+        return settingsService.currentTheme
+    }
+    
+    var name: String? {
+        return settingsService.name
+    }
+    
+    var image: UIImage? {
+        return settingsService.image
     }
 }

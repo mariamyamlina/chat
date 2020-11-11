@@ -9,17 +9,10 @@
 import UIKit
 import Firebase
 
-extension UIWindow {
-    func initTheme() {
-        guard #available(iOS 13.0, *) else { return }
-        overrideUserInterfaceStyle = Settings.currentTheme.userInterfaceStyle
-    }
-}
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    private let rootAssembly = RootAssembly()
+    let rootAssembly = RootAssembly()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         rootAssembly.loger.printAppLog("Application moved from 'not running state' to 'inactive state':", application.applicationState, #function)
@@ -29,8 +22,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let controller = rootAssembly.presentationAssembly.conversationsListViewController()
-        window?.rootViewController = controller.embedInNavigationController()
-        window?.initTheme()
+        // TODO
+        let theme = Theme(rawValue: rootAssembly.themeStorage.load()) ?? .classic
+        window?.rootViewController = controller.embedInNavigationController(theme: theme)
+        if #available(iOS 13.0, *) {
+            window?.overrideUserInterfaceStyle = theme.userInterfaceStyle
+        }
         window?.makeKeyAndVisible()
 
         return true

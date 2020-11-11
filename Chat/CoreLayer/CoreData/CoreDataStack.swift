@@ -27,6 +27,7 @@ protocol CoreDataStackDelegate {
 }
 
 class CoreDataStack: CoreDataStackProtocol {
+    // MARK: - Dependencies
     var delegate: CoreDataStackDelegate?
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
     
