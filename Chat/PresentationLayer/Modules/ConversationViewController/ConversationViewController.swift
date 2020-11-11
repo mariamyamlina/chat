@@ -11,8 +11,6 @@ import CoreData
 
 class ConversationViewController: LogViewController {
     // MARK: - UI
-    // TODO: - Убрать изображение внутрь канала
-    var image: UIImageView?
     private var conversationView = ConversationView()
     
     // MARK: - Dependencies
@@ -22,6 +20,7 @@ class ConversationViewController: LogViewController {
     // MARK: - DisplayModel
     private var dataSource: [MessageCellModel] = []
     
+    // MARK: - Init / deinit
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -37,6 +36,7 @@ class ConversationViewController: LogViewController {
         model.removeListener()
     }
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -51,8 +51,7 @@ class ConversationViewController: LogViewController {
         conversationView.messageInputContainer.textField.becomeFirstResponder()
     }
     
-    // MARK: - Views
-    
+    // MARK: - Setup View
     func setupView() {
         view.addSubview(conversationView)
         conversationView.translatesAutoresizingMaskIntoConstraints = false
@@ -64,6 +63,15 @@ class ConversationViewController: LogViewController {
         ])
 
         configureNavigationBar()
+    }
+    
+    private func configureNavigationBar() {
+        navigationItem.largeTitleDisplayMode = .never
+        if #available(iOS 13.0, *) {
+            navigationItem.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+        }
+        navigationItem.titleView = conversationView.configureTopView(text: model.channel?.name,
+                                                                     image: model.channel?.profileImage)
     }
     
     private func setupTableView() {
@@ -100,7 +108,6 @@ class ConversationViewController: LogViewController {
     }
     
     // MARK: - Keyboard
-    
     private func addKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -128,18 +135,7 @@ class ConversationViewController: LogViewController {
         }
     }
     
-    // MARK: - NavigationBar
-    
-    private func configureNavigationBar() {
-        navigationItem.largeTitleDisplayMode = .never
-        if #available(iOS 13.0, *) {
-            navigationItem.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
-        navigationItem.titleView = conversationView.configureTopView(text: model.channel?.name, imageView: image)
-    }
-    
     // MARK: - TableView
-    
     private func countIndexPathForLastRow() -> IndexPath? {
         let lastSectionIndex = (model.fetchMessages()?.sections?.count ?? 0) - 1
         var lastRowIndex: Int = -1
@@ -155,7 +151,6 @@ class ConversationViewController: LogViewController {
 }
 
 // MARK: - UITableViewDataSource
-
 extension ConversationViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return model.fetchMessages()?.sections?.count ?? 0
@@ -184,7 +179,6 @@ extension ConversationViewController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-
 extension ConversationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         conversationView.messageInputContainer.textField.endEditing(true)
@@ -211,7 +205,6 @@ extension ConversationViewController: UITableViewDelegate {
 }
 
 // MARK: - UITextFieldDelegate
-
 extension ConversationViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         conversationView.messageInputContainer.textField.resignFirstResponder()
@@ -232,7 +225,6 @@ extension ConversationViewController: UITextFieldDelegate {
 }
 
 // MARK: - NSFetchedResultsControllerDelegate
-
 extension ConversationViewController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         conversationView.tableView.beginUpdates()
@@ -289,7 +281,6 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
 }
 
 // MARK: - ConversationModelDelegate
-
 extension ConversationViewController: ConversationModelDelegate {
     func setup(dataSource: [MessageCellModel]) {
         self.dataSource = dataSource

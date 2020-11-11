@@ -27,10 +27,6 @@ class ProfileViewController: LogViewController {
         super.init(model: presentationAssembly.logModel())
     }
     
-    static var name: String?
-    static var bio: String?
-    static var image: UIImage?
-    
     static var nameDidChange = false
     static var bioDidChange = false
     static var imageDidChange = false
@@ -42,7 +38,9 @@ class ProfileViewController: LogViewController {
         return imagePicker
     }()
     
-    deinit { removeKeyboardNotifications() }
+    deinit {
+        removeKeyboardNotifications()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -111,8 +109,8 @@ class ProfileViewController: LogViewController {
     }
     
     func loadCompletion() {
-        profileView.nameTextView.text = ProfileViewController.name
-        profileView.bioTextView.text = ProfileViewController.bio
+        profileView.nameTextView.text = Settings.name
+        profileView.bioTextView.text = Settings.bio
         profileView.profileImageView.loadImageCompletion()
     }
     
@@ -230,7 +228,7 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
             profileView.profileImageView.lettersLabel.isHidden = true
             profileView.setSaveButtonsEnable(flag: true)
             ProfileViewController.imageDidChange = true
-            ProfileViewController.image = compressedImage
+            Settings.image = compressedImage
         }
         dismiss(animated: true, completion: nil)
     }
@@ -259,9 +257,9 @@ extension ProfileViewController: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView == profileView.nameTextView {
-            ProfileViewController.name = textView.text
+            Settings.name = textView.text
         } else {
-            ProfileViewController.bio = textView.text
+            Settings.bio = textView.text
         }
     }
     

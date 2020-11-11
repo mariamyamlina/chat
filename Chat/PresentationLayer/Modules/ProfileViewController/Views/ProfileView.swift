@@ -16,7 +16,7 @@ class ProfileView: UIView {
     @objc func configureActionSheet() { actionSheetHandler?() }
     @objc func closeProfileViewController() { closeProfileHandler?() }
     
-    var currentTheme = Theme.current.themeOptions
+    var currentTheme = Settings.currentTheme.themeSettings
     
     var gcdSaveButtonBottomConstraint: NSLayoutConstraint?
     var operationSaveButtonBottomConstraint: NSLayoutConstraint?
@@ -58,7 +58,7 @@ class ProfileView: UIView {
         nameTextView.textAlignment = .center
         nameTextView.isScrollEnabled = false
         nameTextView.autocapitalizationType = .words
-        nameTextView.text = ProfileViewController.name ?? "Marina Dudarenko"
+        nameTextView.text = Settings.name ?? "Marina Dudarenko"
         nameTextView.font = UIFont(name: "SFProDisplay-Bold", size: 24)
         nameTextView.autocorrectionType = .no
         nameTextView.backgroundColor = backgroundColor
@@ -85,7 +85,7 @@ class ProfileView: UIView {
         bioTextView.textAlignment = .left
         bioTextView.autocapitalizationType = .sentences
         bioTextView.textAlignment = .left
-        bioTextView.text = ProfileViewController.bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
+        bioTextView.text = Settings.bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
         bioTextView.font = UIFont(name: "SFProText-Regular", size: 16)
         bioTextView.autocorrectionType = .no
         bioTextView.backgroundColor = backgroundColor
@@ -309,7 +309,7 @@ class ProfileView: UIView {
     // MARK: - Theme
     
     func applyTheme() {
-        currentTheme = Theme.current.themeOptions
+        currentTheme = Settings.currentTheme.themeSettings
         [self, scrollViewContentView].forEach { $0?.backgroundColor = currentTheme.backgroundColor }
         [nameTextView, bioTextView].forEach { $0?.textColor = currentTheme.textColor }
         activityIndicator.color = currentTheme.textColor

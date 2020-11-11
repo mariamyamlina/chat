@@ -16,6 +16,7 @@ class MessageTableViewCell: UITableViewCell {
     
     static let reuseIdentifier = "Message Cell"
     
+    // MARK: - UI
     lazy var messageTextView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = .clear
@@ -50,13 +51,17 @@ class MessageTableViewCell: UITableViewCell {
         return label
     }()
     
-    required init?(coder: NSCoder) { super.init(coder: coder) }
+    // MARK: - Init / deinit
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
     }
     
+    // MARK: - Setup View
     func setupView() {
         backgroundColor = .clear
         selectionStyle = .none
@@ -64,10 +69,9 @@ class MessageTableViewCell: UITableViewCell {
 }
 
 // MARK: - Configuration
-
 extension MessageTableViewCell: ConfigurableViewProtocol {
     func configure(with model: MessageCellModel) {
-        let currentTheme = Theme.current.themeOptions
+        let currentTheme = Settings.currentTheme.themeSettings
         let messageText = model.text
         timeLabel.text = model.time.dateFormatter(onlyTimeMode: true)
 

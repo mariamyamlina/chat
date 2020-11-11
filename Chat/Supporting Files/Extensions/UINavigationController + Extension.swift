@@ -10,7 +10,7 @@ import UIKit
 
 extension UINavigationController {
     func applyTheme() {
-        let currentTheme = Theme.current.themeOptions
+        let currentTheme = Settings.currentTheme.themeSettings
         if #available(iOS 13.0, *) { } else {
             self.navigationBar.barTintColor = currentTheme.barColor
             self.navigationBar.barStyle = currentTheme.barStyle

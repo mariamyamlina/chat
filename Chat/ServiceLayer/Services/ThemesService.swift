@@ -12,16 +12,18 @@ protocol ThemesServiceProtocol {
     func applyTheme(for theme: Theme, completion: () -> Void)
 }
 
-class ThemesService: ThemesServiceProtocol {
+class ThemesService {
+    let themeStorage: ThemeStorageProtocol
+
+    // MARK: - Init / deinit
+    init(themeStorage: ThemeStorageProtocol) {
+        self.themeStorage = themeStorage
+    }
+}
+
+// MARK: - ThemesServiceProtocol
+extension ThemesService: ThemesServiceProtocol {
     func applyTheme(for theme: Theme, completion: () -> Void) {
-        switch theme {
-        case .classic:
-            Theme(rawValue: 0)?.setActive()
-        case .day:
-            Theme(rawValue: 1)?.setActive()
-        case .night:
-            Theme(rawValue: 2)?.setActive()
-        }
-        completion()
+        themeStorage.save(themeRawValue: theme.rawValue, completion: completion)
     }
 }

@@ -10,12 +10,14 @@ import UIKit
 // TODO: - Убрать CoreData отсюда
 import CoreData
 
+// MARK: - MessageCellModel
 struct MessageCellModel {
     let text: String
     let time: Date
     let type: MessageTableViewCell.MessageType
 }
 
+// MARK: - MessageModelFactory
 class MessageModelFactory {
     func messageToCell(_ message: Message, _ messageType: MessageTableViewCell.MessageType) -> MessageCellModel {
         var messageModel = MessageCellModel(text: message.content,
@@ -39,6 +41,7 @@ class MessageModelFactory {
     }
 }
 
+// MARK: - ConversationModel
 protocol ConversationModelProtocol: class {
     // TODO: - Разобраться с делегатом дважды
     var delegate: ConversationModelDelegate? { get set }
@@ -56,16 +59,21 @@ protocol ConversationModelDelegate: class {
     func show(error message: String)
 }
 
-class ConversationModel: ConversationModelProtocol {
+class ConversationModel {
+    // MARK: - Dependencies
     weak var delegate: ConversationModelDelegate?
     var channel: Channel?
     let messageService: MessageServiceProtocol
     
+    // MARK: - Init / deinit
     init(messageService: MessageServiceProtocol, channel: Channel?) {
         self.messageService = messageService
         self.channel = channel
     }
-    
+}
+
+// MARK: - ConversationModelProtocol
+extension ConversationModel: ConversationModelProtocol {
     func universallyUniqueIdentifier() -> String {
         return messageService.universallyUniqueIdentifier
     }

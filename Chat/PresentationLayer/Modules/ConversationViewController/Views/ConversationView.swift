@@ -9,8 +9,9 @@
 import UIKit
 
 class ConversationView: UIView {
+    // MARK: - UI
     var messageInputContainerBottomConstraint: NSLayoutConstraint?
-    var currentTheme = Theme.current.themeOptions
+    var currentTheme = Settings.currentTheme.themeSettings
     
     lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -55,24 +56,28 @@ class ConversationView: UIView {
         return messageContainer
     }()
     
-    required init?(coder: NSCoder) { super.init(coder: coder) }
+    // MARK: - Init / deinit
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     init() {
         super.init(frame: CGRect(origin: UIScreen.main.bounds.origin, size: UIScreen.main.bounds.size))
         applyTheme()
     }
     
+    // MARK: - Setup View
     fileprivate func applyTheme() {
-        currentTheme = Theme.current.themeOptions
+        currentTheme = Settings.currentTheme.themeSettings
         backgroundColor = currentTheme.backgroundColor
     }
     
-    func configureTopView(text: String?, imageView: UIImageView?) -> TopView {
+    func configureTopView(text: String?, image: UIImage?) -> TopView {
         let viewWithTitle = TopView()
         viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
         viewWithTitle.contentView.backgroundColor = .clear
         viewWithTitle.nameLabel.text = text
-        viewWithTitle.profileImage.image = imageView?.image
+        viewWithTitle.configureProfileImage(with: image)
         return viewWithTitle
     }
     

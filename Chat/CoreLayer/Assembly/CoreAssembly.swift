@@ -14,6 +14,7 @@ protocol CoreAssemblyProtocol {
     // TODO
     var coreDataStack: CoreDataStackProtocol { get }
     var firebaseManager: FirebaseManagerProtocol { get }
+    var themeStorage: ThemeStorageProtocol { get }
 }
 
 class CoreAssembly: CoreAssemblyProtocol {
@@ -22,4 +23,5 @@ class CoreAssembly: CoreAssemblyProtocol {
     // TODO
     lazy var coreDataStack: CoreDataStackProtocol = CoreDataStack.shared
     lazy var firebaseManager: FirebaseManagerProtocol = FirebaseManager()
+    lazy var themeStorage: ThemeStorageProtocol = ThemeStorage()
 }

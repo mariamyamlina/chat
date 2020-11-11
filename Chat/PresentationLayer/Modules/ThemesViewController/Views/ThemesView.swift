@@ -9,7 +9,7 @@
 import UIKit
 
 class ThemesView: UIView {
-    var currentTheme = Theme.current.themeOptions
+    var currentTheme = Settings.currentTheme.themeSettings
     
     lazy var titleLabel: UILabel = {
         let title = UILabel()
@@ -72,7 +72,7 @@ class ThemesView: UIView {
     }()
     
     func applyTheme() {
-        currentTheme = Theme.current.themeOptions
+        currentTheme = Settings.currentTheme.themeSettings
         backgroundColor = currentTheme.settingsBackgroundColor
         if #available(iOS 13.0, *) {
         } else {

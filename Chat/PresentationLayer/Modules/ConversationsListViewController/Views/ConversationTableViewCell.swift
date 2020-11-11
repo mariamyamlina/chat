@@ -14,6 +14,7 @@ protocol ConfigurableViewProtocol {
 }
 
 class ConversationTableViewCell: UITableViewCell {
+    // MARK: - UI
     lazy var profileImage: UIImageView = {
         let profileImage = UIImageView()
         profileImage.contentMode = .scaleAspectFill
@@ -104,12 +105,18 @@ class ConversationTableViewCell: UITableViewCell {
         return indicator
     }()
     
+    // MARK: - Init / deinit
     static let reuseIdentifier = "Conversation Cell"
     
-    required init?(coder: NSCoder) { super.init(coder: coder) }
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) { super.init(style: style, reuseIdentifier: reuseIdentifier) }
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    }
 
+    // MARK: - Setup View
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         onlineIndicator.backgroundColor = Colors.onlineIndicatorGreen
@@ -121,7 +128,7 @@ class ConversationTableViewCell: UITableViewCell {
     }
     
     fileprivate func applyTheme() {
-        let currentTheme = Theme.current.themeOptions
+        let currentTheme = Settings.currentTheme.themeSettings
         backgroundColor = .clear
         nameLabel.textColor = currentTheme.textColor
         messageLabel.textColor = currentTheme.messageLabelColor
@@ -131,7 +138,6 @@ class ConversationTableViewCell: UITableViewCell {
 }
 
 // MARK: - Configuration
-
 extension ConversationTableViewCell: ConfigurableViewProtocol {
     func configure(with model: ConversationCellModel) {
         profileImage.image = model.image

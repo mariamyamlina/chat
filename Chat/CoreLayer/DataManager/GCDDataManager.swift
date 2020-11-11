@@ -37,7 +37,7 @@ extension GCDDataManager: DataManagerProtocol {
         queue.async {
             if ProfileViewController.nameDidChange {
                 do {
-                    try ProfileViewController.name?.write(to: self.nameFileURL, atomically: false, encoding: .utf8)
+                    try Settings.name?.write(to: self.nameFileURL, atomically: false, encoding: .utf8)
                 } catch {
                     nameSaved = false
                 }
@@ -50,7 +50,7 @@ extension GCDDataManager: DataManagerProtocol {
         queue.async {
             if ProfileViewController.bioDidChange {
                 do {
-                    try ProfileViewController.bio?.write(to: self.bioFileURL, atomically: false, encoding: .utf8)
+                    try Settings.bio?.write(to: self.bioFileURL, atomically: false, encoding: .utf8)
                 } catch {
                     bioSaved = false
                 }
@@ -61,7 +61,7 @@ extension GCDDataManager: DataManagerProtocol {
         
         group.enter()
         queue.async {
-            if let data = ProfileViewController.image?.jpegData(compressionQuality: 0.5),
+            if let data = Settings.image?.jpegData(compressionQuality: 0.5),
                 ProfileViewController.imageDidChange {
                 do {
                     try data.write(to: self.imageFileURL)
@@ -89,10 +89,10 @@ extension GCDDataManager: DataManagerProtocol {
             do {
                 let nameFromFile = try String(data: Data(contentsOf: self.nameFileURL), encoding: .utf8)
                 if let name = nameFromFile {
-                    ProfileViewController.name = name
+                    Settings.name = name
                 }
             } catch {
-                ProfileViewController.name = "Marina Dudarenko"
+                Settings.name = "Marina Dudarenko"
             }
             group.leave()
         }
@@ -103,10 +103,10 @@ extension GCDDataManager: DataManagerProtocol {
                 do {
                     let bioFromFile = try String(data: Data(contentsOf: self.bioFileURL), encoding: .utf8)
                     if let bio = bioFromFile {
-                        ProfileViewController.bio = bio
+                        Settings.bio = bio
                     }
                 } catch {
-                    ProfileViewController.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
+                    Settings.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
                 }
             }
             group.leave()
@@ -117,10 +117,10 @@ extension GCDDataManager: DataManagerProtocol {
             do {
                 let imageFromFile = try UIImage(data: Data(contentsOf: self.imageFileURL))
                 if let image = imageFromFile {
-                    ProfileViewController.image = image
+                    Settings.image = image
                 }
             } catch {
-                ProfileViewController.image = nil
+                Settings.image = nil
             }
             group.leave()
         }

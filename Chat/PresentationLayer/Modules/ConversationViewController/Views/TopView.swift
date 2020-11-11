@@ -9,7 +9,7 @@
 import UIKit
 
 class TopView: UIView {
-    let currentTheme = Theme.current.themeOptions
+    let currentTheme = Settings.currentTheme.themeSettings
     
     lazy var contentView: UIView = {
         let contentView = UIView()
@@ -23,26 +23,6 @@ class TopView: UIView {
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
         return contentView
-    }()
-    
-    lazy var profileImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = Colors.profileImageGreen
-        imageView.layer.cornerRadius = 18
-        imageView.clipsToBounds = true
-
-        contentView.addSubview(imageView)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: -10),
-            imageView.widthAnchor.constraint(equalToConstant: 36),
-            imageView.heightAnchor.constraint(equalToConstant: 36)
-        ])
-        return imageView
     }()
     
     lazy var nameLabel: UILabel = {
@@ -60,11 +40,23 @@ class TopView: UIView {
         return label
     }()
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
+    func configureProfileImage(with image: UIImage?) {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.backgroundColor = Colors.profileImageGreen
+        imageView.layer.cornerRadius = 18
+        imageView.clipsToBounds = true
+        imageView.image = image
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+        contentView.addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: -10),
+            imageView.widthAnchor.constraint(equalToConstant: 36),
+            imageView.heightAnchor.constraint(equalToConstant: 36)
+        ])
     }
 }

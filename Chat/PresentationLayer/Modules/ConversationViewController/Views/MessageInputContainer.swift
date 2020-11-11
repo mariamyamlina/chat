@@ -9,9 +9,7 @@
 import UIKit
 
 class MessageInputContainer: UIView {
-    var sendHandler: (() -> Void)?
-    @objc func sendButtonTapped() { sendHandler?() }
-    
+    // MARK: - UI
     lazy var borderLine: UIView = {
         let line = UIView()
         addSubview(line)
@@ -28,7 +26,7 @@ class MessageInputContainer: UIView {
     lazy var textField: UITextField = {
         let textField = UITextField()
         textField.autocapitalizationType = .sentences
-        let currentTheme = Theme.current.themeOptions
+        let currentTheme = Settings.currentTheme.themeSettings
         textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
         attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any, NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
         textField.textAlignment = .left
@@ -80,22 +78,28 @@ class MessageInputContainer: UIView {
         return button
     }()
     
-    required init?(coder: NSCoder) { super.init(coder: coder) }
+    // MARK: - Handlers
+    var sendHandler: (() -> Void)?
+    @objc func sendButtonTapped() { sendHandler?() }
+    
+    // MARK: - Init / deinit
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         applyTheme()
     }
     
+    // MARK: - Setup View
     func enableSendButton(_ state: Bool) {
         sendButton.isHidden = !state
         sendButton.isEnabled = state
     }
     
-    // MARK: - Theme
-    
     private func applyTheme() {
-        let currentTheme = Theme.current.themeOptions
+        let currentTheme = Settings.currentTheme.themeSettings
         backgroundColor = currentTheme.barColor
         borderLine.backgroundColor = Colors.separatorColor()
         textField.backgroundColor = currentTheme.textFieldBackgroundColor

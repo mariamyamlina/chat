@@ -31,6 +31,7 @@ class ConversationsListViewController: LogViewController {
         super.init(model: presentationAssembly.logModel())
     }
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -64,6 +65,7 @@ class ConversationsListViewController: LogViewController {
         conversationsListView.showNewMessageButton(height >= 96)
     }
     
+    // MARK: - Setup View
     private func setupView() {
         view.addSubview(conversationsListView)
         conversationsListView.translatesAutoresizingMaskIntoConstraints = false
@@ -136,8 +138,6 @@ class ConversationsListViewController: LogViewController {
         }
     }
     
-    // MARK: - Theme
-    
     func applyTheme() {
         navigationController?.applyTheme()
         conversationsListView.applyTheme()
@@ -145,7 +145,6 @@ class ConversationsListViewController: LogViewController {
 }
 
 // MARK: - UITableViewDataSource
-
 extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return model.fetchChannels().sections?[section].numberOfObjects ?? 0
@@ -165,7 +164,6 @@ extension ConversationsListViewController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -189,7 +187,6 @@ extension ConversationsListViewController: UITableViewDelegate {
 }
 
 // MARK: - UIScrollViewDelegate
-
 extension ConversationsListViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let height = navigationController?.navigationBar.frame.height else { return }
@@ -198,7 +195,6 @@ extension ConversationsListViewController: UIScrollViewDelegate {
 }
 
 // MARK: - NSFetchedResultsControllerDelegate
-
 extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard navigationController?.topViewController == self else { return }
@@ -256,7 +252,6 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
 }
 
 // MARK: - ConversationsListModelDelegate
-
 extension ConversationsListViewController: ConversationsListModelDelegate {
     func setup(dataSource: [ConversationCellModel]) {
         self.dataSource = dataSource

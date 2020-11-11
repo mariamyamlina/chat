@@ -9,14 +9,8 @@
 import UIKit
 
 class ConversationsListView: UIView {
-    var profileMenuHandler: (() -> Void)?
-    var settingsButtonHandler: (() -> Void)?
-    var alertWithTextFieldHandler: (() -> Void)?
-    @objc func profileMenuTapped() { profileMenuHandler?() }
-    @objc func settingsButtonTapped() { settingsButtonHandler?() }
-    @objc func addChannelButtonTapped() { alertWithTextFieldHandler?() }
-    
-    var currentTheme = Theme.current.themeOptions
+    // MARK: - UI
+    var currentTheme = Settings.currentTheme.themeSettings
     
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
@@ -84,6 +78,15 @@ class ConversationsListView: UIView {
         return profileImage
     }()
     
+    // MARK: - Handlers
+    var profileMenuHandler: (() -> Void)?
+    var settingsButtonHandler: (() -> Void)?
+    var alertWithTextFieldHandler: (() -> Void)?
+    @objc func profileMenuTapped() { profileMenuHandler?() }
+    @objc func settingsButtonTapped() { settingsButtonHandler?() }
+    @objc func addChannelButtonTapped() { alertWithTextFieldHandler?() }
+    
+    // MARK: - Init / deinit
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -91,6 +94,20 @@ class ConversationsListView: UIView {
     init() {
         super.init(frame: CGRect(origin: UIScreen.main.bounds.origin, size: UIScreen.main.bounds.size))
         applyTheme()
+    }
+    
+    // MARK: - Setup View
+    func applyTheme() {
+        currentTheme = Settings.currentTheme.themeSettings
+        backgroundColor = currentTheme.backgroundColor
+        tableView.separatorColor = currentTheme.tableViewSeparatorColor
+        tableView.reloadData()
+        if #available(iOS 13.0, *) {
+            searchController.searchBar.searchTextField.backgroundColor = currentTheme.searchBarTextColor
+            searchController.searchBar.searchTextField.leftView?.tintColor = currentTheme.textFieldTextColor
+        } else {
+            searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
+        }
     }
     
     func configureRightBarButtonItem() -> UIBarButtonItem {
@@ -101,19 +118,6 @@ class ConversationsListView: UIView {
         rightButton.addTarget(self, action: #selector(profileMenuTapped), for: .touchUpInside)
         profileImage.addSubview(rightButton)
         return UIBarButtonItem(customView: profileImage)
-    }
-    
-    func applyTheme() {
-        currentTheme = Theme.current.themeOptions
-        backgroundColor = currentTheme.backgroundColor
-        tableView.separatorColor = currentTheme.tableViewSeparatorColor
-        tableView.reloadData()
-        if #available(iOS 13.0, *) {
-            searchController.searchBar.searchTextField.backgroundColor = currentTheme.searchBarTextColor
-            searchController.searchBar.searchTextField.leftView?.tintColor = currentTheme.textFieldTextColor
-        } else {
-            searchController.searchBar.keyboardAppearance = currentTheme.keyboardAppearance
-        }
     }
     
     func showNewMessageButton(_ show: Bool) {

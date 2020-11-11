@@ -170,7 +170,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
         let message = ["content": text,
                        "created": Timestamp(date: Date()),
                        "senderId": universallyUniqueIdentifier,
-                       "senderName": ProfileViewController.name ?? "Marina Dudarenko"] as [String: Any]
+                       "senderName": Settings.name ?? "Marina Dudarenko"] as [String: Any]
         reference.document(channel.identifier).collection("messages").addDocument(data: message)
     }
     

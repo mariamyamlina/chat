@@ -12,7 +12,7 @@ import Firebase
 extension UIWindow {
     func initTheme() {
         guard #available(iOS 13.0, *) else { return }
-        overrideUserInterfaceStyle = Theme.current.userInterfaceStyle
+        overrideUserInterfaceStyle = Settings.currentTheme.userInterfaceStyle
     }
 }
 
@@ -25,10 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         rootAssembly.loger.printAppLog("Application moved from 'not running state' to 'inactive state':", application.applicationState, #function)
         
         FirebaseApp.configure()
-
-//        rootAssembly.coreDataStack.didUpdateDataBase = { stack in
-//            stack.printDatabaseStatistics()
-//        }
         rootAssembly.coreDataStack.enableObservers()
 
         self.window = UIWindow(frame: UIScreen.main.bounds)

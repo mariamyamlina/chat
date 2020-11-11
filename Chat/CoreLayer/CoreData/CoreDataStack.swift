@@ -31,7 +31,6 @@ class CoreDataStack: CoreDataStackProtocol {
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
     
     // MARK: - Init / deinit
-    
     static var shared: CoreDataStack = {
         return CoreDataStack()
     }()
@@ -46,7 +45,6 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - URL
-    
     private var storeUrl: URL = {
         guard let documentsUrl = FileManager.default.urls(for: .documentDirectory,
                                                           in: .userDomainMask).last else {
@@ -59,7 +57,6 @@ class CoreDataStack: CoreDataStackProtocol {
     private let dataModelExtension = "momd"
     
     // MARK: - Init Stack
-    
     private(set) lazy var managedObjectModel: NSManagedObjectModel = {
         guard let modelURL = Bundle.main.url(forResource: self.dataMadelName,
                                              withExtension: self.dataModelExtension) else {
@@ -74,7 +71,6 @@ class CoreDataStack: CoreDataStackProtocol {
     }()
     
     // MARK: - Coordinator
-
     private lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         
@@ -94,7 +90,6 @@ class CoreDataStack: CoreDataStackProtocol {
     }()
     
     // MARK: - Contexts
-    
     private lazy var writterContext: NSManagedObjectContext = {
         let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.persistentStoreCoordinator = persistentStoreCoordinator
@@ -119,7 +114,6 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - Save Context
-
     func performSave(_ handler: (NSManagedObjectContext) -> Void) {
         let context = saveContext()
         context.performAndWait {
@@ -144,7 +138,6 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - Load Context
-    
     func load(channel id: String,
               from context: NSManagedObjectContext,
               errorHandler: @escaping (String?, String?) -> Void) -> ChannelDB? {
@@ -174,7 +167,6 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - Observers
-    
     func enableObservers() {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self,
@@ -209,7 +201,6 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - CoreData Logs
-    
     func printDatabaseStatistics() {
         mainContext.perform { [weak self] in
             do {
@@ -234,7 +225,6 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - Array Difference
-    
     func arrayDifference(entityType: EntityType,
                          predicate: String?,
                          arrayOfEntities: [EntityProtocol],

@@ -33,7 +33,7 @@ class ProfileImageView: UIView {
     
     lazy var lettersLabel: UILabel = {
         let label = UILabel()
-        let letters = getLetters(for: ProfileViewController.name ?? "")
+        let letters = getLetters(for: Settings.name ?? "")
         label.text = letters
         label.font = UIFont(name: "Roboto-Regular", size: fontSize)
         label.textColor = Colors.lettersLabelColor
@@ -101,8 +101,8 @@ class ProfileImageView: UIView {
     }
     
     func loadImageCompletion() {
-        lettersLabel.text = getLetters(for: ProfileViewController.name ?? "")
-        profileImage.image = ProfileViewController.image
+        lettersLabel.text = getLetters(for: Settings.name ?? "")
+        profileImage.image = Settings.image
         lettersLabel.isHidden = (profileImage.image != nil)
     }
     

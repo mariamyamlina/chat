@@ -23,7 +23,6 @@
 		994635B92534DE05003DEA03 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994635B82534DE05003DEA03 /* DataService.swift */; };
 		994AF9D125221D300013B0E0 /* TopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994AF9D025221D300013B0E0 /* TopView.swift */; };
 		994B4A7E252A79E900A50B5D /* SFProText-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */; };
-		994B4A80252A7C3900A50B5D /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994B4A7F252A7C3900A50B5D /* Theme.swift */; };
 		994B9ADA252799F600A453F2 /* ThemesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994B9AD9252799F600A453F2 /* ThemesService.swift */; };
 		994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */; };
 		994F1C9A2534C987003FC809 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C992534C987003FC809 /* Colors.swift */; };
@@ -34,7 +33,6 @@
 		995C84B2253B09DA0036B067 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995C84B1253B09DA0036B067 /* Message.swift */; };
 		996941142539082500819078 /* AlertControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996941132539082500819078 /* AlertControllerExtension.swift */; };
 		996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996FA7B3253FAB4B007EC8AA /* Channel.swift */; };
-		997C86E32550602600FD16B1 /* ThemeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997C86E22550602600FD16B1 /* ThemeOptions.swift */; };
 		997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE1F2530D8EF00645079 /* GCDDataManager.swift */; };
 		997CEE222530D91500645079 /* OperationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE212530D91500645079 /* OperationDataManager.swift */; };
 		99803F87250ADD0F000284D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99803F86250ADD0F000284D9 /* AppDelegate.swift */; };
@@ -56,6 +54,8 @@
 		99CB3DF9255B1A1F00DDD117 /* String + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CB3DF8255B1A1F00DDD117 /* String + Extension.swift */; };
 		99CB3DFB255B1A3600DDD117 /* Date + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CB3DFA255B1A3600DDD117 /* Date + Extension.swift */; };
 		99CB3DFF255B1C4000DDD117 /* MessageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CB3DFE255B1C4000DDD117 /* MessageService.swift */; };
+		99CB3E08255B4CE100DDD117 /* ThemeStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CB3E07255B4CE100DDD117 /* ThemeStorage.swift */; };
+		99CB3E0C255B620A00DDD117 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CB3E0B255B620A00DDD117 /* Settings.swift */; };
 		99D40CCE25581862005FEF4C /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D40CCD25581862005FEF4C /* CoreAssembly.swift */; };
 		99E52A6C2542EF40007BD9B6 /* Chat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A6A2542EF40007BD9B6 /* Chat.xcdatamodeld */; };
 		99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A6E2542F313007BD9B6 /* CoreDataStack.swift */; };
@@ -89,7 +89,6 @@
 		994635B82534DE05003DEA03 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		994AF9D025221D300013B0E0 /* TopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopView.swift; sourceTree = "<group>"; };
 		994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-RegularItalic.ttf"; sourceTree = "<group>"; };
-		994B4A7F252A7C3900A50B5D /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		994B9AD9252799F600A453F2 /* ThemesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesService.swift; sourceTree = "<group>"; };
 		994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		994F1C992534C987003FC809 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -100,7 +99,6 @@
 		995C84B1253B09DA0036B067 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		996941132539082500819078 /* AlertControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertControllerExtension.swift; sourceTree = "<group>"; };
 		996FA7B3253FAB4B007EC8AA /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
-		997C86E22550602600FD16B1 /* ThemeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeOptions.swift; sourceTree = "<group>"; };
 		997CEE1F2530D8EF00645079 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
 		997CEE212530D91500645079 /* OperationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDataManager.swift; sourceTree = "<group>"; };
 		99803F83250ADD0F000284D9 /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -124,6 +122,8 @@
 		99CB3DF8255B1A1F00DDD117 /* String + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String + Extension.swift"; sourceTree = "<group>"; };
 		99CB3DFA255B1A3600DDD117 /* Date + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date + Extension.swift"; sourceTree = "<group>"; };
 		99CB3DFE255B1C4000DDD117 /* MessageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageService.swift; sourceTree = "<group>"; };
+		99CB3E07255B4CE100DDD117 /* ThemeStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeStorage.swift; sourceTree = "<group>"; };
+		99CB3E0B255B620A00DDD117 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		99D40CCD25581862005FEF4C /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		99E52A6B2542EF40007BD9B6 /* Chat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Chat.xcdatamodel; sourceTree = "<group>"; };
 		99E52A6E2542F313007BD9B6 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
@@ -207,13 +207,11 @@
 				99ED327F25580FA1008848D0 /* CoreLayer */,
 				99803F86250ADD0F000284D9 /* AppDelegate.swift */,
 				99ED328025580FC8008848D0 /* RootAssembly.swift */,
+				99CB3E0B255B620A00DDD117 /* Settings.swift */,
 				994518DB2556F02D00D5B015 /* Supporting Files */,
 				998ED921254E07EA0030A102 /* Entity.swift */,
 				996FA7B3253FAB4B007EC8AA /* Channel.swift */,
 				995C84B1253B09DA0036B067 /* Message.swift */,
-				994F1C992534C987003FC809 /* Colors.swift */,
-				994B4A7F252A7C3900A50B5D /* Theme.swift */,
-				997C86E22550602600FD16B1 /* ThemeOptions.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -303,12 +301,21 @@
 		99CB3DF5255B19B800DDD117 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				994F1C992534C987003FC809 /* Colors.swift */,
 				992800F625599ABC00C19545 /* UIViewController + Extension.swift */,
 				99CB3DF6255B1A0600DDD117 /* UINavigationController + Extension.swift */,
 				99CB3DF8255B1A1F00DDD117 /* String + Extension.swift */,
 				99CB3DFA255B1A3600DDD117 /* Date + Extension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		99CB3E04255B4BA200DDD117 /* ThemeStorage */ = {
+			isa = PBXGroup;
+			children = (
+				99CB3E07255B4CE100DDD117 /* ThemeStorage.swift */,
+			);
+			path = ThemeStorage;
 			sourceTree = "<group>";
 		};
 		99D40CCC2558184B005FEF4C /* Assembly */ = {
@@ -383,6 +390,7 @@
 				99D40CCC2558184B005FEF4C /* Assembly */,
 				992800F825599BA200C19545 /* DataManager */,
 				999EAEAA2559F6B80070D852 /* CoreData */,
+				99CB3E04255B4BA200DDD117 /* ThemeStorage */,
 				99CB3DF0255B09AE00DDD117 /* Network */,
 			);
 			path = CoreLayer;
@@ -586,8 +594,8 @@
 				997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */,
 				998ED922254E07EB0030A102 /* Entity.swift in Sources */,
 				990FCB9C254C969F00156A48 /* ChannelDB+CoreDataClass.swift in Sources */,
+				99CB3E0C255B620A00DDD117 /* Settings.swift in Sources */,
 				9957D96C254F42650073DCA2 /* MessageInputContainer.swift in Sources */,
-				997C86E32550602600FD16B1 /* ThemeOptions.swift in Sources */,
 				994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */,
 				9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */,
 				99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */,
@@ -595,7 +603,6 @@
 				9950733D251F87A500515678 /* MessageTableViewCell.swift in Sources */,
 				990FCB98254C969800156A48 /* MessageDB+CoreDataClass.swift in Sources */,
 				996941142539082500819078 /* AlertControllerExtension.swift in Sources */,
-				994B4A80252A7C3900A50B5D /* Theme.swift in Sources */,
 				99846730251B5EA1004E9044 /* ButtonWithTouchSize.swift in Sources */,
 				994518DF25572B0900D5B015 /* ProfileView.swift in Sources */,
 				999EAEA92559F3950070D852 /* LogModel.swift in Sources */,
@@ -617,6 +624,7 @@
 				99A0E5A925587ED000742613 /* ThemesModel.swift in Sources */,
 				99ED328D25581271008848D0 /* ConversationModel.swift in Sources */,
 				99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */,
+				99CB3E08255B4CE100DDD117 /* ThemeStorage.swift in Sources */,
 				994635B92534DE05003DEA03 /* DataService.swift in Sources */,
 				994518DA2556E40000D5B015 /* ConversationView.swift in Sources */,
 				99D40CCE25581862005FEF4C /* CoreAssembly.swift in Sources */,

@@ -29,7 +29,7 @@ class ServicesAssembly: ServicesAssemblyProtocol {
         return MessageService(coreDataStack: self.coreAssembly.coreDataStack, firebaseManager: self.coreAssembly.firebaseManager, channel: channel)
     }
     
-    lazy var themeService: ThemesServiceProtocol = ThemesService()
+    lazy var themeService: ThemesServiceProtocol = ThemesService(themeStorage: self.coreAssembly.themeStorage)
     lazy var dataService: DataServiceProtocol = DataService(gcdDataManager: self.coreAssembly.gcdDataManager, operationDataManager: self.coreAssembly.operationDataManager)
     lazy var loger: LogerProtocol = Loger(coreDataStack: self.coreAssembly.coreDataStack)
 }

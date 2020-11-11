@@ -63,7 +63,7 @@ class WriteOperation: Operation {
         if isCancelled { return }
         do {
             if ProfileViewController.nameDidChange {
-                try ProfileViewController.name?.write(to: nameFileURL, atomically: false, encoding: .utf8)
+                try Settings.name?.write(to: nameFileURL, atomically: false, encoding: .utf8)
             }
         } catch {
             nameSaved = false
@@ -72,7 +72,7 @@ class WriteOperation: Operation {
         
         do {
             if ProfileViewController.bioDidChange {
-                try ProfileViewController.bio?.write(to: bioFileURL, atomically: false, encoding: .utf8)
+                try Settings.bio?.write(to: bioFileURL, atomically: false, encoding: .utf8)
             }
         } catch {
             bioSaved = false
@@ -80,7 +80,7 @@ class WriteOperation: Operation {
         ProfileViewController.bioDidChange = !bioSaved
         
         do {
-            if let data = ProfileViewController.image?.jpegData(compressionQuality: 0.5),
+            if let data = Settings.image?.jpegData(compressionQuality: 0.5),
                 ProfileViewController.imageDidChange {
                 try data.write(to: imageFileURL)
             }
@@ -102,10 +102,10 @@ class ReadNameOperation: Operation {
         do {
             let nameFromFile = try String(data: Data(contentsOf: nameFileURL), encoding: .utf8)
             if let name = nameFromFile {
-                ProfileViewController.name = name
+                Settings.name = name
             }
         } catch {
-            ProfileViewController.name = "Marina Dudarenko"
+            Settings.name = "Marina Dudarenko"
         }
     }
 }
@@ -121,10 +121,10 @@ class ReadBioOperation: Operation {
         do {
             let bioFromFile = try String(data: Data(contentsOf: bioFileURL), encoding: .utf8)
             if let bio = bioFromFile {
-                ProfileViewController.bio = bio
+                Settings.bio = bio
             }
         } catch {
-            ProfileViewController.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
+            Settings.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
         }
     }
 }
@@ -140,10 +140,10 @@ class ReadImageOperation: Operation {
         do {
             let imageFromFile = try UIImage(data: Data(contentsOf: imageFileURL))
             if let image = imageFromFile {
-                ProfileViewController.image = image
+                Settings.image = image
             }
         } catch {
-            ProfileViewController.image = nil
+            Settings.image = nil
         }
     }
 }

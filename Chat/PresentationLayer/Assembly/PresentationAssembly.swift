@@ -17,18 +17,20 @@ protocol PresentationAssemblyProtocol {
 }
 
 class PresentationAssembly: PresentationAssemblyProtocol {
+    // MARK: - Dependencies
     private let serviceAssembly: ServicesAssemblyProtocol
     
-    init(serviceAssembly: ServicesAssemblyProtocol) { self.serviceAssembly = serviceAssembly }
+    // MARK: Init / deinit
+    init(serviceAssembly: ServicesAssemblyProtocol) {
+        self.serviceAssembly = serviceAssembly
+    }
     
     // MARK: - LogViewController
-        
-        func logModel() -> LogModelProtocol {
-            return LogModel(loger: serviceAssembly.loger)
-        }
+    func logModel() -> LogModelProtocol {
+        return LogModel(loger: serviceAssembly.loger)
+    }
     
     // MARK: - ConversationsListViewController
-    
     func conversationsListViewController() -> ConversationsListViewController {
         let model = conversationsListModel()
         let conversationsListVC = ConversationsListViewController(model: model, presentationAssembly: self)
@@ -41,7 +43,6 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     // MARK: - ConversationViewController
-    
     func conversationViewController(channel: Channel?) -> ConversationViewController {
         let model = conversationModel(channel: channel)
         let conversationVC = ConversationViewController(model: model, presentationAssembly: self)
@@ -54,7 +55,6 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     // MARK: - ProfileViewController
-    
     func profileViewController() -> ProfileViewController {
         let model = profileModel()
         let profileVC = ProfileViewController(model: model, presentationAssembly: self)
@@ -67,7 +67,6 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     // MARK: - ThemesViewController
-    
     func themesViewController() -> ThemesViewController {
         let model = themesModel()
         let themesVC = ThemesViewController(model: model, presentationAssembly: self)
