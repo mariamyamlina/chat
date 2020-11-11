@@ -22,9 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let controller = rootAssembly.presentationAssembly.conversationsListViewController()
+        window?.rootViewController = controller.embedInNavigationController()
         // TODO
         let theme = Theme(rawValue: rootAssembly.themeStorage.load()) ?? .classic
-        window?.rootViewController = controller.embedInNavigationController(theme: theme)
         if #available(iOS 13.0, *) {
             window?.overrideUserInterfaceStyle = theme.userInterfaceStyle
         }

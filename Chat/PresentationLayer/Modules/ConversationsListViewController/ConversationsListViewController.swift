@@ -86,7 +86,6 @@ class ConversationsListViewController: LogViewController {
     
     private func setupNavigationBar() {
         guard let navigationBar = navigationController?.navigationBar else { return }
-        print(navigationBar.barStyle)
         conversationsListView.setupNavigationItem(navigationItem: navigationItem)
         conversationsListView.setupNavigationBar(navigationBar: navigationBar)
         updateImageView()

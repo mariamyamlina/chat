@@ -10,7 +10,6 @@
 		990AC641255C171A006A60D4 /* SettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990AC640255C171A006A60D4 /* SettingsService.swift */; };
 		990AC645255C6DB4006A60D4 /* FetchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990AC644255C6DB4006A60D4 /* FetchService.swift */; };
 		990AC649255C8346006A60D4 /* ConfigurableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990AC648255C8346006A60D4 /* ConfigurableView.swift */; };
-		990AC64B255C84B7006A60D4 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990AC64A255C84B7006A60D4 /* NavigationController.swift */; };
 		990FCB98254C969800156A48 /* MessageDB+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB96254C969800156A48 /* MessageDB+CoreDataClass.swift */; };
 		990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB97254C969800156A48 /* MessageDB+CoreDataProperties.swift */; };
 		990FCB9C254C969F00156A48 /* ChannelDB+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB9A254C969F00156A48 /* ChannelDB+CoreDataClass.swift */; };
@@ -80,7 +79,6 @@
 		990AC640255C171A006A60D4 /* SettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsService.swift; sourceTree = "<group>"; };
 		990AC644255C6DB4006A60D4 /* FetchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchService.swift; sourceTree = "<group>"; };
 		990AC648255C8346006A60D4 /* ConfigurableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableView.swift; sourceTree = "<group>"; };
-		990AC64A255C84B7006A60D4 /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		990FCB96254C969800156A48 /* MessageDB+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MessageDB+CoreDataClass.swift"; sourceTree = "<group>"; };
 		990FCB97254C969800156A48 /* MessageDB+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MessageDB+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		990FCB9A254C969F00156A48 /* ChannelDB+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ChannelDB+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -384,7 +382,6 @@
 				99ED32872558118E008848D0 /* ConversationViewController */,
 				99ED328825581196008848D0 /* ProfileViewController */,
 				99ED3289255811A2008848D0 /* ThemesViewController */,
-				990AC64A255C84B7006A60D4 /* NavigationController.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -644,7 +641,6 @@
 				990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */,
 				996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */,
 				99ED327E25580F75008848D0 /* ServicesAssembly.swift in Sources */,
-				990AC64B255C84B7006A60D4 /* NavigationController.swift in Sources */,
 				995C84B2253B09DA0036B067 /* Message.swift in Sources */,
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,
 				99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */,

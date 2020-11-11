@@ -13,6 +13,7 @@ extension UINavigationController {
         if #available(iOS 13.0, *) { } else {
             self.navigationBar.barTintColor = theme.themeSettings.barColor
             self.navigationBar.barStyle = theme.themeSettings.barStyle
+            self.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.themeSettings.textColor]
         }
     }
 }

@@ -51,6 +51,7 @@ class ProfileViewController: LogViewController {
         setupView()
         createRelationships()
         addKeyboardNotifications()
+        navigationController?.applyTheme(theme: model.currentTheme)
     }
     
     override func viewWillAppear(_ animated: Bool) {

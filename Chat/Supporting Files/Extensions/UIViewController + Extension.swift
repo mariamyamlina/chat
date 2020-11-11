@@ -9,9 +9,8 @@
 import UIKit
 
 extension UIViewController {
-    func embedInNavigationController(theme: Theme) -> UINavigationController {
+    func embedInNavigationController() -> UINavigationController {
         let navigationVC = UINavigationController(rootViewController: self)
-        navigationVC.applyTheme(theme: theme)
         return navigationVC
     }
 }

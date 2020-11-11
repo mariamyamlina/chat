@@ -142,6 +142,7 @@ class ConversationsListView: UIView {
     
     func setupNavigationBar(navigationBar: UINavigationBar) {
         navigationBar.prefersLargeTitles = true
+        navigationBar.isTranslucent = true
         navigationBar.addSubview(newMessageButton)
         newMessageButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

@@ -44,6 +44,7 @@ class ConversationViewController: LogViewController {
         setupFetchedResultsController()
         createRelationships()
         addKeyboardNotifications()
+        navigationController?.applyTheme(theme: model.currentTheme)
     }
     
     override func viewDidAppear(_ animated: Bool) {
