@@ -65,10 +65,10 @@ extension ChannelDB {
             messageCount = "This channel has \(count) messages. \n"
         }
         let messages = self.messages?.allObjects
-            .compactMap { $0 as? MessageDB }
-            .map { "\t\t\t\($0.about)" }
-            .joined(separator: "\n") ?? ""
+        let messagesDB = messages?.compactMap { $0 as? MessageDB }
+        let messagesInfo = messagesDB?.map { "\t\t\t\($0.about)" }
+        let messagesInfoWithSeparator = messagesInfo?.joined(separator: "\n") ?? ""
 
-        return description + messageCount + messages
+        return description + messageCount + messagesInfoWithSeparator
     }
 }

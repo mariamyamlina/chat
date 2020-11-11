@@ -95,11 +95,9 @@ class ChannelService {
                         errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
             coreDataStack.arrayDifference(entityType: .channel, predicate: nil, arrayOfEntities: channels, in: context, errorHandler: errorHandler).forEach {
-                let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-                let predicate = NSPredicate(format: "identifier = %@", $0)
-                fetchRequest.predicate = predicate
+                let fetchRequest = coreDataStack.fetchRequest(for: .channel, with: $0)
                 do {
-                    let channelDB = try context.fetch(fetchRequest).first
+                    let channelDB = try context.fetch(fetchRequest).first as? ChannelDB
                     guard let channel = channelDB else { return }
                     let object = context.object(with: channel.objectID)
                     context.delete(object)

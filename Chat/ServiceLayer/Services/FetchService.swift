@@ -20,7 +20,6 @@ class FetchService {
     let coreDataStack: CoreDataStackProtocol
     
     // MARK: - Init / deinit
-    // TODO
     init(coreDataStack: CoreDataStackProtocol) {
         self.coreDataStack = coreDataStack
     }

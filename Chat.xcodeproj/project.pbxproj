@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		990AC641255C171A006A60D4 /* SettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990AC640255C171A006A60D4 /* SettingsService.swift */; };
 		990AC645255C6DB4006A60D4 /* FetchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990AC644255C6DB4006A60D4 /* FetchService.swift */; };
+		990AC649255C8346006A60D4 /* ConfigurableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990AC648255C8346006A60D4 /* ConfigurableView.swift */; };
+		990AC64B255C84B7006A60D4 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990AC64A255C84B7006A60D4 /* NavigationController.swift */; };
 		990FCB98254C969800156A48 /* MessageDB+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB96254C969800156A48 /* MessageDB+CoreDataClass.swift */; };
 		990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB97254C969800156A48 /* MessageDB+CoreDataProperties.swift */; };
 		990FCB9C254C969F00156A48 /* ChannelDB+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB9A254C969F00156A48 /* ChannelDB+CoreDataClass.swift */; };
@@ -77,6 +79,8 @@
 		32563607774D08B4120B1BF2 /* Pods-Chat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.debug.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.debug.xcconfig"; sourceTree = "<group>"; };
 		990AC640255C171A006A60D4 /* SettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsService.swift; sourceTree = "<group>"; };
 		990AC644255C6DB4006A60D4 /* FetchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchService.swift; sourceTree = "<group>"; };
+		990AC648255C8346006A60D4 /* ConfigurableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableView.swift; sourceTree = "<group>"; };
+		990AC64A255C84B7006A60D4 /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		990FCB96254C969800156A48 /* MessageDB+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MessageDB+CoreDataClass.swift"; sourceTree = "<group>"; };
 		990FCB97254C969800156A48 /* MessageDB+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MessageDB+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		990FCB9A254C969F00156A48 /* ChannelDB+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ChannelDB+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -170,6 +174,16 @@
 			path = SettingsStorage;
 			sourceTree = "<group>";
 		};
+		990AC647255C8305006A60D4 /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				998ED921254E07EA0030A102 /* Entity.swift */,
+				996FA7B3253FAB4B007EC8AA /* Channel.swift */,
+				995C84B1253B09DA0036B067 /* Message.swift */,
+			);
+			path = Entity;
+			sourceTree = "<group>";
+		};
 		992800F825599BA200C19545 /* DataManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -220,9 +234,7 @@
 				99803F86250ADD0F000284D9 /* AppDelegate.swift */,
 				99ED328025580FC8008848D0 /* RootAssembly.swift */,
 				994518DB2556F02D00D5B015 /* Supporting Files */,
-				998ED921254E07EA0030A102 /* Entity.swift */,
-				996FA7B3253FAB4B007EC8AA /* Channel.swift */,
-				995C84B1253B09DA0036B067 /* Message.swift */,
+				990AC647255C8305006A60D4 /* Entity */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -313,6 +325,7 @@
 			isa = PBXGroup;
 			children = (
 				994F1C992534C987003FC809 /* Colors.swift */,
+				990AC648255C8346006A60D4 /* ConfigurableView.swift */,
 				992800F625599ABC00C19545 /* UIViewController + Extension.swift */,
 				99CB3DF6255B1A0600DDD117 /* UINavigationController + Extension.swift */,
 				99CB3DF8255B1A1F00DDD117 /* String + Extension.swift */,
@@ -371,6 +384,7 @@
 				99ED32872558118E008848D0 /* ConversationViewController */,
 				99ED328825581196008848D0 /* ProfileViewController */,
 				99ED3289255811A2008848D0 /* ThemesViewController */,
+				990AC64A255C84B7006A60D4 /* NavigationController.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -630,6 +644,7 @@
 				990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */,
 				996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */,
 				99ED327E25580F75008848D0 /* ServicesAssembly.swift in Sources */,
+				990AC64B255C84B7006A60D4 /* NavigationController.swift in Sources */,
 				995C84B2253B09DA0036B067 /* Message.swift in Sources */,
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,
 				99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */,
@@ -637,6 +652,7 @@
 				991CEB432559C6BB006EDC72 /* DataManager.swift in Sources */,
 				99A0E5A925587ED000742613 /* ThemesModel.swift in Sources */,
 				99ED328D25581271008848D0 /* ConversationModel.swift in Sources */,
+				990AC649255C8346006A60D4 /* ConfigurableView.swift in Sources */,
 				990AC645255C6DB4006A60D4 /* FetchService.swift in Sources */,
 				99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */,
 				99CB3E08255B4CE100DDD117 /* ThemeStorage.swift in Sources */,

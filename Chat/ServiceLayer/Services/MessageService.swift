@@ -93,11 +93,9 @@ class MessageService {
 
             coreDataStack.arrayDifference(entityType: .message, predicate: channelDB.identifier, arrayOfEntities: messages,
                                           in: context, errorHandler: errorHandler).forEach {
-                let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
-                let predicate = NSPredicate(format: "identifier = %@", $0)
-                fetchRequest.predicate = predicate
+                let fetchRequest = coreDataStack.fetchRequest(for: .message, with: $0)
                 do {
-                    let messageDB = try context.fetch(fetchRequest).first
+                    let messageDB = try context.fetch(fetchRequest).first as? MessageDB
                     guard let message = messageDB else { return }
                     channelDB.removeFromMessages(message)
                 } catch {

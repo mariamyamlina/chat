@@ -11,16 +11,15 @@ import CoreData
 
 protocol CoreDataStackProtocol {
     var delegate: CoreDataStackDelegate? { get set }
-    var didUpdateDataBase: ((CoreDataStack) -> Void)? { get set }
     var mainContext: NSManagedObjectContext { get }
     func performSave(_ handler: (NSManagedObjectContext) -> Void)
     func load(channel id: String, from context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> ChannelDB?
     func load(message id: String, from context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> MessageDB?
     func enableObservers()
-    func printDatabaseStatistics()
     func arrayDifference(entityType: EntityType, predicate: String?, arrayOfEntities: [EntityProtocol],
                          in context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> [String]
     func fetchRequest<T: NSManagedObject>(for entity: EntityType, channelId: String?) -> NSFetchRequest<T>
+    func fetchRequest<T: NSManagedObject>(for entity: EntityType, with identifier: String) -> NSFetchRequest<T>
 }
 
 protocol CoreDataStackDelegate {
@@ -31,15 +30,8 @@ protocol CoreDataStackDelegate {
 class CoreDataStack: CoreDataStackProtocol {
     // MARK: - Dependencies
     var delegate: CoreDataStackDelegate?
-    var didUpdateDataBase: ((CoreDataStack) -> Void)?
     
     // MARK: - Init / deinit
-    init() {
-        didUpdateDataBase = { stack in
-            stack.printDatabaseStatistics()
-        }
-    }
-    
     deinit {
         disableObservers()
     }
@@ -167,6 +159,22 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - Requests
+    // TODO
+    func fetchRequest<T: NSManagedObject>(for entity: EntityType, with identifier: String) -> NSFetchRequest<T> {
+        switch entity {
+        case .channel:
+            let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+            let predicate = NSPredicate(format: "identifier = %@", identifier)
+            fetchRequest.predicate = predicate
+            return fetchRequest as? NSFetchRequest<T> ?? NSFetchRequest<T>()
+        case .message:
+            let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
+            let predicate = NSPredicate(format: "identifier = %@", identifier)
+            fetchRequest.predicate = predicate
+            return fetchRequest as? NSFetchRequest<T> ?? NSFetchRequest<T>()
+        }
+    }
+    
     func fetchRequest<T: NSManagedObject>(for entity: EntityType, channelId: String?) -> NSFetchRequest<T> {
         switch entity {
         case .channel:
@@ -207,7 +215,7 @@ class CoreDataStack: CoreDataStackProtocol {
     @objc
     private func managedObjectContextObjectsDidChange(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
-        didUpdateDataBase?(self)
+        printDatabaseStatistics()
         
         if let deletes = userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>, deletes.count > 0 {
             delegate?.printLog("Deleted", deletes.count)
@@ -223,7 +231,7 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - CoreData Logs
-    func printDatabaseStatistics() {
+    private func printDatabaseStatistics() {
         mainContext.perform { [weak self] in
             do {
                 guard let self = self else { return }

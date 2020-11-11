@@ -79,17 +79,14 @@ class ConversationsListViewController: LogViewController {
         setupNavigationBar()
     }
     
-    func loadCompletion() {
-        conversationsListView.profileImage.loadImageCompletion(name: model.name, image: model.image)
-    }
-    
-    func updateImageView() {
-        model.loadWithGCD(completion: loadCompletion)
-//        model.loadWithOperations(completion: loadCompletion)
+    func applyTheme(theme: Theme) {
+        navigationController?.applyTheme(theme: theme)
+        conversationsListView.applyTheme(theme: theme)
     }
     
     private func setupNavigationBar() {
         guard let navigationBar = navigationController?.navigationBar else { return }
+        print(navigationBar.barStyle)
         conversationsListView.setupNavigationItem(navigationItem: navigationItem)
         conversationsListView.setupNavigationBar(navigationBar: navigationBar)
         updateImageView()
@@ -107,6 +104,16 @@ class ConversationsListViewController: LogViewController {
         } catch {
             configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
         }
+    }
+    
+    // MARK: - Handlers
+    func loadCompletion() {
+            conversationsListView.profileImage.loadImageCompletion(name: model.name, image: model.image)
+        }
+        
+    func updateImageView() {
+        model.loadWithGCD(completion: loadCompletion)
+//        model.loadWithOperations(completion: loadCompletion)
     }
     
     private func createHandlers() {
@@ -141,11 +148,6 @@ class ConversationsListViewController: LogViewController {
             alertController.applyTheme(theme: model?.currentTheme ?? .classic)
             self?.present(alertController, animated: true, completion: nil)
         }
-    }
-    
-    func applyTheme(theme: Theme) {
-        navigationController?.applyTheme(theme: theme)
-        conversationsListView.applyTheme(theme: theme)
     }
 }
 
