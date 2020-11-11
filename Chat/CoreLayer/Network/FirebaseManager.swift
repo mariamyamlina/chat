@@ -18,10 +18,10 @@ protocol FirebaseManagerProtocol: class {
     func create(channel name: String)
     func delete(channel id: String)
     
-    func getMessages(in channel: Channel, completion: @escaping ([Message]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
-    func addMessagesListener(in channel: Channel, completion: @escaping (DocumentChangeType, Message) -> Void, errorHandler: @escaping (String?, String?) -> Void)
+    func getMessages(inChannel id: String, completion: @escaping ([Message]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
+    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, Message) -> Void, errorHandler: @escaping (String?, String?) -> Void)
     func removeMessagesListener()
-    func create(message text: String, in channel: Channel)
+    func create(message text: String, inChannel id: String)
 }
 
 class FirebaseManager {
@@ -117,9 +117,8 @@ extension FirebaseManager: FirebaseManagerProtocol {
 
     // MARK: - Messages
 
-    func getMessages(in channel: Channel, completion: @escaping ([Message]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func getMessages(inChannel id: String, completion: @escaping ([Message]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
         var messages: [Message] = []
-        let id = channel.identifier
         reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
             guard error == nil else {
                 errorHandler("Firebase", error?.localizedDescription)
@@ -144,8 +143,7 @@ extension FirebaseManager: FirebaseManagerProtocol {
         }
     }
     
-    func addMessagesListener(in channel: Channel, completion: @escaping (DocumentChangeType, Message) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
-        let id = channel.identifier
+    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, Message) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
         channelsListener = reference.document(id).collection("messages").addSnapshotListener(includeMetadataChanges: true) { querySnapshot, error in
             guard error == nil else {
                 errorHandler("Firebase", error?.localizedDescription)
@@ -174,12 +172,12 @@ extension FirebaseManager: FirebaseManagerProtocol {
         messagesListener?.remove()
     }
         
-    func create(message text: String, in channel: Channel) {
+    func create(message text: String, inChannel id: String) {
         let message = ["content": text,
                        "created": Timestamp(date: Date()),
                        "senderId": universallyUniqueIdentifier,
                        "senderName": settingsStorage.name ?? "Marina Dudarenko"] as [String: Any]
-        reference.document(channel.identifier).collection("messages").addDocument(data: message)
+        reference.document(id).collection("messages").addDocument(data: message)
     }
     
     private func generateImage() -> UIImage? {

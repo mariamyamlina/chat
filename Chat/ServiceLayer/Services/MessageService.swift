@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Firebase
 import CoreData
 
 protocol MessageServiceProtocol {
@@ -109,17 +110,15 @@ class MessageService {
 // MARK: - MessageServiceProtocol
 extension MessageService: MessageServiceProtocol {
     func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
-        firebaseManager.getMessages(in: channel, completion: { [weak self] messages in
+        firebaseManager.getMessages(inChannel: channel.identifier, completion: { [weak self] messages in
             self?.save(messages: messages, inChannel: channel, errorHandler: errorHandler)
             self?.addListener(in: channel, errorHandler: errorHandler)},
                                     errorHandler: errorHandler)
     }
     
     func addListener(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
-        firebaseManager.addMessagesListener(in: channel, completion: { [weak self] (type, message) in
-            if type == .added { self?.save(message: message, inChannel: channel, errorHandler: errorHandler) }
-            if type == .modified { }
-            if type == .removed { }},
+        firebaseManager.addMessagesListener(inChannel: channel.identifier, completion: { [weak self] (type, message) in
+            self?.handleChanges(ofType: type, message: message, channel: channel, errorHandler: errorHandler)},
                                             errorHandler: errorHandler)
     }
     
@@ -128,6 +127,14 @@ extension MessageService: MessageServiceProtocol {
     }
     
     func create(message text: String, in channel: Channel) {
-        firebaseManager.create(message: text, in: channel)
+        firebaseManager.create(message: text, inChannel: channel.identifier)
+    }
+    
+    private func handleChanges(ofType type: DocumentChangeType, message: Message, channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
+        if type == .added {
+            self.save(message: message, inChannel: channel, errorHandler: errorHandler)
+        }
+        if type == .modified { }
+        if type == .removed { }
     }
 }

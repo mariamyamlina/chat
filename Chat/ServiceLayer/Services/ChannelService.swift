@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Firebase
 import CoreData
 
 protocol ChannelServiceProtocol {
@@ -129,9 +130,7 @@ extension ChannelService: ChannelServiceProtocol {
     
     func addListener(errorHandler: @escaping (String?, String?) -> Void) {
         firebaseManager.addChannelsListener(completion: { [weak self] (type, channel) in
-            if type == .added { self?.save(channel: channel, errorHandler: errorHandler) }
-            if type == .modified { self?.update(channel: channel, errorHandler: errorHandler) }
-            if type == .removed { self?.delete(channel: channel, errorHandler: errorHandler) }},
+            self?.handleChanges(ofType: type, channel: channel, errorHandler: errorHandler)},
                                             errorHandler: errorHandler)
     }
     
@@ -145,5 +144,17 @@ extension ChannelService: ChannelServiceProtocol {
     
     func delete(channel id: String) {
         firebaseManager.delete(channel: id)
+    }
+    
+    private func handleChanges(ofType type: DocumentChangeType, channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
+        if type == .added {
+            self.save(channel: channel, errorHandler: errorHandler)
+        }
+        if type == .modified {
+            self.update(channel: channel, errorHandler: errorHandler)
+        }
+        if type == .removed {
+            self.delete(channel: channel, errorHandler: errorHandler)
+        }
     }
 }
