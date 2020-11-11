@@ -39,7 +39,10 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     private func conversationsListModel() -> ConversationsListModelProtocol {
-        return ConversationsListModel(channelService: serviceAssembly.channelService, dataService: serviceAssembly.dataService, settingsService: serviceAssembly.settingsService)
+        return ConversationsListModel(channelService: serviceAssembly.channelService,
+                                      dataService: serviceAssembly.dataService,
+                                      settingsService: serviceAssembly.settingsService,
+                                      fetchService: serviceAssembly.fetchService)
     }
     
     // MARK: - ConversationViewController
@@ -51,7 +54,10 @@ class PresentationAssembly: PresentationAssemblyProtocol {
     }
     
     private func conversationModel(channel: Channel?) -> ConversationModelProtocol {
-        return ConversationModel(messageService: serviceAssembly.messageService(with: channel), settingsService: serviceAssembly.settingsService, channel: channel)
+        return ConversationModel(messageService: serviceAssembly.messageService(with: channel),
+                                 settingsService: serviceAssembly.settingsService,
+                                 fetchService: serviceAssembly.fetchService,
+                                 channel: channel)
     }
     
     // MARK: - ProfileViewController

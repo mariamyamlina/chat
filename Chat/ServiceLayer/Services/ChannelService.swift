@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 protocol ChannelServiceProtocol {
-    var channelsFetchedResultsController: NSFetchedResultsController<ChannelDB> { get }
+//    func getFRC<T: NSManagedObject>() -> NSFetchedResultsController<T>
     func getChannels(errorHandler: @escaping (String?, String?) -> Void)
     func addListener(errorHandler: @escaping (String?, String?) -> Void)
     func removeListener()
@@ -28,18 +28,21 @@ class ChannelService {
         self.firebaseManager = firebaseManager
     }
     
-    // MARK: - FetchResultsController
-    lazy var channelsFetchedResultsController: NSFetchedResultsController<ChannelDB> = {
-        let fetchRequest = NSFetchRequest<ChannelDB>()
-        fetchRequest.entity = ChannelDB.entity()
-        let sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        fetchRequest.fetchBatchSize = 20
-        return NSFetchedResultsController(fetchRequest: fetchRequest,
-                                          managedObjectContext: CoreDataStack.shared.mainContext,
-                                          sectionNameKeyPath: nil,
-                                          cacheName: "Channels")
-    }()
+//    // MARK: - FetchResultsController
+//    func getFRC() -> NSFetchedResultsController<ChannelDB> {
+//        
+//    }
+//    lazy var channelsFetchedResultsController: NSFetchedResultsController<ChannelDB> = {
+//        let fetchRequest = NSFetchRequest<ChannelDB>()
+//        fetchRequest.entity = ChannelDB.entity()
+//        let sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
+//        fetchRequest.sortDescriptors = [sortDescriptor]
+//        fetchRequest.fetchBatchSize = 20
+//        return NSFetchedResultsController(fetchRequest: fetchRequest,
+//                                          managedObjectContext: CoreDataStack.shared.mainContext,
+//                                          sectionNameKeyPath: nil,
+//                                          cacheName: "Channels")
+//    }()
     
     // MARK: - Save
     private func save(channels: [Channel],

@@ -80,9 +80,9 @@ class ConversationViewController: LogViewController {
     }
     
     private func setupFetchedResultsController() {
-        model.fetchMessages()?.delegate = self
+        model.frc.delegate = self
         do {
-            try model.fetchMessages()?.performFetch()
+            try model.frc.performFetch()
         } catch {
             configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
         }
@@ -137,10 +137,10 @@ class ConversationViewController: LogViewController {
     
     // MARK: - TableView
     private func countIndexPathForLastRow() -> IndexPath? {
-        let lastSectionIndex = (model.fetchMessages()?.sections?.count ?? 0) - 1
+        let lastSectionIndex = (model.frc.sections?.count ?? 0) - 1
         var lastRowIndex: Int = -1
         if lastSectionIndex >= 0 {
-            lastRowIndex = (model.fetchMessages()?.sections?[lastSectionIndex].numberOfObjects ?? 0) - 1
+            lastRowIndex = (model.frc.sections?[lastSectionIndex].numberOfObjects ?? 0) - 1
         }
         if lastSectionIndex >= 0 && lastRowIndex >= 0 {
             return IndexPath(row: lastRowIndex, section: lastSectionIndex)
@@ -153,17 +153,17 @@ class ConversationViewController: LogViewController {
 // MARK: - UITableViewDataSource
 extension ConversationViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return model.fetchMessages()?.sections?.count ?? 0
+        return model.frc.sections?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return model.fetchMessages()?.sections?[section].numberOfObjects ?? 0
+        return model.frc.sections?[section].numberOfObjects ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier, for: indexPath) as? MessageTableViewCell
         
-        guard let messageDB = model.fetchMessages()?.object(at: indexPath) else { return UITableViewCell() }
+        let messageDB = model.frc.object(at: indexPath)
         let message = Message(from: messageDB)
         
         let messageCellFactory = MessageModelFactory()
@@ -185,7 +185,7 @@ extension ConversationViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let messageDB = model.fetchMessages()?.object(at: indexPath) else { return 0 }
+        let messageDB = model.frc.object(at: indexPath)
         let message = Message(from: messageDB)
         
         let messageCellFactory = MessageModelFactory()
@@ -199,7 +199,7 @@ extension ConversationViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionInfo = model.fetchMessages()?.sections?[section]
+        let sectionInfo = model.frc.sections?[section]
         return conversationView.configureViewForHeaderInSection(sectionInfo: sectionInfo?.name ?? "")
     }
 }

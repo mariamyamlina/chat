@@ -50,7 +50,7 @@ protocol ConversationModelProtocol: class {
     func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
     func createMessage(withText text: String, inChannel channel: Channel)
     func removeListener()
-    func fetchMessages() -> NSFetchedResultsController<MessageDB>?
+    var frc: NSFetchedResultsController<MessageDB> { get }
     var currentTheme: Theme { get }
 }
 
@@ -66,13 +66,22 @@ class ConversationModel {
     var channel: Channel?
     let messageService: MessageServiceProtocol
     var settingsService: SettingsServiceProtocol
+    var fetchService: FetchServiceProtocol
     
     // MARK: - Init / deinit
-    init(messageService: MessageServiceProtocol, settingsService: SettingsServiceProtocol, channel: Channel?) {
+    init(messageService: MessageServiceProtocol, settingsService: SettingsServiceProtocol, fetchService: FetchServiceProtocol, channel: Channel?) {
         self.messageService = messageService
         self.channel = channel
         self.settingsService = settingsService
+        self.fetchService = fetchService
     }
+    
+    lazy var frc: NSFetchedResultsController<MessageDB> = {
+        return fetchService.getFRC(entityType: .message,
+                                   channelId: channel?.identifier,
+                                   sectionNameKeyPath: "formattedDate",
+                                   cacheName: "Messages in channel with id \(String(describing: channel?.identifier))")
+    }()
 }
 
 // MARK: - ConversationModelProtocol
@@ -91,10 +100,6 @@ extension ConversationModel: ConversationModelProtocol {
     
     func removeListener() {
         messageService.removeListener()
-    }
-    
-    func fetchMessages() -> NSFetchedResultsController<MessageDB>? {
-        return messageService.messagesFetchedResultsController
     }
     
     var currentTheme: Theme {

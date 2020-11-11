@@ -19,6 +19,7 @@ protocol CoreDataStackProtocol {
     func printDatabaseStatistics()
     func arrayDifference(entityType: EntityType, predicate: String?, arrayOfEntities: [EntityProtocol],
                          in context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> [String]
+    func fetchRequest<T: NSManagedObject>(for entity: EntityType, channelId: String?) -> NSFetchRequest<T>
 }
 
 protocol CoreDataStackDelegate {
@@ -164,6 +165,28 @@ class CoreDataStack: CoreDataStackProtocol {
         } catch {
             errorHandler("CoreData", error.localizedDescription)
             return nil
+        }
+    }
+    
+    // MARK: - Requests
+    func fetchRequest<T: NSManagedObject>(for entity: EntityType, channelId: String?) -> NSFetchRequest<T> {
+        switch entity {
+        case .channel:
+            let fetchRequest = NSFetchRequest<ChannelDB>()
+            fetchRequest.entity = ChannelDB.entity()
+            let sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
+            fetchRequest.sortDescriptors = [sortDescriptor]
+            fetchRequest.fetchBatchSize = 20
+            return fetchRequest as? NSFetchRequest<T> ?? NSFetchRequest<T>()
+        case .message:
+            let fetchRequest = NSFetchRequest<MessageDB>()
+            fetchRequest.entity = MessageDB.entity()
+            let predicate = NSPredicate(format: "channel.identifier = %@", channelId ?? "")
+            fetchRequest.predicate = predicate
+            let sortDescriptor = NSSortDescriptor(key: "created", ascending: true)
+            fetchRequest.sortDescriptors = [sortDescriptor]
+            fetchRequest.fetchBatchSize = 20
+            return fetchRequest as? NSFetchRequest<T> ?? NSFetchRequest<T>()
         }
     }
     

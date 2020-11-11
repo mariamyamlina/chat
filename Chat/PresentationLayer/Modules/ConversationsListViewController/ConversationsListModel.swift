@@ -39,7 +39,7 @@ protocol ConversationsListModelProtocol: class {
     func createChannel(withName name: String)
     func deleteChannel(withId id: String)
     func removeListener()
-    func fetchChannels() -> NSFetchedResultsController<ChannelDB>
+    var frc: NSFetchedResultsController<ChannelDB> { get }
     func loadWithGCD(completion: @escaping () -> Void)
     func loadWithOperations(completion: @escaping () -> Void)
     var currentTheme: Theme { get }
@@ -58,13 +58,19 @@ class ConversationsListModel {
     let channelService: ChannelServiceProtocol
     let dataService: DataServiceProtocol
     var settingsService: SettingsServiceProtocol
+    var fetchService: FetchServiceProtocol
     
     // MARK: - Init / deinit
-    init(channelService: ChannelServiceProtocol, dataService: DataServiceProtocol, settingsService: SettingsServiceProtocol) {
+    init(channelService: ChannelServiceProtocol, dataService: DataServiceProtocol, settingsService: SettingsServiceProtocol, fetchService: FetchServiceProtocol) {
         self.channelService = channelService
         self.dataService = dataService
         self.settingsService = settingsService
+        self.fetchService = fetchService
     }
+    
+    lazy var frc: NSFetchedResultsController<ChannelDB> = {
+        return fetchService.getFRC(entityType: .channel, channelId: nil, sectionNameKeyPath: nil, cacheName: "Channels")
+    }()
 }
 
 // MARK: - ConversationsListModelProtocol
@@ -83,10 +89,6 @@ extension ConversationsListModel: ConversationsListModelProtocol {
     
     func removeListener() {
         channelService.removeListener()
-    }
-    
-    func fetchChannels() -> NSFetchedResultsController<ChannelDB> {
-        return channelService.channelsFetchedResultsController
     }
     
     func loadWithGCD(completion: @escaping () -> Void) {

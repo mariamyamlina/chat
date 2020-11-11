@@ -101,9 +101,9 @@ class ConversationsListViewController: LogViewController {
     }
     
     private func setupFetchedResultsController() {
-        model.fetchChannels().delegate = self
+        model.frc.delegate = self
         do {
-            try model.fetchChannels().performFetch()
+            try model.frc.performFetch()
         } catch {
             configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
         }
@@ -152,13 +152,13 @@ class ConversationsListViewController: LogViewController {
 // MARK: - UITableViewDataSource
 extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return model.fetchChannels().sections?[section].numberOfObjects ?? 0
+        return model.frc.sections?[section].numberOfObjects ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.reuseIdentifier, for: indexPath) as? ConversationTableViewCell
         
-        let channelDB = model.fetchChannels().object(at: indexPath)
+        let channelDB = model.frc.object(at: indexPath)
         let channel = Channel(from: channelDB)
 
         let channelCellFactory = ChannelModelFactory()
@@ -173,7 +173,7 @@ extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let channelDB = model.fetchChannels().object(at: indexPath)
+        let channelDB = model.frc.object(at: indexPath)
         let channel = Channel(from: channelDB)
         
         let conversationController = presentationAssembly.conversationViewController(channel: channel)
@@ -182,7 +182,7 @@ extension ConversationsListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let channelDB = model.fetchChannels().object(at: indexPath)
+            let channelDB = model.frc.object(at: indexPath)
             let channel = Channel(from: channelDB)
             model.deleteChannel(withId: channel.identifier)
         }

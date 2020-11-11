@@ -11,7 +11,7 @@ import CoreData
 
 protocol MessageServiceProtocol {
     var channel: Channel? { get }
-    var messagesFetchedResultsController: NSFetchedResultsController<MessageDB> { get }
+//    var messagesFetchedResultsController: NSFetchedResultsController<MessageDB> { get }
     var universallyUniqueIdentifier: String { get }
     func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
     func addListener(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
@@ -33,21 +33,21 @@ class MessageService {
         self.universallyUniqueIdentifier = firebaseManager.universallyUniqueIdentifier
     }
     
-    // MARK: - FetchResultsController
-    lazy var messagesFetchedResultsController: NSFetchedResultsController<MessageDB> = {
-        let channelId = channel?.identifier ?? ""
-        let fetchRequest = NSFetchRequest<MessageDB>()
-        fetchRequest.entity = MessageDB.entity()
-        let predicate = NSPredicate(format: "channel.identifier = %@", channelId)
-        fetchRequest.predicate = predicate
-        let sortDescriptor = NSSortDescriptor(key: "created", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        fetchRequest.fetchBatchSize = 20
-        return NSFetchedResultsController(fetchRequest: fetchRequest,
-                                          managedObjectContext: CoreDataStack.shared.mainContext,
-                                          sectionNameKeyPath: "formattedDate",
-                                          cacheName: "Messages in channel with id \(channelId)")
-    }()
+//    // MARK: - FetchResultsController
+//    lazy var messagesFetchedResultsController: NSFetchedResultsController<MessageDB> = {
+//        let channelId = channel?.identifier ?? ""
+//        let fetchRequest = NSFetchRequest<MessageDB>()
+//        fetchRequest.entity = MessageDB.entity()
+//        let predicate = NSPredicate(format: "channel.identifier = %@", channelId)
+//        fetchRequest.predicate = predicate
+//        let sortDescriptor = NSSortDescriptor(key: "created", ascending: true)
+//        fetchRequest.sortDescriptors = [sortDescriptor]
+//        fetchRequest.fetchBatchSize = 20
+//        return NSFetchedResultsController(fetchRequest: fetchRequest,
+//                                          managedObjectContext: CoreDataStack.shared.mainContext,
+//                                          sectionNameKeyPath: "formattedDate",
+//                                          cacheName: "Messages in channel with id \(channelId)")
+//    }()
     
     // MARK: - Save
     private func save(messages: [Message],
