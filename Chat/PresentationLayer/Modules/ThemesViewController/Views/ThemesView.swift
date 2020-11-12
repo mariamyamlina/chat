@@ -28,13 +28,11 @@ class ThemesView: UIView {
         
         addSubview(classicButton)
         classicButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            classicButton.topAnchor.constraint(equalTo: topAnchor, constant: 180),
-            classicButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            classicButton.widthAnchor.constraint(equalToConstant: 300),
-            classicButton.heightAnchor.constraint(equalToConstant: 101),
-            classicButton.bottomAnchor.constraint(equalTo: dayButton.topAnchor, constant: -40)
-        ])
+        classicButton.topAnchor.constraint(equalTo: topAnchor, constant: 180).isActive = true
+        classicButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        classicButton.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        classicButton.heightAnchor.constraint(equalToConstant: 101).isActive = true
+        classicButton.bottomAnchor.constraint(equalTo: dayButton.topAnchor, constant: -40).isActive = true
         return classicButton
     }()
     
@@ -46,12 +44,10 @@ class ThemesView: UIView {
         
         addSubview(dayButton)
         dayButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            dayButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            dayButton.widthAnchor.constraint(equalToConstant: 300),
-            dayButton.heightAnchor.constraint(equalToConstant: 101),
-            dayButton.bottomAnchor.constraint(equalTo: nightButton.topAnchor, constant: -40)
-        ])
+        dayButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        dayButton.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        dayButton.heightAnchor.constraint(equalToConstant: 101).isActive = true
+        dayButton.bottomAnchor.constraint(equalTo: nightButton.topAnchor, constant: -40).isActive = true
         return dayButton
     }()
     
@@ -63,12 +59,10 @@ class ThemesView: UIView {
         
         addSubview(nightButton)
         nightButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            nightButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            nightButton.widthAnchor.constraint(equalToConstant: 300),
-            nightButton.heightAnchor.constraint(equalToConstant: 101),
-            nightButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -10)
-        ])
+        nightButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        nightButton.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        nightButton.heightAnchor.constraint(equalToConstant: 101).isActive = true
+        nightButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -10).isActive = true
         return nightButton
     }()
     

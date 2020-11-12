@@ -11,10 +11,8 @@ import UIKit
 @IBDesignable
 class ProfileImageView: UIView {
     // MARK: - UI
-    var profileImageWidthConstraint: NSLayoutConstraint?
-    var profileImageHeightConstraint: NSLayoutConstraint?
-    var lettersLabelWidthConstraint: NSLayoutConstraint?
-    var lettersLabelHeightConstraint: NSLayoutConstraint?
+    var profileImageWidthConstraint, profileImageHeightConstraint: NSLayoutConstraint?
+    var lettersLabelWidthConstraint, lettersLabelHeightConstraint: NSLayoutConstraint?
     
     var initials: String?
     var fontSize: CGFloat = 120
@@ -24,6 +22,13 @@ class ProfileImageView: UIView {
     lazy var contentView: UIView = {
         let contentView = UIView()
         contentView.isUserInteractionEnabled = false
+        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        addSubview(contentView)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        contentView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        contentView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        contentView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         return contentView
     }()
     
@@ -31,6 +36,12 @@ class ProfileImageView: UIView {
         let imageView = UIImageView()
         imageView.backgroundColor = Colors.profileImageGreen
         imageView.contentMode = .scaleAspectFill
+        contentView.addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         return imageView
     }()
     
@@ -41,12 +52,20 @@ class ProfileImageView: UIView {
         label.font = UIFont(name: "Roboto-Regular", size: fontSize)
         label.textColor = Colors.lettersLabelColor
         label.textAlignment = .center
+        profileImage.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.centerXAnchor.constraint(equalTo: profileImage.centerXAnchor).isActive = true
+        label.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor).isActive = true
         return label
     }()
     
-    private var touchPath: UIBezierPath { return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius) }
+    private var touchPath: UIBezierPath {
+        return UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius)
+    }
     
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool { return touchPath.contains(point) }
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        return touchPath.contains(point)
+    }
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
@@ -75,14 +94,6 @@ class ProfileImageView: UIView {
     
     // MARK: - Setup View
     func createConstraints() {
-        addSubview(contentView)
-        contentView.addSubview(profileImage)
-        profileImage.addSubview(lettersLabel)
-
-        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        [contentView, profileImage, lettersLabel].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        
         profileImageWidthConstraint = NSLayoutConstraint(item: profileImage, attribute: .width, relatedBy: .equal,
                                                          toItem: nil, attribute: .width, multiplier: 1, constant: 240)
         profileImageHeightConstraint = NSLayoutConstraint(item: profileImage, attribute: .height, relatedBy: .equal,
@@ -92,19 +103,6 @@ class ProfileImageView: UIView {
         lettersLabelHeightConstraint = NSLayoutConstraint(item: lettersLabel, attribute: .height, relatedBy: .equal,
                                                           toItem: nil, attribute: .height, multiplier: 1, constant: 110)
         [profileImageWidthConstraint, profileImageHeightConstraint, lettersLabelWidthConstraint, lettersLabelHeightConstraint].forEach { $0?.isActive = true }
-
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            profileImage.topAnchor.constraint(equalTo: contentView.topAnchor),
-            profileImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            profileImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            profileImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            lettersLabel.centerXAnchor.constraint(equalTo: profileImage.centerXAnchor),
-            lettersLabel.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor)
-        ])
     }
     
     func loadImageCompletion(name: String?, image: UIImage?) {

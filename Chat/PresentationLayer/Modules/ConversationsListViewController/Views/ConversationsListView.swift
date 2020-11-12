@@ -29,6 +29,7 @@ class ConversationsListView: UIView {
        return searchController
     }()
     
+    lazy var backBarButtonItem: UIBarButtonItem = { return UIBarButtonItem(title: "", style: .plain, target: nil, action: nil) }()
     lazy var rightBarButtonItem: UIBarButtonItem = { return configureRightBarButtonItem() }()
     
     lazy var leftBarButtonItem: UIBarButtonItem = {
@@ -41,8 +42,6 @@ class ConversationsListView: UIView {
         barbuttonItem.customView?.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return barbuttonItem
     }()
-    
-    lazy var backBarButtonItem: UIBarButtonItem = { return UIBarButtonItem(title: "", style: .plain, target: nil, action: nil) }()
     
     lazy var newMessageButton: UIButton = {
         let button = UIButton(type: .system)
@@ -63,12 +62,10 @@ class ConversationsListView: UIView {
         tableView.register(ConversationTableViewCell.self, forCellReuseIdentifier: ConversationTableViewCell.reuseIdentifier)
         addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ])
+        tableView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        tableView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        tableView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         return tableView
     }()
     
@@ -125,9 +122,7 @@ class ConversationsListView: UIView {
     }
     
     func showNewMessageButton(_ show: Bool) {
-        UIView.animate(withDuration: 0.1) {
-            self.newMessageButton.alpha = show ? 1.0 : 0.0
-        }
+        UIView.animate(withDuration: 0.1) { self.newMessageButton.alpha = show ? 1.0 : 0.0 }
     }
     
     func setupTextField(_ textField: UITextField?) {
@@ -145,12 +140,10 @@ class ConversationsListView: UIView {
         navigationBar.isTranslucent = true
         navigationBar.addSubview(newMessageButton)
         newMessageButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            newMessageButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -24),
-            newMessageButton.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 58),
-            newMessageButton.heightAnchor.constraint(equalToConstant: 24),
-            newMessageButton.widthAnchor.constraint(equalTo: newMessageButton.heightAnchor)
-        ])
+        newMessageButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -24).isActive = true
+        newMessageButton.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 58).isActive = true
+        newMessageButton.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        newMessageButton.widthAnchor.constraint(equalTo: newMessageButton.heightAnchor).isActive = true
     }
     
     func setupNavigationItem(navigationItem: UINavigationItem) {

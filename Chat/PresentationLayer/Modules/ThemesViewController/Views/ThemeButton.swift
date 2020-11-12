@@ -14,16 +14,13 @@ class ThemeButton: ButtonWithTouchSize {
         let contentView = UIView()
         contentView.backgroundColor = .clear
         contentView.isUserInteractionEnabled = false
-        
         addSubview(contentView)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         contentView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ])
+        contentView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        contentView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        contentView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        contentView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         return contentView
     }()
     
@@ -31,13 +28,10 @@ class ThemeButton: ButtonWithTouchSize {
         let label = UILabel()
         label.textColor = .white
         label.font = UIFont(name: "SFProText-Semibold", size: 19)
-        
         contentView.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
-        ])
+        label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         return label
     }()
     
@@ -48,12 +42,10 @@ class ThemeButton: ButtonWithTouchSize {
         
         contentView.addSubview(backgroundView)
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            backgroundView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: themeNameLabel.topAnchor, constant: -20),
-            backgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
+        backgroundView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        backgroundView.bottomAnchor.constraint(equalTo: themeNameLabel.topAnchor, constant: -20).isActive = true
+        backgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        backgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         return backgroundView
     }()
     
@@ -64,13 +56,11 @@ class ThemeButton: ButtonWithTouchSize {
         
         backgroundView.addSubview(bubble)
         bubble.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            bubble.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 14),
-            bubble.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -18),
-            bubble.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 30),
-            bubble.trailingAnchor.constraint(equalTo: outputMessageBubble.leadingAnchor, constant: -6),
-            bubble.widthAnchor.constraint(equalToConstant: 117)
-        ])
+        bubble.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 14).isActive = true
+        bubble.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -18).isActive = true
+        bubble.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 30).isActive = true
+        bubble.trailingAnchor.constraint(equalTo: outputMessageBubble.leadingAnchor, constant: -6).isActive = true
+        bubble.widthAnchor.constraint(equalToConstant: 117).isActive = true
         return bubble
     }()
     
@@ -81,12 +71,10 @@ class ThemeButton: ButtonWithTouchSize {
         
         backgroundView.addSubview(bubble)
         bubble.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            bubble.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 22),
-            bubble.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -10),
-            bubble.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -30),
-            bubble.widthAnchor.constraint(equalToConstant: 117)
-        ])
+        bubble.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 22).isActive = true
+        bubble.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -10).isActive = true
+        bubble.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -30).isActive = true
+        bubble.widthAnchor.constraint(equalToConstant: 117).isActive = true
         return bubble
     }()
     

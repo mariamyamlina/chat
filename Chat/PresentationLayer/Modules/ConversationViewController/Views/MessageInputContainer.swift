@@ -16,12 +16,10 @@ class MessageInputContainer: UIView {
         let line = UIView()
         addSubview(line)
         line.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            line.topAnchor.constraint(equalTo: topAnchor),
-            line.leadingAnchor.constraint(equalTo: leadingAnchor),
-            line.trailingAnchor.constraint(equalTo: trailingAnchor),
-            line.heightAnchor.constraint(equalToConstant: 0.5)
-        ])
+        line.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        line.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        line.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        line.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
         return line
     }()
     
@@ -34,17 +32,14 @@ class MessageInputContainer: UIView {
         textField.textAlignment = .left
         textField.font = UIFont(name: "SFProText-Regular", size: 17)
         textField.borderStyle = .roundedRect
-
         addSubview(textField)
         textField.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            textField.topAnchor.constraint(equalTo: topAnchor, constant: 17),
-            textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 50),
-            textField.leadingAnchor.constraint(equalTo: addButton.trailingAnchor, constant: 8),
-            textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -19),
-            textField.heightAnchor.constraint(equalToConstant: 32),
-            textField.centerYAnchor.constraint(equalTo: addButton.centerYAnchor)
-        ])
+        textField.topAnchor.constraint(equalTo: topAnchor, constant: 17).isActive = true
+        textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 50).isActive = true
+        textField.leadingAnchor.constraint(equalTo: addButton.trailingAnchor, constant: 8).isActive = true
+        textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -19).isActive = true
+        textField.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        textField.centerYAnchor.constraint(equalTo: addButton.centerYAnchor).isActive = true
         return textField
     }()
 
@@ -54,10 +49,8 @@ class MessageInputContainer: UIView {
 
         addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            button.heightAnchor.constraint(equalToConstant: 30),
-            button.widthAnchor.constraint(equalTo: button.heightAnchor)
-        ])
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalTo: button.heightAnchor).isActive = true
         return button
     }()
     
@@ -70,13 +63,11 @@ class MessageInputContainer: UIView {
         
         addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: textField.topAnchor, constant: 2),
-            button.bottomAnchor.constraint(equalTo: textField.bottomAnchor, constant: -6),
-            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -31),
-            button.heightAnchor.constraint(equalToConstant: 24),
-            button.widthAnchor.constraint(equalToConstant: 24)
-        ])
+        button.topAnchor.constraint(equalTo: textField.topAnchor, constant: 2).isActive = true
+        button.bottomAnchor.constraint(equalTo: textField.bottomAnchor, constant: -6).isActive = true
+        button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -31).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 24).isActive = true
         return button
     }()
     

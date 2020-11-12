@@ -67,21 +67,10 @@ extension ProfileModel: IProfileModel {
         loger.printButtonLog(button, function)
     }
     
-    var currentTheme: Theme {
-        return settingsService.currentTheme
-    }
-    
-    var name: String? {
-        return settingsService.name
-    }
-    
-    var bio: String? {
-        return settingsService.bio
-    }
-    
-    var image: UIImage? {
-        return settingsService.image
-    }
+    var currentTheme: Theme { return settingsService.currentTheme }
+    var name: String? { return settingsService.name }
+    var bio: String? { return settingsService.bio }
+    var image: UIImage? { return settingsService.image }
     
     func changeName(for name: String?) {
         settingsService.changeName(for: name)

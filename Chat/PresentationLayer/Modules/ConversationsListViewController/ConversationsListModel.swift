@@ -93,17 +93,9 @@ extension ConversationsListModel: IConversationsListModel {
         dataService.load(dataManager: dataService.operationDataManager, mustReadBio: false, completion: completion)
     }
     
-    var currentTheme: Theme {
-        return settingsService.currentTheme
-    }
-    
-    var name: String? {
-        return settingsService.name
-    }
-    
-    var image: UIImage? {
-        return settingsService.image
-    }
+    var currentTheme: Theme { return settingsService.currentTheme }
+    var name: String? { return settingsService.name }
+    var image: UIImage? { return settingsService.image }
     
     func channel(at indexPath: IndexPath) -> Channel {
         let channelDB = frc.object(at: indexPath)

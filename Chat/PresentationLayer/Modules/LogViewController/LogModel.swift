@@ -24,9 +24,7 @@ class LogModel {
         self.settingsService = settingsService
     }
     
-    var currentTheme: Theme {
-        return settingsService.currentTheme
-    }
+    var currentTheme: Theme { return settingsService.currentTheme }
 }
 
 // MARK: - ILogModel

@@ -38,12 +38,10 @@ class ThemesViewController: LogViewController {
     private func setupView() {
         view.addSubview(themesView)
         themesView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            themesView.topAnchor.constraint(equalTo: view.topAnchor),
-            themesView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            themesView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            themesView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        themesView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        themesView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        themesView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        themesView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
         setupNavigationBar()
         applyTheme(themeRawValue: model.currentTheme.rawValue)

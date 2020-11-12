@@ -25,16 +25,12 @@ class ConversationView: UIView {
         tableView.tableHeaderView = headerView
         tableView.sectionFooterHeight = 0
         tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
-        
         addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: topAnchor, constant: UIApplication.shared.statusBarFrame.height + 44),
-            tableView.bottomAnchor.constraint(equalTo: messageInputContainer.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ])
-
+        tableView.topAnchor.constraint(equalTo: topAnchor, constant: UIApplication.shared.statusBarFrame.height + 44).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: messageInputContainer.topAnchor).isActive = true
+        tableView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        tableView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         return tableView
     }()
     
@@ -42,17 +38,12 @@ class ConversationView: UIView {
         let messageContainer = MessageInputContainer(theme: theme)
         addSubview(messageContainer)
         messageContainer.translatesAutoresizingMaskIntoConstraints = false
-        
         messageInputContainerBottomConstraint = NSLayoutConstraint(item: messageContainer, attribute: .bottom,
                                                                    relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: 0)
         messageInputContainerBottomConstraint?.isActive = true
-        
-        NSLayoutConstraint.activate([
-            messageContainer.leadingAnchor.constraint(equalTo: leadingAnchor),
-            messageContainer.trailingAnchor.constraint(equalTo: trailingAnchor),
-            messageContainer.heightAnchor.constraint(equalToConstant: 80)
-        ])
-
+        messageContainer.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        messageContainer.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        messageContainer.heightAnchor.constraint(equalToConstant: 80).isActive = true
         return messageContainer
     }()
     
@@ -91,7 +82,6 @@ class ConversationView: UIView {
         dateLabel.font = UIFont(name: "SFProText-Semibold", size: 13)
         dateLabel.textAlignment = .center
         dateLabel.text = sectionInfo
-
         dateLabel.textColor = theme.themeSettings.tableViewHeaderTextColor
         dateLabel.backgroundColor = theme.themeSettings.tableViewHeaderColor
 

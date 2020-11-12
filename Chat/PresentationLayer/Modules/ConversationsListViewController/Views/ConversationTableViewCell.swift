@@ -16,23 +16,20 @@ class ConversationTableViewCell: UITableViewCell {
         profileImage.layer.cornerRadius = 24
         profileImage.clipsToBounds = true
         profileImage.backgroundColor = Colors.profileImageGreen
-        
         addSubview(profileImage)
         profileImage.translatesAutoresizingMaskIntoConstraints = false
         let profileImageBottomConstraint = NSLayoutConstraint(item: profileImage, attribute: .bottom, relatedBy: .equal,
                                                               toItem: self, attribute: .bottom, multiplier: 1, constant: -20)
         profileImageBottomConstraint.priority = UILayoutPriority(rawValue: 999)
         profileImageBottomConstraint.isActive = true
-        NSLayoutConstraint.activate([
-            profileImage.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            profileImage.topAnchor.constraint(equalTo: onlineIndicator.topAnchor, constant: 1),
-            profileImage.bottomAnchor.constraint(equalTo: onlineIndicator.bottomAnchor, constant: 29),
-            profileImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15.5),
-            profileImage.leadingAnchor.constraint(equalTo: onlineIndicator.leadingAnchor, constant: -34),
-            profileImage.trailingAnchor.constraint(equalTo: onlineIndicator.trailingAnchor, constant: -4),
-            profileImage.trailingAnchor.constraint(equalTo: messageLabel.leadingAnchor, constant: -12.5),
-            profileImage.trailingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: -12.5)
-        ])
+        profileImage.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
+        profileImage.topAnchor.constraint(equalTo: onlineIndicator.topAnchor, constant: 1).isActive = true
+        profileImage.bottomAnchor.constraint(equalTo: onlineIndicator.bottomAnchor, constant: 29).isActive = true
+        profileImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15.5).isActive = true
+        profileImage.leadingAnchor.constraint(equalTo: onlineIndicator.leadingAnchor, constant: -34).isActive = true
+        profileImage.trailingAnchor.constraint(equalTo: onlineIndicator.trailingAnchor, constant: -4).isActive = true
+        profileImage.trailingAnchor.constraint(equalTo: messageLabel.leadingAnchor, constant: -12.5).isActive = true
+        profileImage.trailingAnchor.constraint(equalTo: nameLabel.leadingAnchor, constant: -12.5).isActive = true
         return profileImage
     }()
     
@@ -40,7 +37,6 @@ class ConversationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.textAlignment = .left
         label.font = UIFont(name: "SFProText-Regular", size: 15.0)
-        
         addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         let nameLabelBottomConstraint = NSLayoutConstraint(item: label, attribute: .bottom, relatedBy: .equal,
@@ -51,25 +47,20 @@ class ConversationTableViewCell: UITableViewCell {
             $0.priority = UILayoutPriority(rawValue: 999)
             $0.isActive = true
         }
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 76),
-            label.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -6)
-        ])
+        label.topAnchor.constraint(equalTo: topAnchor, constant: 16).isActive = true
+        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 76).isActive = true
+        label.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -6).isActive = true
         return label
     }()
     
     lazy var messageLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
-        
         addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 76),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15)
-        ])
+        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16).isActive = true
+        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 76).isActive = true
+        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15).isActive = true
         return label
     }()
     
@@ -77,15 +68,12 @@ class ConversationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.textAlignment = .right
         label.font = UIFont(name: "SFProText-Regular", size: 15.0)
-        
         addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
-            label.heightAnchor.constraint(equalToConstant: 20),
-            label.widthAnchor.constraint(equalToConstant: 70)
-        ])
+        label.topAnchor.constraint(equalTo: topAnchor, constant: 16).isActive = true
+        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15).isActive = true
+        label.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        label.widthAnchor.constraint(equalToConstant: 70).isActive = true
         return label
     }()
     
@@ -94,7 +82,6 @@ class ConversationTableViewCell: UITableViewCell {
         indicator.layer.cornerRadius = 9
         indicator.clipsToBounds = true
         indicator.layer.borderWidth = 3
-        
         addSubview(indicator)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator

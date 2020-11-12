@@ -48,12 +48,10 @@ class ConversationViewController: LogViewController {
     func setupView() {
         view.addSubview(conversationView)
         conversationView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            conversationView.topAnchor.constraint(equalTo: view.topAnchor),
-            conversationView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            conversationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            conversationView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        conversationView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        conversationView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        conversationView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        conversationView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
 
         configureNavigationBar()
     }

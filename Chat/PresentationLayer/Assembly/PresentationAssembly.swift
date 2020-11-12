@@ -66,7 +66,9 @@ class PresentationAssembly: IPresentationAssembly {
     }
     
     private func profileModel() -> IProfileModel {
-        return ProfileModel(dataService: serviceAssembly.dataService, loger: serviceAssembly.loger, settingsService: serviceAssembly.settingsService)
+        return ProfileModel(dataService: serviceAssembly.dataService,
+                            loger: serviceAssembly.loger,
+                            settingsService: serviceAssembly.settingsService)
     }
     
     // MARK: - ThemesViewController
@@ -77,6 +79,7 @@ class PresentationAssembly: IPresentationAssembly {
     }
     
     private func themesModel() -> ThemesModel {
-        return ThemesModel(themeService: serviceAssembly.themeService, settingsService: serviceAssembly.settingsService)
+        return ThemesModel(themeService: serviceAssembly.themeService,
+                           settingsService: serviceAssembly.settingsService)
     }
 }

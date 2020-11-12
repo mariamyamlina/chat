@@ -66,12 +66,10 @@ class ConversationsListViewController: LogViewController {
     private func setupView() {
         view.addSubview(conversationsListView)
         conversationsListView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            conversationsListView.topAnchor.constraint(equalTo: view.topAnchor),
-            conversationsListView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            conversationsListView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            conversationsListView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        conversationsListView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        conversationsListView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        conversationsListView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        conversationsListView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
 
         setupNavigationBar()
     }

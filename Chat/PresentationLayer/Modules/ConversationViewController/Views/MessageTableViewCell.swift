@@ -42,12 +42,10 @@ class MessageTableViewCell: UITableViewCell {
         
         textBubbleView.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.bottomAnchor.constraint(equalTo: textBubbleView.bottomAnchor, constant: -2),
-            label.trailingAnchor.constraint(equalTo: textBubbleView.trailingAnchor, constant: -8),
-            label.heightAnchor.constraint(equalToConstant: 13),
-            label.widthAnchor.constraint(equalToConstant: 32)
-        ])
+        label.bottomAnchor.constraint(equalTo: textBubbleView.bottomAnchor, constant: -2).isActive = true
+        label.trailingAnchor.constraint(equalTo: textBubbleView.trailingAnchor, constant: -8).isActive = true
+        label.heightAnchor.constraint(equalToConstant: 13).isActive = true
+        label.widthAnchor.constraint(equalToConstant: 32).isActive = true
         return label
     }()
     

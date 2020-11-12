@@ -94,10 +94,10 @@ protocol IThemeSettings {
 struct ClassicTheme: IThemeSettings {
     var inputBubbleColor: UIColor { return Colors.inputGray }
     var outputBubbleColor: UIColor { return Colors.outputGreen }
-    var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
     
     var textColor: UIColor { return .black }
     var outputTextColor: UIColor { return .black }
+    var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
     
     var barColor: UIColor { return Colors.lightBarColor }
     var alertColor: UIColor { return Colors.alertLightColor }
@@ -123,10 +123,10 @@ struct ClassicTheme: IThemeSettings {
 struct DayTheme: IThemeSettings {
     var inputBubbleColor: UIColor { return Colors.inputLightGray }
     var outputBubbleColor: UIColor { return Colors.outputBlue }
-    var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
     
     var textColor: UIColor { return .black }
     var outputTextColor: UIColor { return .white }
+    var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
     
     var barColor: UIColor { return Colors.lightBarColor }
     var alertColor: UIColor { return Colors.alertLightColor }
@@ -152,10 +152,10 @@ struct DayTheme: IThemeSettings {
 struct NightTheme: IThemeSettings {
     var inputBubbleColor: UIColor { return Colors.inputDarkGray }
     var outputBubbleColor: UIColor { return Colors.outputDarkGray }
-    var messageLabelColor: UIColor { return Colors.messageLabelDarkColor }
     
     var textColor: UIColor { return .white }
     var outputTextColor: UIColor { return .white }
+    var messageLabelColor: UIColor { return Colors.messageLabelDarkColor }
     
     var barColor: UIColor { return Colors.darkBarColor }
     var alertColor: UIColor { return Colors.alertDarkColor }

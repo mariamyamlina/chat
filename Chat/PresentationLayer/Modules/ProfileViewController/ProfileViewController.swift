@@ -123,12 +123,10 @@ class ProfileViewController: LogViewController {
     private func setupView() {
         view.addSubview(profileView)
         profileView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            profileView.topAnchor.constraint(equalTo: view.topAnchor),
-            profileView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            profileView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            profileView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        profileView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        profileView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        profileView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        profileView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
         model.loadWithGCD(completion: loadCompletion)
 //        model.loadWithOperations(completion: loadCompletion)
