@@ -177,24 +177,25 @@ class CoreDataStack: ICoreDataStack {
     }
     
     func fetchRequest<T: NSManagedObject>(for entity: ModelType, channelId: String?) -> NSFetchRequest<T> {
+        let fetchRequest: NSFetchRequest<T>
+        let sortDescriptor: NSSortDescriptor
         switch entity {
         case .channel:
-            let fetchRequest: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
-            fetchRequest.entity = ChannelDB.entity()
-            let sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
-            fetchRequest.sortDescriptors = [sortDescriptor]
-            fetchRequest.fetchBatchSize = 20
-            return fetchRequest as? NSFetchRequest<T> ?? NSFetchRequest<T>()
+            let request: NSFetchRequest<ChannelDB> = ChannelDB.fetchRequest()
+            request.entity = ChannelDB.entity()
+            sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
+            fetchRequest = request as? NSFetchRequest<T> ?? NSFetchRequest<T>()
         case .message:
-            let fetchRequest: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
-            fetchRequest.entity = MessageDB.entity()
+            let request: NSFetchRequest<MessageDB> = MessageDB.fetchRequest()
+            request.entity = MessageDB.entity()
             let predicate = NSPredicate(format: "channel.identifier = %@", channelId ?? "")
-            fetchRequest.predicate = predicate
-            let sortDescriptor = NSSortDescriptor(key: "created", ascending: true)
-            fetchRequest.sortDescriptors = [sortDescriptor]
-            fetchRequest.fetchBatchSize = 20
-            return fetchRequest as? NSFetchRequest<T> ?? NSFetchRequest<T>()
+            request.predicate = predicate
+            sortDescriptor = NSSortDescriptor(key: "created", ascending: true)
+            fetchRequest = request as? NSFetchRequest<T> ?? NSFetchRequest<T>()
         }
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
     }
     
     // MARK: - Observers

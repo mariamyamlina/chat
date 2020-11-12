@@ -57,7 +57,9 @@ class ProfileViewController: LogViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         guard let height = navigationController?.navigationBar.bounds.height else { return }
-        profileView.activateBioTextViewHeightConstraint(with: view.bounds.height - height - 455)
+        var constant = view.bounds.height - height - 455
+        if #available(iOS 13.0, *) { } else { constant -= 20 }
+        profileView.activateBioTextViewHeightConstraint(with: constant)
     }
     
     override func viewDidAppear(_ animated: Bool) {

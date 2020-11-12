@@ -21,11 +21,9 @@ class ProfileView: UIView {
         scrollView.showsHorizontalScrollIndicator = false
         addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ])
+        scrollView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         return scrollView
     }()
     
@@ -33,13 +31,11 @@ class ProfileView: UIView {
         let scrollViewContentView = UIView()
         scrollView.addSubview(scrollViewContentView)
         scrollViewContentView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            scrollViewContentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            scrollViewContentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            scrollViewContentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            scrollViewContentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            scrollViewContentView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor)
-        ])
+        scrollViewContentView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        scrollViewContentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        scrollViewContentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        scrollViewContentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+        scrollViewContentView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
         return scrollViewContentView
     }()
     
@@ -57,16 +53,14 @@ class ProfileView: UIView {
         nameTextView.clipsToBounds = true
         scrollViewContentView.addSubview(nameTextView)
         nameTextView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            nameTextView.topAnchor.constraint(equalTo: editPhotoButton.bottomAnchor),
-            nameTextView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 14),
-            nameTextView.bottomAnchor.constraint(equalTo: bioTextView.topAnchor, constant: -20),
-            nameTextView.leadingAnchor.constraint(greaterThanOrEqualTo: scrollViewContentView.leadingAnchor, constant: 40),
-            nameTextView.trailingAnchor.constraint(lessThanOrEqualTo: scrollViewContentView.trailingAnchor, constant: -40),
-            nameTextView.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor),
-            nameTextView.widthAnchor.constraint(greaterThanOrEqualToConstant: 240),
-            nameTextView.heightAnchor.constraint(equalToConstant: 44)
-        ])
+        nameTextView.topAnchor.constraint(equalTo: editPhotoButton.bottomAnchor).isActive = true
+        nameTextView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 14).isActive = true
+        nameTextView.bottomAnchor.constraint(equalTo: bioTextView.topAnchor, constant: -20).isActive = true
+        nameTextView.leadingAnchor.constraint(greaterThanOrEqualTo: scrollViewContentView.leadingAnchor, constant: 40).isActive = true
+        nameTextView.trailingAnchor.constraint(lessThanOrEqualTo: scrollViewContentView.trailingAnchor, constant: -40).isActive = true
+        nameTextView.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor).isActive = true
+        nameTextView.widthAnchor.constraint(greaterThanOrEqualToConstant: 240).isActive = true
+        nameTextView.heightAnchor.constraint(equalToConstant: 44).isActive = true
         return nameTextView
     }()
     
@@ -83,10 +77,8 @@ class ProfileView: UIView {
         bioTextView.clipsToBounds = true
         scrollViewContentView.addSubview(bioTextView)
         bioTextView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            bioTextView.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor),
-            bioTextView.widthAnchor.constraint(equalToConstant: 240)
-        ])
+        bioTextView.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor).isActive = true
+        bioTextView.widthAnchor.constraint(equalToConstant: 240).isActive = true
         return bioTextView
     }()
     
@@ -94,13 +86,11 @@ class ProfileView: UIView {
         let profileImageView = ProfileImageView(small: false, name: name, image: image)
         scrollViewContentView.addSubview(profileImageView)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            profileImageView.topAnchor.constraint(equalTo: scrollViewContentView.topAnchor, constant: 7),
-            profileImageView.trailingAnchor.constraint(equalTo: editPhotoButton.trailingAnchor),
-            profileImageView.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor),
-            profileImageView.widthAnchor.constraint(equalToConstant: 240),
-            profileImageView.heightAnchor.constraint(equalToConstant: 240)
-        ])
+        profileImageView.topAnchor.constraint(equalTo: scrollViewContentView.topAnchor, constant: 7).isActive = true
+        profileImageView.trailingAnchor.constraint(equalTo: editPhotoButton.trailingAnchor).isActive = true
+        profileImageView.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 240).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 240).isActive = true
         return profileImageView
     }()
     
@@ -127,12 +117,10 @@ class ProfileView: UIView {
         gcdSaveButtonBottomConstraint = NSLayoutConstraint(item: gcdSaveButton, attribute: .bottom, relatedBy: .equal,
                                                            toItem: self, attribute: .bottom, multiplier: 1, constant: -20)
         gcdSaveButtonBottomConstraint?.isActive = true
-        NSLayoutConstraint.activate([
-            gcdSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10),
-            gcdSaveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            gcdSaveButton.widthAnchor.constraint(equalToConstant: (UIScreen.main.bounds.width - 10 - 12 - 12) / 2),
-            gcdSaveButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
+        gcdSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10).isActive = true
+        gcdSaveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
+        gcdSaveButton.widthAnchor.constraint(equalToConstant: (UIScreen.main.bounds.width - 10 - 12 - 12) / 2).isActive = true
+        gcdSaveButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
         return gcdSaveButton
     }()
     
@@ -149,13 +137,11 @@ class ProfileView: UIView {
         operationSaveButtonBottomConstraint = NSLayoutConstraint(item: operationSaveButton, attribute: .bottom, relatedBy: .equal,
                                                                  toItem: self, attribute: .bottom, multiplier: 1, constant: -20)
         operationSaveButtonBottomConstraint?.isActive = true
-        NSLayoutConstraint.activate([
-            operationSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10),
-            operationSaveButton.leadingAnchor.constraint(equalTo: gcdSaveButton.trailingAnchor, constant: 10),
-            operationSaveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            operationSaveButton.widthAnchor.constraint(equalTo: gcdSaveButton.widthAnchor),
-            operationSaveButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
+        operationSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10).isActive = true
+        operationSaveButton.leadingAnchor.constraint(equalTo: gcdSaveButton.trailingAnchor, constant: 10).isActive = true
+        operationSaveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
+        operationSaveButton.widthAnchor.constraint(equalTo: gcdSaveButton.widthAnchor).isActive = true
+        operationSaveButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
         return operationSaveButton
     }()
     
@@ -169,15 +155,13 @@ class ProfileView: UIView {
         editProfileButton.addTarget(self, action: #selector(editProfileButtonTapped), for: .touchUpInside)
         scrollViewContentView.addSubview(editProfileButton)
         editProfileButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            editProfileButton.topAnchor.constraint(equalTo: bioTextView.bottomAnchor, constant: 20),
-            editProfileButton.bottomAnchor.constraint(equalTo: scrollViewContentView.bottomAnchor),
-            editProfileButton.leadingAnchor.constraint(greaterThanOrEqualTo: scrollViewContentView.leadingAnchor, constant: 12),
-            editProfileButton.trailingAnchor.constraint(lessThanOrEqualTo: scrollViewContentView.trailingAnchor, constant: -12),
-            editProfileButton.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor),
-            editProfileButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 296),
-            editProfileButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
+        editProfileButton.topAnchor.constraint(equalTo: bioTextView.bottomAnchor, constant: 20).isActive = true
+        editProfileButton.bottomAnchor.constraint(equalTo: scrollViewContentView.bottomAnchor).isActive = true
+        editProfileButton.leadingAnchor.constraint(greaterThanOrEqualTo: scrollViewContentView.leadingAnchor, constant: 12).isActive = true
+        editProfileButton.trailingAnchor.constraint(lessThanOrEqualTo: scrollViewContentView.trailingAnchor, constant: -12).isActive = true
+        editProfileButton.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor).isActive = true
+        editProfileButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 296).isActive = true
+        editProfileButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
         return editProfileButton
     }()
     
@@ -189,11 +173,9 @@ class ProfileView: UIView {
         editPhotoButton.addTarget(self, action: #selector(configureActionSheet), for: .touchUpInside)
         scrollViewContentView.addSubview(editPhotoButton)
         editPhotoButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            editPhotoButton.leadingAnchor.constraint(greaterThanOrEqualTo: scrollViewContentView.leadingAnchor, constant: 30),
-            editPhotoButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 40),
-            editPhotoButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
+        editPhotoButton.leadingAnchor.constraint(greaterThanOrEqualTo: scrollViewContentView.leadingAnchor, constant: 30).isActive = true
+        editPhotoButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 40).isActive = true
+        editPhotoButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
         return editPhotoButton
     }()
     
@@ -245,10 +227,21 @@ class ProfileView: UIView {
         })
     }
     
-    func activateBioTextViewHeightConstraint(with constant: CGFloat) {
-        var height = constant
-        if #available(iOS 13.0, *) { } else { height -= 20 }
-        bioTextView.heightAnchor.constraint(equalToConstant: height).isActive = true
+    func activateBioTextViewHeightConstraint(with constant: CGFloat) { bioTextView.heightAnchor.constraint(equalToConstant: constant).isActive = true }
+    
+    func saveSucceedCompletion(name: String?, image: UIImage?) {
+        self.name = name
+        self.image = image
+        activityIndicator.stopAnimating()
+        profileImageView.loadImageCompletion(name: name, image: image)
+        editProfileButton.isEnabled = true
+        setupButtonView(button: editProfileButton, title: "Edit Profile", color: .systemBlue)
+    }
+    
+    func updateProfileImage(with image: UIImage) {
+        profileImageView.profileImage.image = image
+        profileImageView.lettersLabel.isHidden = true
+        setSaveButtonsEnable(flag: true)
     }
     
     // MARK: - Init / deinit
@@ -289,18 +282,7 @@ class ProfileView: UIView {
         editPhotoButton.isEnabled = flag
     }
     
-    func setSaveButtonsEnable(flag: Bool) {
-        [gcdSaveButton, operationSaveButton].forEach { $0.isEnabled = flag }
-    }
-    
-    func saveSucceedCompletion(name: String?, image: UIImage?) {
-        self.name = name
-        self.image = image
-        activityIndicator.stopAnimating()
-        profileImageView.loadImageCompletion(name: name, image: image)
-        editProfileButton.isEnabled = true
-        setupButtonView(button: editProfileButton, title: "Edit Profile", color: .systemBlue)
-    }
+    func setSaveButtonsEnable(flag: Bool) { [gcdSaveButton, operationSaveButton].forEach { $0.isEnabled = flag } }
     
     func applyTheme(theme: Theme) {
         self.theme = theme
@@ -311,11 +293,5 @@ class ProfileView: UIView {
         if #available(iOS 13.0, *) { } else {
             [nameTextView, bioTextView].forEach { $0?.keyboardAppearance = theme.themeSettings.keyboardAppearance }
         }
-    }
-    
-    func updateProfileImage(with image: UIImage) {
-        profileImageView.profileImage.image = image
-        profileImageView.lettersLabel.isHidden = true
-        setSaveButtonsEnable(flag: true)
     }
 }
