@@ -48,7 +48,7 @@ extension UIViewController {
                     unwrView.operationButtonTapped = false
                 }
                 unwrView.editProfileButton.isEnabled = true
-                unwrView.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
+                unwrView.setupButtonView(button: unwrView.editProfileButton, title: "Edit Profile", color: .systemBlue)
             }
         })
         alertController.addAction(cancelAction)

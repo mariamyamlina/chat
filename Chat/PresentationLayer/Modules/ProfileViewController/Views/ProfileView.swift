@@ -116,8 +116,7 @@ class ProfileView: UIView {
     
     lazy var gcdSaveButton: ButtonWithTouchSize = {
         let gcdSaveButton = ButtonWithTouchSize()
-        gcdSaveButton.setTitle("GCD Save", for: .normal)
-        setup(button: gcdSaveButton)
+        setupButtonView(button: gcdSaveButton, title: "GCD Save", color: .systemBlue)
         gcdSaveButton.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 19.0)
         gcdSaveButton.titleLabel?.textAlignment = .center
         gcdSaveButton.layer.cornerRadius = 14
@@ -139,8 +138,7 @@ class ProfileView: UIView {
     
     lazy var operationSaveButton: ButtonWithTouchSize = {
         let operationSaveButton = ButtonWithTouchSize()
-        operationSaveButton.setTitle("Operation Save", for: .normal)
-        setup(button: operationSaveButton)
+        setupButtonView(button: operationSaveButton, title: "Operation Save", color: .systemBlue)
         operationSaveButton.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 19.0)
         operationSaveButton.titleLabel?.textAlignment = .center
         operationSaveButton.layer.cornerRadius = 14
@@ -185,8 +183,7 @@ class ProfileView: UIView {
     
     lazy var editPhotoButton: UIButton = {
         let editPhotoButton = UIButton()
-        editPhotoButton.setTitle("Edit", for: .normal)
-        setup(button: editPhotoButton)
+        setupButtonView(button: editPhotoButton, title: "Edit", color: .systemBlue)
         editPhotoButton.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 16.0)
         editPhotoButton.titleLabel?.textAlignment = .center
         editPhotoButton.addTarget(self, action: #selector(configureActionSheet), for: .touchUpInside)
@@ -231,10 +228,10 @@ class ProfileView: UIView {
         let indicator = editProfileButton.titleLabel?.text == "Edit Profile"
         setTextViewsEditable(flag: indicator)
         if indicator {
-            setupEditProfileButtonView(title: "Cancel Editing", color: .systemRed)
+            setupButtonView(button: editProfileButton, title: "Cancel Editing", color: .systemRed)
             [nameTextView, bioTextView].forEach { $0.layer.borderWidth = 1.0 }
         } else {
-            setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
+            setupButtonView(button: editProfileButton, title: "Edit Profile", color: .systemBlue)
             setSaveButtonsEnable(flag: false)
             [nameTextView, bioTextView].forEach { $0.layer.borderWidth = 0.0}
         }
@@ -268,15 +265,15 @@ class ProfileView: UIView {
         applyTheme(theme: theme)
         setTextViewsEditable(flag: false)
         setSaveButtonsEnable(flag: false)
-        setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
+        setupButtonView(button: editProfileButton, title: "Edit Profile", color: .systemBlue)
     }
     
     // MARK: - Setup View
-    func setupEditProfileButtonView(title: String, color: UIColor) {
-        editProfileButton.setTitle(title, for: .normal)
-        editProfileButton.setTitleColor(color, for: .normal)
-        editProfileButton.setTitleColor(color.withAlphaComponent(0.4), for: .highlighted)
-        editProfileButton.setTitleColor(.lightGray, for: .disabled)
+    func setupButtonView(button: UIButton, title: String, color: UIColor) {
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(color, for: .normal)
+        button.setTitleColor(color.withAlphaComponent(0.4), for: .highlighted)
+        button.setTitleColor(.lightGray, for: .disabled)
     }
     
     func disableSomeViews() {
@@ -302,7 +299,7 @@ class ProfileView: UIView {
         activityIndicator.stopAnimating()
         profileImageView.loadImageCompletion(name: name, image: image)
         editProfileButton.isEnabled = true
-        setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
+        setupButtonView(button: editProfileButton, title: "Edit Profile", color: .systemBlue)
     }
     
     func applyTheme(theme: Theme) {
@@ -320,11 +317,5 @@ class ProfileView: UIView {
         profileImageView.profileImage.image = image
         profileImageView.lettersLabel.isHidden = true
         setSaveButtonsEnable(flag: true)
-    }
-    
-    func setup(button: UIButton) {
-        button.setTitleColor(.systemBlue, for: .normal)
-        button.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
-        button.setTitleColor(.lightGray, for: .disabled)
     }
 }
