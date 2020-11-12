@@ -34,7 +34,7 @@
 		9957D96C254F42650073DCA2 /* MessageInputContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9957D96B254F42650073DCA2 /* MessageInputContainer.swift */; };
 		9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9957F56D251F67DC007EB624 /* ConversationViewController.swift */; };
 		995C84B2253B09DA0036B067 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995C84B1253B09DA0036B067 /* Message.swift */; };
-		996941142539082500819078 /* AlertControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996941132539082500819078 /* AlertControllerExtension.swift */; };
+		996941142539082500819078 /* UIAlertController + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996941132539082500819078 /* UIAlertController + Extension.swift */; };
 		996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996FA7B3253FAB4B007EC8AA /* Channel.swift */; };
 		997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE1F2530D8EF00645079 /* GCDDataManager.swift */; };
 		997CEE222530D91500645079 /* OperationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE212530D91500645079 /* OperationDataManager.swift */; };
@@ -103,7 +103,7 @@
 		9957D96B254F42650073DCA2 /* MessageInputContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageInputContainer.swift; sourceTree = "<group>"; };
 		9957F56D251F67DC007EB624 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		995C84B1253B09DA0036B067 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		996941132539082500819078 /* AlertControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertControllerExtension.swift; sourceTree = "<group>"; };
+		996941132539082500819078 /* UIAlertController + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController + Extension.swift"; sourceTree = "<group>"; };
 		996FA7B3253FAB4B007EC8AA /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		997CEE1F2530D8EF00645079 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
 		997CEE212530D91500645079 /* OperationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDataManager.swift; sourceTree = "<group>"; };
@@ -261,7 +261,6 @@
 			children = (
 				994518DE25572B0900D5B015 /* ProfileView.swift */,
 				994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */,
-				996941132539082500819078 /* AlertControllerExtension.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -310,12 +309,12 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
-		99CB3DF0255B09AE00DDD117 /* Network */ = {
+		99CB3DF0255B09AE00DDD117 /* Firebase */ = {
 			isa = PBXGroup;
 			children = (
 				99A5733E253C7B3E00899AAC /* FirebaseManager.swift */,
 			);
-			path = Network;
+			path = Firebase;
 			sourceTree = "<group>";
 		};
 		99CB3DF5255B19B800DDD117 /* Extensions */ = {
@@ -323,10 +322,11 @@
 			children = (
 				994F1C992534C987003FC809 /* Colors.swift */,
 				990AC648255C8346006A60D4 /* ConfigurableView.swift */,
-				992800F625599ABC00C19545 /* UIViewController + Extension.swift */,
-				99CB3DF6255B1A0600DDD117 /* UINavigationController + Extension.swift */,
-				99CB3DF8255B1A1F00DDD117 /* String + Extension.swift */,
 				99CB3DFA255B1A3600DDD117 /* Date + Extension.swift */,
+				99CB3DF8255B1A1F00DDD117 /* String + Extension.swift */,
+				996941132539082500819078 /* UIAlertController + Extension.swift */,
+				99CB3DF6255B1A0600DDD117 /* UINavigationController + Extension.swift */,
+				992800F625599ABC00C19545 /* UIViewController + Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -416,7 +416,7 @@
 				992800F825599BA200C19545 /* DataManager */,
 				999EAEAA2559F6B80070D852 /* CoreData */,
 				99CB3E04255B4BA200DDD117 /* ThemeStorage */,
-				99CB3DF0255B09AE00DDD117 /* Network */,
+				99CB3DF0255B09AE00DDD117 /* Firebase */,
 			);
 			path = CoreLayer;
 			sourceTree = "<group>";
@@ -627,7 +627,7 @@
 				99A5733F253C7B3E00899AAC /* FirebaseManager.swift in Sources */,
 				9950733D251F87A500515678 /* MessageTableViewCell.swift in Sources */,
 				990FCB98254C969800156A48 /* MessageDB+CoreDataClass.swift in Sources */,
-				996941142539082500819078 /* AlertControllerExtension.swift in Sources */,
+				996941142539082500819078 /* UIAlertController + Extension.swift in Sources */,
 				99846730251B5EA1004E9044 /* ButtonWithTouchSize.swift in Sources */,
 				994518DF25572B0900D5B015 /* ProfileView.swift in Sources */,
 				999EAEA92559F3950070D852 /* LogModel.swift in Sources */,

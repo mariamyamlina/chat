@@ -98,7 +98,7 @@ class ConversationViewController: LogViewController {
             model.getMessages(inChannel: unwrChannel,
                                   errorHandler: { [weak self] (errorTitle, errorInfo) in
                                     self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
-                                    })
+            })
         }
     }
     

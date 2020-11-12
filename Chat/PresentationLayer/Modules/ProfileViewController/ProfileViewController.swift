@@ -93,9 +93,21 @@ class ProfileViewController: LogViewController {
         infoDidChange = [!nameSaved, !bioSaved, !imageSaved]
         if nameSaved && bioSaved && imageSaved {
             profileView.saveSucceedCompletion(name: model.name, image: model.image)
-            configureAlert("Data has been successfully saved", nil, false)
+            configureAlert(model: model,
+                           view: profileView,
+                           changeInfoIndicator: infoDidChange,
+                           completion: saveCompletion(nameSaved:bioSaved:imageSaved:),
+                           title: "Data has been successfully saved",
+                           message: nil,
+                           needsTwoActions: false)
         } else {
-            configureAlert("Error", "Failed to save data", true)
+            configureAlert(model: model,
+                           view: profileView,
+                           changeInfoIndicator: infoDidChange,
+                           completion: saveCompletion(nameSaved:bioSaved:imageSaved:),
+                           title: "Error",
+                           message: "Failed to save data",
+                           needsTwoActions: true)
         }
     }
     
@@ -144,20 +156,9 @@ class ProfileViewController: LogViewController {
         }
         
         profileView.actionSheetHandler = { [weak self] in
-            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            alertController.pruneNegativeWidthConstraints()
-            let galeryAction = UIAlertAction(title: "Choose from gallery", style: .default) { [weak self] (_) in
-                self?.presentImagePicker(of: .photoLibrary)
-            }
-            let takePhotoAction = UIAlertAction(title: "Take a photo", style: .default) { [weak self] (_) in
-                self?.presentImagePicker(of: .camera)
-            }
-            let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (_) in
-                alertController.dismiss(animated: true, completion: nil)
-            }
-            [galeryAction, takePhotoAction, cancelAction].forEach { alertController.addAction($0) }
-            alertController.applyTheme(theme: self?.model.currentTheme ?? .classic)
-            self?.present(alertController, animated: true, completion: nil)
+            guard let self = self else { return }
+            self.configureImagePickerAlert(model: self.model,
+                                           completion: self.presentImagePicker(of:))
         }
         
         profileView.closeProfileHandler = { [weak self] in
@@ -172,44 +173,6 @@ class ProfileViewController: LogViewController {
     private func setupNavigationBar() {
         navigationItem.leftBarButtonItem = profileView.leftBarButtonItem
         navigationItem.rightBarButtonItem = profileView.rightBarButtonItem
-    }
-    
-    // MARK: - Alert
-    func configureAlert(_ title: String, _ message: String?, _ twoActions: Bool) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: { [weak profileView] (_: UIAlertAction) in
-            guard let unwrView = profileView else { return }
-            if title != "Error" {
-                if unwrView.gcdButtonTapped {
-                    unwrView.gcdButtonTapped = false
-                } else if unwrView.operationButtonTapped {
-                    unwrView.operationButtonTapped = false
-                }
-                unwrView.editProfileButton.isEnabled = true
-                unwrView.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-            }
-        })
-        alertController.addAction(cancelAction)
-        
-        if twoActions {
-            let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self, weak model, weak profileView] (_: UIAlertAction) in
-                guard let self = self, let unwrView = profileView else { return }
-                if unwrView.gcdButtonTapped {
-                    model?.saveWithGCD(nameDidChange: self.infoDidChange[0],
-                                       bioDidChange: self.infoDidChange[1],
-                                       imageDidChange: self.infoDidChange[2],
-                                       completion: self.saveCompletion)
-                } else if unwrView.operationButtonTapped {
-                    model?.saveWithOperations(nameDidChange: self.infoDidChange[0],
-                                              bioDidChange: self.infoDidChange[1],
-                                              imageDidChange: self.infoDidChange[2],
-                                              completion: self.saveCompletion)
-                }
-            })
-            alertController.addAction(repeatAction)
-        }
-        alertController.applyTheme(theme: model.currentTheme)
-        self.present(alertController, animated: true, completion: nil)
     }
 }
 
@@ -229,7 +192,13 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
             imagePicker.sourceType = type
             present(imagePicker, animated: true, completion: nil)
         } else {
-            configureAlert("Error", "Check your device and try later", false)
+            configureAlert(model: model,
+                           view: profileView,
+                           changeInfoIndicator: infoDidChange,
+                           completion: saveCompletion(nameSaved:bioSaved:imageSaved:),
+                           title: "Error",
+                           message: "Check your device and try later",
+                           needsTwoActions: false)
         }
     }
 }

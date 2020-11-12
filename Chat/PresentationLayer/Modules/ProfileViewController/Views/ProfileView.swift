@@ -11,17 +11,14 @@ import UIKit
 class ProfileView: UIView {
     // MARK: - UI
     var theme: Theme
-    var name: String?
-    var bio: String?
+    var name, bio: String?
     var image: UIImage?
-    var gcdSaveButtonBottomConstraint: NSLayoutConstraint?
-    var operationSaveButtonBottomConstraint: NSLayoutConstraint?
+    var gcdSaveButtonBottomConstraint, operationSaveButtonBottomConstraint: NSLayoutConstraint?
     
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
-        
         addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -55,9 +52,9 @@ class ProfileView: UIView {
         nameTextView.font = UIFont(name: "SFProDisplay-Bold", size: 24)
         nameTextView.autocorrectionType = .no
         nameTextView.backgroundColor = backgroundColor
+        nameTextView.layer.borderColor = Colors.tableViewLightSeparatorColor.cgColor
         nameTextView.layer.cornerRadius = 14
         nameTextView.clipsToBounds = true
-        
         scrollViewContentView.addSubview(nameTextView)
         nameTextView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -77,14 +74,13 @@ class ProfileView: UIView {
         let bioTextView = UITextView()
         bioTextView.textAlignment = .left
         bioTextView.autocapitalizationType = .sentences
-        bioTextView.textAlignment = .left
         bioTextView.text = bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
         bioTextView.font = UIFont(name: "SFProText-Regular", size: 16)
         bioTextView.autocorrectionType = .no
         bioTextView.backgroundColor = backgroundColor
+        bioTextView.layer.borderColor = Colors.tableViewLightSeparatorColor.cgColor
         bioTextView.layer.cornerRadius = 14
         bioTextView.clipsToBounds = true
-        
         scrollViewContentView.addSubview(bioTextView)
         bioTextView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -113,7 +109,6 @@ class ProfileView: UIView {
         activityIndicator.style = .gray
         activityIndicator.hidesWhenStopped = true
         activityIndicator.stopAnimating()
-        
         scrollViewContentView.addSubview(activityIndicator)
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         return activityIndicator
@@ -122,15 +117,12 @@ class ProfileView: UIView {
     lazy var gcdSaveButton: ButtonWithTouchSize = {
         let gcdSaveButton = ButtonWithTouchSize()
         gcdSaveButton.setTitle("GCD Save", for: .normal)
-        gcdSaveButton.setTitleColor(.systemBlue, for: .normal)
-        gcdSaveButton.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
-        gcdSaveButton.setTitleColor(.lightGray, for: .disabled)
+        setup(button: gcdSaveButton)
         gcdSaveButton.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 19.0)
         gcdSaveButton.titleLabel?.textAlignment = .center
         gcdSaveButton.layer.cornerRadius = 14
         gcdSaveButton.clipsToBounds = true
         gcdSaveButton.addTarget(self, action: #selector(saveButtonTapped(_:)), for: .touchUpInside)
-        
         addSubview(gcdSaveButton)
         gcdSaveButton.translatesAutoresizingMaskIntoConstraints = false
         gcdSaveButtonBottomConstraint = NSLayoutConstraint(item: gcdSaveButton, attribute: .bottom, relatedBy: .equal,
@@ -148,15 +140,12 @@ class ProfileView: UIView {
     lazy var operationSaveButton: ButtonWithTouchSize = {
         let operationSaveButton = ButtonWithTouchSize()
         operationSaveButton.setTitle("Operation Save", for: .normal)
-        operationSaveButton.setTitleColor(.systemBlue, for: .normal)
-        operationSaveButton.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
-        operationSaveButton.setTitleColor(.lightGray, for: .disabled)
+        setup(button: operationSaveButton)
         operationSaveButton.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 19.0)
         operationSaveButton.titleLabel?.textAlignment = .center
         operationSaveButton.layer.cornerRadius = 14
         operationSaveButton.clipsToBounds = true
         operationSaveButton.addTarget(self, action: #selector(saveButtonTapped(_:)), for: .touchUpInside)
-        
         addSubview(operationSaveButton)
         operationSaveButton.translatesAutoresizingMaskIntoConstraints = false
         operationSaveButtonBottomConstraint = NSLayoutConstraint(item: operationSaveButton, attribute: .bottom, relatedBy: .equal,
@@ -180,7 +169,6 @@ class ProfileView: UIView {
         editProfileButton.layer.cornerRadius = 14
         editProfileButton.clipsToBounds = true
         editProfileButton.addTarget(self, action: #selector(editProfileButtonTapped), for: .touchUpInside)
-        
         scrollViewContentView.addSubview(editProfileButton)
         editProfileButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -198,13 +186,10 @@ class ProfileView: UIView {
     lazy var editPhotoButton: UIButton = {
         let editPhotoButton = UIButton()
         editPhotoButton.setTitle("Edit", for: .normal)
-        editPhotoButton.setTitleColor(.systemBlue, for: .normal)
-        editPhotoButton.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
-        editPhotoButton.setTitleColor(.lightGray, for: .disabled)
+        setup(button: editPhotoButton)
         editPhotoButton.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 16.0)
         editPhotoButton.titleLabel?.textAlignment = .center
         editPhotoButton.addTarget(self, action: #selector(configureActionSheet), for: .touchUpInside)
-        
         scrollViewContentView.addSubview(editPhotoButton)
         editPhotoButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -235,8 +220,7 @@ class ProfileView: UIView {
     
     // MARK: - Handlers
     var saveButtonHandler: ((ButtonWithTouchSize) -> Void)?
-    var actionSheetHandler: (() -> Void)?
-    var closeProfileHandler: (() -> Void)?
+    var actionSheetHandler, closeProfileHandler: (() -> Void)?
     @objc func saveButtonTapped(_ sender: ButtonWithTouchSize) { saveButtonHandler?(sender) }
     @objc func configureActionSheet() { actionSheetHandler?() }
     @objc func closeProfileViewController() { closeProfileHandler?() }
@@ -244,35 +228,23 @@ class ProfileView: UIView {
     var operationButtonTapped = false
     
     @objc func editProfileButtonTapped() {
-        if editProfileButton.titleLabel?.text == "Edit Profile" {
+        let indicator = editProfileButton.titleLabel?.text == "Edit Profile"
+        setTextViewsEditable(flag: indicator)
+        if indicator {
             setupEditProfileButtonView(title: "Cancel Editing", color: .systemRed)
-            setTextViewsEditable(flag: true)
-            [nameTextView, bioTextView].forEach {
-                $0.layer.borderWidth = 1.0
-                $0.layer.borderColor = Colors.tableViewLightSeparatorColor.cgColor
-            }
+            [nameTextView, bioTextView].forEach { $0.layer.borderWidth = 1.0 }
         } else {
             setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-            setTextViewsEditable(flag: false)
             setSaveButtonsEnable(flag: false)
-            [nameTextView, bioTextView].forEach {
-                $0.layer.borderWidth = 0.0
-            }
+            [nameTextView, bioTextView].forEach { $0.layer.borderWidth = 0.0}
         }
     }
     
     func animate(isKeyboardShowing: Bool, keyboardHeight: CGFloat, bottomOffset: CGPoint) {
-        let constant = isKeyboardShowing ? -keyboardHeight - 20 : -20
-        changeConstraintsConstants(for: constant)
-        
-        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
-            self.layoutIfNeeded()
-        }, completion: { [weak self] (_) in
-            if isKeyboardShowing {
-                if bottomOffset.y > 0 {
-                    self?.scrollView.setContentOffset(bottomOffset, animated: true)
-                }
-            }
+        [gcdSaveButtonBottomConstraint, operationSaveButtonBottomConstraint].forEach {$0?.constant = isKeyboardShowing ? -keyboardHeight - 20 : -20}
+        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: { self.layoutIfNeeded() },
+                       completion: { [weak self] (_) in
+            if isKeyboardShowing, bottomOffset.y > 0 { self?.scrollView.setContentOffset(bottomOffset, animated: true) }
         })
     }
     
@@ -295,8 +267,8 @@ class ProfileView: UIView {
         super.init(frame: CGRect(origin: UIScreen.main.bounds.origin, size: UIScreen.main.bounds.size))
         applyTheme(theme: theme)
         setTextViewsEditable(flag: false)
-        setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
         setSaveButtonsEnable(flag: false)
+        setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
     }
     
     // MARK: - Setup View
@@ -316,14 +288,12 @@ class ProfileView: UIView {
     }
     
     private func setTextViewsEditable(flag: Bool) {
-        nameTextView.isEditable = flag
-        bioTextView.isEditable = flag
+        [nameTextView, nameTextView].forEach { $0.isEditable = flag }
         editPhotoButton.isEnabled = flag
     }
     
     func setSaveButtonsEnable(flag: Bool) {
-        gcdSaveButton.isEnabled = flag
-        operationSaveButton.isEnabled = flag
+        [gcdSaveButton, operationSaveButton].forEach { $0.isEnabled = flag }
     }
     
     func saveSucceedCompletion(name: String?, image: UIImage?) {
@@ -333,11 +303,6 @@ class ProfileView: UIView {
         profileImageView.loadImageCompletion(name: name, image: image)
         editProfileButton.isEnabled = true
         setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-    }
-    
-    func changeConstraintsConstants(for constant: CGFloat) {
-        gcdSaveButtonBottomConstraint?.constant = constant
-        operationSaveButtonBottomConstraint?.constant = constant
     }
     
     func applyTheme(theme: Theme) {
@@ -355,5 +320,11 @@ class ProfileView: UIView {
         profileImageView.profileImage.image = image
         profileImageView.lettersLabel.isHidden = true
         setSaveButtonsEnable(flag: true)
+    }
+    
+    func setup(button: UIButton) {
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
+        button.setTitleColor(.lightGray, for: .disabled)
     }
 }

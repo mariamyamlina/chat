@@ -1,5 +1,5 @@
 //
-//  AlertControllerExtension.swift
+//  UIAlertController + Extension.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 16.10.2020.

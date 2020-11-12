@@ -131,20 +131,9 @@ class ConversationsListViewController: LogViewController {
             self.navigationController?.pushViewController(themesController, animated: true)
         }
         
-        conversationsListView.alertWithTextFieldHandler = { [weak self, weak model, weak conversationsListView] in
-            let alertController = UIAlertController(title: "Create new channel", message: nil, preferredStyle: .alert)
-            alertController.addTextField()
-            conversationsListView?.setupTextField(alertController.textFields?[0])
-            let createAction = UIAlertAction(title: "Create", style: .default) { [weak model, weak alertController] _ in
-                if let channelName = alertController?.textFields![0].text,
-                    !channelName.containtsOnlyOfWhitespaces() {
-                    model?.createChannel(withName: channelName)
-                }
-            }
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-            [createAction, cancelAction].forEach { alertController.addAction($0) }
-            alertController.applyTheme(theme: model?.currentTheme ?? .classic)
-            self?.present(alertController, animated: true, completion: nil)
+        conversationsListView.alertWithTextFieldHandler = { [weak self] in
+            guard let self = self else { return }
+            self.configureNewChannelAlert(model: self.model, view: self.conversationsListView)
         }
     }
 }
