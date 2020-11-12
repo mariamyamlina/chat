@@ -12,14 +12,14 @@ import Firebase
 protocol FirebaseManagerProtocol: class {
     var universallyUniqueIdentifier: String { get }
     
-    func getChannels(completion: @escaping ([Channel]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
-    func addChannelsListener(completion: @escaping (DocumentChangeType, Channel) -> Void, errorHandler: @escaping (String?, String?) -> Void)
+    func getChannels(completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
+    func addChannelsListener(completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
     func removeChannelsListener()
     func create(channel name: String)
     func delete(channel id: String)
     
-    func getMessages(inChannel id: String, completion: @escaping ([Message]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
-    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, Message) -> Void, errorHandler: @escaping (String?, String?) -> Void)
+    func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
+    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
     func removeMessagesListener()
     func create(message text: String, inChannel id: String)
 }
@@ -51,8 +51,8 @@ class FirebaseManager {
 extension FirebaseManager: FirebaseManagerProtocol {
     // MARK: - Channels
         
-    func getChannels(completion: @escaping ([Channel]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
-        var channels: [Channel] = []
+    func getChannels(completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+        var channels: [[String: Any]] = []
         reference.getDocuments { (querySnapshot, error) in
             guard error == nil else {
                 errorHandler("Firebase", error?.localizedDescription)
@@ -66,18 +66,18 @@ extension FirebaseManager: FirebaseManagerProtocol {
                     !nameFromFB.containtsOnlyOfWhitespaces() else { continue }
                 let lastMessageFromFB = docData["lastMessage"] as? String
                 let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                let channel = Channel(identifier: docId,
-                                      name: nameFromFB,
-                                      lastMessage: lastMessageFromFB,
-                                      lastActivity: lastActivityFromFB,
-                                      profileImage: self.generateImage())
+                let channel = ["identifier": docId,
+                               "name": nameFromFB,
+                               "lastMessage": lastMessageFromFB as Any,
+                               "lastActivity": lastActivityFromFB as Any,
+                               "profileImage": self.generateImage() as Any] as [String: Any]
                 channels.append(channel)
             }
             completion(channels)
         }
     }
     
-    func addChannelsListener(completion: @escaping (DocumentChangeType, Channel) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func addChannelsListener(completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
         channelsListener = reference.addSnapshotListener(includeMetadataChanges: true) { querySnapshot, error in
             guard error == nil else {
                 errorHandler("Firebase", error?.localizedDescription)
@@ -91,11 +91,11 @@ extension FirebaseManager: FirebaseManagerProtocol {
                     !nameFromFB.containtsOnlyOfWhitespaces() {
                    let lastMessageFromFB = docData["lastMessage"] as? String
                    let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                    let channel = Channel(identifier: docId,
-                                          name: nameFromFB,
-                                          lastMessage: lastMessageFromFB,
-                                          lastActivity: lastActivityFromFB,
-                                          profileImage: self.generateImage())
+                    let channel = ["identifier": docId,
+                                   "name": nameFromFB,
+                                   "lastMessage": lastMessageFromFB as Any,
+                                   "lastActivity": lastActivityFromFB as Any,
+                                   "profileImage": self.generateImage() as Any] as [String: Any]
                     completion(diff.type, channel)
                 }
             }
@@ -117,8 +117,8 @@ extension FirebaseManager: FirebaseManagerProtocol {
 
     // MARK: - Messages
 
-    func getMessages(inChannel id: String, completion: @escaping ([Message]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
-        var messages: [Message] = []
+    func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+        var messages: [[String: Any]] = []
         reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
             guard error == nil else {
                 errorHandler("Firebase", error?.localizedDescription)
@@ -132,18 +132,18 @@ extension FirebaseManager: FirebaseManagerProtocol {
                       let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
                       let senderIdFromFB = docData["senderId"] as? String,
                       let senderNameFromFB = docData["senderName"] as? String else { continue }
-                let message = Message(identifier: docId,
-                                      content: contentFromFB,
-                                      created: dateFromFB,
-                                      senderId: senderIdFromFB,
-                                      senderName: senderNameFromFB)
+                let message = ["identifier": docId,
+                               "content": contentFromFB,
+                               "created": dateFromFB,
+                               "senderId": senderIdFromFB,
+                               "senderName": senderNameFromFB] as [String: Any]
                 messages.append(message)
             }
             completion(messages)
         }
     }
     
-    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, Message) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
         channelsListener = reference.document(id).collection("messages").addSnapshotListener(includeMetadataChanges: true) { querySnapshot, error in
             guard error == nil else {
                 errorHandler("Firebase", error?.localizedDescription)
@@ -157,11 +157,11 @@ extension FirebaseManager: FirebaseManagerProtocol {
                    let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
                    let senderIdFromFB = docData["senderId"] as? String,
                    let senderNameFromFB = docData["senderName"] as? String {
-                    let message = Message(identifier: docId,
-                                          content: contentFromFB,
-                                          created: dateFromFB,
-                                          senderId: senderIdFromFB,
-                                          senderName: senderNameFromFB)
+                    let message = ["identifier": docId,
+                                   "content": contentFromFB,
+                                   "created": dateFromFB,
+                                   "senderId": senderIdFromFB,
+                                   "senderName": senderNameFromFB] as [String: Any]
                     completion(diff.type, message)
                 }
             }
@@ -179,7 +179,10 @@ extension FirebaseManager: FirebaseManagerProtocol {
                        "senderName": settingsStorage.name ?? "Marina Dudarenko"] as [String: Any]
         reference.document(id).collection("messages").addDocument(data: message)
     }
-    
+}
+
+// MARK: - Generate image
+extension FirebaseManager {
     private func generateImage() -> UIImage? {
         let randNum = Int(arc4random_uniform(15))
         let image: UIImage?

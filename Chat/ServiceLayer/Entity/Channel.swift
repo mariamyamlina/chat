@@ -34,4 +34,12 @@ struct Channel: EntityProtocol {
         self.lastActivity = entity.lastActivity
         self.profileImage = UIImage(data: entity.profileImage ?? Data())
     }
+    
+    init(fromDict dictionary: [String: Any]) {
+        self.identifier = dictionary["identifier"] as? String ?? ""
+        self.name = dictionary["name"] as? String ?? ""
+        self.lastMessage = dictionary["lastMessage"] as? String ?? nil
+        self.lastActivity = dictionary["lastActivity"] as? Date ?? nil
+        self.profileImage = dictionary["profileImage"] as? UIImage ?? nil
+    }
 }

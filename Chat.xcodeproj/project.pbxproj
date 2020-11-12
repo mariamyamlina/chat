@@ -313,7 +313,6 @@
 		99CB3DF0255B09AE00DDD117 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				990AC647255C8305006A60D4 /* Entity */,
 				99A5733E253C7B3E00899AAC /* FirebaseManager.swift */,
 			);
 			path = Network;
@@ -369,6 +368,7 @@
 			isa = PBXGroup;
 			children = (
 				99ED327C25580F63008848D0 /* Assembly */,
+				990AC647255C8305006A60D4 /* Entity */,
 				99ED327B25580F5B008848D0 /* Services */,
 			);
 			path = ServiceLayer;

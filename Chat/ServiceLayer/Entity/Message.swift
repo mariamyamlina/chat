@@ -34,4 +34,12 @@ struct Message: EntityProtocol {
         self.senderId = entity.senderId
         self.senderName = entity.senderName
     }
+    
+    init(fromDict dictionary: [String: Any]) {
+        self.identifier = dictionary["identifier"] as? String ?? ""
+        self.content = dictionary["content"] as? String ?? ""
+        self.created = dictionary["created"] as? Date ?? Date()
+        self.senderId = dictionary["senderId"] as? String ?? ""
+        self.senderName = dictionary["senderName"] as? String ?? ""
+    }
 }

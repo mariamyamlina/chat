@@ -110,14 +110,20 @@ class MessageService {
 extension MessageService: MessageServiceProtocol {
     func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
         firebaseManager.getMessages(inChannel: channel.identifier, completion: { [weak self] messages in
-            self?.save(messages: messages, inChannel: channel, errorHandler: errorHandler)
+            var messagesArray: [Message] = []
+            messages.forEach {
+                let message = Message(fromDict: $0)
+                messagesArray.append(message)
+            }
+            self?.save(messages: messagesArray, inChannel: channel, errorHandler: errorHandler)
             self?.addListener(in: channel, errorHandler: errorHandler)},
                                     errorHandler: errorHandler)
     }
     
     func addListener(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
         firebaseManager.addMessagesListener(inChannel: channel.identifier, completion: { [weak self] (type, message) in
-            self?.handleChanges(ofType: type, message: message, channel: channel, errorHandler: errorHandler)},
+            let messageEntity = Message(fromDict: message)
+            self?.handleChanges(ofType: type, message: messageEntity, channel: channel, errorHandler: errorHandler)},
                                             errorHandler: errorHandler)
     }
     

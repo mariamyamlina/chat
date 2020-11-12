@@ -36,11 +36,11 @@ class ChannelService {
                 let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler)
                 if channelFromDB == nil {
                     let channelDB = ChannelDB(identifier: channel.identifier,
-                                  name: channel.name,
-                                  lastMessage: channel.lastMessage,
-                                  lastActivity: channel.lastActivity,
-                                  profileImage: channel.profileImage?.jpegData(compressionQuality: 1.0),
-                                  in: context)
+                                              name: channel.name,
+                                              lastMessage: channel.lastMessage,
+                                              lastActivity: channel.lastActivity,
+                                              profileImage: channel.profileImage?.jpegData(compressionQuality: 1.0),
+                                              in: context)
                     do {
                         try context.obtainPermanentIDs(for: [channelDB])
                     } catch {
@@ -65,11 +65,11 @@ class ChannelService {
         coreDataStack.performSave { context in
             guard coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) == nil else { return }
             let channelDB = ChannelDB(identifier: channel.identifier,
-                          name: channel.name,
-                          lastMessage: channel.lastMessage,
-                          lastActivity: channel.lastActivity,
-                          profileImage: channel.profileImage?.jpegData(compressionQuality: 1.0),
-                          in: context)
+                                      name: channel.name,
+                                      lastMessage: channel.lastMessage,
+                                      lastActivity: channel.lastActivity,
+                                      profileImage: channel.profileImage?.jpegData(compressionQuality: 1.0),
+                                      in: context)
             do {
                 try context.obtainPermanentIDs(for: [channelDB])
             } catch {
@@ -83,7 +83,7 @@ class ChannelService {
                         errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
             guard let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
-            if channelFromDB.lastActivity != channel.lastActivity && channelFromDB.lastMessage != channel.lastMessage {
+            if channelFromDB.lastActivity != channel.lastActivity || channelFromDB.lastMessage != channel.lastMessage {
                 channelFromDB.lastActivity = channel.lastActivity
                 channelFromDB.lastMessage = channel.lastMessage
             }
@@ -122,14 +122,20 @@ class ChannelService {
 extension ChannelService: ChannelServiceProtocol {
     func getChannels(errorHandler: @escaping (String?, String?) -> Void) {
         firebaseManager.getChannels(completion: { [weak self] channels in
-            self?.save(channels: channels, errorHandler: errorHandler)
+            var channelsArray: [Channel] = []
+            channels.forEach {
+                let channel = Channel(fromDict: $0)
+                channelsArray.append(channel)
+            }
+            self?.save(channels: channelsArray, errorHandler: errorHandler)
             self?.addListener(errorHandler: errorHandler)},
                                     errorHandler: errorHandler)
     }
     
     func addListener(errorHandler: @escaping (String?, String?) -> Void) {
         firebaseManager.addChannelsListener(completion: { [weak self] (type, channel) in
-            self?.handleChanges(ofType: type, channel: channel, errorHandler: errorHandler)},
+            let channelEntity = Channel(fromDict: channel)
+            self?.handleChanges(ofType: type, channel: channelEntity, errorHandler: errorHandler)},
                                             errorHandler: errorHandler)
     }
     
