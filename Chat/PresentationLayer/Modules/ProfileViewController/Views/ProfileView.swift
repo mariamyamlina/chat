@@ -261,6 +261,27 @@ class ProfileView: UIView {
         }
     }
     
+    func animate(isKeyboardShowing: Bool, keyboardHeight: CGFloat, bottomOffset: CGPoint) {
+        let constant = isKeyboardShowing ? -keyboardHeight - 20 : -20
+        changeConstraintsConstants(for: constant)
+        
+        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
+            self.layoutIfNeeded()
+        }, completion: { [weak self] (_) in
+            if isKeyboardShowing {
+                if bottomOffset.y > 0 {
+                    self?.scrollView.setContentOffset(bottomOffset, animated: true)
+                }
+            }
+        })
+    }
+    
+    func activateBioTextViewHeightConstraint(with constant: CGFloat) {
+        var height = constant
+        if #available(iOS 13.0, *) { } else { height -= 20 }
+        bioTextView.heightAnchor.constraint(equalToConstant: height).isActive = true
+    }
+    
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -328,5 +349,11 @@ class ProfileView: UIView {
         if #available(iOS 13.0, *) { } else {
             [nameTextView, bioTextView].forEach { $0?.keyboardAppearance = theme.themeSettings.keyboardAppearance }
         }
+    }
+    
+    func updateProfileImage(with image: UIImage) {
+        profileImageView.profileImage.image = image
+        profileImageView.lettersLabel.isHidden = true
+        setSaveButtonsEnable(flag: true)
     }
 }

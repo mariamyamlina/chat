@@ -16,9 +16,6 @@ class ConversationViewController: LogViewController {
     // MARK: - Dependencies
     private let presentationAssembly: PresentationAssemblyProtocol
     private let model: ConversationModelProtocol
-
-    // MARK: - DisplayModel
-    private var dataSource: [MessageCellModel] = []
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
@@ -45,11 +42,6 @@ class ConversationViewController: LogViewController {
         createRelationships()
         addKeyboardNotifications()
         navigationController?.applyTheme(theme: model.currentTheme)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        conversationView.messageInputContainer.textField.becomeFirstResponder()
     }
     
     // MARK: - Setup View
@@ -80,6 +72,7 @@ class ConversationViewController: LogViewController {
         conversationView.tableView.dataSource = self
     }
     
+    // MARK: - FetchedResultsController
     private func setupFetchedResultsController() {
         model.frc.delegate = self
         do {
@@ -89,6 +82,7 @@ class ConversationViewController: LogViewController {
         }
     }
     
+    // MARK: - Handlers
     private func createRelationships() {
         conversationView.messageInputContainer.textField.delegate = self
         conversationView.messageInputContainer.sendHandler = { [weak self, weak conversationView] in
@@ -123,16 +117,9 @@ class ConversationViewController: LogViewController {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
             let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
-            conversationView.messageInputContainerBottomConstraint?.constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) : 0
-            UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
-                self.view.layoutIfNeeded()
-            }, completion: { (_) in
-                if isKeyboardShowing {
-                    if let indexPath = self.countIndexPathForLastRow() {
-                        self.conversationView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
-                    }
-                }
-            })
+            conversationView.animate(isKeyboardShowing: isKeyboardShowing,
+                                     keyboardHeight: keyboardFrame?.height ?? 0,
+                                     indexPathForLastRow: countIndexPathForLastRow())
         }
     }
     
@@ -163,18 +150,7 @@ extension ConversationViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier, for: indexPath) as? MessageTableViewCell
-        
-        let messageDB = model.frc.object(at: indexPath)
-        let message = Message(from: messageDB)
-        
-        let messageCellFactory = MessageModelFactory()
-        let messageModel: MessageCellModel
-        if message.senderId == model.universallyUniqueIdentifier() {
-            messageModel = messageCellFactory.messageToCell(message, .output)
-        } else {
-            messageModel = messageCellFactory.messageToCell(message, .input)
-        }
-        cell?.configure(with: messageModel, theme: model.currentTheme)
+        cell?.configure(with: model.messageModel(at: indexPath), theme: model.currentTheme)
         return cell ?? UITableViewCell()
     }
 }
@@ -186,17 +162,7 @@ extension ConversationViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let messageDB = model.frc.object(at: indexPath)
-        let message = Message(from: messageDB)
-        
-        let messageCellFactory = MessageModelFactory()
-        let messageModel: MessageCellModel
-        if message.senderId == model.universallyUniqueIdentifier() {
-            messageModel = messageCellFactory.messageToCell(message, .output)
-        } else {
-            messageModel = messageCellFactory.messageToCell(message, .input)
-        }
-        return conversationView.calculateHeightForRow(withText: messageModel.text)
+        return conversationView.calculateHeightForRow(withText: model.messageModel(at: indexPath).text)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -215,9 +181,8 @@ extension ConversationViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         conversationView.messageInputContainer.enableSendButton(true)
-        if let indexPath = self.countIndexPathForLastRow() {
-            conversationView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
-        }
+        guard let indexPath = self.countIndexPathForLastRow() else { return }
+        conversationView.scrollTableView(to: indexPath)
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
@@ -275,8 +240,7 @@ extension ConversationViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         conversationView.tableView.endUpdates()
-        if let indexPath = self.countIndexPathForLastRow() {
-            conversationView.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
-        }
+        guard let indexPath = self.countIndexPathForLastRow() else { return }
+        conversationView.scrollTableView(to: indexPath)
     }
 }

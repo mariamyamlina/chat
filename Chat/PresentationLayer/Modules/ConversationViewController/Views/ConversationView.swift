@@ -112,4 +112,20 @@ class ConversationView: UIView {
         let rect = CGSize(width: frame.width, height: estimatedFrame.height + 42)
         return rect.height
     }
+    
+    // MARK: - Handlers
+    func scrollTableView(to indexPath: IndexPath) {
+        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+    }
+    
+    func animate(isKeyboardShowing: Bool, keyboardHeight: CGFloat, indexPathForLastRow: IndexPath?) {
+        messageInputContainerBottomConstraint?.constant = isKeyboardShowing ? -keyboardHeight : 0
+        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
+            self.layoutIfNeeded()
+        }, completion: { [weak self] (_) in
+            guard let indexPath = indexPathForLastRow,
+                isKeyboardShowing else { return }
+            self?.scrollTableView(to: indexPath)
+        })
+    }
 }

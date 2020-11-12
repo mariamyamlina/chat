@@ -95,6 +95,7 @@ class ConversationsListViewController: LogViewController {
         conversationsListView.tableView.dataSource = self
     }
     
+    // MARK: - FetchedResultsController
     private func setupFetchedResultsController() {
         model.frc.delegate = self
         do {

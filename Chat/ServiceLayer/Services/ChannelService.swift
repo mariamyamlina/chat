@@ -11,7 +11,6 @@ import Firebase
 import CoreData
 
 protocol ChannelServiceProtocol {
-//    func getFRC<T: NSManagedObject>() -> NSFetchedResultsController<T>
     func getChannels(errorHandler: @escaping (String?, String?) -> Void)
     func addListener(errorHandler: @escaping (String?, String?) -> Void)
     func removeListener()

@@ -12,7 +12,6 @@ import CoreData
 
 protocol MessageServiceProtocol {
     var channel: Channel? { get }
-//    var messagesFetchedResultsController: NSFetchedResultsController<MessageDB> { get }
     var universallyUniqueIdentifier: String { get }
     func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
     func addListener(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void)

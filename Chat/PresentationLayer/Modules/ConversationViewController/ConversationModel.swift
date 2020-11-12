@@ -43,12 +43,13 @@ class MessageModelFactory {
 // MARK: - ConversationModel
 protocol ConversationModelProtocol: class {
     var channel: Channel? { get }
-    func universallyUniqueIdentifier() -> String
     func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
     func createMessage(withText text: String, inChannel channel: Channel)
     func removeListener()
     var frc: NSFetchedResultsController<MessageDB> { get }
     var currentTheme: Theme { get }
+    func message(at indexPath: IndexPath) -> Message
+    func messageModel(at indexPath: IndexPath) -> MessageCellModel
 }
 
 class ConversationModel {
@@ -76,10 +77,6 @@ class ConversationModel {
 
 // MARK: - ConversationModelProtocol
 extension ConversationModel: ConversationModelProtocol {
-    func universallyUniqueIdentifier() -> String {
-        return messageService.universallyUniqueIdentifier
-    }
-    
     func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
         messageService.getMessages(in: channel, errorHandler: errorHandler)
     }
@@ -94,5 +91,20 @@ extension ConversationModel: ConversationModelProtocol {
     
     var currentTheme: Theme {
         return settingsService.currentTheme
+    }
+    
+    func message(at indexPath: IndexPath) -> Message {
+        let messageDB = frc.object(at: indexPath)
+        return Message(from: messageDB)
+    }
+    
+    func messageModel(at indexPath: IndexPath) -> MessageCellModel {
+        let message = self.message(at: indexPath)
+        let messageCellFactory = MessageModelFactory()
+        if message.senderId == messageService.universallyUniqueIdentifier {
+            return messageCellFactory.messageToCell(message, .output)
+        } else {
+            return messageCellFactory.messageToCell(message, .input)
+        }
     }
 }

@@ -35,6 +35,31 @@ class ThemesViewController: LogViewController {
     }
     
     // MARK: - Setup View
+    private func setupView() {
+        view.addSubview(themesView)
+        themesView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            themesView.topAnchor.constraint(equalTo: view.topAnchor),
+            themesView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            themesView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            themesView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        
+        setupNavigationBar()
+        applyTheme(themeRawValue: model.currentTheme.rawValue)
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.largeTitleDisplayMode = .never
+        navigationItem.titleView = themesView.titleLabel
+    }
+    
+    func applyTheme(themeRawValue: Int) {
+        navigationController?.applyTheme(theme: Theme(rawValue: themeRawValue) ?? .classic)
+        themesView.applyTheme(theme: Theme(rawValue: themeRawValue) ?? .classic)
+    }
+    
+    // MARK: - Handlers
     private func createHandlers() {
         themesView.classicButton.pickHandler = { [weak self, weak themesView] in
             guard let self = self, let view = themesView else { return }
@@ -53,29 +78,5 @@ class ThemesViewController: LogViewController {
             view.pickButtonTapped(view.nightButton)
             self.model.applyTheme(for: .night, completion: self.applyTheme)
         }
-    }
-    
-    func applyTheme(themeRawValue: Int) {
-        navigationController?.applyTheme(theme: Theme(rawValue: themeRawValue) ?? .classic)
-        themesView.applyTheme(theme: Theme(rawValue: themeRawValue) ?? .classic)
-    }
-    
-    private func setupView() {
-        view.addSubview(themesView)
-        themesView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            themesView.topAnchor.constraint(equalTo: view.topAnchor),
-            themesView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            themesView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            themesView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-        
-        setupNavigationBar()
-        applyTheme(themeRawValue: model.currentTheme.rawValue)
-    }
-    
-    private func setupNavigationBar() {
-        navigationItem.largeTitleDisplayMode = .never
-        navigationItem.titleView = themesView.titleLabel
     }
 }

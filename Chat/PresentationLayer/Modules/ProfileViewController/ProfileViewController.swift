@@ -56,11 +56,8 @@ class ProfileViewController: LogViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        var viewHeight = view.bounds.height - (navigationController?.navigationBar.bounds.height ?? view.bounds.height - 56) - 70
-        if #available(iOS 13.0, *) { } else {
-            viewHeight -= 20
-        }
-        profileView.bioTextView.heightAnchor.constraint(equalToConstant: viewHeight - 385).isActive = true
+        guard let height = navigationController?.navigationBar.bounds.height else { return }
+        profileView.activateBioTextViewHeightConstraint(with: view.bounds.height - height - 455)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -83,20 +80,11 @@ class ProfileViewController: LogViewController {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
             let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
-
-            let constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) - 20 : -20
-            profileView.changeConstraintsConstants(for: constant)
+            let bottomOffset = CGPoint(x: 0, y: (keyboardFrame?.height ?? 0) - (self.navigationController?.navigationBar.bounds.height ?? 0))
             
-            UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
-                self.view.layoutIfNeeded()
-            }, completion: { (_) in
-                if isKeyboardShowing {
-                    let bottomOffset = CGPoint(x: 0, y: (keyboardFrame?.height ?? 0) - (self.navigationController?.navigationBar.bounds.height ?? 0))
-                    if bottomOffset.y > 0 {
-                        self.profileView.scrollView.setContentOffset(bottomOffset, animated: true)
-                    }
-                }
-            })
+            profileView.animate(isKeyboardShowing: isKeyboardShowing,
+                                keyboardHeight: keyboardFrame?.height ?? 0,
+                                bottomOffset: bottomOffset)
         }
     }
     
@@ -229,9 +217,7 @@ class ProfileViewController: LogViewController {
 extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            profileView.profileImageView.profileImage.image = pickedImage
-            profileView.profileImageView.lettersLabel.isHidden = true
-            profileView.setSaveButtonsEnable(flag: true)
+            profileView.updateProfileImage(with: pickedImage)
             infoDidChange[2] = true
             model.changeImage(for: pickedImage)
         }
