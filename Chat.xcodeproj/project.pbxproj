@@ -195,7 +195,6 @@
 		994518DB2556F02D00D5B015 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				99CB3DF5255B19B800DDD117 /* Extensions */,
 				9987556625142AC90080EEAE /* Fonts */,
 				99803F8F250ADD11000284D9 /* Assets.xcassets */,
 				99803F91250ADD11000284D9 /* LaunchScreen.storyboard */,
@@ -352,6 +351,7 @@
 			children = (
 				99ED327625580EBE008848D0 /* Assembly */,
 				99ED327A25580F4B008848D0 /* Modules */,
+				99CB3DF5255B19B800DDD117 /* Extensions */,
 			);
 			path = PresentationLayer;
 			sourceTree = "<group>";
