@@ -13,15 +13,15 @@ class ThemesViewController: LogViewController {
     lazy var themesView = ThemesView(theme: model.currentTheme)
     
     // MARK: - Dependencies
-    private let presentationAssembly: PresentationAssemblyProtocol
-    private let model: ThemesModelProtocol
+    private let presentationAssembly: IPresentationAssembly
+    private let model: IThemesModel
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(model: ThemesModelProtocol, presentationAssembly: PresentationAssemblyProtocol) {
+    init(model: IThemesModel, presentationAssembly: IPresentationAssembly) {
         self.model = model
         self.presentationAssembly = presentationAssembly
         super.init(model: presentationAssembly.logModel())

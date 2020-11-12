@@ -41,7 +41,7 @@ class MessageModelFactory {
 }
 
 // MARK: - ConversationModel
-protocol ConversationModelProtocol: class {
+protocol IConversationModel: class {
     var channel: Channel? { get }
     func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
     func createMessage(withText text: String, inChannel channel: Channel)
@@ -55,12 +55,12 @@ protocol ConversationModelProtocol: class {
 class ConversationModel {
     // MARK: - Dependencies
     var channel: Channel?
-    let messageService: MessageServiceProtocol
-    var settingsService: SettingsServiceProtocol
-    var fetchService: FetchServiceProtocol
+    let messageService: IMessageService
+    var settingsService: ISettingsService
+    var fetchService: IFetchService
     
     // MARK: - Init / deinit
-    init(messageService: MessageServiceProtocol, settingsService: SettingsServiceProtocol, fetchService: FetchServiceProtocol, channel: Channel?) {
+    init(messageService: IMessageService, settingsService: ISettingsService, fetchService: IFetchService, channel: Channel?) {
         self.messageService = messageService
         self.channel = channel
         self.settingsService = settingsService
@@ -75,8 +75,8 @@ class ConversationModel {
     }()
 }
 
-// MARK: - ConversationModelProtocol
-extension ConversationModel: ConversationModelProtocol {
+// MARK: - IConversationModel
+extension ConversationModel: IConversationModel {
     func getMessages(inChannel channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
         messageService.getMessages(in: channel, errorHandler: errorHandler)
     }

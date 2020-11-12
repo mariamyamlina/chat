@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol ConfigurableViewProtocol {
+protocol IConfigurableView {
     associatedtype ConfigurationModel
     func configure(with model: ConfigurationModel, theme: Theme)
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol SettingsServiceProtocol {
+protocol ISettingsService {
     var currentTheme: Theme { get }
     var name: String? { get }
     var bio: String? { get }
@@ -20,16 +20,16 @@ protocol SettingsServiceProtocol {
 
 class SettingsService {
     // MARK: - Dependencies
-    let settingsStorage: SettingsStorageProtocol
+    let settingsStorage: ISettingsStorage
 
     // MARK: - Init / deinit
-    init(settingsStorage: SettingsStorageProtocol) {
+    init(settingsStorage: ISettingsStorage) {
         self.settingsStorage = settingsStorage
     }
 }
 
-// MARK: - SettingsServiceProtocol
-extension SettingsService: SettingsServiceProtocol {
+// MARK: - ISettingsService
+extension SettingsService: ISettingsService {
     var currentTheme: Theme { settingsStorage.currentTheme }
     var name: String? { settingsStorage.name }
     var bio: String? { settingsStorage.bio }

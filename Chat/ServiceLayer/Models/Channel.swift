@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Channel: EntityProtocol {
+struct Channel: IModel {
     let identifier: String
     let name: String
     let lastMessage: String?
@@ -35,7 +35,7 @@ struct Channel: EntityProtocol {
         self.profileImage = UIImage(data: entity.profileImage ?? Data())
     }
     
-    init(fromDict dictionary: [String: Any]) {
+    init(from dictionary: [String: Any]) {
         self.identifier = dictionary["identifier"] as? String ?? ""
         self.name = dictionary["name"] as? String ?? ""
         self.lastMessage = dictionary["lastMessage"] as? String ?? nil

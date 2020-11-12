@@ -10,7 +10,7 @@ import Foundation
 import Firebase
 import CoreData
 
-protocol ChannelServiceProtocol {
+protocol IChannelService {
     func getChannels(errorHandler: @escaping (String?, String?) -> Void)
     func addListener(errorHandler: @escaping (String?, String?) -> Void)
     func removeListener()
@@ -19,11 +19,11 @@ protocol ChannelServiceProtocol {
 }
 
 class ChannelService {
-    let coreDataStack: CoreDataStackProtocol
-    let firebaseManager: FirebaseManagerProtocol
+    let coreDataStack: ICoreDataStack
+    let firebaseManager: IFirebaseManager
     
     // MARK: - Init / deinit
-    init(coreDataStack: CoreDataStackProtocol, firebaseManager: FirebaseManagerProtocol) {
+    init(coreDataStack: ICoreDataStack, firebaseManager: IFirebaseManager) {
         self.coreDataStack = coreDataStack
         self.firebaseManager = firebaseManager
     }
@@ -118,14 +118,13 @@ class ChannelService {
     }
 }
 
-// MARK: - ChannelServiceProtocol
-extension ChannelService: ChannelServiceProtocol {
+// MARK: - IChannelService
+extension ChannelService: IChannelService {
     func getChannels(errorHandler: @escaping (String?, String?) -> Void) {
         firebaseManager.getChannels(completion: { [weak self] channels in
             var channelsArray: [Channel] = []
             channels.forEach {
-                let channel = Channel(fromDict: $0)
-                channelsArray.append(channel)
+                channelsArray.append(Channel(from: $0))
             }
             self?.save(channels: channelsArray, errorHandler: errorHandler)
             self?.addListener(errorHandler: errorHandler)},
@@ -134,8 +133,7 @@ extension ChannelService: ChannelServiceProtocol {
     
     func addListener(errorHandler: @escaping (String?, String?) -> Void) {
         firebaseManager.addChannelsListener(completion: { [weak self] (type, channel) in
-            let channelEntity = Channel(fromDict: channel)
-            self?.handleChanges(ofType: type, channel: channelEntity, errorHandler: errorHandler)},
+            self?.handleChanges(ofType: type, channel: Channel(from: channel), errorHandler: errorHandler)},
                                             errorHandler: errorHandler)
     }
     

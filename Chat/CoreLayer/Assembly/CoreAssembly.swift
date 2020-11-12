@@ -8,20 +8,20 @@
 
 import Foundation
 
-protocol CoreAssemblyProtocol {
-    var gcdDataManager: DataManagerProtocol { get }
-    var operationDataManager: DataManagerProtocol { get }
-    var coreDataStack: CoreDataStackProtocol { get }
-    var firebaseManager: FirebaseManagerProtocol { get }
-    var themeStorage: ThemeStorageProtocol { get }
-    var settingsStorage: SettingsStorageProtocol { get }
+protocol ICoreAssembly {
+    var gcdDataManager: IDataManager { get }
+    var operationDataManager: IDataManager { get }
+    var coreDataStack: ICoreDataStack { get }
+    var firebaseManager: IFirebaseManager { get }
+    var themeStorage: IThemeStorage { get }
+    var settingsStorage: ISettingsStorage { get }
 }
 
-class CoreAssembly: CoreAssemblyProtocol {
-    lazy var gcdDataManager: DataManagerProtocol = GCDDataManager(settingsStorage: self.settingsStorage)
-    lazy var operationDataManager: DataManagerProtocol = OperationDataManager(settingsStorage: self.settingsStorage)
-    lazy var coreDataStack: CoreDataStackProtocol = CoreDataStack()
-    lazy var firebaseManager: FirebaseManagerProtocol = FirebaseManager(settingsStorage: self.settingsStorage)
-    lazy var themeStorage: ThemeStorageProtocol = ThemeStorage()
-    lazy var settingsStorage: SettingsStorageProtocol = SettingsStorage(themeStorage: self.themeStorage)
+class CoreAssembly: ICoreAssembly {
+    lazy var gcdDataManager: IDataManager = GCDDataManager(settingsStorage: self.settingsStorage)
+    lazy var operationDataManager: IDataManager = OperationDataManager(settingsStorage: self.settingsStorage)
+    lazy var coreDataStack: ICoreDataStack = CoreDataStack()
+    lazy var firebaseManager: IFirebaseManager = FirebaseManager(settingsStorage: self.settingsStorage)
+    lazy var themeStorage: IThemeStorage = ThemeStorage()
+    lazy var settingsStorage: ISettingsStorage = SettingsStorage(themeStorage: self.themeStorage)
 }

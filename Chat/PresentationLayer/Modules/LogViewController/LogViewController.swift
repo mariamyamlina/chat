@@ -10,14 +10,14 @@ import UIKit
 
 class LogViewController: UIViewController {
     // MARK: - Dependencies
-    private let model: LogModelProtocol
+    private let model: ILogModel
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(model: LogModelProtocol) {
+    init(model: ILogModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }

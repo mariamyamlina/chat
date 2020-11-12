@@ -13,16 +13,16 @@ class OperationDataManager {
     private let mainOperationQueue = OperationQueue.main
     
     // MARK: - Dependencies
-    let settingsStorage: SettingsStorageProtocol
+    let settingsStorage: ISettingsStorage
 
     // MARK: - Init / deinit
-    init(settingsStorage: SettingsStorageProtocol) {
+    init(settingsStorage: ISettingsStorage) {
         self.settingsStorage = settingsStorage
     }
 }
 
-// MARK: - DataManagerProtocol
-extension OperationDataManager: DataManagerProtocol {
+// MARK: - IDataManager
+extension OperationDataManager: IDataManager {
     func save(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
         let writeOperation = WriteOperation(settingsStorage: settingsStorage,
                                             nameDidChange: nameDidChange,
@@ -61,13 +61,13 @@ class WriteOperation: Operation {
     lazy var imageFileURL: URL = { urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "") }()
     
     // MARK: - Dependencies
-    let settingsStorage: SettingsStorageProtocol
+    let settingsStorage: ISettingsStorage
     let nameDidChange: Bool
     let bioDidChange: Bool
     let imageDidChange: Bool
 
     // MARK: - Init / deinit
-    init(settingsStorage: SettingsStorageProtocol, nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool) {
+    init(settingsStorage: ISettingsStorage, nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool) {
         self.settingsStorage = settingsStorage
         self.nameDidChange = nameDidChange
         self.bioDidChange = bioDidChange
@@ -115,10 +115,10 @@ class ReadNameOperation: Operation {
     }()
     
     // MARK: - Dependencies
-    var settingsStorage: SettingsStorageProtocol
+    var settingsStorage: ISettingsStorage
 
     // MARK: - Init / deinit
-    init(settingsStorage: SettingsStorageProtocol) {
+    init(settingsStorage: ISettingsStorage) {
         self.settingsStorage = settingsStorage
     }
     
@@ -142,10 +142,10 @@ class ReadBioOperation: Operation {
     }()
     
     // MARK: - Dependencies
-    var settingsStorage: SettingsStorageProtocol
+    var settingsStorage: ISettingsStorage
 
     // MARK: - Init / deinit
-    init(settingsStorage: SettingsStorageProtocol) {
+    init(settingsStorage: ISettingsStorage) {
         self.settingsStorage = settingsStorage
     }
     
@@ -169,10 +169,10 @@ class ReadImageOperation: Operation {
     }()
     
     // MARK: - Dependencies
-    var settingsStorage: SettingsStorageProtocol
+    var settingsStorage: ISettingsStorage
 
     // MARK: - Init / deinit
-    init(settingsStorage: SettingsStorageProtocol) {
+    init(settingsStorage: ISettingsStorage) {
         self.settingsStorage = settingsStorage
     }
     

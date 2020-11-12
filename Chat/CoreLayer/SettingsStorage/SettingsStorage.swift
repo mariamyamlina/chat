@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol SettingsStorageProtocol {
+protocol ISettingsStorage {
     var currentTheme: Theme { get }
     var name: String? { get set }
     var bio: String? { get set }
@@ -18,16 +18,16 @@ protocol SettingsStorageProtocol {
     func changeImage(for image: UIImage?)
 }
 
-class SettingsStorage: SettingsStorageProtocol {
+class SettingsStorage: ISettingsStorage {
     // MARK: - Dependencies
-    private let themeStorage: ThemeStorageProtocol
+    private let themeStorage: IThemeStorage
 
     // MARK: - Init / deinit
-    init(themeStorage: ThemeStorageProtocol) {
+    init(themeStorage: IThemeStorage) {
         self.themeStorage = themeStorage
     }
     
-    // MARK: - SettingsStorageProtocol
+    // MARK: - ISettingsStorage
     var currentTheme: Theme {
         let theme = Theme(rawValue: themeStorage.load()) ?? .classic
         return theme

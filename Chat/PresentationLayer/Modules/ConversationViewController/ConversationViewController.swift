@@ -14,15 +14,15 @@ class ConversationViewController: LogViewController {
     lazy private var conversationView = ConversationView(theme: model.currentTheme)
     
     // MARK: - Dependencies
-    private let presentationAssembly: PresentationAssemblyProtocol
-    private let model: ConversationModelProtocol
+    private let presentationAssembly: IPresentationAssembly
+    private let model: IConversationModel
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(model: ConversationModelProtocol, presentationAssembly: PresentationAssemblyProtocol) {
+    init(model: IConversationModel, presentationAssembly: IPresentationAssembly) {
         self.model = model
         self.presentationAssembly = presentationAssembly
         super.init(model: presentationAssembly.logModel())

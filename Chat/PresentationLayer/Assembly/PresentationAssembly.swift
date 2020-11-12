@@ -8,25 +8,25 @@
 
 import UIKit
 
-protocol PresentationAssemblyProtocol {
+protocol IPresentationAssembly {
     func conversationsListViewController() -> ConversationsListViewController
     func conversationViewController(channel: Channel?) -> ConversationViewController
     func profileViewController() -> ProfileViewController
     func themesViewController() -> ThemesViewController
-    func logModel() -> LogModelProtocol
+    func logModel() -> ILogModel
 }
 
-class PresentationAssembly: PresentationAssemblyProtocol {
+class PresentationAssembly: IPresentationAssembly {
     // MARK: - Dependencies
-    private let serviceAssembly: ServicesAssemblyProtocol
+    private let serviceAssembly: IServicesAssembly
     
     // MARK: Init / deinit
-    init(serviceAssembly: ServicesAssemblyProtocol) {
+    init(serviceAssembly: IServicesAssembly) {
         self.serviceAssembly = serviceAssembly
     }
     
     // MARK: - LogViewController
-    func logModel() -> LogModelProtocol {
+    func logModel() -> ILogModel {
         return LogModel(loger: serviceAssembly.loger, settingsService: serviceAssembly.settingsService)
     }
     
@@ -37,7 +37,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
         return conversationsListVC
     }
     
-    private func conversationsListModel() -> ConversationsListModelProtocol {
+    private func conversationsListModel() -> IConversationsListModel {
         return ConversationsListModel(channelService: serviceAssembly.channelService,
                                       dataService: serviceAssembly.dataService,
                                       settingsService: serviceAssembly.settingsService,
@@ -51,7 +51,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
         return conversationVC
     }
     
-    private func conversationModel(channel: Channel?) -> ConversationModelProtocol {
+    private func conversationModel(channel: Channel?) -> IConversationModel {
         return ConversationModel(messageService: serviceAssembly.messageService(with: channel),
                                  settingsService: serviceAssembly.settingsService,
                                  fetchService: serviceAssembly.fetchService,
@@ -65,7 +65,7 @@ class PresentationAssembly: PresentationAssemblyProtocol {
         return profileVC
     }
     
-    private func profileModel() -> ProfileModelProtocol {
+    private func profileModel() -> IProfileModel {
         return ProfileModel(dataService: serviceAssembly.dataService, loger: serviceAssembly.loger, settingsService: serviceAssembly.settingsService)
     }
     

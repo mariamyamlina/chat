@@ -8,12 +8,12 @@
 
 import Foundation
 
-protocol ThemeStorageProtocol {
+protocol IThemeStorage {
     func save(themeRawValue: Int, completion: (Int) -> Void)
     func load() -> Int
 }
 
-class ThemeStorage: ThemeStorageProtocol {
+class ThemeStorage: IThemeStorage {
     func save(themeRawValue: Int, completion: (Int) -> Void) {
         DispatchQueue(label: "com.chat.theme", qos: .userInteractive).sync {
             UserDefaults.standard.set(themeRawValue, forKey: "app_theme")

@@ -8,34 +8,34 @@
 
 import UIKit
 
-protocol DataServiceProtocol: class {
-    var gcdDataManager: DataManagerProtocol { get }
-    var operationDataManager: DataManagerProtocol { get }
-    func save(dataManager: DataManagerProtocol, nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
-    func load(dataManager: DataManagerProtocol, mustReadBio: Bool, completion: @escaping () -> Void)
+protocol IDataService: class {
+    var gcdDataManager: IDataManager { get }
+    var operationDataManager: IDataManager { get }
+    func save(dataManager: IDataManager, nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
+    func load(dataManager: IDataManager, mustReadBio: Bool, completion: @escaping () -> Void)
 }
 
 class DataService {
-    let gcdDataManager: DataManagerProtocol
-    let operationDataManager: DataManagerProtocol
+    let gcdDataManager: IDataManager
+    let operationDataManager: IDataManager
 
     // MARK: - Init / deinit
-    init(gcdDataManager: DataManagerProtocol, operationDataManager: DataManagerProtocol) {
+    init(gcdDataManager: IDataManager, operationDataManager: IDataManager) {
         self.gcdDataManager = gcdDataManager
         self.operationDataManager = operationDataManager
     }
 }
 
-// MARK: - DataServiceProtocol
-extension DataService: DataServiceProtocol {
-    func save(dataManager: DataManagerProtocol, nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
+// MARK: - IDataService
+extension DataService: IDataService {
+    func save(dataManager: IDataManager, nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
         dataManager.save(nameDidChange: nameDidChange,
                          bioDidChange: bioDidChange,
                          imageDidChange: imageDidChange,
                          completion: completion)
     }
     
-    func load(dataManager: DataManagerProtocol, mustReadBio: Bool, completion: @escaping () -> Void) {
+    func load(dataManager: IDataManager, mustReadBio: Bool, completion: @escaping () -> Void) {
         dataManager.load(mustReadBio: mustReadBio,
                          completion: completion)
     }

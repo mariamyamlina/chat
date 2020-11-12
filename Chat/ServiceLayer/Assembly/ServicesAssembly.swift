@@ -8,39 +8,39 @@
 
 import Foundation
 
-protocol ServicesAssemblyProtocol {
-    var loger: LogerProtocol { get }
-    var settingsService: SettingsServiceProtocol { get }
+protocol IServicesAssembly {
+    var loger: ILoger { get }
+    var settingsService: ISettingsService { get }
     
-    var fetchService: FetchServiceProtocol { get }
-    var channelService: ChannelServiceProtocol { get }
-    func messageService(with channel: Channel?) -> MessageServiceProtocol
+    var fetchService: IFetchService { get }
+    var channelService: IChannelService { get }
+    func messageService(with channel: Channel?) -> IMessageService
     
-    var themeService: ThemesServiceProtocol { get }
-    var dataService: DataServiceProtocol { get }
+    var themeService: IThemesService { get }
+    var dataService: IDataService { get }
 }
 
-class ServicesAssembly: ServicesAssemblyProtocol {
+class ServicesAssembly: IServicesAssembly {
     // MARK: - Dependencies
-    private let coreAssembly: CoreAssemblyProtocol
+    private let coreAssembly: ICoreAssembly
     
     // MARK: - Init / deinit
-    init(coreAssembly: CoreAssemblyProtocol) {
+    init(coreAssembly: ICoreAssembly) {
         self.coreAssembly = coreAssembly
     }
     
-    // MARK: - ThemesModelProtocol
-    lazy var loger: LogerProtocol = Loger(coreDataStack: self.coreAssembly.coreDataStack)
-    lazy var settingsService: SettingsServiceProtocol = SettingsService(settingsStorage: self.coreAssembly.settingsStorage)
+    // MARK: - IThemesModel
+    lazy var loger: ILoger = Loger(coreDataStack: self.coreAssembly.coreDataStack)
+    lazy var settingsService: ISettingsService = SettingsService(settingsStorage: self.coreAssembly.settingsStorage)
     
-    lazy var themeService: ThemesServiceProtocol = ThemesService(themeStorage: self.coreAssembly.themeStorage)
-    lazy var dataService: DataServiceProtocol = DataService(gcdDataManager: self.coreAssembly.gcdDataManager,
+    lazy var themeService: IThemesService = ThemesService(themeStorage: self.coreAssembly.themeStorage)
+    lazy var dataService: IDataService = DataService(gcdDataManager: self.coreAssembly.gcdDataManager,
                                                             operationDataManager: self.coreAssembly.operationDataManager)
     
-    lazy var fetchService: FetchServiceProtocol = FetchService(coreDataStack: self.coreAssembly.coreDataStack)
-    lazy var channelService: ChannelServiceProtocol = ChannelService(coreDataStack: self.coreAssembly.coreDataStack,
+    lazy var fetchService: IFetchService = FetchService(coreDataStack: self.coreAssembly.coreDataStack)
+    lazy var channelService: IChannelService = ChannelService(coreDataStack: self.coreAssembly.coreDataStack,
                                                                      firebaseManager: self.coreAssembly.firebaseManager)
-    func messageService(with channel: Channel?) -> MessageServiceProtocol {
+    func messageService(with channel: Channel?) -> IMessageService {
         return MessageService(coreDataStack: self.coreAssembly.coreDataStack,
                               firebaseManager: self.coreAssembly.firebaseManager,
                               channel: channel)

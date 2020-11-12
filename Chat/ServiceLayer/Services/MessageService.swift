@@ -10,7 +10,7 @@ import Foundation
 import Firebase
 import CoreData
 
-protocol MessageServiceProtocol {
+protocol IMessageService {
     var channel: Channel? { get }
     var universallyUniqueIdentifier: String { get }
     func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void)
@@ -20,13 +20,13 @@ protocol MessageServiceProtocol {
 }
 
 class MessageService {
-    let coreDataStack: CoreDataStackProtocol
-    let firebaseManager: FirebaseManagerProtocol
+    let coreDataStack: ICoreDataStack
+    let firebaseManager: IFirebaseManager
     var universallyUniqueIdentifier: String
     let channel: Channel?
     
     // MARK: - Init / deinit
-    init(coreDataStack: CoreDataStackProtocol, firebaseManager: FirebaseManagerProtocol, channel: Channel?) {
+    init(coreDataStack: ICoreDataStack, firebaseManager: IFirebaseManager, channel: Channel?) {
         self.coreDataStack = coreDataStack
         self.channel = channel
         self.firebaseManager = firebaseManager
@@ -106,14 +106,13 @@ class MessageService {
     }
 }
 
-// MARK: - MessageServiceProtocol
-extension MessageService: MessageServiceProtocol {
+// MARK: - IMessageService
+extension MessageService: IMessageService {
     func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
         firebaseManager.getMessages(inChannel: channel.identifier, completion: { [weak self] messages in
             var messagesArray: [Message] = []
             messages.forEach {
-                let message = Message(fromDict: $0)
-                messagesArray.append(message)
+                messagesArray.append(Message(fromDict: $0))
             }
             self?.save(messages: messagesArray, inChannel: channel, errorHandler: errorHandler)
             self?.addListener(in: channel, errorHandler: errorHandler)},
@@ -122,8 +121,7 @@ extension MessageService: MessageServiceProtocol {
     
     func addListener(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
         firebaseManager.addMessagesListener(inChannel: channel.identifier, completion: { [weak self] (type, message) in
-            let messageEntity = Message(fromDict: message)
-            self?.handleChanges(ofType: type, message: messageEntity, channel: channel, errorHandler: errorHandler)},
+            self?.handleChanges(ofType: type, message: Message(fromDict: message), channel: channel, errorHandler: errorHandler)},
                                             errorHandler: errorHandler)
     }
     

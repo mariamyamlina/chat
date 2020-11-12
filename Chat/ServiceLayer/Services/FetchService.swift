@@ -9,25 +9,25 @@
 import Foundation
 import CoreData
 
-protocol FetchServiceProtocol {
-    func getFRC<T: NSManagedObject>(entityType: EntityType,
+protocol IFetchService {
+    func getFRC<T: NSManagedObject>(entityType: ModelType,
                                     channelId: String?,
                                     sectionNameKeyPath: String?,
                                     cacheName: String?) -> NSFetchedResultsController<T>
 }
 
 class FetchService {
-    let coreDataStack: CoreDataStackProtocol
+    let coreDataStack: ICoreDataStack
     
     // MARK: - Init / deinit
-    init(coreDataStack: CoreDataStackProtocol) {
+    init(coreDataStack: ICoreDataStack) {
         self.coreDataStack = coreDataStack
     }
 }
 
-// MARK: - FetchServiceProtocol
-extension FetchService: FetchServiceProtocol {
-    func getFRC<T: NSManagedObject>(entityType: EntityType,
+// MARK: - IFetchService
+extension FetchService: IFetchService {
+    func getFRC<T: NSManagedObject>(entityType: ModelType,
                                     channelId: String?,
                                     sectionNameKeyPath: String?,
                                     cacheName: String?) -> NSFetchedResultsController<T> {

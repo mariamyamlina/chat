@@ -9,17 +9,17 @@
 import Foundation
 import CoreData
 
-protocol CoreDataStackProtocol {
+protocol ICoreDataStack {
     var delegate: CoreDataStackDelegate? { get set }
     var mainContext: NSManagedObjectContext { get }
     func performSave(_ handler: (NSManagedObjectContext) -> Void)
     func load(channel id: String, from context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> ChannelDB?
     func load(message id: String, from context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> MessageDB?
     func enableObservers()
-    func arrayDifference(entityType: EntityType, predicate: String?, arrayOfEntities: [EntityProtocol],
+    func arrayDifference(entityType: ModelType, predicate: String?, arrayOfEntities: [IModel],
                          in context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> [String]
-    func fetchRequest<T: NSManagedObject>(for entity: EntityType, channelId: String?) -> NSFetchRequest<T>
-    func fetchRequest<T: NSManagedObject>(for entity: EntityType, with identifier: String) -> NSFetchRequest<T>
+    func fetchRequest<T: NSManagedObject>(for entity: ModelType, channelId: String?) -> NSFetchRequest<T>
+    func fetchRequest<T: NSManagedObject>(for entity: ModelType, with identifier: String) -> NSFetchRequest<T>
 }
 
 protocol CoreDataStackDelegate {
@@ -27,7 +27,7 @@ protocol CoreDataStackDelegate {
     func printStatLog(_ channelsCount: Int, _ messagesCount: Int, _ infoAbout: [String])
 }
 
-class CoreDataStack: CoreDataStackProtocol {
+class CoreDataStack: ICoreDataStack {
     // MARK: - Dependencies
     var delegate: CoreDataStackDelegate?
     
@@ -159,14 +159,14 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - Requests
-    func fetchRequest<T: NSManagedObject>(for entity: EntityType, with identifier: String) -> NSFetchRequest<T> {
+    func fetchRequest<T: NSManagedObject>(for entity: ModelType, with identifier: String) -> NSFetchRequest<T> {
         let fetchRequest = NSFetchRequest<T>()
         let predicate = NSPredicate(format: "identifier = %@", identifier)
         fetchRequest.predicate = predicate
         return fetchRequest
     }
     
-    func fetchRequest<T: NSManagedObject>(for entity: EntityType, channelId: String?) -> NSFetchRequest<T> {
+    func fetchRequest<T: NSManagedObject>(for entity: ModelType, channelId: String?) -> NSFetchRequest<T> {
         switch entity {
         case .channel:
             let fetchRequest = NSFetchRequest<ChannelDB>()
@@ -246,9 +246,9 @@ class CoreDataStack: CoreDataStackProtocol {
     }
     
     // MARK: - Array Difference
-    func arrayDifference(entityType: EntityType,
+    func arrayDifference(entityType: ModelType,
                          predicate: String?,
-                         arrayOfEntities: [EntityProtocol],
+                         arrayOfEntities: [IModel],
                          in context: NSManagedObjectContext,
                          errorHandler: @escaping (String?, String?) -> Void) -> [String] {
         let request: NSFetchRequest<NSFetchRequestResult>

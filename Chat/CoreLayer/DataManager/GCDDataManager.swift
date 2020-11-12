@@ -18,16 +18,16 @@ class GCDDataManager {
     private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
     
     // MARK: - Dependencies
-    var settingsStorage: SettingsStorageProtocol
+    var settingsStorage: ISettingsStorage
 
     // MARK: - Init / deinit
-    init(settingsStorage: SettingsStorageProtocol) {
+    init(settingsStorage: ISettingsStorage) {
         self.settingsStorage = settingsStorage
     }
 }
 
-// MARK: - DataManagerProtocol
-extension GCDDataManager: DataManagerProtocol {
+// MARK: - IDataManager
+extension GCDDataManager: IDataManager {
     func save(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
         let group = DispatchGroup()
 

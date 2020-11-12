@@ -1,5 +1,5 @@
 //
-//  EntityProtocol.swift
+//  Model.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 01.11.2020.
@@ -8,11 +8,11 @@
 
 import Foundation
 
-enum EntityType {
+enum ModelType {
     case channel
     case message
 }
 
-protocol EntityProtocol {
+protocol IModel {
     var identifier: String { get }
 }

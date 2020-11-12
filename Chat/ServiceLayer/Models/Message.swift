@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Message: EntityProtocol {
+struct Message: IModel {
     let identifier: String
     let content: String
     let created: Date

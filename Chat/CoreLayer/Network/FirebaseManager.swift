@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-protocol FirebaseManagerProtocol: class {
+protocol IFirebaseManager: class {
     var universallyUniqueIdentifier: String { get }
     
     func getChannels(completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
@@ -40,15 +40,15 @@ class FirebaseManager {
     }()
     
     // MARK: - Dependencies
-    private let settingsStorage: SettingsStorageProtocol
+    private let settingsStorage: ISettingsStorage
 
     // MARK: - Init / deinit
-    init(settingsStorage: SettingsStorageProtocol) {
+    init(settingsStorage: ISettingsStorage) {
         self.settingsStorage = settingsStorage
     }
 }
 
-extension FirebaseManager: FirebaseManagerProtocol {
+extension FirebaseManager: IFirebaseManager {
     // MARK: - Channels
         
     func getChannels(completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {

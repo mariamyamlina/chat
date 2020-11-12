@@ -32,7 +32,7 @@ class ChannelModelFactory {
 }
 
 // MARK: - ConversationsListModel
-protocol ConversationsListModelProtocol: class {
+protocol IConversationsListModel: class {
     func getChannels(errorHandler: @escaping (String?, String?) -> Void)
     func createChannel(withName name: String)
     func deleteChannel(at indexPath: IndexPath)
@@ -49,13 +49,13 @@ protocol ConversationsListModelProtocol: class {
 
 class ConversationsListModel {
     // MARK: - Dependencies
-    let channelService: ChannelServiceProtocol
-    let dataService: DataServiceProtocol
-    var settingsService: SettingsServiceProtocol
-    var fetchService: FetchServiceProtocol
+    let channelService: IChannelService
+    let dataService: IDataService
+    var settingsService: ISettingsService
+    var fetchService: IFetchService
     
     // MARK: - Init / deinit
-    init(channelService: ChannelServiceProtocol, dataService: DataServiceProtocol, settingsService: SettingsServiceProtocol, fetchService: FetchServiceProtocol) {
+    init(channelService: IChannelService, dataService: IDataService, settingsService: ISettingsService, fetchService: IFetchService) {
         self.channelService = channelService
         self.dataService = dataService
         self.settingsService = settingsService
@@ -67,8 +67,8 @@ class ConversationsListModel {
     }()
 }
 
-// MARK: - ConversationsListModelProtocol
-extension ConversationsListModel: ConversationsListModelProtocol {
+// MARK: - IConversationsListModel
+extension ConversationsListModel: IConversationsListModel {
     func getChannels(errorHandler: @escaping (String?, String?) -> Void) {
         channelService.getChannels(errorHandler: errorHandler)
     }

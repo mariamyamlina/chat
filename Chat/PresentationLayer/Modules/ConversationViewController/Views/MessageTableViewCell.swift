@@ -69,7 +69,7 @@ class MessageTableViewCell: UITableViewCell {
 }
 
 // MARK: - Configuration
-extension MessageTableViewCell: ConfigurableViewProtocol {
+extension MessageTableViewCell: IConfigurableView {
     func configure(with model: MessageCellModel, theme: Theme) {
         let messageText = model.text
         timeLabel.text = model.time.dateFormatter(onlyTimeMode: true)

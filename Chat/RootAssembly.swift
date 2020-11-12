@@ -8,32 +8,32 @@
 
 import Foundation
 
-protocol LogerAssemblyProtocol {
-    var loger: LogerProtocol { get }
+protocol ILogerAssembly {
+    var loger: ILoger { get }
 }
 
-protocol CoreDataStackAssemblyProtocol {
-    var coreDataStack: CoreDataStackProtocol { get }
+protocol ICoreDataStackAssembly {
+    var coreDataStack: ICoreDataStack { get }
 }
 
-protocol ThemeStorageAssemblyProtocol {
-    var themeStorage: ThemeStorageProtocol { get }
+protocol IThemeStorageAssembly {
+    var themeStorage: IThemeStorage { get }
 }
 
 class RootAssembly {
-    lazy var presentationAssembly: PresentationAssemblyProtocol = PresentationAssembly(serviceAssembly: self.serviceAssembly)
-    private lazy var serviceAssembly: ServicesAssemblyProtocol = ServicesAssembly(coreAssembly: self.coreAssembly)
-    private lazy var coreAssembly: CoreAssemblyProtocol = CoreAssembly()
+    lazy var presentationAssembly: IPresentationAssembly = PresentationAssembly(serviceAssembly: self.serviceAssembly)
+    private lazy var serviceAssembly: IServicesAssembly = ServicesAssembly(coreAssembly: self.coreAssembly)
+    private lazy var coreAssembly: ICoreAssembly = CoreAssembly()
 }
 
-extension RootAssembly: LogerAssemblyProtocol {
-    var loger: LogerProtocol { return serviceAssembly.loger }
+extension RootAssembly: ILogerAssembly {
+    var loger: ILoger { return serviceAssembly.loger }
 }
 
-extension RootAssembly: CoreDataStackAssemblyProtocol {
-    var coreDataStack: CoreDataStackProtocol { return coreAssembly.coreDataStack }
+extension RootAssembly: ICoreDataStackAssembly {
+    var coreDataStack: ICoreDataStack { return coreAssembly.coreDataStack }
 }
 
-extension RootAssembly: ThemeStorageAssemblyProtocol {
-    var themeStorage: ThemeStorageProtocol { return coreAssembly.themeStorage }
+extension RootAssembly: IThemeStorageAssembly {
+    var themeStorage: IThemeStorage { return coreAssembly.themeStorage }
 }

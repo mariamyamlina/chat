@@ -14,7 +14,7 @@ enum Theme: Int {
     case day
     case night
 
-    var themeSettings: ThemeSettingsProtocol {
+    var themeSettings: IThemeSettings {
         switch self {
         case .classic: return ClassicTheme()
         case .day: return DayTheme()
@@ -33,25 +33,25 @@ enum Theme: Int {
 }
 
 // MARK: - ThemesModel
-protocol ThemesModelProtocol: class {
+protocol IThemesModel: class {
     func applyTheme(for: Theme, completion: (Int) -> Void)
     var currentTheme: Theme { get }
 }
 
 class ThemesModel {
     // MARK: - Dependencies
-    var themeService: ThemesServiceProtocol
-    var settingsService: SettingsServiceProtocol
+    var themeService: IThemesService
+    var settingsService: ISettingsService
     
     // MARK: - Init / deinir
-    init(themeService: ThemesServiceProtocol, settingsService: SettingsServiceProtocol) {
+    init(themeService: IThemesService, settingsService: ISettingsService) {
         self.themeService = themeService
         self.settingsService = settingsService
     }
 }
 
-// MARK: - ThemesModelProtocol
-extension ThemesModel: ThemesModelProtocol {
+// MARK: - IThemesModel
+extension ThemesModel: IThemesModel {
     func applyTheme(for theme: Theme, completion: (Int) -> Void) {
         themeService.applyTheme(for: theme, completion: completion)
         guard #available(iOS 13.0, *) else { return }
@@ -62,7 +62,7 @@ extension ThemesModel: ThemesModelProtocol {
 }
 
 // MARK: - ThemeSettings
-protocol ThemeSettingsProtocol {
+protocol IThemeSettings {
     var inputBubbleColor: UIColor { get }
     var outputBubbleColor: UIColor { get }
     
@@ -91,7 +91,7 @@ protocol ThemeSettingsProtocol {
     var tableViewHeaderColor: UIColor { get }
 }
 
-struct ClassicTheme: ThemeSettingsProtocol {
+struct ClassicTheme: IThemeSettings {
     var inputBubbleColor: UIColor { return Colors.inputGray }
     var outputBubbleColor: UIColor { return Colors.outputGreen }
     var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
@@ -120,7 +120,7 @@ struct ClassicTheme: ThemeSettingsProtocol {
     var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderLightColor }
 }
 
-struct DayTheme: ThemeSettingsProtocol {
+struct DayTheme: IThemeSettings {
     var inputBubbleColor: UIColor { return Colors.inputLightGray }
     var outputBubbleColor: UIColor { return Colors.outputBlue }
     var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
@@ -149,7 +149,7 @@ struct DayTheme: ThemeSettingsProtocol {
     var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderLightColor }
 }
 
-struct NightTheme: ThemeSettingsProtocol {
+struct NightTheme: IThemeSettings {
     var inputBubbleColor: UIColor { return Colors.inputDarkGray }
     var outputBubbleColor: UIColor { return Colors.outputDarkGray }
     var messageLabelColor: UIColor { return Colors.messageLabelDarkColor }

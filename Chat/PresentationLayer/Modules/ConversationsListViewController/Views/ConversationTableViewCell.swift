@@ -133,7 +133,7 @@ class ConversationTableViewCell: UITableViewCell {
 }
 
 // MARK: - Configuration
-extension ConversationTableViewCell: ConfigurableViewProtocol {
+extension ConversationTableViewCell: IConfigurableView {
     func configure(with model: ConversationCellModel, theme: Theme) {
         profileImage.image = model.image
         nameLabel.text = model.name

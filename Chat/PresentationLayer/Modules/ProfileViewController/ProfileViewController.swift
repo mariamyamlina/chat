@@ -16,8 +16,8 @@ class ProfileViewController: LogViewController {
                                        image: model.image)
     
     // MARK: - Dependencies
-    private let presentationAssembly: PresentationAssemblyProtocol
-    private let model: ProfileModelProtocol
+    private let presentationAssembly: IPresentationAssembly
+    private let model: IProfileModel
     private var infoDidChange = [false, false, false]
     
     // MARK: - Init / deinit
@@ -26,7 +26,7 @@ class ProfileViewController: LogViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(model: ProfileModelProtocol, presentationAssembly: PresentationAssemblyProtocol) {
+    init(model: IProfileModel, presentationAssembly: IPresentationAssembly) {
         self.model = model
         self.presentationAssembly = presentationAssembly
         super.init(model: presentationAssembly.logModel())

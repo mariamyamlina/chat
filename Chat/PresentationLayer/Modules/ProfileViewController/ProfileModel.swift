@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ProfileModelProtocol: class {
+protocol IProfileModel: class {
     func saveWithGCD(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
     func loadWithGCD(completion: @escaping () -> Void)
     func saveWithOperations(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
@@ -25,20 +25,20 @@ protocol ProfileModelProtocol: class {
 
 class ProfileModel {
     // MARK: - Dependencies
-    let dataService: DataServiceProtocol
-    let loger: LogerProtocol
-    var settingsService: SettingsServiceProtocol
+    let dataService: IDataService
+    let loger: ILoger
+    var settingsService: ISettingsService
     
     // MARK: - Init / deinit
-    init(dataService: DataServiceProtocol, loger: LogerProtocol, settingsService: SettingsServiceProtocol) {
+    init(dataService: IDataService, loger: ILoger, settingsService: ISettingsService) {
         self.dataService = dataService
         self.loger = loger
         self.settingsService = settingsService
     }
 }
 
-// MARK: - ProfileModelProtocol
-extension ProfileModel: ProfileModelProtocol {    
+// MARK: - IProfileModel
+extension ProfileModel: IProfileModel {    
     func saveWithGCD(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void) {
         dataService.save(dataManager: dataService.gcdDataManager,
                          nameDidChange: nameDidChange,

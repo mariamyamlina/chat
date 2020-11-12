@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol LogerProtocol {
+protocol ILoger {
     func printAppLog(_ message: String, _ current: UIApplication.State, _ function: String)
     func printVCLog(_ message: String, _ function: String)
     func printButtonLog(_ button: UIButton, _ function: String)
@@ -17,21 +17,21 @@ protocol LogerProtocol {
 }
 
 class Loger {
-    var coreDataStack: CoreDataStackProtocol
+    var coreDataStack: ICoreDataStack
     let appLogIndicator = false
     let vcLogIndicator = false
     let buttonLogIndicator = false
     let dbLogIndicator = false
     
     // MARK: - Init / deinit
-    init(coreDataStack: CoreDataStackProtocol) {
+    init(coreDataStack: ICoreDataStack) {
         self.coreDataStack = coreDataStack
         self.coreDataStack.delegate = self
     }
 }
 
-// MARK: - LogerProtocol
-extension Loger: LogerProtocol {
+// MARK: - ILoger
+extension Loger: ILoger {
     func printAppLog(_ message: String, _ current: UIApplication.State, _ function: String) {
         if appLogIndicator {
             let currentState: (UIApplication.State) -> Void = { state in

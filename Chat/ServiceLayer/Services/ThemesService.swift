@@ -8,21 +8,21 @@
 
 import UIKit
 
-protocol ThemesServiceProtocol {
+protocol IThemesService {
     func applyTheme(for theme: Theme, completion: (Int) -> Void)
 }
 
 class ThemesService {
-    let themeStorage: ThemeStorageProtocol
+    let themeStorage: IThemeStorage
 
     // MARK: - Init / deinit
-    init(themeStorage: ThemeStorageProtocol) {
+    init(themeStorage: IThemeStorage) {
         self.themeStorage = themeStorage
     }
 }
 
-// MARK: - ThemesServiceProtocol
-extension ThemesService: ThemesServiceProtocol {
+// MARK: - IThemesService
+extension ThemesService: IThemesService {
     func applyTheme(for theme: Theme, completion: (Int) -> Void) {
         themeStorage.save(themeRawValue: theme.rawValue, completion: completion)
     }
