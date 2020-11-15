@@ -49,7 +49,7 @@ class ProfileViewController: LogViewController {
         super.viewDidLoad()
         model.buttonLog(profileView.gcdSaveButton, #function)
         setupView()
-        createRelationships()
+        createHandlers()
         addKeyboardNotifications()
         navigationController?.applyTheme(theme: model.currentTheme)
     }
@@ -133,7 +133,13 @@ class ProfileViewController: LogViewController {
         setupNavigationBar()
     }
     
-    private func createRelationships() {
+    private func setupNavigationBar() {
+        navigationItem.leftBarButtonItem = profileView.leftBarButtonItem
+        navigationItem.rightBarButtonItem = profileView.rightBarButtonItem
+    }
+    
+    // MARK: - Handlers
+    private func createHandlers() {
         profileView.nameTextView.delegate = self
         profileView.bioTextView.delegate = self
         
@@ -158,7 +164,7 @@ class ProfileViewController: LogViewController {
         profileView.actionSheetHandler = { [weak self] in
             guard let self = self else { return }
             self.configureImagePickerAlert(model: self.model,
-                                           completion: self.presentImagePicker(of:))
+                                           completion: self.presentImagePicker)
         }
         
         profileView.closeProfileHandler = { [weak self] in
@@ -168,11 +174,6 @@ class ProfileViewController: LogViewController {
             conversationsListVC.updateImageView() 
             self?.dismiss(animated: true, completion: nil)
         }
-    }
-    
-    private func setupNavigationBar() {
-        navigationItem.leftBarButtonItem = profileView.leftBarButtonItem
-        navigationItem.rightBarButtonItem = profileView.rightBarButtonItem
     }
 }
 
@@ -187,18 +188,24 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
         dismiss(animated: true, completion: nil)
     }
     
-    func presentImagePicker(of type: UIImagePickerController.SourceType) {
-        if UIImagePickerController.isSourceTypeAvailable(type) {
-            imagePicker.sourceType = type
-            present(imagePicker, animated: true, completion: nil)
+    func presentImagePicker(of type: UIImagePickerController.SourceType?) {
+        if let unwrType = type {
+            if UIImagePickerController.isSourceTypeAvailable(unwrType) {
+                imagePicker.sourceType = unwrType
+                present(imagePicker, animated: true, completion: nil)
+            } else {
+                configureAlert(model: model,
+                               view: profileView,
+                               changeInfoIndicator: infoDidChange,
+                               completion: saveCompletion(nameSaved:bioSaved:imageSaved:),
+                               title: "Error",
+                               message: "Check your device and try later",
+                               needsTwoActions: false)
+            }
         } else {
-            configureAlert(model: model,
-                           view: profileView,
-                           changeInfoIndicator: infoDidChange,
-                           completion: saveCompletion(nameSaved:bioSaved:imageSaved:),
-                           title: "Error",
-                           message: "Check your device and try later",
-                           needsTwoActions: false)
+            let collectionController = self.presentationAssembly.collectionViewController().embedInNavigationController()
+            collectionController.modalPresentationStyle = UIModalPresentationStyle.pageSheet
+            self.present(collectionController, animated: true, completion: nil)
         }
     }
 }

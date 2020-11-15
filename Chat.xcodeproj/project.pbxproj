@@ -28,6 +28,7 @@
 		994B4A7E252A79E900A50B5D /* SFProText-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */; };
 		994B9ADA252799F600A453F2 /* ThemesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994B9AD9252799F600A453F2 /* ThemesService.swift */; };
 		994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */; };
+		994D63DE255F3E09007CB33D /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994D63DD255F3E09007CB33D /* CollectionViewCell.swift */; };
 		994F1C9A2534C987003FC809 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994F1C992534C987003FC809 /* Colors.swift */; };
 		9950733D251F87A500515678 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9950733B251F87A500515678 /* MessageTableViewCell.swift */; };
 		99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99569DE32515FD6900F103D4 /* LogViewController.swift */; };
@@ -48,6 +49,9 @@
 		9987555E251425610080EEAE /* SFProText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9987555C251425610080EEAE /* SFProText-Regular.ttf */; };
 		99875561251427000080EEAE /* SFProDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99875560251427000080EEAE /* SFProDisplay-Bold.ttf */; };
 		99875565251429290080EEAE /* SFProText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99875564251429290080EEAE /* SFProText-Semibold.ttf */; };
+		9989C605255F0347009F7A31 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9989C604255F0347009F7A31 /* CollectionViewController.swift */; };
+		9989C607255F03EC009F7A31 /* CollectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9989C606255F03EC009F7A31 /* CollectionModel.swift */; };
+		9989C60A255F049D009F7A31 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9989C609255F049D009F7A31 /* CollectionView.swift */; };
 		998ED922254E07EB0030A102 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998ED921254E07EA0030A102 /* Model.swift */; };
 		999EAEA92559F3950070D852 /* LogModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999EAEA82559F3950070D852 /* LogModel.swift */; };
 		99A0E5A925587ED000742613 /* ThemesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A0E5A825587ED000742613 /* ThemesModel.swift */; };
@@ -97,6 +101,7 @@
 		994B4A7D252A79D400A50B5D /* SFProText-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-RegularItalic.ttf"; sourceTree = "<group>"; };
 		994B9AD9252799F600A453F2 /* ThemesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesService.swift; sourceTree = "<group>"; };
 		994CF6CA252E0E1600AB0A10 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
+		994D63DD255F3E09007CB33D /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		994F1C992534C987003FC809 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		9950733B251F87A500515678 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		99569DE32515FD6900F103D4 /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
@@ -119,6 +124,9 @@
 		9987555C251425610080EEAE /* SFProText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Regular.ttf"; sourceTree = "<group>"; };
 		99875560251427000080EEAE /* SFProDisplay-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProDisplay-Bold.ttf"; sourceTree = "<group>"; };
 		99875564251429290080EEAE /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Semibold.ttf"; sourceTree = "<group>"; };
+		9989C604255F0347009F7A31 /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
+		9989C606255F03EC009F7A31 /* CollectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionModel.swift; sourceTree = "<group>"; };
+		9989C609255F049D009F7A31 /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		998ED921254E07EA0030A102 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		999EAEA82559F3950070D852 /* LogModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogModel.swift; sourceTree = "<group>"; };
 		99A0E5A825587ED000742613 /* ThemesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesModel.swift; sourceTree = "<group>"; };
@@ -286,6 +294,25 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		9989C603255F02A6009F7A31 /* CollectionViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9989C608255F048F009F7A31 /* Views */,
+				9989C604255F0347009F7A31 /* CollectionViewController.swift */,
+				9989C606255F03EC009F7A31 /* CollectionModel.swift */,
+			);
+			path = CollectionViewController;
+			sourceTree = "<group>";
+		};
+		9989C608255F048F009F7A31 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9989C609255F049D009F7A31 /* CollectionView.swift */,
+				994D63DD255F3E09007CB33D /* CollectionViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		999EAEA72559F3640070D852 /* LogViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -382,6 +409,7 @@
 				99ED32872558118E008848D0 /* ConversationViewController */,
 				99ED328825581196008848D0 /* ProfileViewController */,
 				99ED3289255811A2008848D0 /* ThemesViewController */,
+				9989C603255F02A6009F7A31 /* CollectionViewController */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -612,6 +640,7 @@
 				99CB3DF7255B1A0600DDD117 /* UINavigationController + Extension.swift in Sources */,
 				99ED328125580FC8008848D0 /* RootAssembly.swift in Sources */,
 				998755552513F4430080EEAE /* ProfileViewController.swift in Sources */,
+				9989C605255F0347009F7A31 /* CollectionViewController.swift in Sources */,
 				99E52A6C2542EF40007BD9B6 /* Chat.xcdatamodeld in Sources */,
 				994B9ADA252799F600A453F2 /* ThemesService.swift in Sources */,
 				99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */,
@@ -621,6 +650,7 @@
 				990FCB9C254C969F00156A48 /* ChannelDB+CoreDataClass.swift in Sources */,
 				99CB3E0C255B620A00DDD117 /* SettingsStorage.swift in Sources */,
 				9957D96C254F42650073DCA2 /* MessageInputContainer.swift in Sources */,
+				994D63DE255F3E09007CB33D /* CollectionViewCell.swift in Sources */,
 				994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */,
 				9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */,
 				99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */,
@@ -641,6 +671,7 @@
 				990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */,
 				996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */,
 				99ED327E25580F75008848D0 /* ServicesAssembly.swift in Sources */,
+				9989C60A255F049D009F7A31 /* CollectionView.swift in Sources */,
 				995C84B2253B09DA0036B067 /* Message.swift in Sources */,
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,
 				99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */,
@@ -648,6 +679,7 @@
 				991CEB432559C6BB006EDC72 /* DataManager.swift in Sources */,
 				99A0E5A925587ED000742613 /* ThemesModel.swift in Sources */,
 				99ED328D25581271008848D0 /* ConversationModel.swift in Sources */,
+				9989C607255F03EC009F7A31 /* CollectionModel.swift in Sources */,
 				990AC649255C8346006A60D4 /* ConfigurableView.swift in Sources */,
 				990AC645255C6DB4006A60D4 /* FetchService.swift in Sources */,
 				99454C3A251D49A9005CEEA2 /* ConversationTableViewCell.swift in Sources */,
