@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "Randy-2.jpg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "Randy-1.jpg",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "Randy.jpg",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Randy.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

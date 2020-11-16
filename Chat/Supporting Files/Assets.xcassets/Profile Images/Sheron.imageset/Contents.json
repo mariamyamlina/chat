@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "Sheron-2.jpg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "Sheron-1.jpg",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "Sheron.jpg",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Sheron.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

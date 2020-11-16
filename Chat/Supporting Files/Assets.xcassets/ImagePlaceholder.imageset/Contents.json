@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "ImagePlaceholder.jpg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "ImagePlaceholder-1.jpg",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "ImagePlaceholder-2.jpg",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "ImagePlaceholder.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {
