@@ -92,6 +92,6 @@ class PresentationAssembly: IPresentationAssembly {
     }
     
     private func collectionModel() -> CollectionModel {
-        return CollectionModel(settingsService: serviceAssembly.settingsService)
+        return CollectionModel(settingsService: serviceAssembly.settingsService, imagesService: serviceAssembly.imagesService)
     }
 }

@@ -10,18 +10,18 @@ import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
     // MARK: - UI
-    lazy var view: UIView = {
-        // TODO
-        let view = UIView()
+    lazy var imageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "ImagePlaceholder"))
+        // TODO
+//        imageView.contentMode = .scaleAspectFill
         imageView.contentMode = .scaleToFill
-        view.addSubview(imageView)
+        addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        return view
+        imageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        imageView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        imageView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        return imageView
     }()
     
     // MARK: - Init / deinit
@@ -33,13 +33,22 @@ class CollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.zero)
-        // TODO
-//        let view = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
-//        let imageView = UIImageView(image: UIImage(named: "ImagePlaceholder"))
-//        imageView.contentMode = .scaleToFill
-//        imageView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
-//        view.addSubview(imageView)
-//        view.bringSubviewToFront(imageView)
-        backgroundView = view
+        self.imageView.image = UIImage(named: "ImagePlaceholder")
+    }
+    
+    // MARK: - Setup View
+    func getImage(with url: URL, completion: @escaping (UIImage?) -> Void) {
+        let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
+            guard error == nil else { return }
+            guard let data = data else { return }
+            DispatchQueue.main.async {
+                completion(UIImage(data: data))
+            }
+        }
+        task.resume()
+    }
+    
+    func setImage(_ image: UIImage?) {
+        self.imageView.image = image
     }
 }

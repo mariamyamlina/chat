@@ -18,6 +18,8 @@ protocol IServicesAssembly {
     
     var themeService: IThemesService { get }
     var dataService: IDataService { get }
+    
+    var imagesService: IImagesService { get }
 }
 
 class ServicesAssembly: IServicesAssembly {
@@ -45,4 +47,6 @@ class ServicesAssembly: IServicesAssembly {
                               firebaseManager: self.coreAssembly.firebaseManager,
                               channel: channel)
     }
+    
+    lazy var imagesService: IImagesService = ImagesService(requestSender: self.coreAssembly.requestSender)
 }

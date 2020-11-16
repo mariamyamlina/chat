@@ -171,7 +171,7 @@ class ProfileViewController: LogViewController {
             let navigationVC = self?.presentingViewController as? UINavigationController
             guard let conversationsListVC = navigationVC?.viewControllers.first as? ConversationsListViewController else { return }
             conversationsListVC.navigationItem.rightBarButtonItem = conversationsListVC.conversationsListView.configureRightBarButtonItem()
-            conversationsListVC.updateImageView() 
+            conversationsListVC.updateProfileImage() 
             self?.dismiss(animated: true, completion: nil)
         }
     }
@@ -181,9 +181,7 @@ class ProfileViewController: LogViewController {
 extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            profileView.updateProfileImage(with: pickedImage)
-            infoDidChange[2] = true
-            model.changeImage(for: pickedImage)
+            updateProfileImage(with: pickedImage)
         }
         dismiss(animated: true, completion: nil)
     }
@@ -207,6 +205,12 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
             collectionController.modalPresentationStyle = UIModalPresentationStyle.pageSheet
             self.present(collectionController, animated: true, completion: nil)
         }
+    }
+    
+    func updateProfileImage(with pickedImage: UIImage) {
+        profileView.updateProfileImage(with: pickedImage)
+        infoDidChange[2] = true
+        model.changeImage(for: pickedImage)
     }
 }
 

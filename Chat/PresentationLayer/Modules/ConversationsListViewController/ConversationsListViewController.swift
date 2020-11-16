@@ -85,7 +85,7 @@ class ConversationsListViewController: LogViewController {
         guard let navigationBar = navigationController?.navigationBar else { return }
         conversationsListView.setupNavigationItem(navigationItem: navigationItem)
         conversationsListView.setupNavigationBar(navigationBar: navigationBar)
-        updateImageView()
+        updateProfileImage()
     }
     
     private func setupTableView() {
@@ -108,7 +108,7 @@ class ConversationsListViewController: LogViewController {
         conversationsListView.profileImage.loadImageCompletion(name: model.name, image: model.image)
     }
         
-    func updateImageView() {
+    func updateProfileImage() {
         model.loadWithGCD(completion: loadCompletion)
 //        model.loadWithOperations(completion: loadCompletion)
     }

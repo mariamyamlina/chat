@@ -36,6 +36,11 @@
 		9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9957F56D251F67DC007EB624 /* ConversationViewController.swift */; };
 		995C84B2253B09DA0036B067 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995C84B1253B09DA0036B067 /* Message.swift */; };
 		996941142539082500819078 /* UIAlertController + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996941132539082500819078 /* UIAlertController + Extension.swift */; };
+		996A40C2256169220048361C /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A40C1256169220048361C /* Parser.swift */; };
+		996A40C4256169620048361C /* RequestSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A40C3256169620048361C /* RequestSender.swift */; };
+		996A40C6256169B10048361C /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A40C5256169B10048361C /* Request.swift */; };
+		996A40C8256169DE0048361C /* RequestsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A40C7256169DE0048361C /* RequestsFactory.swift */; };
+		996A40CA25617CD50048361C /* ImagesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A40C925617CD50048361C /* ImagesService.swift */; };
 		996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996FA7B3253FAB4B007EC8AA /* Channel.swift */; };
 		997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE1F2530D8EF00645079 /* GCDDataManager.swift */; };
 		997CEE222530D91500645079 /* OperationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE212530D91500645079 /* OperationDataManager.swift */; };
@@ -109,6 +114,11 @@
 		9957F56D251F67DC007EB624 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		995C84B1253B09DA0036B067 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		996941132539082500819078 /* UIAlertController + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController + Extension.swift"; sourceTree = "<group>"; };
+		996A40C1256169220048361C /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		996A40C3256169620048361C /* RequestSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestSender.swift; sourceTree = "<group>"; };
+		996A40C5256169B10048361C /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
+		996A40C7256169DE0048361C /* RequestsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestsFactory.swift; sourceTree = "<group>"; };
+		996A40C925617CD50048361C /* ImagesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesService.swift; sourceTree = "<group>"; };
 		996FA7B3253FAB4B007EC8AA /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		997CEE1F2530D8EF00645079 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
 		997CEE212530D91500645079 /* OperationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDataManager.swift; sourceTree = "<group>"; };
@@ -209,6 +219,17 @@
 				992C2ADC2538B5C100005A88 /* GoogleService-Info.plist */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		996A40C02561690B0048361C /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				996A40C1256169220048361C /* Parser.swift */,
+				996A40C3256169620048361C /* RequestSender.swift */,
+				996A40C5256169B10048361C /* Request.swift */,
+				996A40C7256169DE0048361C /* RequestsFactory.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		99803F7A250ADD0F000284D9 = {
@@ -424,6 +445,7 @@
 				994B9AD9252799F600A453F2 /* ThemesService.swift */,
 				990AC640255C171A006A60D4 /* SettingsService.swift */,
 				990AC644255C6DB4006A60D4 /* FetchService.swift */,
+				996A40C925617CD50048361C /* ImagesService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -445,6 +467,7 @@
 				999EAEAA2559F6B80070D852 /* CoreData */,
 				99CB3E04255B4BA200DDD117 /* ThemeStorage */,
 				99CB3DF0255B09AE00DDD117 /* Firebase */,
+				996A40C02561690B0048361C /* Network */,
 			);
 			path = CoreLayer;
 			sourceTree = "<group>";
@@ -651,10 +674,13 @@
 				99CB3E0C255B620A00DDD117 /* SettingsStorage.swift in Sources */,
 				9957D96C254F42650073DCA2 /* MessageInputContainer.swift in Sources */,
 				994D63DE255F3E09007CB33D /* CollectionViewCell.swift in Sources */,
+				996A40C4256169620048361C /* RequestSender.swift in Sources */,
 				994CF6CB252E0E1700AB0A10 /* ProfileImageView.swift in Sources */,
 				9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */,
 				99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */,
 				99A5733F253C7B3E00899AAC /* FirebaseManager.swift in Sources */,
+				996A40C8256169DE0048361C /* RequestsFactory.swift in Sources */,
+				996A40CA25617CD50048361C /* ImagesService.swift in Sources */,
 				9950733D251F87A500515678 /* MessageTableViewCell.swift in Sources */,
 				990FCB98254C969800156A48 /* MessageDB+CoreDataClass.swift in Sources */,
 				996941142539082500819078 /* UIAlertController + Extension.swift in Sources */,
@@ -668,9 +694,11 @@
 				994518DD255725AB00D5B015 /* ThemesView.swift in Sources */,
 				99CB3DF9255B1A1F00DDD117 /* String + Extension.swift in Sources */,
 				99803F87250ADD0F000284D9 /* AppDelegate.swift in Sources */,
+				996A40C2256169220048361C /* Parser.swift in Sources */,
 				990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */,
 				996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */,
 				99ED327E25580F75008848D0 /* ServicesAssembly.swift in Sources */,
+				996A40C6256169B10048361C /* Request.swift in Sources */,
 				9989C60A255F049D009F7A31 /* CollectionView.swift in Sources */,
 				995C84B2253B09DA0036B067 /* Message.swift in Sources */,
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,

@@ -16,6 +16,9 @@ class CollectionViewController: LogViewController {
     private let presentationAssembly: IPresentationAssembly
     private let model: ICollectionModel
     
+    // DisplayModel
+    private var dataSource: [CellDisplayModel] = []
+    
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -32,6 +35,9 @@ class CollectionViewController: LogViewController {
         super.viewDidLoad()
         setupView()
         createHandlers()
+        // TODO
+        model.delegate = self
+        model.fetchImages()
     }
     
     // MARK: - Setup View
@@ -65,25 +71,34 @@ class CollectionViewController: LogViewController {
 // MARK: - UICollectionViewDelegate
 extension CollectionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // TODO
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        // TODO
+        let cell = self.collectionView(self.collectionView.collectionView,
+                                       cellForItemAt: indexPath) as? CollectionViewCell
+        if let url = URL(string: dataSource[indexPath.row].imageUrl) {
+            cell?.getImage(with: url) { [weak self] image in
+                guard let pickedImage = image else { return }
+                let navigationVC = self?.presentingViewController as? UINavigationController
+                guard let profileVC = navigationVC?.viewControllers.first as? ProfileViewController else { return }
+                profileVC.updateProfileImage(with: pickedImage)
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
     }
 }
 
 // MARK: - UICollectionViewDataSource
 extension CollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // TODO
-        return 100
+        return dataSource.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseIdentifier,
-                                                      for: indexPath) as? CollectionViewCell
-        return cell ?? CollectionViewCell()
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseIdentifier,
+                                                            for: indexPath) as? CollectionViewCell else { return CollectionViewCell() }
+        
+        if let url = URL(string: dataSource[indexPath.row].imageUrl) {
+            cell.getImage(with: url, completion: cell.setImage)
+        }
+        return cell
     }
 }
 
@@ -100,5 +115,23 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 8
+    }
+}
+
+// MARK: - ICollectionModelDelegate
+extension CollectionViewController: ICollectionModelDelegate {
+    func setup(dataSource: [CellDisplayModel]) {
+        self.dataSource = dataSource
+
+        DispatchQueue.main.async {
+            self.collectionView.collectionView.reloadData()
+            self.collectionView.activityIndicator.stopAnimating()
+        }
+    }
+    
+    func show(error message: String) {
+        DispatchQueue.main.async {
+            
+        }
     }
 }
