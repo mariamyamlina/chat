@@ -20,4 +20,32 @@ struct RequestsFactory {
     static func blueTravelConfig() -> RequestConfig<Parser> {
         return RequestConfig<Parser>(request: BlueTravelRequest(), parser: Parser())
     }
+    
+    static func pinkFashionConfig() -> RequestConfig<Parser> {
+        return RequestConfig<Parser>(request: PinkFasionRequest(), parser: Parser())
+    }
+    
+    static func orangeFoodConfig() -> RequestConfig<Parser> {
+        return RequestConfig<Parser>(request: OrangeFoodRequest(), parser: Parser())
+    }
+    
+    static func grayBuildingsConfig() -> RequestConfig<Parser> {
+        return RequestConfig<Parser>(request: GrayBuildingsRequest(), parser: Parser())
+    }
+    
+    static func redFeelingsConfig() -> RequestConfig<Parser> {
+        return RequestConfig<Parser>(request: RedFeelingsRequest(), parser: Parser())
+    }
+    
+    static func blackPlacesConfig() -> RequestConfig<Parser> {
+        return RequestConfig<Parser>(request: BlackPlacesRequest(), parser: Parser())
+    }
+    
+    static func brownMusicConfig() -> RequestConfig<Parser> {
+        return RequestConfig<Parser>(request: BrownMusicRequest(), parser: Parser())
+    }
+    
+    static func whiteComputerConfig() -> RequestConfig<Parser> {
+        return RequestConfig<Parser>(request: WhiteComputerRequest(), parser: Parser())
+    }
 }

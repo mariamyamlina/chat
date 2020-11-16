@@ -12,9 +12,8 @@ class CollectionViewCell: UICollectionViewCell {
     // MARK: - UI
     lazy var imageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "ImagePlaceholder"))
-        // TODO
-//        imageView.contentMode = .scaleAspectFill
-        imageView.contentMode = .scaleToFill
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.topAnchor.constraint(equalTo: topAnchor).isActive = true

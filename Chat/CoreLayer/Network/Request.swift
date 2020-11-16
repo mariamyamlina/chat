@@ -41,3 +41,31 @@ class GreenNatureRequest: Request {
 class BlueTravelRequest: Request {
     override var command: String { return "&q=blue+travel&image_type=photo&pretty=true&per_page=100" }
 }
+
+class PinkFasionRequest: Request {
+    override var command: String { return "&q=pink+fashion&image_type=photo&pretty=true&per_page=100" }
+}
+
+class OrangeFoodRequest: Request {
+    override var command: String { return "&q=orange+food&image_type=photo&pretty=true&per_page=100" }
+}
+
+class GrayBuildingsRequest: Request {
+    override var command: String { return "&q=gray+buildings&image_type=photo&pretty=true&per_page=100" }
+}
+
+class RedFeelingsRequest: Request {
+    override var command: String { return "&q=red+feelings&image_type=photo&pretty=true&per_page=100" }
+}
+
+class BlackPlacesRequest: Request {
+    override var command: String { return "&q=black+places&image_type=photo&pretty=true&per_page=100" }
+}
+
+class BrownMusicRequest: Request {
+    override var command: String { return "&q=brown+music&image_type=photo&pretty=true&per_page=100" }
+}
+
+class WhiteComputerRequest: Request {
+    override var command: String { return "&q=white+computer&image_type=photo&pretty=true&per_page=100" }
+}

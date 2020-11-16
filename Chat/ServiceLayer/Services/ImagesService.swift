@@ -20,7 +20,7 @@ class ImagesService: IImagesService {
     }
     
     func loadImages(completionHandler: @escaping (DataModel?, NetworkError?) -> Void) {
-        let requestConfig = RequestsFactory.yellowFlowersConfig()
+        let requestConfig = generateRequestConfig()
         loadApps(requestConfig: requestConfig, completionHandler: completionHandler)
     }
     
@@ -37,4 +37,32 @@ class ImagesService: IImagesService {
         }
     }
     
+    // MARK: - Generator
+    private func generateRequestConfig() -> RequestConfig<Parser> {
+        let randNum = Int(arc4random_uniform(9))
+        let requestConfig: RequestConfig<Parser>
+        switch randNum {
+        case 1:
+            requestConfig = RequestsFactory.greenNatureConfig()
+        case 2:
+            requestConfig = RequestsFactory.blueTravelConfig()
+        case 3:
+            requestConfig = RequestsFactory.pinkFashionConfig()
+        case 4:
+            requestConfig = RequestsFactory.orangeFoodConfig()
+        case 5:
+            requestConfig = RequestsFactory.grayBuildingsConfig()
+        case 6:
+            requestConfig = RequestsFactory.redFeelingsConfig()
+        case 7:
+            requestConfig = RequestsFactory.blackPlacesConfig()
+        case 8:
+            requestConfig = RequestsFactory.brownMusicConfig()
+        case 9:
+            requestConfig = RequestsFactory.whiteComputerConfig()
+        default:
+            requestConfig = RequestsFactory.yellowFlowersConfig()
+        }
+        return requestConfig
+    }
 }
