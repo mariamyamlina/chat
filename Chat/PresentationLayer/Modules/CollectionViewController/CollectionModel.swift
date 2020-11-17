@@ -42,12 +42,11 @@ extension CollectionModel: ICollectionModel {
     
     func fetchImages() {
         imagesService.loadImages { (images: DataModel?, error) in
-            
             if let images = images {
                 let cells = images.hits.map({ CellDisplayModel(imageUrl: $0.webformatURL) })
                 self.delegate?.setup(dataSource: cells)
             } else {
-//                self.delegate?.show(error: error.message)
+                self.delegate?.show(error: error?.message ?? "")
             }
         }
     }

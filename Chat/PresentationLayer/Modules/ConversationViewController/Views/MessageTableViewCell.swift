@@ -101,15 +101,15 @@ extension MessageTableViewCell: IConfigurableView {
         let estimatedWidth = estimatedFrame.width
         
         if model.type == .output {
-            messageTextView.textColor = theme.themeSettings.outputTextColor
-            timeLabel.textColor = theme.themeSettings.outputTimeColor
-            textBubbleView.backgroundColor = theme.themeSettings.outputBubbleColor
+            messageTextView.textColor = theme.settings.outputTextColor
+            timeLabel.textColor = theme.settings.outputTimeColor
+            textBubbleView.backgroundColor = theme.settings.outputBubbleColor
             messageTextView.frame = CGRect(x: UIScreen.main.bounds.width - 28 - estimatedWidth - 16, y: 0, width: estimatedWidth + 16, height: estimatedHeight + 28)
             textBubbleView.frame = CGRect(x: UIScreen.main.bounds.width - 20 - estimatedWidth - 16 - 8, y: 0, width: estimatedWidth + 16 + 8, height: estimatedHeight + 28)
         } else {
-            messageTextView.textColor = theme.themeSettings.textColor
-            timeLabel.textColor = theme.themeSettings.inputTimeColor
-            textBubbleView.backgroundColor = theme.themeSettings.inputBubbleColor
+            messageTextView.textColor = theme.settings.textColor
+            timeLabel.textColor = theme.settings.inputTimeColor
+            textBubbleView.backgroundColor = theme.settings.inputBubbleColor
             messageTextView.frame = CGRect(x: 28, y: 0, width: estimatedWidth + 16, height: estimatedHeight + 28)
             textBubbleView.frame = CGRect(x: 20, y: 0, width: estimatedWidth + 16 + 8, height: estimatedHeight + 28)
         }

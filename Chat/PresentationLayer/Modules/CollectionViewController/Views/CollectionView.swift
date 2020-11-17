@@ -35,6 +35,7 @@ class CollectionView: UIView {
     lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView()
         activityIndicator.style = .gray
+        activityIndicator.color = theme.settings.textColor
         activityIndicator.hidesWhenStopped = true
         addSubview(activityIndicator)
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
@@ -69,7 +70,12 @@ class CollectionView: UIView {
     
     // MARK: - Setup View
     func setupView() {
-        backgroundColor = theme.themeSettings.backgroundColor
+        backgroundColor = theme.settings.backgroundColor
         activityIndicator.startAnimating()
+    }
+    
+    func reloadData() {
+        collectionView.reloadData()
+        activityIndicator.stopAnimating()
     }
 }

@@ -14,7 +14,7 @@ enum Theme: Int {
     case day
     case night
 
-    var themeSettings: IThemeSettings {
+    var settings: IThemeSettings {
         switch self {
         case .classic: return ClassicTheme()
         case .day: return DayTheme()

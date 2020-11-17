@@ -21,13 +21,12 @@ class ImagesService: IImagesService {
     
     func loadImages(completionHandler: @escaping (DataModel?, NetworkError?) -> Void) {
         let requestConfig = generateRequestConfig()
-        loadApps(requestConfig: requestConfig, completionHandler: completionHandler)
+        loadImages(requestConfig: requestConfig, completionHandler: completionHandler)
     }
     
-    private func loadApps(requestConfig: RequestConfig<Parser>,
-                          completionHandler: @escaping (DataModel?, NetworkError?) -> Void) {
+    private func loadImages(requestConfig: RequestConfig<Parser>,
+                            completionHandler: @escaping (DataModel?, NetworkError?) -> Void) {
         requestSender.send(requestConfig: requestConfig) { (result: Result<DataModel, NetworkError>) in
-            
             switch result {
             case .success(let apps):
                 completionHandler(apps, nil)

@@ -28,7 +28,7 @@ class MessageInputContainer: UIView {
         textField.autocapitalizationType = .sentences
         textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
         attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any,
-                     NSAttributedString.Key.foregroundColor: theme.themeSettings.textFieldTextColor])
+                     NSAttributedString.Key.foregroundColor: theme.settings.textFieldTextColor])
         textField.textAlignment = .left
         textField.font = UIFont(name: "SFProText-Regular", size: 17)
         textField.borderStyle = .roundedRect
@@ -94,13 +94,13 @@ class MessageInputContainer: UIView {
     
     private func applyTheme(theme: Theme) {
         self.theme = theme
-        backgroundColor = theme.themeSettings.barColor
+        backgroundColor = theme.settings.barColor
         borderLine.backgroundColor = Colors.separatorColor()
-        textField.backgroundColor = theme.themeSettings.textFieldBackgroundColor
+        textField.backgroundColor = theme.settings.textFieldBackgroundColor
         if #available(iOS 13.0, *) {
         } else {
-            textField.keyboardAppearance = theme.themeSettings.keyboardAppearance
-            textField.textColor = theme.themeSettings.textColor
+            textField.keyboardAppearance = theme.settings.keyboardAppearance
+            textField.textColor = theme.settings.textColor
         }
     }
 }

@@ -27,10 +27,7 @@ protocol IParser {
 class Parser: IParser {
     func parse(data: Data) -> DataModel? {
         do {
-            let dataModel = try JSONDecoder().decode(DataModel.self, from: data)
-            
-            return dataModel
-            
+            return try JSONDecoder().decode(DataModel.self, from: data)
         } catch {
             print("Error trying to convert data to JSON")
             return nil

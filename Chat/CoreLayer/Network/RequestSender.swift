@@ -17,6 +17,14 @@ enum NetworkError: Error {
     case badURL
     case badData
     case badTask
+    
+    var message: String {
+        switch self {
+        case .badURL: return "URL string can't be parsed to URL"
+        case .badData: return "Received data can't be parsed"
+        case .badTask: return "DataTask can't be handled"
+        }
+    }
 }
 
 protocol IRequestSender {
@@ -25,7 +33,6 @@ protocol IRequestSender {
 }
 
 class RequestSender: IRequestSender {
-    
     let session = URLSession.shared
     
     func send<Parser>(requestConfig config: RequestConfig<Parser>,

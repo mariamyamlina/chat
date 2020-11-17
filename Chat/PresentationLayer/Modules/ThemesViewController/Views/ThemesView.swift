@@ -79,16 +79,16 @@ class ThemesView: UIView {
     // MARK: - Setup View
     func applyTheme(theme: Theme) {
         self.theme = theme
-        backgroundColor = theme.themeSettings.settingsBackgroundColor
+        backgroundColor = theme.settings.settingsBackgroundColor
         if #available(iOS 13.0, *) {
         } else {
-            titleLabel.textColor = theme.themeSettings.textColor
+            titleLabel.textColor = theme.settings.textColor
         }
         chooseSelectedButton()
     }
     
     func chooseSelectedButton() {
-        switch theme.themeSettings {
+        switch theme.settings {
         case is ClassicTheme:
             classicButton.isSelected = true
             dayButton.isSelected = false

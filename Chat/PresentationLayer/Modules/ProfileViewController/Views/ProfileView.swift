@@ -183,7 +183,7 @@ class ProfileView: UIView {
         let leftViewLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 115, height: 22))
         leftViewLabel.text = "My Profile"
         if #available(iOS 13.0, *) { } else {
-            leftViewLabel.textColor = theme.themeSettings.textColor
+            leftViewLabel.textColor = theme.settings.textColor
         }
         leftViewLabel.font = UIFont(name: "SFProDisplay-Bold", size: 26)
         return UIBarButtonItem(customView: leftViewLabel)
@@ -286,12 +286,12 @@ class ProfileView: UIView {
     
     func applyTheme(theme: Theme) {
         self.theme = theme
-        [self, scrollViewContentView].forEach { $0?.backgroundColor = theme.themeSettings.backgroundColor }
-        [nameTextView, bioTextView].forEach { $0?.textColor = theme.themeSettings.textColor }
-        activityIndicator.color = theme.themeSettings.textColor
-        [gcdSaveButton, operationSaveButton, editProfileButton].forEach { $0?.backgroundColor = theme.themeSettings.saveButtonColor }
+        [self, scrollViewContentView].forEach { $0?.backgroundColor = theme.settings.backgroundColor }
+        [nameTextView, bioTextView].forEach { $0?.textColor = theme.settings.textColor }
+        activityIndicator.color = theme.settings.textColor
+        [gcdSaveButton, operationSaveButton, editProfileButton].forEach { $0?.backgroundColor = theme.settings.saveButtonColor }
         if #available(iOS 13.0, *) { } else {
-            [nameTextView, bioTextView].forEach { $0?.keyboardAppearance = theme.themeSettings.keyboardAppearance }
+            [nameTextView, bioTextView].forEach { $0?.keyboardAppearance = theme.settings.keyboardAppearance }
         }
     }
 }

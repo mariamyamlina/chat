@@ -124,14 +124,13 @@ extension CollectionViewController: ICollectionModelDelegate {
         self.dataSource = dataSource
 
         DispatchQueue.main.async {
-            self.collectionView.collectionView.reloadData()
-            self.collectionView.activityIndicator.stopAnimating()
+            self.collectionView.reloadData()
         }
     }
     
     func show(error message: String) {
         DispatchQueue.main.async {
-            
+            self.configureLogAlert(withTitle: "Network", withMessage: message)
         }
     }
 }
