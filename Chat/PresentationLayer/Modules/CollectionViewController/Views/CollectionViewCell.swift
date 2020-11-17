@@ -9,6 +9,8 @@
 import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
+    static let reuseIdentifier = "Collection Cell"
+    
     // MARK: - UI
     lazy var imageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "ImagePlaceholder"))
@@ -23,20 +25,9 @@ class CollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    // MARK: - Init / deinit
-    static let reuseIdentifier = "Collection Cell"
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: CGRect.zero)
-        self.imageView.image = UIImage(named: "ImagePlaceholder")
-    }
-    
     // MARK: - Setup View
     func getImage(with url: URL, completion: @escaping (UIImage?) -> Void) {
+        self.imageView.image = UIImage(named: "ImagePlaceholder")
         let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
             guard error == nil else { return }
             guard let data = data else { return }
