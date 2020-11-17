@@ -28,8 +28,8 @@ class ImagesService: IImagesService {
                             completionHandler: @escaping (DataModel?, NetworkError?) -> Void) {
         requestSender.send(requestConfig: requestConfig) { (result: Result<DataModel, NetworkError>) in
             switch result {
-            case .success(let apps):
-                completionHandler(apps, nil)
+            case .success(let images):
+                completionHandler(images, nil)
             case .failure(let error):
                 completionHandler(nil, error)
             }

@@ -16,6 +16,10 @@ protocol ISettingsStorage {
     func changeName(for name: String?)
     func changeBio(for bio: String?)
     func changeImage(for image: UIImage?)
+    var urlDir: URL? { get }
+    var nameFileURL: URL { get }
+    var bioFileURL: URL { get }
+    var imageFileURL: URL { get }
 }
 
 class SettingsStorage: ISettingsStorage {
@@ -47,4 +51,18 @@ class SettingsStorage: ISettingsStorage {
     func changeImage(for image: UIImage?) {
         self.image = image
     }
+    
+    var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    
+    lazy var nameFileURL: URL = {
+        urlDir?.appendingPathComponent("ProfileName.txt") ?? URL(fileURLWithPath: "")
+    }()
+    
+    lazy var bioFileURL: URL = {
+        urlDir?.appendingPathComponent("ProfileBio.txt") ?? URL(fileURLWithPath: "")
+    }()
+    
+    lazy var imageFileURL: URL = {
+        urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "")
+    }()
 }

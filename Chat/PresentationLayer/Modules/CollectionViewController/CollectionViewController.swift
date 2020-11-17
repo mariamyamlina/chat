@@ -35,9 +35,7 @@ class CollectionViewController: LogViewController {
         super.viewDidLoad()
         setupView()
         createHandlers()
-        // TODO
-        model.delegate = self
-        model.fetchImages()
+        setupFetching()
     }
     
     // MARK: - Setup View
@@ -50,10 +48,6 @@ class CollectionViewController: LogViewController {
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
-        setupNavigationBar()
-    }
-    
-    private func setupNavigationBar() {
         navigationItem.rightBarButtonItem = collectionView.rightBarButtonItem
     }
     
@@ -65,6 +59,11 @@ class CollectionViewController: LogViewController {
         collectionView.closeCollectionHandler = { [weak self] in
             self?.dismiss(animated: true, completion: nil)
         }
+    }
+    
+    private func setupFetching() {
+        model.delegate = self
+        model.fetchImages()
     }
 }
 
@@ -122,7 +121,6 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
 extension CollectionViewController: ICollectionModelDelegate {
     func setup(dataSource: [CellDisplayModel]) {
         self.dataSource = dataSource
-
         DispatchQueue.main.async {
             self.collectionView.reloadData()
         }

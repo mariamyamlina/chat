@@ -9,11 +9,6 @@
 import UIKit
 
 class GCDDataManager {
-    var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-    lazy var nameFileURL: URL = { urlDir?.appendingPathComponent("ProfileName.txt") ?? URL(fileURLWithPath: "") }()
-    lazy var bioFileURL: URL = { urlDir?.appendingPathComponent("ProfileBio.txt") ?? URL(fileURLWithPath: "") }()
-    lazy var imageFileURL: URL = { urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "") }()
-    
     private let mainQueue = DispatchQueue.main
     private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
     
@@ -39,7 +34,7 @@ extension GCDDataManager: IDataManager {
         queue.async {
             if nameDidChange {
                 do {
-                    try self.settingsStorage.name?.write(to: self.nameFileURL, atomically: false, encoding: .utf8)
+                    try self.settingsStorage.name?.write(to: self.settingsStorage.nameFileURL, atomically: false, encoding: .utf8)
                 } catch {
                     nameSaved = false
                 }
@@ -51,7 +46,7 @@ extension GCDDataManager: IDataManager {
         queue.async {
             if bioDidChange {
                 do {
-                    try self.settingsStorage.bio?.write(to: self.bioFileURL, atomically: false, encoding: .utf8)
+                    try self.settingsStorage.bio?.write(to: self.settingsStorage.bioFileURL, atomically: false, encoding: .utf8)
                 } catch {
                     bioSaved = false
                 }
@@ -64,7 +59,7 @@ extension GCDDataManager: IDataManager {
             if let data = self.settingsStorage.image?.jpegData(compressionQuality: 0.5),
                 imageDidChange {
                 do {
-                    try data.write(to: self.imageFileURL)
+                    try data.write(to: self.settingsStorage.imageFileURL)
                 } catch {
                     imageSaved = false
                 }
@@ -85,8 +80,7 @@ extension GCDDataManager: IDataManager {
         group.enter()
         queue.async {
             do {
-                let nameFromFile = try String(data: Data(contentsOf: self.nameFileURL), encoding: .utf8)
-                if let name = nameFromFile {
+                if let name = try String(data: Data(contentsOf: self.settingsStorage.nameFileURL), encoding: .utf8) {
                     self.settingsStorage.name = name
                 }
             } catch {
@@ -99,8 +93,7 @@ extension GCDDataManager: IDataManager {
         queue.async {
             if mustReadBio {
                 do {
-                    let bioFromFile = try String(data: Data(contentsOf: self.bioFileURL), encoding: .utf8)
-                    if let bio = bioFromFile {
+                    if let bio = try String(data: Data(contentsOf: self.settingsStorage.bioFileURL), encoding: .utf8) {
                         self.settingsStorage.bio = bio
                     }
                 } catch {
@@ -113,8 +106,7 @@ extension GCDDataManager: IDataManager {
         group.enter()
         queue.async {
             do {
-                let imageFromFile = try UIImage(data: Data(contentsOf: self.imageFileURL))
-                if let image = imageFromFile {
+                if let image = try UIImage(data: Data(contentsOf: self.settingsStorage.imageFileURL)) {
                     self.settingsStorage.image = image
                 }
             } catch {

@@ -55,11 +55,6 @@ extension OperationDataManager: IDataManager {
 
 // MARK: - WriteOperation
 class WriteOperation: Operation {
-    var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-    lazy var nameFileURL: URL = { urlDir?.appendingPathComponent("ProfileName.txt") ?? URL(fileURLWithPath: "") }()
-    lazy var bioFileURL: URL = { urlDir?.appendingPathComponent("ProfileBio.txt") ?? URL(fileURLWithPath: "") }()
-    lazy var imageFileURL: URL = { urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "") }()
-    
     // MARK: - Dependencies
     let settingsStorage: ISettingsStorage
     let nameDidChange: Bool
@@ -82,7 +77,7 @@ class WriteOperation: Operation {
         if isCancelled { return }
         do {
             if nameDidChange {
-                try settingsStorage.name?.write(to: nameFileURL, atomically: false, encoding: .utf8)
+                try settingsStorage.name?.write(to: settingsStorage.nameFileURL, atomically: false, encoding: .utf8)
             }
         } catch {
             nameSaved = false
@@ -90,7 +85,7 @@ class WriteOperation: Operation {
         
         do {
             if bioDidChange {
-                try settingsStorage.bio?.write(to: bioFileURL, atomically: false, encoding: .utf8)
+                try settingsStorage.bio?.write(to: settingsStorage.bioFileURL, atomically: false, encoding: .utf8)
             }
         } catch {
             bioSaved = false
@@ -99,7 +94,7 @@ class WriteOperation: Operation {
         do {
             if let data = settingsStorage.image?.jpegData(compressionQuality: 0.5),
                 imageDidChange {
-                try data.write(to: imageFileURL)
+                try data.write(to: settingsStorage.imageFileURL)
             }
         } catch {
             imageSaved = false
@@ -109,11 +104,6 @@ class WriteOperation: Operation {
 
 // MARK: - ReadOperations
 class ReadNameOperation: Operation {
-    lazy var nameFileURL: URL = {
-        var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return urlDir?.appendingPathComponent("ProfileName.txt") ?? URL(fileURLWithPath: "")
-    }()
-    
     // MARK: - Dependencies
     var settingsStorage: ISettingsStorage
 
@@ -125,8 +115,7 @@ class ReadNameOperation: Operation {
     override func main() {
         if isCancelled { return }
         do {
-            let nameFromFile = try String(data: Data(contentsOf: nameFileURL), encoding: .utf8)
-            if let name = nameFromFile {
+            if let name = try String(data: Data(contentsOf: settingsStorage.nameFileURL), encoding: .utf8) {
                 settingsStorage.name = name
             }
         } catch {
@@ -136,11 +125,6 @@ class ReadNameOperation: Operation {
 }
 
 class ReadBioOperation: Operation {
-    lazy var bioFileURL: URL = {
-        var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return urlDir?.appendingPathComponent("ProfileBio.txt") ?? URL(fileURLWithPath: "")
-    }()
-    
     // MARK: - Dependencies
     var settingsStorage: ISettingsStorage
 
@@ -152,8 +136,7 @@ class ReadBioOperation: Operation {
     override func main() {
         if isCancelled { return }
         do {
-            let bioFromFile = try String(data: Data(contentsOf: bioFileURL), encoding: .utf8)
-            if let bio = bioFromFile {
+            if let bio = try String(data: Data(contentsOf: settingsStorage.bioFileURL), encoding: .utf8) {
                 settingsStorage.bio = bio
             }
         } catch {
@@ -163,11 +146,6 @@ class ReadBioOperation: Operation {
 }
 
 class ReadImageOperation: Operation {
-    lazy var imageFileURL: URL = {
-        var urlDir: URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return urlDir?.appendingPathComponent("ProfileImage.jpeg") ?? URL(fileURLWithPath: "")
-    }()
-    
     // MARK: - Dependencies
     var settingsStorage: ISettingsStorage
 
@@ -179,8 +157,7 @@ class ReadImageOperation: Operation {
     override func main() {
         if isCancelled { return }
         do {
-            let imageFromFile = try UIImage(data: Data(contentsOf: imageFileURL))
-            if let image = imageFromFile {
+            if let image = try UIImage(data: Data(contentsOf: settingsStorage.imageFileURL)) {
                 settingsStorage.image = image
             }
         } catch {

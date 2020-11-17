@@ -30,6 +30,7 @@ class Request: IRequest {
     }
 }
 
+// MARK: - Requests
 class YellowFlowersRequest: Request {
     override var command: String { return "&q=yellow+flowers&image_type=photo&pretty=true&per_page=100" }
 }

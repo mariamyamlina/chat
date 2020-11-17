@@ -39,7 +39,6 @@ class RequestSender: IRequestSender {
                       completionHandler: @escaping (Result<DataModel, NetworkError>) -> Void) {
         guard let urlRequest = config.request.urlRequest else {
             completionHandler(.failure(.badURL))
-//                Result<Int, NetworkError>.error("url string can't be parsed to URL"))
             return
         }
         
@@ -48,10 +47,10 @@ class RequestSender: IRequestSender {
                 completionHandler(.failure(.badTask))
                 return
             }
+            
             guard let data = data,
                 let parsedModel = config.parser.parse(data: data) else {
                     completionHandler(.failure(.badData))
-//                        Result.error("received data can't be parsed"))
                     return
             }
             
