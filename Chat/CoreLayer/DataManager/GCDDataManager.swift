@@ -33,9 +33,7 @@ extension GCDDataManager: IDataManager {
         group.enter()
         queue.async {
             if nameDidChange {
-                do {
-                    try self.settingsStorage.name?.write(to: self.settingsStorage.nameFileURL, atomically: false, encoding: .utf8)
-                } catch {
+                if (try? self.settingsStorage.name?.write(to: self.settingsStorage.nameFileURL, atomically: false, encoding: .utf8)) == nil {
                     nameSaved = false
                 }
             }
@@ -45,9 +43,7 @@ extension GCDDataManager: IDataManager {
         group.enter()
         queue.async {
             if bioDidChange {
-                do {
-                    try self.settingsStorage.bio?.write(to: self.settingsStorage.bioFileURL, atomically: false, encoding: .utf8)
-                } catch {
+                if (try? self.settingsStorage.bio?.write(to: self.settingsStorage.bioFileURL, atomically: false, encoding: .utf8)) == nil {
                     bioSaved = false
                 }
             }
@@ -56,11 +52,9 @@ extension GCDDataManager: IDataManager {
         
         group.enter()
         queue.async {
-            if let data = self.settingsStorage.image?.jpegData(compressionQuality: 0.5),
-                imageDidChange {
-                do {
-                    try data.write(to: self.settingsStorage.imageFileURL)
-                } catch {
+            if imageDidChange {
+                if (try? self.settingsStorage.image?.jpegData(compressionQuality: 0.5)?
+                    .write(to: self.settingsStorage.imageFileURL)) == nil {
                     imageSaved = false
                 }
             }
@@ -79,11 +73,9 @@ extension GCDDataManager: IDataManager {
         
         group.enter()
         queue.async {
-            do {
-                if let name = try String(data: Data(contentsOf: self.settingsStorage.nameFileURL), encoding: .utf8) {
-                    self.settingsStorage.name = name
-                }
-            } catch {
+            if let name = try? String(data: Data(contentsOf: self.settingsStorage.nameFileURL), encoding: .utf8) {
+                self.settingsStorage.name = name
+            } else {
                 self.settingsStorage.name = "Marina Dudarenko"
             }
             group.leave()
@@ -92,11 +84,9 @@ extension GCDDataManager: IDataManager {
         group.enter()
         queue.async {
             if mustReadBio {
-                do {
-                    if let bio = try String(data: Data(contentsOf: self.settingsStorage.bioFileURL), encoding: .utf8) {
-                        self.settingsStorage.bio = bio
-                    }
-                } catch {
+                if let bio = try? String(data: Data(contentsOf: self.settingsStorage.bioFileURL), encoding: .utf8) {
+                    self.settingsStorage.bio = bio
+                } else {
                     self.settingsStorage.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
                 }
             }
@@ -105,13 +95,7 @@ extension GCDDataManager: IDataManager {
         
         group.enter()
         queue.async {
-            do {
-                if let image = try UIImage(data: Data(contentsOf: self.settingsStorage.imageFileURL)) {
-                    self.settingsStorage.image = image
-                }
-            } catch {
-                self.settingsStorage.image = nil
-            }
+            self.settingsStorage.image = try? UIImage(data: Data(contentsOf: self.settingsStorage.imageFileURL))
             group.leave()
         }
         

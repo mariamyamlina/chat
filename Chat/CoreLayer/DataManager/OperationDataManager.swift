@@ -39,7 +39,7 @@ extension OperationDataManager: IDataManager {
     
     func load(mustReadBio: Bool = true, completion: @escaping () -> Void) {
         let readNameOperation = ReadNameOperation(settingsStorage: settingsStorage)
-        let readBioOperation = ReadBioOperation(settingsStorage: settingsStorage)
+        let readBioOperation = ReadBioOperation(settingsStorage: settingsStorage, mustReadBio: mustReadBio)
         let readImageOperation = ReadImageOperation(settingsStorage: settingsStorage)
         let completionOperation = BlockOperation {
             completion()
@@ -57,9 +57,7 @@ extension OperationDataManager: IDataManager {
 class WriteOperation: Operation {
     // MARK: - Dependencies
     let settingsStorage: ISettingsStorage
-    let nameDidChange: Bool
-    let bioDidChange: Bool
-    let imageDidChange: Bool
+    let nameDidChange, bioDidChange, imageDidChange: Bool
 
     // MARK: - Init / deinit
     init(settingsStorage: ISettingsStorage, nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool) {
@@ -75,29 +73,23 @@ class WriteOperation: Operation {
     
     override func main() {
         if isCancelled { return }
-        do {
-            if nameDidChange {
-                try settingsStorage.name?.write(to: settingsStorage.nameFileURL, atomically: false, encoding: .utf8)
+        if nameDidChange {
+            if (try? settingsStorage.name?.write(to: settingsStorage.nameFileURL, atomically: false, encoding: .utf8)) == nil {
+                nameSaved = false
             }
-        } catch {
-            nameSaved = false
         }
         
-        do {
-            if bioDidChange {
-                try settingsStorage.bio?.write(to: settingsStorage.bioFileURL, atomically: false, encoding: .utf8)
+        if bioDidChange {
+            if (try? settingsStorage.bio?.write(to: settingsStorage.bioFileURL, atomically: false, encoding: .utf8)) == nil {
+                bioSaved = false
             }
-        } catch {
-            bioSaved = false
         }
-        
-        do {
-            if let data = settingsStorage.image?.jpegData(compressionQuality: 0.5),
-                imageDidChange {
-                try data.write(to: settingsStorage.imageFileURL)
+
+        if imageDidChange {
+            if (try? settingsStorage.image?.jpegData(compressionQuality: 0.5)?
+                .write(to: settingsStorage.imageFileURL)) == nil {
+                imageSaved = false
             }
-        } catch {
-            imageSaved = false
         }
     }
 }
@@ -114,11 +106,9 @@ class ReadNameOperation: Operation {
     
     override func main() {
         if isCancelled { return }
-        do {
-            if let name = try String(data: Data(contentsOf: settingsStorage.nameFileURL), encoding: .utf8) {
-                settingsStorage.name = name
-            }
-        } catch {
+        if let name = try? String(data: Data(contentsOf: settingsStorage.nameFileURL), encoding: .utf8) {
+            settingsStorage.name = name
+        } else {
             settingsStorage.name = "Marina Dudarenko"
         }
     }
@@ -127,20 +117,22 @@ class ReadNameOperation: Operation {
 class ReadBioOperation: Operation {
     // MARK: - Dependencies
     var settingsStorage: ISettingsStorage
+    let mustReadBio: Bool
 
     // MARK: - Init / deinit
-    init(settingsStorage: ISettingsStorage) {
+    init(settingsStorage: ISettingsStorage, mustReadBio: Bool) {
         self.settingsStorage = settingsStorage
+        self.mustReadBio = mustReadBio
     }
     
     override func main() {
         if isCancelled { return }
-        do {
-            if let bio = try String(data: Data(contentsOf: settingsStorage.bioFileURL), encoding: .utf8) {
-                settingsStorage.bio = bio
+        if mustReadBio {
+            if let bio = try? String(data: Data(contentsOf: self.settingsStorage.bioFileURL), encoding: .utf8) {
+                self.settingsStorage.bio = bio
+            } else {
+                self.settingsStorage.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
             }
-        } catch {
-            settingsStorage.bio = "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
         }
     }
 }
@@ -156,12 +148,6 @@ class ReadImageOperation: Operation {
     
     override func main() {
         if isCancelled { return }
-        do {
-            if let image = try UIImage(data: Data(contentsOf: settingsStorage.imageFileURL)) {
-                settingsStorage.image = image
-            }
-        } catch {
-            settingsStorage.image = nil
-        }
+        settingsStorage.image = try? UIImage(data: Data(contentsOf: settingsStorage.imageFileURL))
     }
 }

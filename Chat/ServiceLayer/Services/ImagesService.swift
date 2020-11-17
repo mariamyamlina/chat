@@ -12,20 +12,20 @@ protocol IImagesService {
     func loadImages(completionHandler: @escaping (DataModel?, NetworkError?) -> Void)
 }
 
-class ImagesService: IImagesService {
+class ImagesService {
+    // MARK: - Dependencies
     let requestSender: IRequestSender
 
+    // MARK: - Init / Deinit
     init(requestSender: IRequestSender) {
         self.requestSender = requestSender
     }
-    
+}
+
+// MARK: - IImagesService
+extension ImagesService: IImagesService {
     func loadImages(completionHandler: @escaping (DataModel?, NetworkError?) -> Void) {
         let requestConfig = generateRequestConfig()
-        loadImages(requestConfig: requestConfig, completionHandler: completionHandler)
-    }
-    
-    private func loadImages(requestConfig: RequestConfig<Parser>,
-                            completionHandler: @escaping (DataModel?, NetworkError?) -> Void) {
         requestSender.send(requestConfig: requestConfig) { (result: Result<DataModel, NetworkError>) in
             switch result {
             case .success(let images):
