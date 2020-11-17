@@ -29,7 +29,6 @@ class Parser: IParser {
         do {
             return try JSONDecoder().decode(DataModel.self, from: data)
         } catch {
-            print("Error trying to convert data to JSON")
             return nil
         }
     }

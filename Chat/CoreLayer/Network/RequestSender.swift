@@ -10,7 +10,7 @@ import Foundation
 
 struct RequestConfig<Parser> where Parser: IParser {
     let request: IRequest
-    let parser: Parser
+    let parser: IParser
 }
 
 enum NetworkError: Error {
@@ -20,9 +20,9 @@ enum NetworkError: Error {
     
     var message: String {
         switch self {
-        case .badURL: return "URL string can't be parsed to URL"
-        case .badData: return "Received data can't be parsed"
-        case .badTask: return "DataTask can't be handled"
+        case .badURL: return "Error trying to create URL request: URL string can't be parsed to URL"
+        case .badData: return "Error trying to convert data to JSON: received data can't be parsed"
+        case .badTask: return "Error trying to handle DataTask"
         }
     }
 }
