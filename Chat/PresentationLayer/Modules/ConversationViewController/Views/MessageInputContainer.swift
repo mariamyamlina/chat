@@ -63,8 +63,7 @@ class MessageInputContainer: UIView {
         
         addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.topAnchor.constraint(equalTo: textField.topAnchor, constant: 2).isActive = true
-        button.bottomAnchor.constraint(equalTo: textField.bottomAnchor, constant: -6).isActive = true
+        button.centerYAnchor.constraint(equalTo: textField.centerYAnchor).isActive = true
         button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -31).isActive = true
         button.heightAnchor.constraint(equalToConstant: 24).isActive = true
         button.widthAnchor.constraint(equalToConstant: 24).isActive = true

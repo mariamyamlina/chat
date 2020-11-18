@@ -48,7 +48,12 @@ class CollectionViewController: LogViewController {
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
+        setupNavigationBar()
+    }
+    
+    private func setupNavigationBar() {
         navigationItem.rightBarButtonItem = collectionView.rightBarButtonItem
+        navigationItem.title = "Choose photo"
     }
     
     // MARK: - Handlers
