@@ -38,22 +38,18 @@ class MessageService {
                       inChannel channel: Channel,
                       errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { [weak self] context in
-            guard let channelDB = coreDataStack.load(channel: channel.identifier,
-                                                     from: context, errorHandler: errorHandler) else { return }
+            guard let channelDB = coreDataStack.load(channel: channel.identifier, from: context,
+                                                     errorHandler: errorHandler) else { return }
             for message in messages {
-                guard coreDataStack.load(message: message.identifier,
-                                         from: context, errorHandler: errorHandler) == nil else { continue }
+                guard coreDataStack.load(message: message.identifier, from: context,
+                                         errorHandler: errorHandler) == nil else { continue }
                 let messageDB = MessageDB(identifier: message.identifier,
                                           content: message.content,
                                           created: message.created,
                                           senderId: message.senderId,
                                           senderName: message.senderName,
                                           in: context)
-                do {
-                    try context.obtainPermanentIDs(for: [messageDB])
-                } catch {
-                    errorHandler("CoreData", error.localizedDescription)
-                }
+                try? context.obtainPermanentIDs(for: [messageDB])
                 channelDB.addToMessages(messageDB)
             }
 
@@ -65,8 +61,8 @@ class MessageService {
                       inChannel channel: Channel,
                       errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
-            guard let channel = coreDataStack.load(channel: channel.identifier,
-                                                   from: context, errorHandler: errorHandler) else { return }
+            guard let channel = coreDataStack.load(channel: channel.identifier, from: context,
+                                                   errorHandler: errorHandler) else { return }
             guard coreDataStack.load(message: message.identifier,
                                      from: context, errorHandler: errorHandler) == nil else { return }
             let messageDB = MessageDB(identifier: message.identifier,
@@ -75,11 +71,7 @@ class MessageService {
                                       senderId: message.senderId,
                                       senderName: message.senderName,
                                       in: context)
-            do {
-                try context.obtainPermanentIDs(for: [messageDB])
-            } catch {
-                errorHandler("CoreData", error.localizedDescription)
-            }
+            try? context.obtainPermanentIDs(for: [messageDB])
             channel.addToMessages(messageDB)
         }
     }
@@ -109,7 +101,8 @@ class MessageService {
 // MARK: - IMessageService
 extension MessageService: IMessageService {
     func getMessages(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
-        firebaseManager.getMessages(inChannel: channel.identifier, completion: { [weak self] messages in
+        firebaseManager.getMessages(inChannel: channel.identifier,
+                                    completion: { [weak self] messages in
             var messagesArray: [Message] = []
             messages.forEach {
                 messagesArray.append(Message(fromDict: $0))
@@ -120,7 +113,8 @@ extension MessageService: IMessageService {
     }
     
     func addListener(in channel: Channel, errorHandler: @escaping (String?, String?) -> Void) {
-        firebaseManager.addMessagesListener(inChannel: channel.identifier, completion: { [weak self] (type, message) in
+        firebaseManager.addMessagesListener(inChannel: channel.identifier,
+                                            completion: { [weak self] (type, message) in
             self?.handleChanges(ofType: type, message: Message(fromDict: message), channel: channel, errorHandler: errorHandler)},
                                             errorHandler: errorHandler)
     }
@@ -137,7 +131,5 @@ extension MessageService: IMessageService {
         if type == .added {
             self.save(message: message, inChannel: channel, errorHandler: errorHandler)
         }
-        if type == .modified { }
-        if type == .removed { }
     }
 }

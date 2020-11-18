@@ -12,14 +12,18 @@ import Firebase
 protocol IFirebaseManager: class {
     var universallyUniqueIdentifier: String { get }
     
-    func getChannels(completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
-    func addChannelsListener(completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
+    func getChannels(completion: @escaping ([[String: Any]]) -> Void,
+                     errorHandler: @escaping (String?, String?) -> Void)
+    func addChannelsListener(completion: @escaping (DocumentChangeType, [String: Any]) -> Void,
+                             errorHandler: @escaping (String?, String?) -> Void)
     func removeChannelsListener()
     func create(channel name: String)
     func delete(channel id: String)
     
-    func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
-    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
+    func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void,
+                     errorHandler: @escaping (String?, String?) -> Void)
+    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, [String: Any]) -> Void,
+                             errorHandler: @escaping (String?, String?) -> Void)
     func removeMessagesListener()
     func create(message text: String, inChannel id: String)
 }
@@ -51,7 +55,8 @@ class FirebaseManager {
 extension FirebaseManager: IFirebaseManager {
     // MARK: - Channels
         
-    func getChannels(completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func getChannels(completion: @escaping ([[String: Any]]) -> Void,
+                     errorHandler: @escaping (String?, String?) -> Void) {
         var channels: [[String: Any]] = []
         reference.getDocuments { (querySnapshot, error) in
             guard error == nil else {
@@ -77,7 +82,8 @@ extension FirebaseManager: IFirebaseManager {
         }
     }
     
-    func addChannelsListener(completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func addChannelsListener(completion: @escaping (DocumentChangeType, [String: Any]) -> Void,
+                             errorHandler: @escaping (String?, String?) -> Void) {
         channelsListener = reference.addSnapshotListener(includeMetadataChanges: true) { querySnapshot, error in
             guard error == nil else {
                 errorHandler("Firebase", error?.localizedDescription)
@@ -117,7 +123,8 @@ extension FirebaseManager: IFirebaseManager {
 
     // MARK: - Messages
 
-    func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void,
+                     errorHandler: @escaping (String?, String?) -> Void) {
         var messages: [[String: Any]] = []
         reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
             guard error == nil else {
@@ -143,7 +150,8 @@ extension FirebaseManager: IFirebaseManager {
         }
     }
     
-    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, [String: Any]) -> Void,
+                             errorHandler: @escaping (String?, String?) -> Void) {
         channelsListener = reference.document(id).collection("messages").addSnapshotListener(includeMetadataChanges: true) { querySnapshot, error in
             guard error == nil else {
                 errorHandler("Firebase", error?.localizedDescription)
@@ -181,7 +189,7 @@ extension FirebaseManager: IFirebaseManager {
     }
 }
 
-// MARK: - Generate image
+// MARK: - Generator
 extension FirebaseManager {
     private func generateImage() -> UIImage? {
         let randNum = Int(arc4random_uniform(15))

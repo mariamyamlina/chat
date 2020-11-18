@@ -45,9 +45,7 @@ class ConversationsListViewController: LogViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        model.getChannels(errorHandler: { [weak self] (errorTitle, errorInfo) in
-            self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
-        })
+        getChannels()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -104,6 +102,12 @@ class ConversationsListViewController: LogViewController {
     }
     
     // MARK: - Handlers
+    private func getChannels() {
+        model.getChannels(errorHandler: { [weak self] (errorTitle, errorInfo) in
+            self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
+        })
+    }
+    
     func loadCompletion() {
         conversationsListView.profileImage.loadImageCompletion(name: model.name, image: model.image)
     }

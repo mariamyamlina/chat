@@ -13,11 +13,13 @@ protocol ICoreDataStack {
     var delegate: CoreDataStackDelegate? { get set }
     var mainContext: NSManagedObjectContext { get }
     func performSave(_ handler: (NSManagedObjectContext) -> Void)
-    func load(channel id: String, from context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> ChannelDB?
-    func load(message id: String, from context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> MessageDB?
+    func load(channel id: String, from context: NSManagedObjectContext,
+              errorHandler: @escaping (String?, String?) -> Void) -> ChannelDB?
+    func load(message id: String, from context: NSManagedObjectContext,
+              errorHandler: @escaping (String?, String?) -> Void) -> MessageDB?
     func enableObservers()
-    func arrayDifference(entityType: ModelType, predicate: String?, arrayOfEntities: [IModel],
-                         in context: NSManagedObjectContext, errorHandler: @escaping (String?, String?) -> Void) -> [String]
+    func arrayDifference(entityType: ModelType, predicate: String?, arrayOfEntities: [IModel], in context: NSManagedObjectContext,
+                         errorHandler: @escaping (String?, String?) -> Void) -> [String]
     func fetchRequest<T: NSManagedObject>(for entity: ModelType, channelId: String?) -> NSFetchRequest<T>
     func fetchRequest<T: NSManagedObject>(for entity: ModelType, with identifier: String) -> NSFetchRequest<T>
 }
