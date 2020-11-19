@@ -104,7 +104,7 @@ class ConversationsListView: UIView {
         tableView.separatorColor = theme.settings.tableViewSeparatorColor
         tableView.reloadData()
         if #available(iOS 13.0, *) {
-            searchController.searchBar.searchTextField.backgroundColor = theme.settings.searchBarTextColor
+            searchController.searchBar.searchTextField.backgroundColor = theme.settings.searchBarColor
             searchController.searchBar.searchTextField.leftView?.tintColor = theme.settings.textFieldTextColor
         } else {
             searchController.searchBar.keyboardAppearance = theme.settings.keyboardAppearance

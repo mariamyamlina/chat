@@ -81,7 +81,7 @@ protocol IThemeSettings {
     
     var textFieldBackgroundColor: UIColor { get }
     var textFieldTextColor: UIColor { get }
-    var searchBarTextColor: UIColor { get }
+    var searchBarColor: UIColor { get }
     
     var barStyle: UIBarStyle { get }
     var keyboardAppearance: UIKeyboardAppearance { get }
@@ -110,7 +110,7 @@ struct ClassicTheme: IThemeSettings {
     
     var textFieldBackgroundColor: UIColor { return Colors.textFieldLightBackgroundColor }
     var textFieldTextColor: UIColor { return Colors.textFieldLightTextColor }
-    var searchBarTextColor: UIColor { return Colors.searchBarLightTextColor }
+    var searchBarColor: UIColor { return Colors.searchBarLightColor }
     
     var barStyle: UIBarStyle { return .default }
     var keyboardAppearance: UIKeyboardAppearance { return .default }
@@ -139,7 +139,7 @@ struct DayTheme: IThemeSettings {
     
     var textFieldBackgroundColor: UIColor { return Colors.textFieldLightBackgroundColor }
     var textFieldTextColor: UIColor { return Colors.textFieldLightTextColor }
-    var searchBarTextColor: UIColor { return Colors.searchBarLightTextColor }
+    var searchBarColor: UIColor { return Colors.searchBarLightColor }
     
     var barStyle: UIBarStyle { return .default }
     var keyboardAppearance: UIKeyboardAppearance { return .default }
@@ -168,7 +168,7 @@ struct NightTheme: IThemeSettings {
     
     var textFieldBackgroundColor: UIColor { return Colors.textFieldDarkBackgroundColor }
     var textFieldTextColor: UIColor { return Colors.textFieldDarkTextColor }
-    var searchBarTextColor: UIColor { return Colors.searchBarDarkTextColor }
+    var searchBarColor: UIColor { return Colors.searchBarDarkColor }
     
     var barStyle: UIBarStyle { return .black }
     var keyboardAppearance: UIKeyboardAppearance { return .dark }
