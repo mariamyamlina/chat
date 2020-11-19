@@ -84,6 +84,9 @@ class ProfileView: UIView {
     
     lazy var profileImageView: ProfileImageView = {
         let profileImageView = ProfileImageView(small: false, name: name, image: image)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(configureActionSheet))
+        profileImageView.addGestureRecognizer(tap)
+        profileImageView.isUserInteractionEnabled = false
         scrollViewContentView.addSubview(profileImageView)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         profileImageView.topAnchor.constraint(equalTo: scrollViewContentView.topAnchor, constant: 7).isActive = true
@@ -209,9 +212,11 @@ class ProfileView: UIView {
     @objc func editProfileButtonTapped() {
         let indicator = editProfileButton.titleLabel?.text == "Edit Profile"
         setTextViewsEditable(flag: indicator)
+        profileImageView.isUserInteractionEnabled = indicator
         if indicator {
             setupButtonView(button: editProfileButton, title: "Cancel Editing", color: .systemRed)
             [nameTextView, bioTextView].forEach { $0.layer.borderWidth = 1.0 }
+            profileImageView.isUserInteractionEnabled = true
         } else {
             setupButtonView(button: editProfileButton, title: "Edit Profile", color: .systemBlue)
             setSaveButtonsEnable(flag: false)

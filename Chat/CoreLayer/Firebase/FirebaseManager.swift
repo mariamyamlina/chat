@@ -143,7 +143,7 @@ extension FirebaseManager: IFirebaseManager {
             }
             guard let snapshot = querySnapshot else { return }
             for diff in snapshot.documentChanges {
-                guard let message = self.getChannel(documentData: diff.document.data(),
+                guard let message = self.getMessage(documentData: diff.document.data(),
                                                     documentId: diff.document.documentID) else { continue }
                 completion(diff.type, message)
             }

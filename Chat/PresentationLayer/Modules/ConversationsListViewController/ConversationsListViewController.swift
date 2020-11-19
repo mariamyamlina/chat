@@ -156,6 +156,7 @@ extension ConversationsListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         let conversationController = presentationAssembly.conversationViewController(channel: model.channel(at: indexPath))
         navigationController?.pushViewController(conversationController, animated: true)
     }
