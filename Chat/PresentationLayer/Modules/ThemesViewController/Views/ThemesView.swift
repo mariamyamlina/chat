@@ -26,12 +26,8 @@ class ThemesView: UIView {
                                         inputColor: Colors.inputGray,
                                         outputColor: Colors.outputGreen)
         
-        addSubview(classicButton)
-        classicButton.translatesAutoresizingMaskIntoConstraints = false
-        classicButton.topAnchor.constraint(equalTo: topAnchor, constant: 180).isActive = true
-        classicButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        classicButton.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        classicButton.heightAnchor.constraint(equalToConstant: 101).isActive = true
+        createConstraints(for: classicButton)
+        classicButton.topAnchor.constraint(equalTo: topAnchor, constant: 140).isActive = true
         classicButton.bottomAnchor.constraint(equalTo: dayButton.topAnchor, constant: -40).isActive = true
         return classicButton
     }()
@@ -42,11 +38,7 @@ class ThemesView: UIView {
                                     inputColor: Colors.inputLightGray,
                                     outputColor: Colors.outputBlue)
         
-        addSubview(dayButton)
-        dayButton.translatesAutoresizingMaskIntoConstraints = false
-        dayButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        dayButton.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        dayButton.heightAnchor.constraint(equalToConstant: 101).isActive = true
+        createConstraints(for: dayButton)
         dayButton.bottomAnchor.constraint(equalTo: nightButton.topAnchor, constant: -40).isActive = true
         return dayButton
     }()
@@ -57,14 +49,17 @@ class ThemesView: UIView {
                                       inputColor: Colors.inputDarkGray,
                                       outputColor: Colors.outputDarkGray)
         
-        addSubview(nightButton)
-        nightButton.translatesAutoresizingMaskIntoConstraints = false
-        nightButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        nightButton.widthAnchor.constraint(equalToConstant: 300).isActive = true
-        nightButton.heightAnchor.constraint(equalToConstant: 101).isActive = true
-        nightButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -10).isActive = true
+        createConstraints(for: nightButton)
         return nightButton
     }()
+    
+    private func createConstraints(for button: ThemeButton) {
+        addSubview(button)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 101).isActive = true
+    }
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
