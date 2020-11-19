@@ -25,6 +25,12 @@ class CollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
+    // MARK: - Reuse
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.imageView.image = UIImage(named: "ImagePlaceholder")
+    }
+    
     // MARK: - Setup View
     func getImage(with url: URL, completion: @escaping (UIImage?) -> Void) {
         self.imageView.image = UIImage(named: "ImagePlaceholder")

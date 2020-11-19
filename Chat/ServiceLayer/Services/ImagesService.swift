@@ -38,30 +38,15 @@ extension ImagesService: IImagesService {
     
     // MARK: - Generator
     private func generateRequestConfig() -> RequestConfig<Parser> {
-        let randNum = Int(arc4random_uniform(9))
-        let requestConfig: RequestConfig<Parser>
-        switch randNum {
-        case 1:
-            requestConfig = RequestsFactory.greenNatureConfig()
-        case 2:
-            requestConfig = RequestsFactory.blueTravelConfig()
-        case 3:
-            requestConfig = RequestsFactory.pinkFashionConfig()
-        case 4:
-            requestConfig = RequestsFactory.orangeFoodConfig()
-        case 5:
-            requestConfig = RequestsFactory.grayBuildingsConfig()
-        case 6:
-            requestConfig = RequestsFactory.redFeelingsConfig()
-        case 7:
-            requestConfig = RequestsFactory.blackPlacesConfig()
-        case 8:
-            requestConfig = RequestsFactory.brownMusicConfig()
-        case 9:
-            requestConfig = RequestsFactory.whiteComputerConfig()
-        default:
-            requestConfig = RequestsFactory.yellowFlowersConfig()
+        let array = [RequestsFactory.yellowFlowersConfig(), RequestsFactory.greenNatureConfig(),
+                     RequestsFactory.blueTravelConfig(), RequestsFactory.pinkFashionConfig(),
+                     RequestsFactory.orangeFoodConfig(), RequestsFactory.grayBuildingsConfig(),
+                     RequestsFactory.redFeelingsConfig(), RequestsFactory.blackPlacesConfig(),
+                     RequestsFactory.brownMusicConfig(), RequestsFactory.whiteComputerConfig()]
+        if let requestConfig = array.randomElement() {
+            return requestConfig
+        } else {
+            return RequestsFactory.yellowFlowersConfig()
         }
-        return requestConfig
     }
 }
