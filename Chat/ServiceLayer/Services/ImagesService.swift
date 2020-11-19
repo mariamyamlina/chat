@@ -6,10 +6,11 @@
 //  Copyright © 2020 Maria Myamlina. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 protocol IImagesService {
     func loadImages(completionHandler: @escaping (DataModel?, NetworkError?) -> Void)
+    func loadImage(with url: URL, completionHandler: @escaping (UIImage?, NetworkError?) -> Void)
 }
 
 class ImagesService {
@@ -30,6 +31,17 @@ extension ImagesService: IImagesService {
             switch result {
             case .success(let images):
                 completionHandler(images, nil)
+            case .failure(let error):
+                completionHandler(nil, error)
+            }
+        }
+    }
+    
+    func loadImage(with url: URL, completionHandler: @escaping (UIImage?, NetworkError?) -> Void) {
+        requestSender.getImage(with: url) { (result: Result<UIImage?, NetworkError>) in
+            switch result {
+            case .success(let image):
+                completionHandler(image, nil)
             case .failure(let error):
                 completionHandler(nil, error)
             }

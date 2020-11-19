@@ -6,7 +6,12 @@
 //  Copyright © 2020 Maria Myamlina. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+// MARK: - CollectionCellModel
+struct CollectionCellModel {
+    let image: UIImage?
+}
 
 struct CellDisplayModel {
     let imageUrl: String
@@ -16,6 +21,7 @@ protocol ICollectionModel: class {
     var delegate: ICollectionModelDelegate? { get set }
     var currentTheme: Theme { get }
     func fetchImages()
+    func fetchImage(with url: URL, completion: @escaping (CollectionCellModel, Theme) -> Void)
 }
 
 protocol ICollectionModelDelegate: class {
@@ -45,6 +51,16 @@ extension CollectionModel: ICollectionModel {
             if let images = images {
                 let cells = images.hits.map({ CellDisplayModel(imageUrl: $0.webformatURL) })
                 self.delegate?.setup(dataSource: cells)
+            } else {
+                self.delegate?.show(error: error?.message ?? "")
+            }
+        }
+    }
+    
+    func fetchImage(with url: URL, completion: @escaping (CollectionCellModel, Theme) -> Void) {
+        imagesService.loadImage(with: url) { (image: UIImage?, error) in
+            if let image = image {
+                completion(CollectionCellModel(image: image), self.settingsService.currentTheme)
             } else {
                 self.delegate?.show(error: error?.message ?? "")
             }

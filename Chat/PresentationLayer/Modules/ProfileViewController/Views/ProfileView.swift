@@ -227,7 +227,8 @@ class ProfileView: UIView {
         })
     }
     
-    func activateBioTextViewHeightConstraint(with constant: CGFloat) { bioTextView.heightAnchor.constraint(equalToConstant: constant).isActive = true }
+    func activateBioTextViewHeightConstraint(with constant: CGFloat) { bioTextView.heightAnchor.constraint(equalToConstant: constant).isActive = true
+    }
     
     func saveSucceedCompletion(name: String?, image: UIImage?) {
         self.name = name

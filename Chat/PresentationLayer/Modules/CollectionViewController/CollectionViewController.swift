@@ -38,6 +38,13 @@ class CollectionViewController: LogViewController {
         setupFetching()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard var constant = navigationController?.navigationBar.bounds.height else { return }
+        if #available(iOS 13.0, *) { } else { constant += 20 }
+        collectionView.activateTopConstraint(with: constant)
+    }
+    
     // MARK: - Setup View
     private func setupView() {
         view.addSubview(collectionView)
@@ -74,11 +81,9 @@ class CollectionViewController: LogViewController {
 // MARK: - UICollectionViewDelegate
 extension CollectionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = self.collectionView(self.collectionView.collectionView,
-                                       cellForItemAt: indexPath) as? CollectionViewCell
         if let url = URL(string: dataSource[indexPath.row].imageUrl) {
-            cell?.getImage(with: url) { [weak self] image in
-                guard let pickedImage = image else { return }
+            model.fetchImage(with: url) { [weak self] (model, _) in
+                guard let pickedImage = model.image else { return }
                 let navigationVC = self?.presentingViewController as? UINavigationController
                 guard let profileVC = navigationVC?.viewControllers.first as? ProfileViewController else { return }
                 profileVC.updateProfileImage(with: pickedImage)
@@ -99,7 +104,7 @@ extension CollectionViewController: UICollectionViewDataSource {
                                                             for: indexPath) as? CollectionViewCell else { return CollectionViewCell() }
         
         if let url = URL(string: dataSource[indexPath.row].imageUrl) {
-            cell.getImage(with: url, completion: cell.setImage)
+            model.fetchImage(with: url, completion: cell.configure)
         }
         return cell
     }

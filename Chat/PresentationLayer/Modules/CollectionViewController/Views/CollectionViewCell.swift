@@ -12,8 +12,10 @@ class CollectionViewCell: UICollectionViewCell {
     static let reuseIdentifier = "Collection Cell"
     
     // MARK: - UI
+    var placeholder = UIImage(named: "ImagePlaceholder")
+    
     lazy var imageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "ImagePlaceholder"))
+        let imageView = UIImageView(image: placeholder)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         addSubview(imageView)
@@ -25,26 +27,25 @@ class CollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    // MARK: - Reuse
+    // MARK: - Init / deinit
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.imageView.image = placeholder
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.imageView.image = UIImage(named: "ImagePlaceholder")
+        self.imageView.image = placeholder
     }
-    
-    // MARK: - Setup View
-    func getImage(with url: URL, completion: @escaping (UIImage?) -> Void) {
-        self.imageView.image = UIImage(named: "ImagePlaceholder")
-        let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
-            guard error == nil else { return }
-            guard let data = data else { return }
-            DispatchQueue.main.async {
-                completion(UIImage(data: data))
-            }
-        }
-        task.resume()
-    }
-    
-    func setImage(_ image: UIImage?) {
-        self.imageView.image = image
+}
+
+// MARK: - Configuration
+extension CollectionViewCell: IConfigurableView {
+    func configure(with model: CollectionCellModel, theme: Theme) {
+        self.imageView.image = model.image
     }
 }

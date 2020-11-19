@@ -24,7 +24,6 @@ class CollectionView: UIView {
                                 forCellWithReuseIdentifier: CollectionViewCell.reuseIdentifier)
         addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8).isActive = true
@@ -77,5 +76,9 @@ class CollectionView: UIView {
     func reloadData() {
         collectionView.reloadData()
         activityIndicator.stopAnimating()
+    }
+    
+    func activateTopConstraint(with constant: CGFloat) {
+        collectionView.topAnchor.constraint(equalTo: topAnchor, constant: 8 + constant).isActive = true
     }
 }
