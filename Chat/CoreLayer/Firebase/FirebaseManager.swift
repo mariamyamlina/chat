@@ -54,7 +54,6 @@ class FirebaseManager {
 
 extension FirebaseManager: IFirebaseManager {
     // MARK: - Channels
-        
     func getChannels(completion: @escaping ([[String: Any]]) -> Void,
                      errorHandler: @escaping (String?, String?) -> Void) {
         var channels: [[String: Any]] = []
@@ -65,17 +64,8 @@ extension FirebaseManager: IFirebaseManager {
             }
             guard let snapshot = querySnapshot else { return }
             for document in snapshot.documents {
-                let docData = document.data()
-                let docId = document.documentID
-                guard let nameFromFB = docData["name"] as? String,
-                    !nameFromFB.containtsOnlyOfWhitespaces() else { continue }
-                let lastMessageFromFB = docData["lastMessage"] as? String
-                let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                let channel = ["identifier": docId,
-                               "name": nameFromFB,
-                               "lastMessage": lastMessageFromFB as Any,
-                               "lastActivity": lastActivityFromFB as Any,
-                               "profileImage": self.generateImage() as Any] as [String: Any]
+                guard let channel = self.getChannel(documentData: document.data(),
+                                                    documentId: document.documentID) else { continue }
                 channels.append(channel)
             }
             completion(channels)
@@ -90,22 +80,26 @@ extension FirebaseManager: IFirebaseManager {
                 return
             }
             guard let snapshot = querySnapshot else { return }
-            snapshot.documentChanges.forEach { diff in
-                let docData = diff.document.data()
-                let docId = diff.document.documentID
-                if let nameFromFB = docData["name"] as? String,
-                    !nameFromFB.containtsOnlyOfWhitespaces() {
-                   let lastMessageFromFB = docData["lastMessage"] as? String
-                   let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                    let channel = ["identifier": docId,
-                                   "name": nameFromFB,
-                                   "lastMessage": lastMessageFromFB as Any,
-                                   "lastActivity": lastActivityFromFB as Any,
-                                   "profileImage": self.generateImage() as Any] as [String: Any]
-                    completion(diff.type, channel)
-                }
+            for diff in snapshot.documentChanges {
+                guard let channel = self.getChannel(documentData: diff.document.data(),
+                                                    documentId: diff.document.documentID) else { continue }
+                completion(diff.type, channel)
             }
         }
+    }
+    
+    private func getChannel(documentData docData: [String: Any],
+                            documentId docId: String) -> [String: Any]? {
+        guard let nameFromFB = docData["name"] as? String,
+            !nameFromFB.containtsOnlyOfWhitespaces() else { return nil }
+        let lastMessageFromFB = docData["lastMessage"] as? String
+        let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
+        let channel = ["identifier": docId,
+                       "name": nameFromFB,
+                       "lastMessage": lastMessageFromFB as Any,
+                       "lastActivity": lastActivityFromFB as Any,
+                       "profileImage": self.generateImage() as Any] as [String: Any]
+        return channel
     }
     
     func removeChannelsListener() {
@@ -122,7 +116,6 @@ extension FirebaseManager: IFirebaseManager {
     }
 
     // MARK: - Messages
-
     func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void,
                      errorHandler: @escaping (String?, String?) -> Void) {
         var messages: [[String: Any]] = []
@@ -133,17 +126,8 @@ extension FirebaseManager: IFirebaseManager {
             }
             guard let snapshot = querySnapshot else { return }
             for document in snapshot.documents {
-                let docData = document.data()
-                let docId = document.documentID
-                guard let contentFromFB = docData["content"] as? String,
-                      let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
-                      let senderIdFromFB = docData["senderId"] as? String,
-                      let senderNameFromFB = docData["senderName"] as? String else { continue }
-                let message = ["identifier": docId,
-                               "content": contentFromFB,
-                               "created": dateFromFB,
-                               "senderId": senderIdFromFB,
-                               "senderName": senderNameFromFB] as [String: Any]
+                guard let message = self.getMessage(documentData: document.data(),
+                                                    documentId: document.documentID) else { continue }
                 messages.append(message)
             }
             completion(messages)
@@ -158,22 +142,26 @@ extension FirebaseManager: IFirebaseManager {
                 return
             }
             guard let snapshot = querySnapshot else { return }
-            snapshot.documentChanges.forEach { diff in
-                let docData = diff.document.data()
-                let docId = diff.document.documentID
-                if let contentFromFB = docData["content"] as? String,
-                   let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
-                   let senderIdFromFB = docData["senderId"] as? String,
-                   let senderNameFromFB = docData["senderName"] as? String {
-                    let message = ["identifier": docId,
-                                   "content": contentFromFB,
-                                   "created": dateFromFB,
-                                   "senderId": senderIdFromFB,
-                                   "senderName": senderNameFromFB] as [String: Any]
-                    completion(diff.type, message)
-                }
+            for diff in snapshot.documentChanges {
+                guard let message = self.getChannel(documentData: diff.document.data(),
+                                                    documentId: diff.document.documentID) else { continue }
+                completion(diff.type, message)
             }
         }
+    }
+    
+    private func getMessage(documentData docData: [String: Any],
+                            documentId docId: String) -> [String: Any]? {
+        guard let contentFromFB = docData["content"] as? String,
+              let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
+              let senderIdFromFB = docData["senderId"] as? String,
+              let senderNameFromFB = docData["senderName"] as? String else { return nil }
+        let message = ["identifier": docId,
+                       "content": contentFromFB,
+                       "created": dateFromFB,
+                       "senderId": senderIdFromFB,
+                       "senderName": senderNameFromFB] as [String: Any]
+        return message
     }
     
     func removeMessagesListener() {
