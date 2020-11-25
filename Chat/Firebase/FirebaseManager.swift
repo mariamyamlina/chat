@@ -10,11 +10,15 @@ import UIKit
 import Firebase
 
 class FirebaseManager {
-    weak var channelsViewController: ConversationsListViewController?
-    weak var messagesViewController: ConversationViewController?
-    
     lazy var db = Firestore.firestore()
     lazy var reference = db.collection("channels")
+    
+    // MARK: - Singleton
+    
+    static var shared: FirebaseManager = {
+        return FirebaseManager()
+    }()
+    private init() { }
     
     // MARK: - Universally Unique Identifier
     
@@ -30,106 +34,76 @@ class FirebaseManager {
 extension FirebaseManager: FirebaseManagerProtocol {
     // MARK: - Channels
         
-    func getChannels() {
-        channelsViewController?.channels.removeAll()
-        channelsViewController?.images.removeAll()
-        reference.getDocuments { [weak self] (querySnapshot, error) in
+    func getChannels(source: () -> Void, completion: @escaping () -> Void) {
+        source()
+        if !ConversationsListViewController.channels.isEmpty || !ConversationsListViewController.images.isEmpty {
+            ConversationsListViewController.channels.removeAll()
+            ConversationsListViewController.images.removeAll()
+        }
+        reference.getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
             guard let snapshot = querySnapshot else { return }
             for document in snapshot.documents {
                 let docData = document.data()
+                let docId = document.documentID
                 guard let nameFromFB = docData["name"] as? String,
                       !nameFromFB.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { continue }
                 let lastMessageFromFB = docData["lastMessage"] as? String
                 let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                let channel = Channel(identifier: document.documentID,
+                let channel = Channel(identifier: docId,
                                       name: nameFromFB,
                                       lastMessage: lastMessageFromFB,
                                       lastActivity: lastActivityFromFB)
-                self?.channelsViewController?.channels.append(channel)
-                self?.channelsViewController?.images.append(generateImage())
-            }
-            self?.sortChannels()
-            self?.channelsViewController?.tableView.reloadData()
-        }
-    }
-    
-    func sortChannels() {
-        channelsViewController?.channels.sort {
-            let date = Date(timeInterval: -50000000000, since: Date())
-            let firstDate = $0.lastActivity ?? date
-            let secondDate = $1.lastActivity ?? date
-            if secondDate < firstDate {
-                return true
-            } else if $0.lastMessage != nil && $1.lastMessage == nil {
-                return true
-            } else {
-                return false
-            }
+                ConversationsListViewController.channels.append(channel)
+                ConversationsListViewController.images.append(generateImage())
+            }     
+            completion()
         }
     }
 
-    func createChannel(_ name: String) {
+    func createChannel(_ name: String, source: () -> Void, completion: @escaping () -> Void) {
         let channel = ["name": name] as [String: Any]
         reference.addDocument(data: channel)
-        getChannels()
+        getChannels(source: source, completion: completion)
     }
 
     // MARK: - Messages
 
-    func getMessages() {
-        guard let id = messagesViewController?.docId else { return }
-        reference.document(id).collection("messages").getDocuments { [weak self] (querySnapshot, error) in
+    func getMessages(completion: @escaping () -> Void) {
+        if !ConversationViewController.messages.isEmpty {
+            ConversationViewController.messages.removeAll()
+        }
+        guard let id = ConversationViewController.channel?.identifier else { return }
+        reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
             guard error == nil else { return }
             guard let snapshot = querySnapshot else { return }
             for document in snapshot.documents {
                 let docData = document.data()
+                let docId = document.documentID
                 guard let contentFromFB = docData["content"] as? String,
                       let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
                       let senderIdFromFB = docData["senderId"] as? String,
                       let senderNameFromFB = docData["senderName"] as? String else { continue }
-                let message = Message(content: contentFromFB,
+                let message = Message(identifier: docId,
+                                      content: contentFromFB,
                                       created: dateFromFB,
                                       senderId: senderIdFromFB,
                                       senderName: senderNameFromFB)
-                self?.messagesViewController?.messages.append(message)
+                ConversationViewController.messages.append(message)
             }
-            self?.sortMessages()
-            if let messagesArray = self?.messagesViewController?.messages, !messagesArray.isEmpty {
-                self?.messagesViewController?.noMessagesLabel.isHidden = true
-            }
-            self?.messagesViewController?.tableView.reloadData()
+            completion()
         }
     }
         
-    func sortMessages() {
-        messagesViewController?.messages.sort {
-            if $1.created > $0.created {
-                return true
-            } else {
-                return false
-            }
-        }
-    }
-        
-    func createMessage(_ text: String) {
+    func createMessage(_ text: String, completion: @escaping () -> Void) {
         let uuid = universallyUniqueIdentifier
-        guard let id = messagesViewController?.docId else { return }
+        guard let id = ConversationViewController.channel?.identifier else { return }
         let name = ProfileViewController.name ?? "Marina Dudarenko"
-        let message = Message(content: text,
-                              created: Date(),
-                              senderId: uuid,
-                              senderName: name)
-        reference.document(id).collection("messages").addDocument(data: message.jsonType)
-        messagesViewController?.messages.append(message)
-        if let rowIndex = messagesViewController?.lastRowIndex {
-            if rowIndex >= 0 {
-                messagesViewController?.tableView.beginUpdates()
-                   messagesViewController?.tableView.insertRows(at: [IndexPath(row: rowIndex + 1, section: 0)], with: .right)
-                messagesViewController?.tableView.endUpdates()
-            } else {
-                messagesViewController?.tableView.reloadSections([0], with: .fade)
-            }
-        }
+        let message = ["content": text,
+                       "created": Timestamp(date: Date()),
+                       "senderId": uuid,
+                       "senderName": name] as [String: Any]
+        reference.document(id).collection("messages").addDocument(data: message)        
+        getMessages(completion: completion)
     }
 }

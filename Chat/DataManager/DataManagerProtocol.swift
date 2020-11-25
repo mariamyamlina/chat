@@ -9,6 +9,6 @@
 import UIKit
 
 protocol DataManagerProtocol: class {
-    func writeToFile(completion: @escaping (Bool) -> Void)
-    func readFromFile(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
+    func saveToFile(completion: @escaping (Result) -> Void)
+    func loadFromFile(mustReadName: Bool, mustReadBio: Bool, mustReadImage: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
 }

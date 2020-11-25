@@ -1,5 +1,5 @@
 //
-//  DataManagerEnums.swift
+//  DataManagerType.swift
 //  Chat
 //
 //  Created by Maria Myamlina on 14.10.2020.
@@ -11,9 +11,4 @@ import UIKit
 enum DataManagerType {
     case gcd
     case operation
-}
-
-enum ActionType {
-    case write
-    case read
 }

@@ -22,7 +22,22 @@ class ConversationViewController: LogViewController {
     @IBAction func sendButtonTapped(_ sender: UIButton) {
         guard let message = textField.text else { return }
         if !message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            fbManager.createMessage(message)
+            fbManager.createMessage(message, completion: { [weak self] in
+                guard let self = self else { return }
+                guard let channel = ConversationViewController.channel else { return }
+                let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
+                chatRequest.save(messages: ConversationViewController.messages, in: channel)
+                
+                self.sortMessages()
+                if !ConversationViewController.messages.isEmpty {
+                    self.noMessagesLabel.isHidden = true
+                }
+                self.tableView.reloadSections([0], with: .fade)
+                
+                if self.lastRowIndex >= 0 {
+                    self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+                }
+            })
         }
         textField.text = ""
     }
@@ -31,12 +46,9 @@ class ConversationViewController: LogViewController {
     var name: String?
     var lastRowIndex: Int = 0
     
-    var messages: [Message] = []
-    var docId: String?
-    var fbManager = FirebaseManager()
-    
-    typealias MessageModel = [(MessageTableViewCell.MessageCellModel, UIColor, Date)]
-    var model: MessageModel = []
+    static var messages: [Message] = []
+    static var channel: Channel?
+    let fbManager = FirebaseManager.shared
     
     deinit {
         removeKeyboardNotifications()
@@ -49,16 +61,40 @@ class ConversationViewController: LogViewController {
         configureTableView()
         configureMessageInputView()
         addKeyboardNotifications()
-
-        fbManager.messagesViewController = self
-        fbManager.getMessages()
+        fbManager.getMessages(completion: { [weak self] in
+            guard let self = self else { return }
+            guard let channel = ConversationViewController.channel else { return }
+            let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
+            chatRequest.save(messages: ConversationViewController.messages, in: channel)
+            
+            self.sortMessages()
+            if !ConversationViewController.messages.isEmpty {
+                self.noMessagesLabel.isHidden = true
+            }
+            self.tableView.reloadSections([0], with: .fade)
+            
+            if self.lastRowIndex >= 0 {
+                self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+            }
+        })
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        let conversationsListVC = navigationController?.viewControllers.first as? ConversationsListViewController
-        fbManager.channelsViewController = conversationsListVC
-        fbManager.getChannels()
+        guard let conversationsListVC = navigationController?.viewControllers.first as? ConversationsListViewController else { return }
+        fbManager.getChannels(source: conversationsListVC.blockRowSelection, completion: conversationsListVC.getChannelsCompletion)
+    }
+    
+    // MARK: - Firebase
+    
+    func sortMessages() {
+        ConversationViewController.messages.sort {
+            if $1.created > $0.created {
+                return true
+            } else {
+                return false
+            }
+        }
     }
     
     // MARK: - Theme
@@ -167,16 +203,18 @@ class ConversationViewController: LogViewController {
     }
 }
 
-extension ConversationViewController: UITableViewDelegate, UITableViewDataSource {
+// MARK: - UITableViewDataSource
+
+extension ConversationViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let numberOfRows = messages.count
+        let numberOfRows = ConversationViewController.messages.count
         lastRowIndex = numberOfRows - 1
         return numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier, for: indexPath) as? MessageTableViewCell
-        let message = messages[indexPath.row]
+        let message = ConversationViewController.messages[indexPath.row]
         let messageCellFactory = ViewModelFactory()
         let messageModel: MessageTableViewCell.MessageCellModel
         let currentTheme = Theme.current.themeOptions
@@ -190,19 +228,23 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
         cell?.configure(with: messageModel)
         return cell ?? UITableViewCell()
     }
-    
+}
+
+// MARK: - UITableViewDelegate
+
+extension ConversationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         textField.endEditing(true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let message = messages[indexPath.row]
+        let message = ConversationViewController.messages[indexPath.row]
         let stringMessage = "\(message.senderName)\n\(message.content)"
 
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16.0) as Any]
-        var estimatedFrame = NSString(string: stringMessage + "    ").boundingRect(with: size, options: options, attributes: attr, context: nil)
+        var estimatedFrame = NSString(string: stringMessage + "\t").boundingRect(with: size, options: options, attributes: attr, context: nil)
         if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
             let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
             estimatedFrame.size.height = estimatedFrame.height * estimatedFrame.width / newWidth

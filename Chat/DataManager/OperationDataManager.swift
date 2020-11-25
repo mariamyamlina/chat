@@ -9,17 +9,30 @@
 import UIKit
 
 class OperationDataManager: DataManager {
-    weak var profileViewController: ProfileViewController?
-    
     private let operationQueue = OperationQueue()
     private let mainOperationQueue = OperationQueue.main
+    
+    // MARK: - Singleton
+    
+    static var shared: OperationDataManager = {
+        return OperationDataManager()
+    }()
+    private override init() {
+        super.init()
+    }
 }
 
 extension OperationDataManager: DataManagerProtocol {
-    func writeToFile(completion: @escaping (Bool) -> Void) {
+    func saveToFile(completion: @escaping (Result) -> Void) {
         let writeOperation = WriteOperation()
         let completionOperation = BlockOperation {
-            completion(writeOperation.nameSaved && writeOperation.bioSaved && writeOperation.imageSaved)
+            let succeeded: Result
+            if writeOperation.nameSaved && writeOperation.bioSaved && writeOperation.imageSaved {
+                succeeded = .success
+            } else {
+                succeeded = .error
+            }
+            completion(succeeded)
         }
         
         completionOperation.addDependency(writeOperation)
@@ -27,7 +40,7 @@ extension OperationDataManager: DataManagerProtocol {
         mainOperationQueue.addOperation(completionOperation)
     }
     
-    func readFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
+    func loadFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
         let readNameOperation = ReadNameOperation()
         let readBioOperation = ReadBioOperation()
         let readImageOperation = ReadImageOperation()

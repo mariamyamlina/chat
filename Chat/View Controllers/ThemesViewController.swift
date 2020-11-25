@@ -9,7 +9,6 @@
 import UIKit
 
 class ThemesViewController: LogViewController {
-    
     var changeThemeHandler: ((_ theme: Theme) -> Void)?
     weak var delegate: ThemesPickerDelegate?
     private var themeManager: ThemeManager?
@@ -28,12 +27,9 @@ class ThemesViewController: LogViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         setupViews()
         configureNavigationBar()
         createHandler()
-        
         /*
          Retain cycle при работе с этом экраном может возникнуть, например, если self в замыкании pickHandler захватывается по сильной ссылке.
          В таком случае ThemesViewController содержит сильную ссылку на ThemeButton, а ThemeButton - сильную ссылку на self, то есть на ThemesViewController
@@ -46,7 +42,6 @@ class ThemesViewController: LogViewController {
                 self?....
             }
          */
-
     }
     
     // MARK: - Theme Picker
@@ -79,7 +74,6 @@ class ThemesViewController: LogViewController {
         
         if sender.isSelected {
             setupButtonView(for: sender, selected: true)
-
             switch sender {
             case classicButton:
                 if dayButton.isSelected {
@@ -102,9 +96,7 @@ class ThemesViewController: LogViewController {
             default:
                 break
             }
-            
         } else {
-
             switch sender {
             case classicButton:
                 if dayButton.isSelected || nightButton.isSelected {
@@ -187,5 +179,4 @@ class ThemesViewController: LogViewController {
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.titleView = titleLabel
     }
-
 }

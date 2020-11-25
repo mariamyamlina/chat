@@ -9,14 +9,21 @@
 import UIKit
 
 class GCDDataManager: DataManager {
-    weak var profileViewController: ProfileViewController?
-    
     private let mainQueue = DispatchQueue.main
     private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
+    
+    // MARK: - Singleton
+    
+    static var shared: GCDDataManager = {
+        return GCDDataManager()
+    }()
+    private override init() {
+        super.init()
+    }
 }
 
 extension GCDDataManager: DataManagerProtocol {
-    func writeToFile(completion: @escaping (Bool) -> Void) {
+    func saveToFile(completion: @escaping (Result) -> Void) {
         let group = DispatchGroup()
 
         var nameSaved = true
@@ -65,12 +72,18 @@ extension GCDDataManager: DataManagerProtocol {
         
         group.notify(queue: queue) {
             self.mainQueue.async {
-                completion(nameSaved && bioSaved && imageSaved)
+                let succeded: Result
+                if nameSaved && bioSaved && imageSaved {
+                    succeded = .success
+                } else {
+                    succeded = .error
+                }
+                completion(succeded)
             }
         }
     }
     
-    func readFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
+    func loadFromFile(mustReadName: Bool = true, mustReadBio: Bool = true, mustReadImage: Bool = true, completion: @escaping (Bool, Bool, Bool) -> Void) {
         let group = DispatchGroup()
         
         group.enter()

@@ -45,13 +45,13 @@ class ProfileViewController: LogViewController {
     @IBAction func GCDSaveButtonTapped(_ sender: ButtonWithTouchSize) {
         ProfileViewController.gcdButtonTapped = true
         enableSomeViews()
-        referToFile(action: .write, dataManager: .gcd)
+        referToFile(action: .save, dataManager: GCDDataManager.shared)
     }
     
     @IBAction func OperationSaveButtonTapped(_ sender: ButtonWithTouchSize) {
         ProfileViewController.operationButtonTapped = true
         enableSomeViews()
-        referToFile(action: .write, dataManager: .operation)
+        referToFile(action: .save, dataManager: OperationDataManager.shared)
     }
     
     @IBAction func editPhotoButtonTapped(_ sender: UIButton) {
@@ -62,18 +62,18 @@ class ProfileViewController: LogViewController {
         if editProfileButton.titleLabel?.text == "Edit Profile" {
             setupEditProfileButtonView(title: "Cancel Editing", color: .systemRed)
             setTextViewsEditable(flag: true)
-            for textView in [nameTextView, bioTextView] {
-                textView?.becomeFirstResponder()
-                textView?.layer.borderWidth = 1.0
-                textView?.layer.borderColor = Colors.tableViewLightSeparatorColor.cgColor
+            [nameTextView, bioTextView].forEach {
+                $0?.becomeFirstResponder()
+                $0?.layer.borderWidth = 1.0
+                $0?.layer.borderColor = Colors.tableViewLightSeparatorColor.cgColor
             }
         } else {
             setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
             setTextViewsEditable(flag: false)
             setSaveButtonsEnable(flag: false)
-            for textView in [nameTextView, bioTextView] {
-                textView?.resignFirstResponder()
-                textView?.layer.borderWidth = 0.0
+            [nameTextView, bioTextView].forEach {
+                $0?.resignFirstResponder()
+                $0?.layer.borderWidth = 0.0
             }
         }
     }
@@ -165,17 +165,11 @@ class ProfileViewController: LogViewController {
     
     fileprivate func applyTheme() {
         let currentTheme = Theme.current.themeOptions
-        for coloredView in [view, scrollViewContentView] {
-            coloredView?.backgroundColor = currentTheme.backgroundColor
-        }
+        [view, scrollViewContentView].forEach { $0?.backgroundColor = currentTheme.backgroundColor }
         activityIndicator.color = currentTheme.textColor
-        for button in [gcdSaveButton, operationSaveButton, editProfileButton] {
-            button?.backgroundColor = currentTheme.saveButtonColor
-        }
+        [gcdSaveButton, operationSaveButton, editProfileButton].forEach { $0?.backgroundColor = currentTheme.saveButtonColor }
         if #available(iOS 13.0, *) { } else {
-            for textView in [nameTextView, bioTextView] {
-                textView?.keyboardAppearance = currentTheme.keyboardAppearance
-            }
+            [nameTextView, bioTextView].forEach { $0?.keyboardAppearance = currentTheme.keyboardAppearance }
         }
     }
     
@@ -189,9 +183,10 @@ class ProfileViewController: LogViewController {
     
     // MARK: - Profile Editing
     
-    func loadCompletion(_ succeed: Bool) {
-        if succeed {
+    func saveCompletion(_ succeed: Result) {
+        if succeed == .success {
             activityIndicator.stopAnimating()
+            profileImageView.loadImageCompletion(true, true, true)
             configureAlert("Data has been successfully saved", nil, false)
             editProfileButton.isEnabled = true
             setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
@@ -200,7 +195,7 @@ class ProfileViewController: LogViewController {
         }
     }
     
-    func uploadCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {
+    func loadCompletion(_ mustOverwriteName: Bool, _ mustOverwriteBio: Bool, _ mustOverwriteImage: Bool) {
         if mustOverwriteName {
             nameTextView.text = ProfileViewController.name
         }
@@ -211,29 +206,13 @@ class ProfileViewController: LogViewController {
             profileImageView.updateImage()
         }
     }
-
-    func referToFile(action: ActionType, dataManager: DataManagerType) {
-        switch dataManager {
-        case .gcd:
-            if let gcdDataManager: GCDDataManager = DataManager.returnDataManager(of: dataManager) {
-                gcdDataManager.profileViewController = self
-                if action == .read {
-                    gcdDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
-                    uploadCompletion(true, true, true)
-                } else {
-                    gcdDataManager.writeToFile(completion: loadCompletion(_:))
-                }
-            }
-        case .operation:
-            if let operationDataManager: OperationDataManager = DataManager.returnDataManager(of: dataManager) {
-                operationDataManager.profileViewController = self
-                if action == .read {
-                    operationDataManager.readFromFile(completion: uploadCompletion(_:_:_:))
-                    uploadCompletion(true, true, true)
-                } else {
-                    operationDataManager.writeToFile(completion: loadCompletion(_:))
-                }
-            }
+    
+    func referToFile(action: ActionType, dataManager: DataManagerProtocol) {
+        if action == .load {
+            dataManager.loadFromFile(mustReadName: true, mustReadBio: true, mustReadImage: true, completion: loadCompletion(_:_:_:))
+            loadCompletion(true, true, true)
+        } else {
+            dataManager.saveToFile(completion: saveCompletion(_:))
         }
     }
     
@@ -244,8 +223,8 @@ class ProfileViewController: LogViewController {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.stopAnimating()
 
-        referToFile(action: .read, dataManager: .gcd)
-//        referToFile(action: .read, dataManager: .operation)
+        referToFile(action: .load, dataManager: GCDDataManager.shared)
+//        referToFile(action: .load, dataManager: OperationDataManager.shared)
 
         setupTextViews()
         setupButtonViews()
@@ -253,9 +232,9 @@ class ProfileViewController: LogViewController {
     
     private func setupButtonViews() {
         setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-        for button in [editProfileButton, gcdSaveButton, operationSaveButton] {
-            button?.layer.cornerRadius = 14
-            button?.clipsToBounds = true
+        [editProfileButton, gcdSaveButton, operationSaveButton].forEach {
+            $0?.layer.cornerRadius = 14
+            $0?.clipsToBounds = true
         }
         setSaveButtonsEnable(flag: false)
     }
@@ -280,27 +259,26 @@ class ProfileViewController: LogViewController {
     
     private func setupTextViews() {
         let currentTheme = Theme.current.themeOptions
-
-        for textView in [nameTextView, bioTextView] {
+        [nameTextView, bioTextView].forEach {
             var text: String = ""
-            if textView == nameTextView {
-                textView?.isScrollEnabled = false
-                textView?.autocapitalizationType = .words
-                textView?.textAlignment = .center
+            if $0 == nameTextView {
+                $0?.isScrollEnabled = false
+                $0?.autocapitalizationType = .words
+                $0?.textAlignment = .center
                 text = ProfileViewController.name ?? "Marina Dudarenko"
-                textView?.font = UIFont(name: "SFProDisplay-Bold", size: 24)
+                $0?.font = UIFont(name: "SFProDisplay-Bold", size: 24)
             } else {
-                textView?.autocapitalizationType = .sentences
-                textView?.textAlignment = .left
+                $0?.autocapitalizationType = .sentences
+                $0?.textAlignment = .left
                 text = ProfileViewController.bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
-                textView?.font = UIFont(name: "SFProText-Regular", size: 16)
+                $0?.font = UIFont(name: "SFProText-Regular", size: 16)
             }
-            textView?.text = text
-            textView?.autocorrectionType = .no
-            textView?.backgroundColor = view.backgroundColor
-            textView?.textColor = currentTheme.textColor
-            textView?.layer.cornerRadius = 14
-            textView?.clipsToBounds = true
+            $0?.text = text
+            $0?.autocorrectionType = .no
+            $0?.backgroundColor = view.backgroundColor
+            $0?.textColor = currentTheme.textColor
+            $0?.layer.cornerRadius = 14
+            $0?.clipsToBounds = true
         }
         setTextViewsEditable(flag: false)
     }
@@ -314,9 +292,7 @@ class ProfileViewController: LogViewController {
     private func enableSomeViews() {
         editProfileButton.isEnabled = false
         activityIndicator.startAnimating()
-        for textView in [nameTextView, bioTextView] {
-            textView?.layer.borderWidth = 0
-        }
+        [nameTextView, bioTextView].forEach { $0?.layer.borderWidth = 0 }
         setSaveButtonsEnable(flag: false)
         setTextViewsEditable(flag: false)
     }
@@ -337,13 +313,11 @@ class ProfileViewController: LogViewController {
     private func setupNavigationBar() {
         let leftViewLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 115, height: 22))
         leftViewLabel.text = "My Profile"
-        
         if #available(iOS 13.0, *) { } else {
             let currentTheme = Theme.current.themeOptions
             navigationController?.navigationBar.barStyle = currentTheme.barStyle
             leftViewLabel.textColor = currentTheme.textColor
         }
-
         leftViewLabel.font = UIFont(name: "SFProDisplay-Bold", size: 26)
         let leftItem = UIBarButtonItem(customView: leftViewLabel)
         navigationItem.leftBarButtonItem = leftItem
@@ -375,9 +349,7 @@ class ProfileViewController: LogViewController {
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (_) in
             alertController.dismiss(animated: true, completion: nil)
         }
-        for action in [galeryAction, takePhotoAction, cancelAction] {
-            alertController.addAction(action)
-        }
+        [galeryAction, takePhotoAction, cancelAction].forEach { alertController.addAction($0) }
         if #available(iOS 13.0, *) { } else {
             if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
                 let currentTheme = Theme.current.themeOptions
@@ -398,7 +370,6 @@ class ProfileViewController: LogViewController {
                 }
                 self?.editProfileButton.isEnabled = true
                 self?.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-                
                 ProfileViewController.nameDidChange = false
                 ProfileViewController.bioDidChange = false
                 ProfileViewController.imageDidChange = false
@@ -409,9 +380,9 @@ class ProfileViewController: LogViewController {
         if twoActions {
             let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self] (_: UIAlertAction) in
                 if ProfileViewController.gcdButtonTapped {
-                    self?.referToFile(action: .write, dataManager: .gcd)
+                    self?.referToFile(action: .save, dataManager: GCDDataManager.shared)
                 } else if ProfileViewController.operationButtonTapped {
-                    self?.referToFile(action: .write, dataManager: .operation)
+                    self?.referToFile(action: .save, dataManager: OperationDataManager.shared)
                 }
             })
             alertController.addAction(repeatAction)
@@ -434,12 +405,9 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             guard let compressData = pickedImage.jpegData(compressionQuality: 0.5) else { return }
             let compressedImage = UIImage(data: compressData)
-
             profileImageView.profileImage.image = compressedImage
             profileImageView.lettersLabel.isHidden = true
-
             setSaveButtonsEnable(flag: true)
-
             ProfileViewController.imageDidChange = true
             ProfileViewController.image = compressedImage
         }

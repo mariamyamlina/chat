@@ -96,7 +96,7 @@ extension MessageTableViewCell: ConfigurableView {
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         
         let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16.0) as Any]
-        var estimatedFrame = NSString(string: model.text + "    ").boundingRect(with: size, options: options, attributes: attr, context: nil)
+        var estimatedFrame = NSString(string: model.text + "\t").boundingRect(with: size, options: options, attributes: attr, context: nil)
 
         if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
             let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
@@ -109,12 +109,12 @@ extension MessageTableViewCell: ConfigurableView {
         
         if textBubbleView.backgroundColor == currentTheme.outputBubbleColor {
             messageTextView.textColor = currentTheme.outputTextColor
-            timeLabel.textColor = currentTheme.outputTextColor
+            timeLabel.textColor = currentTheme.outputTimeColor
             messageTextView.frame = CGRect(x: UIScreen.main.bounds.width - 28 - estimatedWidth - 16, y: 0, width: estimatedWidth + 16, height: estimatedHeight + 28)
             textBubbleView.frame = CGRect(x: UIScreen.main.bounds.width - 20 - estimatedWidth - 16 - 8, y: 0, width: estimatedWidth + 16 + 8, height: estimatedHeight + 28)
         } else {
             messageTextView.textColor = currentTheme.textColor
-            timeLabel.textColor = currentTheme.textColor
+            timeLabel.textColor = currentTheme.inputTimeColor
             messageTextView.frame = CGRect(x: 28, y: 0, width: estimatedWidth + 16, height: estimatedHeight + 28)
             textBubbleView.frame = CGRect(x: 20, y: 0, width: estimatedWidth + 16 + 8, height: estimatedHeight + 28)
         }

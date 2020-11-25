@@ -22,9 +22,9 @@ extension UIWindow {
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    let coreDataStack = CoreDataStack.shared
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         Loger.printAppLog("Application moved from 'not running state' to 'inactive state':", application.applicationState, #function)
     
         Theme.current.setActive()
@@ -33,6 +33,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FirebaseApp.configure()
 
+        coreDataStack.didUpdateDataBase = { stack in
+            stack.printDatabaseStatistics()
+        }
+        coreDataStack.enableObservers()
+        
         return true
     }
     

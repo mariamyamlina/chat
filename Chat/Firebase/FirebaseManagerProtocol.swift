@@ -10,18 +10,13 @@ import UIKit
 import Firebase
 
 protocol FirebaseManagerProtocol: class {
-    var channelsViewController: ConversationsListViewController? { get set }
-    var messagesViewController: ConversationViewController? { get set }
-    
     var db: Firestore { get }
     var reference: CollectionReference { get }
     var universallyUniqueIdentifier: String { get }
     
-    func getChannels()
-    func createChannel(_ name: String)
-    func sortChannels()
+    func getChannels(source: () -> Void, completion: @escaping () -> Void)
+    func createChannel(_ name: String, source: () -> Void, completion: @escaping () -> Void)
     
-    func getMessages()
-    func createMessage(_ text: String)
-    func sortMessages()
+    func getMessages(completion: @escaping () -> Void)
+    func createMessage(_ text: String, completion: @escaping () -> Void)
 }

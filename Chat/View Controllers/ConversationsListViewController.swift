@@ -11,9 +11,9 @@ import UIKit
 class ConversationsListViewController: LogViewController {
     @IBOutlet weak var tableView: UITableView!
 
-    var channels: [Channel] = []
-    var images: [UIImage?] = []
-    var fbManager = FirebaseManager()
+    static var channels: [Channel] = []
+    static var images: [UIImage?] = []
+    let fbManager = FirebaseManager.shared
     
     lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
@@ -45,8 +45,7 @@ class ConversationsListViewController: LogViewController {
         setupNavigationBar()
         setupTableView()
 
-        fbManager.channelsViewController = self
-        fbManager.getChannels()
+        fbManager.getChannels(source: blockRowSelection, completion: getChannelsCompletion)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,6 +68,36 @@ class ConversationsListViewController: LogViewController {
         super.viewWillLayoutSubviews()
         guard let height = navigationController?.navigationBar.frame.height else { return }
         showNewMessageButton(height >= 96)
+    }
+    
+    // MARK: - Firebase
+    
+    func getChannelsCompletion() {
+        let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
+        chatRequest.save(channels: ConversationsListViewController.channels)
+        
+        sortChannels()
+        tableView.reloadData()
+        tableView.allowsSelection = true
+    }
+    
+    func blockRowSelection() {
+        tableView.allowsSelection = false
+    }
+    
+    func sortChannels() {
+        ConversationsListViewController.channels.sort {
+            let date = Date(timeInterval: -50000000000, since: Date())
+            let firstDate = $0.lastActivity ?? date
+            let secondDate = $1.lastActivity ?? date
+            if secondDate < firstDate {
+                return true
+            } else if $0.lastMessage != nil && $1.lastMessage == nil {
+                return true
+            } else {
+                return false
+            }
+        }
     }
     
     // MARK: - Theme
@@ -182,15 +211,14 @@ class ConversationsListViewController: LogViewController {
         alertController.addTextField()
         setupTextField(alertController.textFields?[0])
         let createAction = UIAlertAction(title: "Create", style: .default) { [weak self, weak alertController] _ in
+            guard let self = self else { return }
             let answer = alertController?.textFields![0].text
             if let channelName = answer, !channelName.isEmpty, !channelName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                self?.fbManager.createChannel(channelName)
+                self.fbManager.createChannel(channelName, source: self.blockRowSelection, completion: self.getChannelsCompletion)
             }
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        for action in [createAction, cancelAction] {
-            alertController.addAction(action)
-        }
+        [createAction, cancelAction].forEach { alertController.addAction($0) }
         if #available(iOS 13.0, *) { } else {
             if let subview = alertController.view.subviews.first?.subviews.first?.subviews.first {
                 let currentTheme = Theme.current.themeOptions
@@ -226,23 +254,29 @@ class ConversationsListViewController: LogViewController {
 
 }
 
-extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
+// MARK: - UITableViewDataSource
+
+extension ConversationsListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return channels.count
+        return ConversationsListViewController.channels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.reuseIdentifier, for: indexPath) as? ConversationTableViewCell
         
-        let channel = channels[indexPath.row]
-        let image = images[indexPath.row]
+        let channel = ConversationsListViewController.channels[indexPath.row]
+        let image = ConversationsListViewController.images[indexPath.row]
         let channelCellFactory = ViewModelFactory()
         let channelModel = channelCellFactory.channelToCell(channel, image)
         cell?.configure(with: channelModel)
         applyTheme(for: cell)
         return cell ?? UITableViewCell()
     }
-    
+}
+
+// MARK: - UITableViewDelegate
+
+extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
@@ -253,8 +287,8 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
         conversationController?.name = cell?.nameLabel.text
         conversationController?.image = cell?.configureImageSubview()
 
-        let channel = channels[indexPath.row]
-        conversationController?.docId = channel.identifier
+        let channel = ConversationsListViewController.channels[indexPath.row]
+        ConversationViewController.channel = channel
 
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationController?.pushViewController(conversationController ?? UIViewController(), animated: true)

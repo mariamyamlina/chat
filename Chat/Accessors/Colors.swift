@@ -24,7 +24,8 @@ struct Colors {
     static var lightBarColor = UIColor(red: 245 / 250, green: 245 / 250, blue: 245 / 250, alpha: 1.0)
     static var darkBarColor = UIColor.black
     
-    static var timeGreyColor = UIColor(red: 171, green: 171, blue: 171, alpha: 1)
+    static var timeLightGreyColor = UIColor(red: 0 / 250, green: 0 / 250, blue: 0 / 250, alpha: 0.25)
+    static var timeGreyColor = UIColor(red: 171 / 250, green: 171 / 250, blue: 171 / 250, alpha: 1)
     static var timeWhiteColor = UIColor.white
     
     static var inputGrey = UIColor(red: 223 / 250, green: 223 / 250, blue: 223 / 250, alpha: 1)
