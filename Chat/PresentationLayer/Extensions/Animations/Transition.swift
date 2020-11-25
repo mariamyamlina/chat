@@ -8,7 +8,11 @@
 
 import UIKit
 
-class Transition: NSObject, UIViewControllerAnimatedTransitioning {
+class Transition: NSObject {
+    // MARK: - Dependencies
+    let startIndicator: Bool
+    let startFrame: CGRect
+    
     lazy var duration: TimeInterval = {
         if startIndicator {
             return 1.2
@@ -17,14 +21,15 @@ class Transition: NSObject, UIViewControllerAnimatedTransitioning {
         }
     }()
     
-    let startIndicator: Bool
-    let startFrame: CGRect
-
+    // MARK: - Init / deinit
     init(startIndicator: Bool, startFrame: CGRect) {
         self.startIndicator = startIndicator
         self.startFrame = startFrame
     }
+}
 
+// MARK: - UIViewControllerAnimatedTransitioning
+extension Transition: UIViewControllerAnimatedTransitioning {
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return duration
     }
