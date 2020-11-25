@@ -12,8 +12,6 @@ import CoreData
 class CoreDataStack {
     var didUpdateDataBase: ((CoreDataStack) -> Void)?
     
-    // MARK: - Singleton
-    
     static var shared: CoreDataStack = {
         return CoreDataStack()
     }()
@@ -98,71 +96,27 @@ class CoreDataStack {
     
     // MARK: - Save Context
 
-    func performSave(_ block: @escaping (NSManagedObjectContext) -> Void) {
+    func performSave(_ handler: (NSManagedObjectContext) -> Void) {
         let context = saveContext()
-        context.perform { [weak self] in
-            block(context)
+        context.performAndWait {
+            handler(context)
             if context.hasChanges {
-                self?.performSave(in: context)
+                performSave(in: context)
             }
         }
-        
-        /*
-         При использовании FIRST OPTION типа сохранения из файла CoreDataManager.swift при использовании perform в логировании происходит дублирование записей
-         При использовании SECOND OPTION типа сохранения из файла CoreDataManager.swift все в порядке
-         
-         Это происходит из-за того, что в первом случае БД перезатирает данные, как я уже писала в комментарии к дз на портале
-         Избежать этого можно, например, так:
-         
-         context.performAndWait {
-             block(context)
-             if context.hasChanges {
-                 performSave(in: context)
-             }
-         }
-         
-         И так... (см. ниже)
-         */
     }
 
     private func performSave(in context: NSManagedObjectContext) {
-        context.perform { [weak self] in
+        context.performAndWait {
             do {
                 try context.save()
-                if let parent = context.parent {
-                    self?.performSave(in: parent)
-                }
             } catch {
                 assertionFailure(error.localizedDescription)
             }
         }
-        
-        /*
-         ...продолжение:
-         
-         if context == writterContext {
-            context.perform {
-                do {
-                    try context.save()
-                } catch {
-                    assertionFailure(error.localizedDescription)
-                }
-             }
-         } else {
-            context.performAndWait {
-                do {
-                    try context.save()
-                    if let parent = context.parent {
-                        performSave(in: parent)
-                    }
-                } catch {
-                    assertionFailure(error.localizedDescription)
-                }
-            }
-         }
-         
-         Но в таком случае часть сохранения будет происходить на мейне, что не есть хорошо
-         */
+        if let parent = context.parent {
+            performSave(in: parent)
+        }
     }
     
     // MARK: - Observers

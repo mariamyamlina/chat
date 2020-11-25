@@ -12,8 +12,6 @@ class GCDDataManager: DataManager {
     private let mainQueue = DispatchQueue.main
     private let queue = DispatchQueue(label: "com.chat.gcddatamanager", qos: .userInteractive, attributes: .concurrent)
     
-    // MARK: - Singleton
-    
     static var shared: GCDDataManager = {
         return GCDDataManager()
     }()

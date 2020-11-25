@@ -12,8 +12,6 @@ class OperationDataManager: DataManager {
     private let operationQueue = OperationQueue()
     private let mainOperationQueue = OperationQueue.main
     
-    // MARK: - Singleton
-    
     static var shared: OperationDataManager = {
         return OperationDataManager()
     }()
