@@ -8,12 +8,12 @@
 
 import UIKit
 
-class MessageInputContainer: UIView {
+class MessageInputContainer: EmblemsView {
     // MARK: - UI
     var theme: Theme
     
-    lazy var borderLine: UIView = {
-        let line = UIView()
+    lazy var borderLine: EmblemsView = {
+        let line = EmblemsView()
         addSubview(line)
         line.translatesAutoresizingMaskIntoConstraints = false
         line.topAnchor.constraint(equalTo: topAnchor).isActive = true
@@ -23,8 +23,8 @@ class MessageInputContainer: UIView {
         return line
     }()
     
-    lazy var textField: UITextField = {
-        let textField = UITextField()
+    lazy var textField: TextField = {
+        let textField = TextField()
         textField.autocapitalizationType = .sentences
         textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
         attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any,
@@ -43,8 +43,8 @@ class MessageInputContainer: UIView {
         return textField
     }()
 
-    lazy var addButton: UIButton = {
-        let button = UIButton(type: .system)
+    lazy var addButton: ButtonWithTouchSize = {
+        let button = ButtonWithTouchSize(type: .system)
         button.setImage(UIImage(named: "AddIcon"), for: .normal)
 
         addSubview(button)
@@ -54,8 +54,8 @@ class MessageInputContainer: UIView {
         return button
     }()
     
-    lazy var sendButton: UIButton = {
-        let button = UIButton(type: .system)
+    lazy var sendButton: ButtonWithTouchSize = {
+        let button = ButtonWithTouchSize(type: .system)
         button.isEnabled = false
         button.isHidden = true
         button.setImage(UIImage(named: "SendIcon"), for: .normal)

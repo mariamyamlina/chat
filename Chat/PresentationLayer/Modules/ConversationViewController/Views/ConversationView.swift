@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ConversationView: UIView {
+class ConversationView: EmblemsView {
     // MARK: - UI
     var messageInputContainerBottomConstraint: NSLayoutConstraint?
     var theme: Theme
@@ -31,6 +31,7 @@ class ConversationView: UIView {
         tableView.bottomAnchor.constraint(equalTo: messageInputContainer.topAnchor).isActive = true
         tableView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        tableView.addGestureRecognizer(animator.gestureRecognizer)
         return tableView
     }()
     
@@ -72,8 +73,8 @@ class ConversationView: UIView {
         return viewWithTitle
     }
     
-    func configureViewForHeaderInSection(sectionInfo: String) -> UIView {
-        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 28))
+    func configureViewForHeaderInSection(sectionInfo: String) -> EmblemsView {
+        let headerView = EmblemsView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 28))
         headerView.backgroundColor = .clear
 
         let dateLabel = UILabel(frame: CGRect(x: UIScreen.main.bounds.width / 3, y: 4, width: UIScreen.main.bounds.width / 3, height: 20))
@@ -110,12 +111,11 @@ class ConversationView: UIView {
     
     func animate(isKeyboardShowing: Bool, keyboardHeight: CGFloat, indexPathForLastRow: IndexPath?) {
         messageInputContainerBottomConstraint?.constant = isKeyboardShowing ? -keyboardHeight : 0
-        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
-            self.layoutIfNeeded()
-        }, completion: { [weak self] (_) in
-            guard let indexPath = indexPathForLastRow,
-                isKeyboardShowing else { return }
-            self?.scrollTableView(to: indexPath)
+        animator.animateKeyboard(animation: { self.layoutIfNeeded() },
+                                 completion: { [weak self] (_) in
+                                    guard let indexPath = indexPathForLastRow,
+                                        isKeyboardShowing else { return }
+                                    self?.scrollTableView(to: indexPath)
         })
     }
 }

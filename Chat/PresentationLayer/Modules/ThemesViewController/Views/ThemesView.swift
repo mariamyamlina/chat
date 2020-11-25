@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ThemesView: UIView {
+class ThemesView: EmblemsView {
     // MARK: - UI
     var theme: Theme
     

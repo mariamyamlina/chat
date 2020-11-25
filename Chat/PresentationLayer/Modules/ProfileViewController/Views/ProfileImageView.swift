@@ -9,7 +9,7 @@
 import UIKit
 
 @IBDesignable
-class ProfileImageView: UIView {
+class ProfileImageView: EmblemsView {
     // MARK: - UI
     var profileImageWidthConstraint, profileImageHeightConstraint: NSLayoutConstraint?
     var lettersLabelWidthConstraint, lettersLabelHeightConstraint: NSLayoutConstraint?
@@ -19,8 +19,8 @@ class ProfileImageView: UIView {
     var name: String?
     var image: UIImage?
     
-    lazy var contentView: UIView = {
-        let contentView = UIView()
+    lazy var contentView: EmblemsView = {
+        let contentView = EmblemsView()
         contentView.isUserInteractionEnabled = false
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(contentView)

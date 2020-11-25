@@ -60,6 +60,8 @@ class CollectionViewController: LogViewController {
     private func setupNavigationBar() {
         navigationItem.rightBarButtonItem = collectionView.rightBarButtonItem
         navigationItem.title = "Choose photo"
+        // TODO
+        navigationController?.navigationBar.addGestureRecognizer(collectionView.animator.gestureRecognizer)
     }
     
     // MARK: - Handlers

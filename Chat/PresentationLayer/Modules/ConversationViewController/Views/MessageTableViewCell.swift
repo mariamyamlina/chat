@@ -9,12 +9,14 @@
 import UIKit
 
 class MessageTableViewCell: UITableViewCell {
+    // MARK: - Dependencies
+    static let reuseIdentifier = "Message Cell"
+    let animator = Animator()
+    
     enum MessageType {
         case input
         case output
     }
-    
-    static let reuseIdentifier = "Message Cell"
     
     // MARK: - UI
     lazy var messageTextView: UITextView = {
@@ -57,6 +59,7 @@ class MessageTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
+        self.addGestureRecognizer(animator.gestureRecognizer)
     }
     
     // MARK: - Setup View

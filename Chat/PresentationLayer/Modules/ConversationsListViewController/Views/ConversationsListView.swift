@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ConversationsListView: UIView {
+class ConversationsListView: EmblemsView {
     // MARK: - UI
     var theme: Theme
     var name: String?
@@ -33,7 +33,7 @@ class ConversationsListView: UIView {
     lazy var rightBarButtonItem: UIBarButtonItem = { return configureRightBarButtonItem() }()
     
     lazy var leftBarButtonItem: UIBarButtonItem = {
-        let button = UIButton(type: .system)
+        let button = ButtonWithTouchSize(type: .system)
         button.setImage(UIImage(named: "SettingsIcon")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = Colors.settingsIconColor
         button.addTarget(self, action: #selector(settingsButtonTapped), for: .touchUpInside)
@@ -43,8 +43,8 @@ class ConversationsListView: UIView {
         return barbuttonItem
     }()
     
-    lazy var newMessageButton: UIButton = {
-        let button = UIButton(type: .system)
+    lazy var newMessageButton: ButtonWithTouchSize = {
+        let button = ButtonWithTouchSize(type: .system)
         button.frame = CGRect(x: 0.0, y: 0.0, width: 24, height: 24)
         button.setImage(UIImage(named: "NewMessageIcon"), for: .normal)
         button.addTarget(self, action: #selector(addChannelButtonTapped), for: .touchUpInside)
@@ -66,6 +66,7 @@ class ConversationsListView: UIView {
         tableView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         tableView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        tableView.addGestureRecognizer(animator.gestureRecognizer)
         return tableView
     }()
     

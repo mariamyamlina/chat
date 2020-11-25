@@ -63,6 +63,7 @@ class ConversationViewController: LogViewController {
         }
         navigationItem.titleView = conversationView.configureTopView(text: model.channel?.name,
                                                                      image: model.channel?.profileImage)
+        navigationController?.navigationBar.addGestureRecognizer(conversationView.animator.gestureRecognizer)
     }
     
     private func setupTableView() {
@@ -102,8 +103,10 @@ class ConversationViewController: LogViewController {
     
     // MARK: - Keyboard
     private func addKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification),
+                                               name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     private func removeKeyboardNotifications() {

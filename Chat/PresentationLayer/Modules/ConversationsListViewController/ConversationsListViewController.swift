@@ -41,10 +41,6 @@ class ConversationsListViewController: LogViewController {
         super.viewWillAppear(animated)
         conversationsListView.tableView.isHidden = false
         applyTheme(theme: model.currentTheme)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         getChannels()
     }
     
@@ -81,9 +77,11 @@ class ConversationsListViewController: LogViewController {
     
     private func setupNavigationBar() {
         guard let navigationBar = navigationController?.navigationBar else { return }
+        navigationBar.prefersLargeTitles = true
         conversationsListView.setupNavigationItem(navigationItem: navigationItem)
         conversationsListView.setupNavigationBar(navigationBar: navigationBar)
         updateProfileImage()
+        navigationBar.addGestureRecognizer(conversationsListView.animator.gestureRecognizer)
     }
     
     private func setupTableView() {
@@ -121,7 +119,8 @@ class ConversationsListViewController: LogViewController {
         conversationsListView.profileMenuHandler = { [weak self] in
             guard let self = self else { return }
             let profileController = self.presentationAssembly.profileViewController().embedInNavigationController()
-            profileController.modalPresentationStyle = UIModalPresentationStyle.pageSheet
+            profileController.modalPresentationStyle = .fullScreen
+            profileController.transitioningDelegate = self
             self.present(profileController, animated: true, completion: nil)
         }
         
@@ -230,5 +229,18 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard navigationController?.topViewController == self else { return }
         conversationsListView.tableView.endUpdates()
+    }
+}
+
+// MARK: - UIViewControllerTransitioningDelegate
+extension ConversationsListViewController: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return Transition(startIndicator: true,
+                          startFrame: navigationController?.navigationBar.frame ?? CGRect.zero)
+    }
+
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return Transition(startIndicator: false,
+                          startFrame: navigationController?.navigationBar.frame ?? CGRect.zero)
     }
 }

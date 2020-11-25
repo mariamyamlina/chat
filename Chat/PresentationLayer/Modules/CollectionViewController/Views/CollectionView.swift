@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CollectionView: UIView {
+class CollectionView: EmblemsView {
     // MARK: - UI
     var theme: Theme
     
@@ -28,6 +28,7 @@ class CollectionView: UIView {
         collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8).isActive = true
         bringSubviewToFront(activityIndicator)
+        collectionView.addGestureRecognizer(animator.gestureRecognizer)
         return collectionView
     }()
     

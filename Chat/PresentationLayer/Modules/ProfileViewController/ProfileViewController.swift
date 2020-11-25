@@ -56,9 +56,9 @@ class ProfileViewController: LogViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        guard let height = navigationController?.navigationBar.bounds.height else { return }
-        var constant = view.bounds.height - height - 455
-        if #available(iOS 13.0, *) { } else { constant -= 20 }
+        guard let navigationBarHeight = navigationController?.navigationBar.bounds.height else { return }
+        let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
+        let constant = view.bounds.height - navigationBarHeight - statusBarHeight - 470
         profileView.activateBioTextViewHeightConstraint(with: constant)
     }
     
@@ -82,8 +82,8 @@ class ProfileViewController: LogViewController {
         if let userInfo = notification.userInfo {
             let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
             let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
-            let bottomOffset = CGPoint(x: 0, y: (keyboardFrame?.height ?? 0) - (self.navigationController?.navigationBar.bounds.height ?? 0))
-            
+            let height = (self.navigationController?.navigationBar.bounds.height ?? 0) + UIApplication.shared.statusBarFrame.size.height
+            let bottomOffset = CGPoint(x: 0, y: (keyboardFrame?.height ?? 0) - height)
             profileView.animate(isKeyboardShowing: isKeyboardShowing,
                                 keyboardHeight: keyboardFrame?.height ?? 0,
                                 bottomOffset: bottomOffset)
@@ -136,6 +136,7 @@ class ProfileViewController: LogViewController {
     private func setupNavigationBar() {
         navigationItem.leftBarButtonItem = profileView.leftBarButtonItem
         navigationItem.rightBarButtonItem = profileView.rightBarButtonItem
+        navigationController?.navigationBar.addGestureRecognizer(profileView.animator.gestureRecognizer)
     }
     
     // MARK: - Handlers
