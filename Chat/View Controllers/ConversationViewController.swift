@@ -7,133 +7,150 @@
 //
 
 import UIKit
+import CoreData
 
 class ConversationViewController: LogViewController {
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var addButton: UIButton!
-    @IBOutlet weak var messageInputContainer: UIView!
-    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var topConstraint: NSLayoutConstraint!
-    @IBOutlet weak var sendButton: UIButton!
-    @IBOutlet weak var noMessagesLabel: UILabel!
-    @IBOutlet weak var borderLine: UIView!
+    fileprivate lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
+        tableView.allowsMultipleSelection = false
+        tableView.showsVerticalScrollIndicator = false
+        tableView.showsHorizontalScrollIndicator = false
+        
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 14))
+        headerView.backgroundColor = .clear
+        tableView.tableHeaderView = headerView
+        tableView.sectionFooterHeight = 0
+        
+        tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
+        return tableView
+    }()
     
-    @IBAction func sendButtonTapped(_ sender: UIButton) {
-        guard let message = textField.text else { return }
-        if !message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            fbManager.createMessage(message, completion: { [weak self] in
-                guard let self = self else { return }
-                guard let channel = ConversationViewController.channel else { return }
-                let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
-                chatRequest.save(messages: ConversationViewController.messages, in: channel)
-                
-                self.sortMessages()
-                if !ConversationViewController.messages.isEmpty {
-                    self.noMessagesLabel.isHidden = true
-                }
-                self.tableView.reloadSections([0], with: .fade)
-                
-                if self.lastRowIndex >= 0 {
-                    self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
-                }
-            })
+    fileprivate lazy var messageInputContainer: MessageInputContainer = { return MessageInputContainer() }()
+    
+    fileprivate lazy var noMessagesLabel: UILabel = {
+        let label = UILabel()
+        label.isHidden = true
+        label.text = "No messages yet"
+        label.font = UIFont(name: "SFProText-Semibold", size: 16.0)
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<MessageDB> = {
+        let channelId = channel?.identifier ?? ""
+        let fetchRequest = NSFetchRequest<MessageDB>()
+        fetchRequest.entity = MessageDB.entity()
+        let predicate = NSPredicate(format: "channel.identifier = %@", channelId)
+        fetchRequest.predicate = predicate
+        let sortDescriptor = NSSortDescriptor(key: "created", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.fetchBatchSize = 20
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                                  managedObjectContext: CoreDataStack.shared.mainContext,
+                                                                  sectionNameKeyPath: "formattedDate",
+                                                                  cacheName: "Messages in channel with id \(channelId)")
+        fetchedResultsController.delegate = self
+
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
         }
-        textField.text = ""
-    }
+        
+        return fetchedResultsController
+    }()
+    
+    var bottomConstraint: NSLayoutConstraint?
     
     var image: UIImageView?
-    var name: String?
-    var lastRowIndex: Int = 0
-    
-    static var messages: [Message] = []
-    static var channel: Channel?
+    var channel: Channel?
     let fbManager = FirebaseManager.shared
     
     deinit {
         removeKeyboardNotifications()
+        fbManager.removeMessagesListener()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViews()
+        addKeyboardNotifications()
+        
+        if let unwrChannel = channel {
+            fbManager.getMessages(in: unwrChannel, errorHandler: { [weak self] (errorTitle, errorInfo) in
+                self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
+                },
+                                  completion: { [weak self] in
+                guard let self = self else { return }
+                if let indexPath = self.countIndexPathForLastRow() {
+                    self.noMessagesLabel.isHidden = true
+                    self.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
+                } else {
+                    self.noMessagesLabel.isHidden = false
+                }
+            })
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        messageInputContainer.textField.becomeFirstResponder()
+    }
+    
+    // MARK: - Views
+    
+    func setupViews() {
+        view.addSubview(noMessagesLabel)
+        view.addSubview(tableView)
+        view.addSubview(messageInputContainer)
+
+        noMessagesLabel.translatesAutoresizingMaskIntoConstraints = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        messageInputContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        bottomConstraint = NSLayoutConstraint(item: messageInputContainer, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
+        bottomConstraint?.isActive = true
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
+            tableView.bottomAnchor.constraint(equalTo: messageInputContainer.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            noMessagesLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 200),
+            noMessagesLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            messageInputContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            messageInputContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            messageInputContainer.heightAnchor.constraint(equalToConstant: 80)
+        ])
+        
         applyTheme()
         configureNavigationBar()
-        configureTableView()
-        configureMessageInputView()
-        addKeyboardNotifications()
-        fbManager.getMessages(completion: { [weak self] in
-            guard let self = self else { return }
-            guard let channel = ConversationViewController.channel else { return }
-            let chatRequest = CoreDataManager(coreDataStack: CoreDataStack.shared)
-            chatRequest.save(messages: ConversationViewController.messages, in: channel)
-            
-            self.sortMessages()
-            if !ConversationViewController.messages.isEmpty {
-                self.noMessagesLabel.isHidden = true
+        
+        messageInputContainer.textField.delegate = self
+        messageInputContainer.sendHandler = { [weak self] in
+            guard let message = self?.messageInputContainer.textField.text else { return }
+            if let unwrChannel = self?.channel,
+                !containtsOnlyOfWhitespaces(string: message) {
+                self?.fbManager.create(message: message, in: unwrChannel)
             }
-            self.tableView.reloadSections([0], with: .fade)
-            
-            if self.lastRowIndex >= 0 {
-                self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
-            }
-        })
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        guard let conversationsListVC = navigationController?.viewControllers.first as? ConversationsListViewController else { return }
-        fbManager.getChannels(source: conversationsListVC.blockRowSelection, completion: conversationsListVC.getChannelsCompletion)
-    }
-    
-    // MARK: - Firebase
-    
-    func sortMessages() {
-        ConversationViewController.messages.sort {
-            if $1.created > $0.created {
-                return true
-            } else {
-                return false
-            }
+            self?.messageInputContainer.textField.text = ""
         }
     }
     
     // MARK: - Theme
     
     fileprivate func applyTheme() {
-        if #available(iOS 13.0, *) {
-        } else {
-            let currentTheme = Theme.current.themeOptions
-            view.backgroundColor = currentTheme.backgroundColor
-            textField.keyboardAppearance = currentTheme.keyboardAppearance
-        }
-    }
-    
-    // MARK: - MessageInputView
-    
-    private func configureMessageInputView() {
         let currentTheme = Theme.current.themeOptions
-        
-        textField.delegate = self
-        textField.autocapitalizationType = .sentences
-        
-        textField.backgroundColor = currentTheme.textFieldBackgroundColor
-        textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
-        attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any, NSAttributedString.Key.foregroundColor: currentTheme.textFieldTextColor])
-
-        sendButton.isEnabled = false
-        sendButton.isHidden = true
-        
-        messageInputContainer.backgroundColor = currentTheme.barColor
-        borderLine.backgroundColor = Colors.separatorColor()
-
-        topConstraint.isActive = false
-        topConstraint = messageInputContainer.topAnchor.constraint(equalTo: tableView.bottomAnchor)
-        topConstraint?.isActive = true
-
-        bottomConstraint.isActive = false
-        bottomConstraint = messageInputContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        bottomConstraint?.isActive = true
+        view.backgroundColor = currentTheme.backgroundColor
+        noMessagesLabel.textColor = currentTheme.textFieldTextColor
     }
+    
+    // MARK: - Keyboard
     
     private func addKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -150,13 +167,12 @@ class ConversationViewController: LogViewController {
             let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
             let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
             bottomConstraint?.constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) : 0
-            
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
                 self.view.layoutIfNeeded()
             }, completion: { (_) in
                 if isKeyboardShowing {
-                    if self.lastRowIndex >= 0 {
-                        self.tableView.scrollToRow(at: IndexPath(row: self.lastRowIndex, section: 0), at: .bottom, animated: true)
+                    if let indexPath = self.countIndexPathForLastRow() {
+                        self.tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
                     }
                 }
             })
@@ -177,8 +193,7 @@ class ConversationViewController: LogViewController {
         viewWithTitle.frame = CGRect(x: 0, y: 0, width: 236, height: 36)
         viewWithTitle.contentView.backgroundColor = navigationController?.navigationBar.backgroundColor
         viewWithTitle.profileImage.image = titleImageView.image
-        viewWithTitle.profileImage.layer.cornerRadius = viewWithTitle.profileImage.bounds.size.width / 2
-        viewWithTitle.nameLabel.text = name
+        viewWithTitle.nameLabel.text = channel?.name
         
         let topView = UIView(frame: CGRect(x: 0, y: 0, width: 236, height: 36))
         topView.layer.cornerRadius = topView.bounds.width / 2
@@ -189,32 +204,38 @@ class ConversationViewController: LogViewController {
     
     // MARK: - TableView
     
-    private func configureTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
-        tableView.allowsMultipleSelection = false
-        
-        noMessagesLabel.textColor = Colors.separatorColor()
-        
-        tableView?.register(UINib(nibName: "MessageTableViewCell", bundle: nil), forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier)
+    private func countIndexPathForLastRow() -> IndexPath? {
+        let lastSectionIndex = (fetchedResultsController.sections?.count ?? 0) - 1
+        var lastRowIndex: Int = -1
+        if lastSectionIndex >= 0 {
+            lastRowIndex = (fetchedResultsController.sections?[lastSectionIndex].numberOfObjects ?? 0) - 1
+        }
+        if lastSectionIndex >= 0 && lastRowIndex >= 0 {
+            return IndexPath(row: lastRowIndex, section: lastSectionIndex)
+        } else {
+            return nil
+        }
     }
 }
 
 // MARK: - UITableViewDataSource
 
 extension ConversationViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        guard let sections = fetchedResultsController.sections else { return 0 }
+        return sections.count
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let numberOfRows = ConversationViewController.messages.count
-        lastRowIndex = numberOfRows - 1
-        return numberOfRows
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier, for: indexPath) as? MessageTableViewCell
-        let message = ConversationViewController.messages[indexPath.row]
+        
+        let messageDB = fetchedResultsController.object(at: indexPath)
+        let message = Message(from: messageDB)
+        
         let messageCellFactory = ViewModelFactory()
         let messageModel: MessageTableViewCell.MessageCellModel
         let currentTheme = Theme.current.themeOptions
@@ -234,17 +255,25 @@ extension ConversationViewController: UITableViewDataSource {
 
 extension ConversationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        textField.endEditing(true)
+        messageInputContainer.textField.endEditing(true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let message = ConversationViewController.messages[indexPath.row]
-        let stringMessage = "\(message.senderName)\n\(message.content)"
+        let messageDB = fetchedResultsController.object(at: indexPath)
+        let message = Message(from: messageDB)
+        
+        let messageCellFactory = ViewModelFactory()
+        let messageModel: MessageTableViewCell.MessageCellModel
+        if message.senderId == fbManager.universallyUniqueIdentifier {
+            messageModel = messageCellFactory.messageToCell(message, .output)
+        } else {
+            messageModel = messageCellFactory.messageToCell(message, .input)
+        }
 
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let attr = [NSAttributedString.Key.font: UIFont(name: "SFProText-Semibold", size: 16.0) as Any]
-        var estimatedFrame = NSString(string: stringMessage + "\t").boundingRect(with: size, options: options, attributes: attr, context: nil)
+        var estimatedFrame = NSString(string: messageModel.text + "\t").boundingRect(with: size, options: options, attributes: attr, context: nil)
         if estimatedFrame.width > UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8 {
             let newWidth: CGFloat = UIScreen.main.bounds.width * 0.75 - 20 - 16 - 8
             estimatedFrame.size.height = estimatedFrame.height * estimatedFrame.width / newWidth
@@ -255,13 +284,29 @@ extension ConversationViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 16
+        return 28
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 8))
-        view.backgroundColor = .clear
-        return view
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 28))
+        headerView.backgroundColor = .clear
+
+        let sectionInfo = fetchedResultsController.sections?[section]
+        let text = sectionInfo?.name ?? ""
+
+        let dateLabel = UILabel(frame: CGRect(x: UIScreen.main.bounds.width / 3, y: 4, width: UIScreen.main.bounds.width / 3, height: 20))
+        dateLabel.layer.cornerRadius = dateLabel.bounds.height / 2
+        dateLabel.clipsToBounds = true
+        dateLabel.font = UIFont(name: "SFProText-Semibold", size: 13)
+        dateLabel.textAlignment = .center
+        dateLabel.text = text
+
+        let currentTheme = Theme.current.themeOptions
+        dateLabel.textColor = currentTheme.tableViewHeaderTextColor
+        dateLabel.backgroundColor = currentTheme.tableViewHeaderColor
+
+        headerView.addSubview(dateLabel)
+        return headerView
     }
 }
 
@@ -269,17 +314,79 @@ extension ConversationViewController: UITableViewDelegate {
 
 extension ConversationViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+        messageInputContainer.textField.resignFirstResponder()
+        messageInputContainer.sendButtonTapped()
         return true
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        sendButton.isHidden = false
-        sendButton.isEnabled = true
+        messageInputContainer.sendButton.isHidden = false
+        messageInputContainer.sendButton.isEnabled = true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        sendButton.isHidden = true
-        sendButton.isEnabled = false
+        messageInputContainer.sendButton.isHidden = true
+        messageInputContainer.sendButton.isEnabled = false
+    }
+}
+
+// MARK: - NSFetchedResultsControllerDelegate
+
+extension ConversationViewController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange sectionInfo: NSFetchedResultsSectionInfo,
+                    atSectionIndex sectionIndex: Int,
+                    for type: NSFetchedResultsChangeType) {
+        let indexSet = IndexSet(integer: sectionIndex)
+        switch type {
+        case .insert:
+            tableView.insertSections(indexSet, with: .right)
+        case .delete:
+            tableView.deleteSections(indexSet, with: .right)
+        case .move, .update:
+            tableView.reloadSections(indexSet, with: .fade)
+        default:
+            break
+        }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            guard let newPath = newIndexPath else { return }
+            tableView.insertRows(at: [newPath], with: .left)
+        case .delete:
+            guard let path = indexPath else { return }
+            tableView.deleteRows(at: [path], with: .left)
+        case .move:
+            guard let path = indexPath,
+                  let newPath = newIndexPath else { return }
+            tableView.deleteRows(at: [path], with: .left)
+            tableView.insertRows(at: [newPath], with: .left)
+        case .update:
+            guard let path = indexPath else { return }
+            tableView.reloadRows(at: [path], with: .fade)
+        default:
+            break
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
+
+        if let indexPath = self.countIndexPathForLastRow() {
+            self.noMessagesLabel.isHidden = true
+            tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: indexPath.section), at: .bottom, animated: true)
+        } else {
+            self.noMessagesLabel.isHidden = false
+        }
     }
 }

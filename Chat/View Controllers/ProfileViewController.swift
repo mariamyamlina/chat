@@ -9,103 +9,144 @@
 import UIKit
 
 class ProfileViewController: LogViewController {
-    var imagePicker: UIImagePickerController!
+    static var name: String?
+    static var bio: String?
+    static var image: UIImage?
     
     static var nameDidChange = false
     static var bioDidChange = false
     static var imageDidChange = false
     
-    static var gcdButtonTapped = false
-    static var operationButtonTapped = false
+    var gcdButtonTapped = false
+    var operationButtonTapped = false
+
+    var gcdSaveButtonBottomConstraint: NSLayoutConstraint?
+    var operationSaveButtonBottomConstraint: NSLayoutConstraint?
     
-    static var name: String?
-    static var bio: String?
-    static var image: UIImage?
+    lazy var imagePicker: UIImagePickerController = {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        return picker
+    }()
     
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var scrollViewContentView: UIView!
+    lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        return scrollView
+    }()
     
-    @IBOutlet weak var gcdSaveButtonTopConstraint: NSLayoutConstraint!
-    @IBOutlet weak var gcdSaveButtonBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var operationSaveButtonTopConstraint: NSLayoutConstraint!
-    @IBOutlet weak var operationSaveButtonBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var bioTextViewHeightConstraint: NSLayoutConstraint!
+    lazy var scrollViewContentView: UIView = { return UIView() }()
     
-    @IBOutlet weak var gcdSaveButton: ButtonWithTouchSize!
-    @IBOutlet weak var operationSaveButton: ButtonWithTouchSize!
-    @IBOutlet weak var editProfileButton: ButtonWithTouchSize!
-    @IBOutlet weak var editPhotoButton: UIButton!
+    lazy var nameTextView: UITextView = {
+        let textView = UITextView()
+        textView.delegate = self
+        textView.textAlignment = .center
+        textView.isScrollEnabled = false
+        textView.autocapitalizationType = .words
+        textView.text = ProfileViewController.name ?? "Marina Dudarenko"
+        textView.font = UIFont(name: "SFProDisplay-Bold", size: 24)
+        textView.autocorrectionType = .no
+        textView.backgroundColor = view.backgroundColor
+        textView.layer.cornerRadius = 14
+        textView.clipsToBounds = true
+        return textView
+    }()
     
-    @IBOutlet weak var nameTextView: UITextView!
-    @IBOutlet weak var bioTextView: UITextView!
+    lazy var bioTextView: UITextView = {
+        let textView = UITextView()
+        textView.delegate = self
+        textView.textAlignment = .left
+        textView.autocapitalizationType = .sentences
+        textView.textAlignment = .left
+        textView.text = ProfileViewController.bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
+        textView.font = UIFont(name: "SFProText-Regular", size: 16)
+        textView.autocorrectionType = .no
+        textView.backgroundColor = view.backgroundColor
+        textView.layer.cornerRadius = 14
+        textView.clipsToBounds = true
+        return textView
+    }()
     
-    @IBOutlet weak var profileImageView: ProfileImageView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    lazy var profileImageView: ProfileImageView = { return ProfileImageView(small: false) }()
     
-    @IBAction func GCDSaveButtonTapped(_ sender: ButtonWithTouchSize) {
-        ProfileViewController.gcdButtonTapped = true
-        enableSomeViews()
-        referToFile(action: .save, dataManager: GCDDataManager.shared)
-    }
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView()
+        spinner.style = .gray
+        spinner.hidesWhenStopped = true
+        spinner.stopAnimating()
+        return spinner
+    }()
     
-    @IBAction func OperationSaveButtonTapped(_ sender: ButtonWithTouchSize) {
-        ProfileViewController.operationButtonTapped = true
-        enableSomeViews()
-        referToFile(action: .save, dataManager: OperationDataManager.shared)
-    }
+    lazy var gcdSaveButton: ButtonWithTouchSize = {
+        let button = ButtonWithTouchSize()
+        button.setTitle("GCD Save", for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
+        button.setTitleColor(.lightGray, for: .disabled)
+        button.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 19.0)
+        button.titleLabel?.textAlignment = .center
+        button.layer.cornerRadius = 14
+        button.clipsToBounds = true
+        button.addTarget(self, action: #selector(gcdSaveButtonTapped), for: .touchUpInside)
+        return button
+    }()
     
-    @IBAction func editPhotoButtonTapped(_ sender: UIButton) {
-        configureActionSheet()
-    }
+    lazy var operationSaveButton: ButtonWithTouchSize = {
+        let button = ButtonWithTouchSize()
+        button.setTitle("Operation Save", for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
+        button.setTitleColor(.lightGray, for: .disabled)
+        button.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 19.0)
+        button.titleLabel?.textAlignment = .center
+        button.layer.cornerRadius = 14
+        button.clipsToBounds = true
+        button.addTarget(self, action: #selector(operationSaveButtonTapped), for: .touchUpInside)
+        return button
+    }()
     
-    @IBAction func editProfileButtonTapped(_ sender: ButtonWithTouchSize) {
-        if editProfileButton.titleLabel?.text == "Edit Profile" {
-            setupEditProfileButtonView(title: "Cancel Editing", color: .systemRed)
-            setTextViewsEditable(flag: true)
-            [nameTextView, bioTextView].forEach {
-                $0?.becomeFirstResponder()
-                $0?.layer.borderWidth = 1.0
-                $0?.layer.borderColor = Colors.tableViewLightSeparatorColor.cgColor
-            }
-        } else {
-            setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-            setTextViewsEditable(flag: false)
-            setSaveButtonsEnable(flag: false)
-            [nameTextView, bioTextView].forEach {
-                $0?.resignFirstResponder()
-                $0?.layer.borderWidth = 0.0
-            }
-        }
-    }
+    lazy var editProfileButton: ButtonWithTouchSize = {
+        let button = ButtonWithTouchSize()
+        button.setTitle("Edit Profile", for: .normal)
+        button.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 19.0)
+        button.titleLabel?.textAlignment = .center
+        button.layer.cornerRadius = 14
+        button.clipsToBounds = true
+        button.addTarget(self, action: #selector(editProfileButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var editPhotoButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Edit", for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitleColor(UIColor.systemBlue.withAlphaComponent(0.4), for: .highlighted)
+        button.setTitleColor(.lightGray, for: .disabled)
+        button.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 16.0)
+        button.titleLabel?.textAlignment = .center
+        button.addTarget(self, action: #selector(configureActionSheet), for: .touchUpInside)
+        return button
+    }()
     
     deinit {
         removeKeyboardNotifications()
     }
     
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        /* Loger.printButtonLog(GCDSaveButton, #function)
-         Почему возникает ошибка "Unexpectedly found nil while implicitly unwrapping an Optional value".
-         View Controller все еще находится в состоянии Unloaded: объект view не создан, IBOutlet и IBAction не назначены.
-         Соответственно, переменная saveButton на момент вызова init имеет значение nil, поэтому при косвенном извлечении опционала вылетает error.
-         Метод loadView, который срабатывает после init, загружает интерфейсный файл, создает все view, кнопки и прочие элементы в нем,
-         а также назначает все связи IBOutlet и IBAction. Завершение настройки происходит в методе viewDidLoad. */
+//        Loger.printButtonLog(gcdSaveButton, #function)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         Loger.printButtonLog(gcdSaveButton, #function)
-
-        nameTextView.delegate = self
-        bioTextView.delegate = self
-        
-        imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.allowsEditing = true
-        
         setupViews()
-        setupNavigationBar()
-        setupButtonsConstraints()
         addKeyboardNotifications()
     }
     
@@ -115,16 +156,12 @@ class ProfileViewController: LogViewController {
         if #available(iOS 13.0, *) { } else {
             viewHeight -= 20
         }
-        bioTextViewHeightConstraint.constant = viewHeight - 385
+        bioTextView.heightAnchor.constraint(equalToConstant: viewHeight - 385).isActive = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Loger.printButtonLog(gcdSaveButton, #function)
-        /* Почему значения frame отличаются при определенной конфигурации девайсов storyboard/simulator.
-        Так как в .storyboard выбран iPhone SE 2, а запускается проект на iPhone 11/iPhone 11 Pro: они имеют разный размер экранов.
-        В методе viewDidLoad объект view уже создан, но еще не добавлен в иерархию. Настройка элементов происходит в методе viewWillAppear.
-        В состоянии Appearing происходит анимация View Controller в процессе появления. После срабатывает viewDidAppear, при этом view уже имеет свой окончательный внешний вид. */
     }
     
     // MARK: - Keyboard
@@ -144,7 +181,7 @@ class ProfileViewController: LogViewController {
             let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
             let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
 
-            let constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 20) - 20 : -20
+            let constant = isKeyboardShowing ? -(keyboardFrame?.height ?? 0) - 20 : -20
             gcdSaveButtonBottomConstraint?.constant = constant
             operationSaveButtonBottomConstraint?.constant = constant
             
@@ -152,7 +189,7 @@ class ProfileViewController: LogViewController {
                 self.view.layoutIfNeeded()
             }, completion: { (_) in
                 if isKeyboardShowing {
-                    let bottomOffset = CGPoint(x: 0, y: keyboardFrame?.height ?? 20)
+                    let bottomOffset = CGPoint(x: 0, y: (keyboardFrame?.height ?? 0) - (self.navigationController?.navigationBar.bounds.height ?? 0))
                     if bottomOffset.y > 0 {
                         self.scrollView.setContentOffset(bottomOffset, animated: true)
                     }
@@ -163,9 +200,10 @@ class ProfileViewController: LogViewController {
     
     // MARK: - Theme
     
-    fileprivate func applyTheme() {
+    func applyTheme() {
         let currentTheme = Theme.current.themeOptions
         [view, scrollViewContentView].forEach { $0?.backgroundColor = currentTheme.backgroundColor }
+        [nameTextView, bioTextView].forEach { $0?.textColor = currentTheme.textColor }
         activityIndicator.color = currentTheme.textColor
         [gcdSaveButton, operationSaveButton, editProfileButton].forEach { $0?.backgroundColor = currentTheme.saveButtonColor }
         if #available(iOS 13.0, *) { } else {
@@ -173,7 +211,7 @@ class ProfileViewController: LogViewController {
         }
     }
     
-    fileprivate func applyThemeForImagePicker() {
+    func applyThemeForImagePicker() {
         if #available(iOS 13.0, *) {
         } else {
             let currentTheme = Theme.current.themeOptions
@@ -219,77 +257,103 @@ class ProfileViewController: LogViewController {
     // MARK: - Views
     
     private func setupViews() {
-        applyTheme()
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.stopAnimating()
+        view.addSubview(scrollView)
+        view.addSubview(gcdSaveButton)
+        view.addSubview(operationSaveButton)
+        scrollView.addSubview(scrollViewContentView)
+        scrollViewContentView.addSubview(editProfileButton)
+        scrollViewContentView.addSubview(activityIndicator)
+        scrollViewContentView.addSubview(nameTextView)
+        scrollViewContentView.addSubview(bioTextView)
+        scrollViewContentView.addSubview(profileImageView)
+        scrollViewContentView.addSubview(editPhotoButton)
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        gcdSaveButton.translatesAutoresizingMaskIntoConstraints = false
+        operationSaveButton.translatesAutoresizingMaskIntoConstraints = false
+        scrollViewContentView.translatesAutoresizingMaskIntoConstraints = false
+        editProfileButton.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        nameTextView.translatesAutoresizingMaskIntoConstraints = false
+        bioTextView.translatesAutoresizingMaskIntoConstraints = false
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        editPhotoButton.translatesAutoresizingMaskIntoConstraints = false
+
+        gcdSaveButtonBottomConstraint = NSLayoutConstraint(item: gcdSaveButton, attribute: .bottom, relatedBy: .equal,
+                                                           toItem: view, attribute: .bottom, multiplier: 1, constant: -20)
+        operationSaveButtonBottomConstraint = NSLayoutConstraint(item: operationSaveButton, attribute: .bottom, relatedBy: .equal,
+                                                                 toItem: view, attribute: .bottom, multiplier: 1, constant: -20)
+        gcdSaveButtonBottomConstraint?.isActive = true
+        operationSaveButtonBottomConstraint?.isActive = true
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollViewContentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            scrollViewContentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            scrollViewContentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            scrollViewContentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            scrollViewContentView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            editProfileButton.topAnchor.constraint(equalTo: bioTextView.bottomAnchor, constant: 20),
+            editProfileButton.bottomAnchor.constraint(equalTo: scrollViewContentView.bottomAnchor),
+            editProfileButton.leadingAnchor.constraint(greaterThanOrEqualTo: scrollViewContentView.leadingAnchor, constant: 12),
+            editProfileButton.trailingAnchor.constraint(lessThanOrEqualTo: scrollViewContentView.trailingAnchor, constant: -12),
+            editProfileButton.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor),
+            editProfileButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 296),
+            editProfileButton.heightAnchor.constraint(equalToConstant: 40),
+            activityIndicator.topAnchor.constraint(equalTo: nameTextView.bottomAnchor),
+            activityIndicator.bottomAnchor.constraint(equalTo: bioTextView.topAnchor),
+            activityIndicator.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor),
+            activityIndicator.widthAnchor.constraint(equalToConstant: 20),
+            activityIndicator.heightAnchor.constraint(equalToConstant: 20),
+            nameTextView.topAnchor.constraint(equalTo: editPhotoButton.bottomAnchor),
+            nameTextView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 14),
+            nameTextView.bottomAnchor.constraint(equalTo: bioTextView.topAnchor, constant: -20),
+            nameTextView.leadingAnchor.constraint(greaterThanOrEqualTo: scrollViewContentView.leadingAnchor, constant: 40),
+            nameTextView.trailingAnchor.constraint(lessThanOrEqualTo: scrollViewContentView.trailingAnchor, constant: -40),
+            nameTextView.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor),
+            nameTextView.widthAnchor.constraint(greaterThanOrEqualToConstant: 240),
+            nameTextView.heightAnchor.constraint(equalToConstant: 44),
+            profileImageView.topAnchor.constraint(equalTo: scrollViewContentView.topAnchor, constant: 7),
+            profileImageView.trailingAnchor.constraint(equalTo: editPhotoButton.trailingAnchor),
+            profileImageView.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor),
+            profileImageView.widthAnchor.constraint(equalToConstant: 240),
+            profileImageView.heightAnchor.constraint(equalToConstant: 240),
+            editPhotoButton.leadingAnchor.constraint(greaterThanOrEqualTo: scrollViewContentView.leadingAnchor, constant: 30),
+            editPhotoButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 40),
+            editPhotoButton.heightAnchor.constraint(equalToConstant: 40),
+            bioTextView.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor),
+            bioTextView.widthAnchor.constraint(equalToConstant: 240),
+            operationSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10),
+            operationSaveButton.leadingAnchor.constraint(equalTo: gcdSaveButton.trailingAnchor, constant: 10),
+            operationSaveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
+            operationSaveButton.widthAnchor.constraint(equalTo: gcdSaveButton.widthAnchor),
+            operationSaveButton.heightAnchor.constraint(equalToConstant: 40),
+            gcdSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10),
+            gcdSaveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            gcdSaveButton.widthAnchor.constraint(equalTo: operationSaveButton.widthAnchor),
+            gcdSaveButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
 
         referToFile(action: .load, dataManager: GCDDataManager.shared)
 //        referToFile(action: .load, dataManager: OperationDataManager.shared)
 
-        setupTextViews()
-        setupButtonViews()
-    }
-    
-    private func setupButtonViews() {
-        setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
-        [editProfileButton, gcdSaveButton, operationSaveButton].forEach {
-            $0?.layer.cornerRadius = 14
-            $0?.clipsToBounds = true
-        }
-        setSaveButtonsEnable(flag: false)
-    }
-    
-    private func setupButtonsConstraints() {
-        gcdSaveButtonTopConstraint.isActive = false
-        gcdSaveButtonTopConstraint = gcdSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10)
-        gcdSaveButtonTopConstraint?.isActive = true
-
-        gcdSaveButtonBottomConstraint.isActive = false
-        gcdSaveButtonBottomConstraint = gcdSaveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
-        gcdSaveButtonBottomConstraint?.isActive = true
-        
-        operationSaveButtonTopConstraint.isActive = false
-        operationSaveButtonTopConstraint = operationSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10)
-        operationSaveButtonTopConstraint?.isActive = true
-
-        operationSaveButtonBottomConstraint.isActive = false
-        operationSaveButtonBottomConstraint = operationSaveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
-        operationSaveButtonBottomConstraint?.isActive = true
-    }
-    
-    private func setupTextViews() {
-        let currentTheme = Theme.current.themeOptions
-        [nameTextView, bioTextView].forEach {
-            var text: String = ""
-            if $0 == nameTextView {
-                $0?.isScrollEnabled = false
-                $0?.autocapitalizationType = .words
-                $0?.textAlignment = .center
-                text = ProfileViewController.name ?? "Marina Dudarenko"
-                $0?.font = UIFont(name: "SFProDisplay-Bold", size: 24)
-            } else {
-                $0?.autocapitalizationType = .sentences
-                $0?.textAlignment = .left
-                text = ProfileViewController.bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
-                $0?.font = UIFont(name: "SFProText-Regular", size: 16)
-            }
-            $0?.text = text
-            $0?.autocorrectionType = .no
-            $0?.backgroundColor = view.backgroundColor
-            $0?.textColor = currentTheme.textColor
-            $0?.layer.cornerRadius = 14
-            $0?.clipsToBounds = true
-        }
+        applyTheme()
+        setupNavigationBar()
         setTextViewsEditable(flag: false)
+        setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
+        setSaveButtonsEnable(flag: false)
     }
     
     private func setupEditProfileButtonView(title: String, color: UIColor) {
         editProfileButton.setTitle(title, for: .normal)
         editProfileButton.setTitleColor(color, for: .normal)
+        editProfileButton.setTitleColor(color.withAlphaComponent(0.4), for: .highlighted)
         editProfileButton.setTitleColor(.lightGray, for: .disabled)
     }
     
-    private func enableSomeViews() {
+    private func disableSomeViews() {
         editProfileButton.isEnabled = false
         activityIndicator.startAnimating()
         [nameTextView, bioTextView].forEach { $0?.layer.borderWidth = 0 }
@@ -303,7 +367,7 @@ class ProfileViewController: LogViewController {
         editPhotoButton.isEnabled = flag
     }
     
-    private func setSaveButtonsEnable(flag: Bool) {
+    func setSaveButtonsEnable(flag: Bool) {
         gcdSaveButton.isEnabled = flag
         operationSaveButton.isEnabled = flag
     }
@@ -331,13 +395,43 @@ class ProfileViewController: LogViewController {
     @objc private func closeProfileViewController() {
         let navigationVC = self.presentingViewController as? UINavigationController
         let conversationsListVC = navigationVC?.viewControllers.first as? ConversationsListViewController
-        conversationsListVC?.updateProfileImageView()
+        conversationsListVC?.setupRightBarButton()
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func gcdSaveButtonTapped() {
+        gcdButtonTapped = true
+        disableSomeViews()
+        referToFile(action: .save, dataManager: GCDDataManager.shared)
+    }
+    
+    @objc func operationSaveButtonTapped() {
+        operationButtonTapped = true
+        disableSomeViews()
+        referToFile(action: .save, dataManager: OperationDataManager.shared)
+    }
+    
+    @objc func editProfileButtonTapped() {
+        if editProfileButton.titleLabel?.text == "Edit Profile" {
+            setupEditProfileButtonView(title: "Cancel Editing", color: .systemRed)
+            setTextViewsEditable(flag: true)
+            [nameTextView, bioTextView].forEach {
+                $0.layer.borderWidth = 1.0
+                $0.layer.borderColor = Colors.tableViewLightSeparatorColor.cgColor
+            }
+        } else {
+            setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
+            setTextViewsEditable(flag: false)
+            setSaveButtonsEnable(flag: false)
+            [nameTextView, bioTextView].forEach {
+                $0.layer.borderWidth = 0.0
+            }
+        }
     }
     
     // MARK: - Alert
     
-    private func configureActionSheet() {
+    @objc private func configureActionSheet() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.pruneNegativeWidthConstraints()
         let galeryAction = UIAlertAction(title: "Choose from gallery", style: .default) { [weak self] (_) in
@@ -359,17 +453,18 @@ class ProfileViewController: LogViewController {
         self.present(alertController, animated: true, completion: nil)
     }
     
-    private func configureAlert(_ title: String, _ message: String?, _ twoActions: Bool) {
+    func configureAlert(_ title: String, _ message: String?, _ twoActions: Bool) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: { [weak self] (_: UIAlertAction) in
+            guard let self = self else { return }
             if title != "Error" {
-                if ProfileViewController.gcdButtonTapped {
-                    ProfileViewController.gcdButtonTapped = false
-                } else if ProfileViewController.operationButtonTapped {
-                    ProfileViewController.operationButtonTapped = false
+                if self.gcdButtonTapped {
+                    self.gcdButtonTapped = false
+                } else if self.operationButtonTapped {
+                    self.operationButtonTapped = false
                 }
-                self?.editProfileButton.isEnabled = true
-                self?.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
+                self.editProfileButton.isEnabled = true
+                self.setupEditProfileButtonView(title: "Edit Profile", color: .systemBlue)
                 ProfileViewController.nameDidChange = false
                 ProfileViewController.bioDidChange = false
                 ProfileViewController.imageDidChange = false
@@ -379,10 +474,11 @@ class ProfileViewController: LogViewController {
         
         if twoActions {
             let repeatAction = UIAlertAction(title: "Repeat", style: .default, handler: { [weak self] (_: UIAlertAction) in
-                if ProfileViewController.gcdButtonTapped {
-                    self?.referToFile(action: .save, dataManager: GCDDataManager.shared)
-                } else if ProfileViewController.operationButtonTapped {
-                    self?.referToFile(action: .save, dataManager: OperationDataManager.shared)
+                guard let self = self else { return }
+                if self.gcdButtonTapped {
+                    self.referToFile(action: .save, dataManager: GCDDataManager.shared)
+                } else if self.operationButtonTapped {
+                    self.referToFile(action: .save, dataManager: OperationDataManager.shared)
                 }
             })
             alertController.addAction(repeatAction)
@@ -395,63 +491,5 @@ class ProfileViewController: LogViewController {
             }
         }
         self.present(alertController, animated: true, completion: nil)
-    }
-}
-
-// MARK: - ImagePicker, UINavigationControllerDelegate, UIImagePickerControllerDelegate
-
-extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            guard let compressData = pickedImage.jpegData(compressionQuality: 0.5) else { return }
-            let compressedImage = UIImage(data: compressData)
-            profileImageView.profileImage.image = compressedImage
-            profileImageView.lettersLabel.isHidden = true
-            setSaveButtonsEnable(flag: true)
-            ProfileViewController.imageDidChange = true
-            ProfileViewController.image = compressedImage
-        }
-        dismiss(animated: true, completion: nil)
-    }
-    
-    func presentImagePicker(of type: UIImagePickerController.SourceType) {
-        if UIImagePickerController.isSourceTypeAvailable(type) {
-            imagePicker.sourceType = type
-            applyThemeForImagePicker()
-            present(imagePicker, animated: true, completion: nil)
-        } else {
-            configureAlert("Error", "Check your device and try later", false)
-        }
-    }
-}
-
-// MARK: - UITextViewDelegate
-
-extension ProfileViewController: UITextViewDelegate {
-    func textViewDidChange(_ textView: UITextView) {
-        setSaveButtonsEnable(flag: true)
-        if textView == nameTextView {
-            ProfileViewController.nameDidChange = true
-        } else {
-            ProfileViewController.bioDidChange = true
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView == nameTextView {
-            ProfileViewController.name = textView.text
-        } else {
-            ProfileViewController.bio = textView.text
-        }
-    }
-    
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let numberOfChars = (textView.text as NSString).replacingCharacters(in: range, with: text).count
-        if textView == nameTextView {
-            return numberOfChars < 21
-        } else if textView == bioTextView {
-            return numberOfChars < 61
-        }
-        return false
     }
 }

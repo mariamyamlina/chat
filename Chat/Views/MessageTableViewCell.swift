@@ -9,7 +9,6 @@
 import UIKit
 
 class MessageTableViewCell: UITableViewCell {
-    
     enum MessageType {
         case input
         case output
@@ -24,7 +23,7 @@ class MessageTableViewCell: UITableViewCell {
     static let reuseIdentifier = "Message Cell"
     
     lazy var messageTextView: UITextView = {
-       let textView = UITextView()
+        let textView = UITextView()
         textView.backgroundColor = .clear
         textView.isUserInteractionEnabled = false
         textView.font = UIFont(name: "SFProText-Regular", size: 16.0)
@@ -46,8 +45,13 @@ class MessageTableViewCell: UITableViewCell {
         return label
     }()
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
         setupViews()
     }
     
@@ -57,12 +61,16 @@ class MessageTableViewCell: UITableViewCell {
         addSubview(timeLabel)
 
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             timeLabel.bottomAnchor.constraint(equalTo: textBubbleView.bottomAnchor, constant: -2),
             timeLabel.trailingAnchor.constraint(equalTo: textBubbleView.trailingAnchor, constant: -8),
             timeLabel.heightAnchor.constraint(equalToConstant: 13),
             timeLabel.widthAnchor.constraint(equalToConstant: 32)
         ])
+        
+        backgroundColor = .clear
+        selectionStyle = .none
     }
 }
 
@@ -88,9 +96,6 @@ extension MessageTableViewCell: ConfigurableView {
         } else {
             messageTextView.text = messageText
         }
-        
-        backgroundColor = .clear
-        selectionStyle = .none
 
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)

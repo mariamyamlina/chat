@@ -8,46 +8,71 @@
 
 import UIKit
 
-@IBDesignable
 class ThemeButton: ButtonWithTouchSize {
-    
     var pickHandler: (() -> Void)?
     
-    @IBInspectable var inputMessageColor: UIColor = Colors.inputGrey {
+    lazy var contentView: UIView = {
+        let contentView = UIView()
+        contentView.backgroundColor = .clear
+        contentView.isUserInteractionEnabled = false
+        return contentView
+    }()
+    
+    lazy var themeNameLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = UIFont(name: "SFProText-Semibold", size: 19)
+        return label
+    }()
+    
+    lazy var backgroundView: UIView = {
+        let backgroundView = UIView()
+        backgroundView.layer.cornerRadius = 14
+        backgroundView.clipsToBounds = true
+        return backgroundView
+    }()
+    
+    lazy var inputMessageBubble: UIView = {
+        let bubble = UIView()
+        bubble.layer.cornerRadius = 8
+        bubble.clipsToBounds = true
+        return bubble
+    }()
+    
+    lazy var outputMessageBubble: UIView = {
+        let bubble = UIView()
+        bubble.layer.cornerRadius = 8
+        bubble.clipsToBounds = true
+        return bubble
+    }()
+    
+    var inputMessageColor: UIColor = Colors.inputGray {
         didSet {
             inputMessageBubble.backgroundColor = inputMessageColor
             setNeedsDisplay()
         }
     }
     
-    @IBInspectable var outputMessageColor: UIColor = Colors.outputGreen {
+    var outputMessageColor: UIColor = Colors.outputGreen {
         didSet {
             outputMessageBubble.backgroundColor = outputMessageColor
             setNeedsDisplay()
         }
     }
     
-    @IBInspectable var backgroundViewColor: UIColor = .white {
+    var backgroundViewColor: UIColor = .white {
         didSet {
             backgroundView.backgroundColor = backgroundViewColor
             setNeedsDisplay()
         }
     }
     
-    @IBInspectable var labelTitle: String = "Classic" {
+    var labelTitle: String = "Classic" {
         didSet {
-            let attr: [NSAttributedString.Key: Any] = [.font: UIFont(name: "SFProText-Semibold", size: 19) as Any]
-            let attrString = NSMutableAttributedString(string: labelTitle, attributes: attr)
-            themeNameLabel.attributedText = attrString
+            themeNameLabel.text = labelTitle
             setNeedsDisplay()
         }
     }
-
-    @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var backgroundView: UIView!
-    @IBOutlet weak var themeNameLabel: UILabel!
-    @IBOutlet weak var inputMessageBubble: UIView!
-    @IBOutlet weak var outputMessageBubble: UIView!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -60,34 +85,44 @@ class ThemeButton: ButtonWithTouchSize {
     }
     
     private func setupView() {
-        let bundle = Bundle(for: ThemeButton.self)
-        bundle.loadNibNamed("ThemeButton", owner: self, options: nil)
-        
-        contentView.backgroundColor = .clear
         addSubview(contentView)
-        contentView.isUserInteractionEnabled = false
-        contentView.frame = self.bounds
+        contentView.addSubview(themeNameLabel)
+        contentView.addSubview(backgroundView)
+        backgroundView.addSubview(inputMessageBubble)
+        backgroundView.addSubview(outputMessageBubble)
+
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
+        themeNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        inputMessageBubble.translatesAutoresizingMaskIntoConstraints = false
+        outputMessageBubble.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor)
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: themeNameLabel.topAnchor, constant: -20),
+            backgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            themeNameLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            themeNameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            inputMessageBubble.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 14),
+            inputMessageBubble.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -18),
+            inputMessageBubble.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 30),
+            inputMessageBubble.trailingAnchor.constraint(equalTo: outputMessageBubble.leadingAnchor, constant: -6),
+            inputMessageBubble.widthAnchor.constraint(equalToConstant: 117),
+            outputMessageBubble.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 22),
+            outputMessageBubble.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -10),
+            outputMessageBubble.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -30),
+            outputMessageBubble.widthAnchor.constraint(equalToConstant: 117)
         ])
-        
-        themeNameLabel.textColor = .white
         
         layer.cornerRadius = 14
         clipsToBounds = true
-        backgroundView.layer.cornerRadius = 14
-        backgroundView.clipsToBounds = true
-        inputMessageBubble.layer.cornerRadius = 8
-        inputMessageBubble.clipsToBounds = true
-        outputMessageBubble.layer.cornerRadius = 8
-        outputMessageBubble.clipsToBounds = true
-
         addTarget(self, action: #selector(pickButtonTapped(_:)), for: .touchUpInside)
     }
     

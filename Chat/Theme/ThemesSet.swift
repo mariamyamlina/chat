@@ -1,44 +1,17 @@
 //
-//  ThemeOptions.swift
+//  ThemesSet.swift
 //  Chat
 //
-//  Created by Maria Myamlina on 12.10.2020.
+//  Created by Maria Myamlina on 02.11.2020.
 //  Copyright © 2020 Maria Myamlina. All rights reserved.
 //
 
 import UIKit
 
-protocol ThemeOptions {
-    var inputBubbleColor: UIColor { get }
-    var outputBubbleColor: UIColor { get }
-    
-    var textColor: UIColor { get }
-    var outputTextColor: UIColor { get }
-    
-    var barColor: UIColor { get }
-    var alertColor: UIColor { get }
-    var saveButtonColor: UIColor { get }
-    var backgroundColor: UIColor { get }
-    var settingsBackgroundColor: UIColor { get }
-    
-    var inputTimeColor: UIColor { get }
-    var outputTimeColor: UIColor { get }
-    
-    var textFieldBackgroundColor: UIColor { get }
-    var textFieldTextColor: UIColor { get }
-    var searchBarTextColor: UIColor { get }
-    
-    var barStyle: UIBarStyle { get }
-    var keyboardAppearance: UIKeyboardAppearance { get }
-    
-    var tableViewSeparatorColor: UIColor { get }
-}
-
-// MARK: - Theme Set
-
 struct ClassicTheme: ThemeOptions {
-    var inputBubbleColor: UIColor { return Colors.inputGrey }
+    var inputBubbleColor: UIColor { return Colors.inputGray }
     var outputBubbleColor: UIColor { return Colors.outputGreen }
+    var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
     
     var textColor: UIColor { return .black }
     var outputTextColor: UIColor { return .black }
@@ -49,8 +22,8 @@ struct ClassicTheme: ThemeOptions {
     var backgroundColor: UIColor { return .white }
     var settingsBackgroundColor: UIColor { return Colors.darkGreen }
     
-    var inputTimeColor: UIColor { return Colors.timeLightGreyColor }
-    var outputTimeColor: UIColor { return Colors.timeLightGreyColor }
+    var inputTimeColor: UIColor { return Colors.timeLightGrayColor }
+    var outputTimeColor: UIColor { return Colors.timeLightGrayColor }
     
     var textFieldBackgroundColor: UIColor { return Colors.textFieldLightBackgroundColor }
     var textFieldTextColor: UIColor { return Colors.textFieldLightTextColor }
@@ -60,11 +33,14 @@ struct ClassicTheme: ThemeOptions {
     var keyboardAppearance: UIKeyboardAppearance { return .default }
     
     var tableViewSeparatorColor: UIColor { return Colors.tableViewLightSeparatorColor }
+    var tableViewHeaderTextColor: UIColor { return Colors.tableViewHeaderTextLightColor }
+    var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderLightColor }
 }
 
 struct DayTheme: ThemeOptions {
-    var inputBubbleColor: UIColor { return Colors.inputLightGrey }
+    var inputBubbleColor: UIColor { return Colors.inputLightGray }
     var outputBubbleColor: UIColor { return Colors.outputBlue }
+    var messageLabelColor: UIColor { return Colors.messageLabelLightColor }
     
     var textColor: UIColor { return .black }
     var outputTextColor: UIColor { return .white }
@@ -75,7 +51,7 @@ struct DayTheme: ThemeOptions {
     var backgroundColor: UIColor { return .white }
     var settingsBackgroundColor: UIColor { return Colors.darkBlue }
     
-    var inputTimeColor: UIColor { return Colors.timeGreyColor }
+    var inputTimeColor: UIColor { return Colors.timeGrayColor }
     var outputTimeColor: UIColor { return Colors.timeWhiteColor }
     
     var textFieldBackgroundColor: UIColor { return Colors.textFieldLightBackgroundColor }
@@ -86,11 +62,14 @@ struct DayTheme: ThemeOptions {
     var keyboardAppearance: UIKeyboardAppearance { return .default }
     
     var tableViewSeparatorColor: UIColor { return Colors.tableViewLightSeparatorColor }
+    var tableViewHeaderTextColor: UIColor { return Colors.tableViewHeaderTextLightColor }
+    var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderLightColor }
 }
 
 struct NightTheme: ThemeOptions {
-    var inputBubbleColor: UIColor { return Colors.inputDarkGrey }
-    var outputBubbleColor: UIColor { return Colors.outputDarkGrey }
+    var inputBubbleColor: UIColor { return Colors.inputDarkGray }
+    var outputBubbleColor: UIColor { return Colors.outputDarkGray }
+    var messageLabelColor: UIColor { return Colors.messageLabelDarkColor }
     
     var textColor: UIColor { return .white }
     var outputTextColor: UIColor { return .white }
@@ -99,7 +78,7 @@ struct NightTheme: ThemeOptions {
     var alertColor: UIColor { return Colors.alertDarkColor }
     var saveButtonColor: UIColor { return Colors.saveButtonDarkColor }
     var backgroundColor: UIColor { return .black }
-    var settingsBackgroundColor: UIColor { return Colors.darkGrey }
+    var settingsBackgroundColor: UIColor { return Colors.darkGray }
     
     var inputTimeColor: UIColor { return Colors.timeWhiteColor }
     var outputTimeColor: UIColor { return Colors.timeWhiteColor }
@@ -112,4 +91,6 @@ struct NightTheme: ThemeOptions {
     var keyboardAppearance: UIKeyboardAppearance { return .dark }
     
     var tableViewSeparatorColor: UIColor { return Colors.separatorColor() }
+    var tableViewHeaderTextColor: UIColor { return Colors.tableViewHeaderTextDarkColor }
+    var tableViewHeaderColor: UIColor { return Colors.tableViewHeaderDarkColor }
 }

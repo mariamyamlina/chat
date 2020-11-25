@@ -9,8 +9,6 @@
 import UIKit
 import Firebase
 
-let themeWindow = UIWindow()
-
 extension UIWindow {
     func initTheme() {
         guard #available(iOS 13.0, *) else { return }
@@ -20,16 +18,11 @@ extension UIWindow {
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
     let coreDataStack = CoreDataStack.shared
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Loger.printAppLog("Application moved from 'not running state' to 'inactive state':", application.applicationState, #function)
-    
-        Theme.current.setActive()
-        themeWindow.initTheme()
-        themeWindow.makeKey()
         
         FirebaseApp.configure()
 
@@ -37,6 +30,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             stack.printDatabaseStatistics()
         }
         coreDataStack.enableObservers()
+        
+        Theme.current.setActive()
+        let rootWindow = UIWindow(frame: UIScreen.main.bounds)
+        rootWindow.rootViewController = UINavigationController(rootViewController: ConversationsListViewController())
+        rootWindow.makeKeyAndVisible()
+        self.window = rootWindow
+        window?.initTheme()
         
         return true
     }
