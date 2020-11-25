@@ -8,7 +8,10 @@
 
 import UIKit
 
-class ConversationView: EmblemsView {
+class ConversationView: UIView {
+    // MARK: - Dependencies
+    let animator = Animator()
+    
     // MARK: - UI
     var messageInputContainerBottomConstraint: NSLayoutConstraint?
     var theme: Theme
@@ -31,7 +34,6 @@ class ConversationView: EmblemsView {
         tableView.bottomAnchor.constraint(equalTo: messageInputContainer.topAnchor).isActive = true
         tableView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        tableView.addGestureRecognizer(animator.gestureRecognizer)
         return tableView
     }()
     
@@ -73,8 +75,8 @@ class ConversationView: EmblemsView {
         return viewWithTitle
     }
     
-    func configureViewForHeaderInSection(sectionInfo: String) -> EmblemsView {
-        let headerView = EmblemsView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 28))
+    func configureViewForHeaderInSection(sectionInfo: String) -> UIView {
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 28))
         headerView.backgroundColor = .clear
 
         let dateLabel = UILabel(frame: CGRect(x: UIScreen.main.bounds.width / 3, y: 4, width: UIScreen.main.bounds.width / 3, height: 20))

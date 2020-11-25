@@ -42,7 +42,6 @@ class CollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.imageView.image = placeholder
-        self.addGestureRecognizer(animator.gestureRecognizer)
     }
 }
 

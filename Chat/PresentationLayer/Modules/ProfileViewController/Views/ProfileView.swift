@@ -8,7 +8,10 @@
 
 import UIKit
 
-class ProfileView: EmblemsView {
+class ProfileView: UIView {
+    // MARK: - Dependencies
+    let animator = Animator()
+    
     // MARK: - UI
     var theme: Theme
     var name, bio: String?
@@ -29,8 +32,8 @@ class ProfileView: EmblemsView {
         return scrollView
     }()
     
-    lazy var scrollViewContentView: EmblemsView = {
-        let scrollViewContentView = EmblemsView()
+    lazy var scrollViewContentView: UIView = {
+        let scrollViewContentView = UIView()
         scrollView.addSubview(scrollViewContentView)
         scrollViewContentView.translatesAutoresizingMaskIntoConstraints = false
         scrollViewContentView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
@@ -40,9 +43,9 @@ class ProfileView: EmblemsView {
         scrollViewContentView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
         return scrollViewContentView
     }()
-    // TODO
-    lazy var nameTextView: TextView = {
-        let nameTextView = TextView()
+    
+    lazy var nameTextView: UITextView = {
+        let nameTextView = UITextView()
         nameTextView.textAlignment = .center
         nameTextView.isScrollEnabled = false
         nameTextView.autocapitalizationType = .words
@@ -65,9 +68,9 @@ class ProfileView: EmblemsView {
         nameTextView.heightAnchor.constraint(equalToConstant: 44).isActive = true
         return nameTextView
     }()
-    // TODO
-    lazy var bioTextView: TextView = {
-        let bioTextView = TextView()
+    
+    lazy var bioTextView: UITextView = {
+        let bioTextView = UITextView()
         bioTextView.textAlignment = .left
         bioTextView.autocapitalizationType = .sentences
         bioTextView.text = bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
@@ -81,14 +84,11 @@ class ProfileView: EmblemsView {
         bioTextView.translatesAutoresizingMaskIntoConstraints = false
         bioTextView.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor).isActive = true
         bioTextView.widthAnchor.constraint(equalToConstant: 240).isActive = true
-        bioTextView.addGestureRecognizer(animator.gestureRecognizer)
         return bioTextView
     }()
     
     lazy var profileImageView: ProfileImageView = {
         let profileImageView = ProfileImageView(small: false, name: name, image: image)
-        let tap = UITapGestureRecognizer(target: self, action: #selector(configureActionSheet))
-        profileImageView.addGestureRecognizer(tap)
         profileImageView.isUserInteractionEnabled = false
         scrollViewContentView.addSubview(profileImageView)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false

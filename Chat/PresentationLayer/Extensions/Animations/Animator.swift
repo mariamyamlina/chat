@@ -17,6 +17,7 @@ class Animator: NSObject {
         let gestureRecognizer = UILongPressGestureRecognizer(target: self,
                                                              action: #selector(handleLongPress(_:)))
         gestureRecognizer.minimumPressDuration = 0.6
+        gestureRecognizer.delegate = self
         return gestureRecognizer
     }()
     
@@ -146,8 +147,17 @@ class Animator: NSObject {
     }
 }
 
+// MARK: - UIGestureRecognizerDelegate
 extension Animator: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return true
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive press: UIPress) -> Bool {
         return true
     }
 }

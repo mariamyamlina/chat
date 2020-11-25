@@ -136,11 +136,12 @@ class ProfileViewController: LogViewController {
     private func setupNavigationBar() {
         navigationItem.leftBarButtonItem = profileView.leftBarButtonItem
         navigationItem.rightBarButtonItem = profileView.rightBarButtonItem
-        navigationController?.navigationBar.addGestureRecognizer(profileView.animator.gestureRecognizer)
     }
     
     // MARK: - Handlers
     private func createHandlers() {
+        navigationController?.view.addGestureRecognizer(profileView.animator.gestureRecognizer)
+        
         profileView.nameTextView.delegate = self
         profileView.bioTextView.delegate = self
         

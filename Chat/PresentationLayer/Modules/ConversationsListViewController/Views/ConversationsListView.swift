@@ -8,7 +8,10 @@
 
 import UIKit
 
-class ConversationsListView: EmblemsView {
+class ConversationsListView: UIView {
+    // MARK: - Dependencies
+    let animator = Animator()
+    
     // MARK: - UI
     var theme: Theme
     var name: String?
@@ -66,7 +69,6 @@ class ConversationsListView: EmblemsView {
         tableView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         tableView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        tableView.addGestureRecognizer(animator.gestureRecognizer)
         return tableView
     }()
     

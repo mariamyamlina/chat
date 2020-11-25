@@ -63,7 +63,6 @@ class ConversationViewController: LogViewController {
         }
         navigationItem.titleView = conversationView.configureTopView(text: model.channel?.name,
                                                                      image: model.channel?.profileImage)
-        navigationController?.navigationBar.addGestureRecognizer(conversationView.animator.gestureRecognizer)
     }
     
     private func setupTableView() {

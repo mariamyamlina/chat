@@ -14,8 +14,6 @@
 		990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB97254C969800156A48 /* MessageDB+CoreDataProperties.swift */; };
 		990FCB9C254C969F00156A48 /* ChannelDB+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB9A254C969F00156A48 /* ChannelDB+CoreDataClass.swift */; };
 		990FCB9D254C969F00156A48 /* ChannelDB+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990FCB9B254C969F00156A48 /* ChannelDB+CoreDataProperties.swift */; };
-		991761F6256B2AAE001F4096 /* EmblemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991761F5256B2AAE001F4096 /* EmblemsView.swift */; };
-		991A5ED5256C001D00713C88 /* TextField + TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991A5ED4256C001D00713C88 /* TextField + TextView.swift */; };
 		991CEB432559C6BB006EDC72 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991CEB422559C6BB006EDC72 /* DataManager.swift */; };
 		992800F725599ABC00C19545 /* UIViewController + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992800F625599ABC00C19545 /* UIViewController + Extension.swift */; };
 		992C2ADD2538B5C100005A88 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 992C2ADC2538B5C100005A88 /* GoogleService-Info.plist */; };
@@ -96,8 +94,6 @@
 		990FCB97254C969800156A48 /* MessageDB+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MessageDB+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		990FCB9A254C969F00156A48 /* ChannelDB+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ChannelDB+CoreDataClass.swift"; sourceTree = "<group>"; };
 		990FCB9B254C969F00156A48 /* ChannelDB+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ChannelDB+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		991761F5256B2AAE001F4096 /* EmblemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmblemsView.swift; sourceTree = "<group>"; };
-		991A5ED4256C001D00713C88 /* TextField + TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextField + TextView.swift"; sourceTree = "<group>"; };
 		991CEB422559C6BB006EDC72 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		992800F625599ABC00C19545 /* UIViewController + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Extension.swift"; sourceTree = "<group>"; };
 		992C2ADC2538B5C100005A88 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -371,9 +367,7 @@
 				994F1C992534C987003FC809 /* Colors.swift */,
 				990AC648255C8346006A60D4 /* ConfigurableView.swift */,
 				99CB3DFA255B1A3600DDD117 /* Date + Extension.swift */,
-				991761F5256B2AAE001F4096 /* EmblemsView.swift */,
 				99CB3DF8255B1A1F00DDD117 /* String + Extension.swift */,
-				991A5ED4256C001D00713C88 /* TextField + TextView.swift */,
 				996941132539082500819078 /* UIAlertController + Extension.swift */,
 				99CB3DF6255B1A0600DDD117 /* UINavigationController + Extension.swift */,
 				992800F625599ABC00C19545 /* UIViewController + Extension.swift */,
@@ -699,7 +693,6 @@
 				9957F56E251F67DC007EB624 /* ConversationViewController.swift in Sources */,
 				99E8B69B252689ED00117A04 /* ThemeButton.swift in Sources */,
 				99A5733F253C7B3E00899AAC /* FirebaseManager.swift in Sources */,
-				991761F6256B2AAE001F4096 /* EmblemsView.swift in Sources */,
 				996A40C8256169DE0048361C /* RequestsFactory.swift in Sources */,
 				996A40CA25617CD50048361C /* ImagesService.swift in Sources */,
 				9950733D251F87A500515678 /* MessageTableViewCell.swift in Sources */,
@@ -726,7 +719,6 @@
 				995C84B2253B09DA0036B067 /* Message.swift in Sources */,
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,
 				99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */,
-				991A5ED5256C001D00713C88 /* TextField + TextView.swift in Sources */,
 				994AF9D125221D300013B0E0 /* TopView.swift in Sources */,
 				991CEB432559C6BB006EDC72 /* DataManager.swift in Sources */,
 				99A0E5A925587ED000742613 /* ThemesModel.swift in Sources */,

@@ -44,6 +44,11 @@ class ConversationsListViewController: LogViewController {
         getChannels()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        showNewMessageButton()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         model.removeListener()
@@ -52,8 +57,7 @@ class ConversationsListViewController: LogViewController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        guard let height = navigationController?.navigationBar.frame.height else { return }
-        conversationsListView.showNewMessageButton(height >= 96)
+        showNewMessageButton()
     }
     
     // MARK: - Setup View
@@ -81,7 +85,6 @@ class ConversationsListViewController: LogViewController {
         conversationsListView.setupNavigationItem(navigationItem: navigationItem)
         conversationsListView.setupNavigationBar(navigationBar: navigationBar)
         updateProfileImage()
-        navigationBar.addGestureRecognizer(conversationsListView.animator.gestureRecognizer)
     }
     
     private func setupTableView() {
@@ -100,6 +103,11 @@ class ConversationsListViewController: LogViewController {
     }
     
     // MARK: - Handlers
+    private func showNewMessageButton() {
+        guard let height = navigationController?.navigationBar.frame.height else { return }
+        conversationsListView.showNewMessageButton(height >= 96)
+    }
+    
     private func getChannels() {
         model.getChannels(errorHandler: { [weak self] (errorTitle, errorInfo) in
             self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
@@ -116,6 +124,8 @@ class ConversationsListViewController: LogViewController {
     }
     
     private func createHandlers() {
+        navigationController?.view.addGestureRecognizer(conversationsListView.animator.gestureRecognizer)
+        
         conversationsListView.profileMenuHandler = { [weak self] in
             guard let self = self else { return }
             let profileController = self.presentationAssembly.profileViewController().embedInNavigationController()

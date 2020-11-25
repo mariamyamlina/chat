@@ -8,12 +8,15 @@
 
 import UIKit
 
-class MessageInputContainer: EmblemsView {
+class MessageInputContainer: UIView {
+    // MARK: - Dependencies
+    let animator = Animator()
+    
     // MARK: - UI
     var theme: Theme
     
-    lazy var borderLine: EmblemsView = {
-        let line = EmblemsView()
+    lazy var borderLine: UIView = {
+        let line = UIView()
         addSubview(line)
         line.translatesAutoresizingMaskIntoConstraints = false
         line.topAnchor.constraint(equalTo: topAnchor).isActive = true
@@ -23,8 +26,8 @@ class MessageInputContainer: EmblemsView {
         return line
     }()
     
-    lazy var textField: TextField = {
-        let textField = TextField()
+    lazy var textField: UITextField = {
+        let textField = UITextField()
         textField.autocapitalizationType = .sentences
         textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
         attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any,
