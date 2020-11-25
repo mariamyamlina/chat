@@ -60,7 +60,6 @@ class CollectionViewController: LogViewController {
     private func setupNavigationBar() {
         navigationItem.rightBarButtonItem = collectionView.rightBarButtonItem
         navigationItem.title = "Choose photo"
-        navigationController?.navigationBar.addGestureRecognizer(collectionView.animator.gestureRecognizer)
     }
     
     // MARK: - Handlers
@@ -140,7 +139,8 @@ extension CollectionViewController: ICollectionModelDelegate {
     
     func show(error message: String) {
         DispatchQueue.main.async {
-            self.configureLogAlert(withTitle: "Network", withMessage: message)
+            self.configureLogAlert(withTitle: "Network", withMessage: message,
+                                   animator: self.collectionView.animator)
         }
     }
 }

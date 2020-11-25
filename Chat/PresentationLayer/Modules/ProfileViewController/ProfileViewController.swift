@@ -96,6 +96,7 @@ class ProfileViewController: LogViewController {
         if nameSaved && bioSaved && imageSaved {
             profileView.saveSucceedCompletion(name: model.name, image: model.image)
             configureAlert(model: model,
+                           animator: profileView.animator,
                            view: profileView,
                            changeInfoIndicator: infoDidChange,
                            completion: saveCompletion(nameSaved:bioSaved:imageSaved:),
@@ -104,6 +105,7 @@ class ProfileViewController: LogViewController {
                            needsTwoActions: false)
         } else {
             configureAlert(model: model,
+                           animator: profileView.animator,
                            view: profileView,
                            changeInfoIndicator: infoDidChange,
                            completion: saveCompletion(nameSaved:bioSaved:imageSaved:),
@@ -165,7 +167,7 @@ class ProfileViewController: LogViewController {
         
         profileView.actionSheetHandler = { [weak self] in
             guard let self = self else { return }
-            self.configureImagePickerAlert(model: self.model,
+            self.configureImagePickerAlert(model: self.model, animator: self.profileView.animator,
                                            completion: self.presentImagePicker)
         }
         
@@ -195,6 +197,7 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
                 present(imagePicker, animated: true, completion: nil)
             } else {
                 configureAlert(model: model,
+                               animator: profileView.animator,
                                view: profileView,
                                changeInfoIndicator: infoDidChange,
                                completion: saveCompletion(nameSaved:bioSaved:imageSaved:),

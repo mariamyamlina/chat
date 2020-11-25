@@ -10,13 +10,10 @@ import UIKit
 
 class Animator: NSObject {
     // MARK: - Emblems
-    let screenSize = CGPoint(x: UIScreen.main.bounds.width / 2,
-                             y: UIScreen.main.bounds.height / 2)
-    
     lazy var gestureRecognizer: UILongPressGestureRecognizer = {
         let gestureRecognizer = UILongPressGestureRecognizer(target: self,
                                                              action: #selector(handleLongPress(_:)))
-        gestureRecognizer.minimumPressDuration = 0.6
+        gestureRecognizer.minimumPressDuration = 0.4
         gestureRecognizer.delegate = self
         return gestureRecognizer
     }()
@@ -40,31 +37,12 @@ class Animator: NSObject {
 
     let emblemLayer = CAEmitterLayer()
     
-    func showEmblem(into view: UIView, in location: CGPoint) {
+    private func showEmblem(into view: UIView, in location: CGPoint) {
         emblemLayer.emitterPosition = location
         emblemLayer.beginTime = CACurrentMediaTime()
         emblemLayer.birthRate = 1.0
         emblemLayer.emitterCells = [emblemCell]
         view.layer.addSublayer(emblemLayer)
-    }
-    
-    func touchesBegan(_ touches: Set<UITouch>) {
-        let touch = touches.first
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(600)) {
-            self.showEmblem(into: touch?.view ?? UIView(),
-                            in: touch?.location(in: touch?.view ?? UIView()) ?? self.screenSize)
-        }
-    }
-
-    func touchesMoved(_ touches: Set<UITouch>) {
-        let touch = touches.first
-        emblemLayer.emitterPosition = touch?.location(in: touch?.view ?? UIView()) ?? screenSize
-    }
-
-    func touchesEnded(_ touches: Set<UITouch>) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(400)) {
-            self.emblemLayer.birthRate = 0
-        }
     }
     
     @objc func handleLongPress(_ sender: UILongPressGestureRecognizer) {
@@ -75,7 +53,7 @@ class Animator: NSObject {
         case .changed:
             emblemLayer.emitterPosition = sender.location(in: sender.view)
         case .ended:
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(400)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
                 self.emblemLayer.birthRate = 0
             }
         default:
@@ -89,7 +67,7 @@ class Animator: NSObject {
         
         let positionX = startPosition.x
         let positionY = startPosition.y
-        let minAngle = NSNumber(value: 0)
+        let minAngle = 0
         let maxAngle = Double.pi / 10
 
         let animationMoveHorizontally = CAKeyframeAnimation(keyPath: "position.x")
@@ -108,11 +86,11 @@ class Animator: NSObject {
                                           positionY]
         animationMoveVertically.keyTimes = [0.0, 0.5, 0.7, 0.85, 1.0]
 
-        let animationRotate = CAKeyframeAnimation(keyPath: "transform.rotation")
+        let animationRotate = CAKeyframeAnimation(keyPath: "transform.rotation.z")
         animationRotate.values = [minAngle,
-                                  NSNumber(value: maxAngle),
+                                  maxAngle,
                                   minAngle,
-                                  NSNumber(value: -maxAngle),
+                                  -maxAngle,
                                   minAngle]
         animationRotate.keyTimes = [0.0, 0.25, 0.5, 0.75, 1.0]
         
@@ -123,8 +101,8 @@ class Animator: NSObject {
         group.repeatCount = .infinity
         group.animations = [
             animationMoveHorizontally,
-            animationRotate,
-            animationMoveVertically
+            animationMoveVertically,
+            animationRotate
         ]
 
         button.layer.add(group, forKey: "moveAndRotate")

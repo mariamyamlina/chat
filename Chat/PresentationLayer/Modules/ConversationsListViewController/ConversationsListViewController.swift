@@ -98,7 +98,8 @@ class ConversationsListViewController: LogViewController {
         do {
             try model.frc.performFetch()
         } catch {
-            configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
+            configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription,
+                              animator: self.conversationsListView.animator)
         }
     }
     
@@ -110,7 +111,9 @@ class ConversationsListViewController: LogViewController {
     
     private func getChannels() {
         model.getChannels(errorHandler: { [weak self] (errorTitle, errorInfo) in
-            self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
+            guard let self = self else { return }
+            self.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo,
+                                    animator: self.conversationsListView.animator)
         })
     }
     
@@ -144,7 +147,7 @@ class ConversationsListViewController: LogViewController {
         
         conversationsListView.alertWithTextFieldHandler = { [weak self] in
             guard let self = self else { return }
-            self.configureNewChannelAlert(model: self.model, view: self.conversationsListView)
+            self.configureNewChannelAlert(model: self.model, animator: self.conversationsListView.animator, view: self.conversationsListView)
         }
     }
 }
