@@ -12,6 +12,8 @@ import CoreData
 class ConversationsListViewController: LogViewController {
     // MARK: - UI
     lazy var conversationsListView = ConversationsListView(theme: model.currentTheme, name: model.name, image: model.image)
+    lazy var frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width,
+                            height: (navigationController?.navigationBar.frame.height ?? 44) + UIApplication.shared.statusBarFrame.height)
     
     // MARK: - Dependencies
     private let presentationAssembly: IPresentationAssembly
@@ -248,12 +250,10 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
 // MARK: - UIViewControllerTransitioningDelegate
 extension ConversationsListViewController: UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return Transition(startIndicator: true,
-                          startFrame: navigationController?.navigationBar.frame ?? CGRect.zero)
+        return Transition(startIndicator: true, startFrame: frame)
     }
 
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return Transition(startIndicator: false,
-                          startFrame: navigationController?.navigationBar.frame ?? CGRect.zero)
+        return Transition(startIndicator: false, startFrame: frame)
     }
 }

@@ -9,6 +9,14 @@
 import UIKit
 
 class Transition: NSObject, UIViewControllerAnimatedTransitioning {
+    lazy var duration: TimeInterval = {
+        if startIndicator {
+            return 1.2
+        } else {
+            return 2.0
+        }
+    }()
+    
     let startIndicator: Bool
     let startFrame: CGRect
 
@@ -18,7 +26,7 @@ class Transition: NSObject, UIViewControllerAnimatedTransitioning {
     }
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 1.0
+        return duration
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -49,7 +57,7 @@ class Transition: NSObject, UIViewControllerAnimatedTransitioning {
         containerView.addSubview(toVC.view)
         containerView.addSubview(snapshot)
 
-        UIView.animate(withDuration: 1.0, delay: 0,
+        UIView.animate(withDuration: duration, delay: 0,
                        usingSpringWithDamping: 0.6, initialSpringVelocity: 0.0,
                        options: [.curveEaseIn], animations: {
             if self.startIndicator {
