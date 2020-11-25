@@ -1,0 +1,106 @@
+//
+//  MessageInputContainer.swift
+//  Chat
+//
+//  Created by Maria Myamlina on 01.11.2020.
+//  Copyright © 2020 Maria Myamlina. All rights reserved.
+//
+
+import UIKit
+
+class MessageInputContainer: UIView {
+    // MARK: - UI
+    var theme: Theme
+    
+    lazy var borderLine: UIView = {
+        let line = UIView()
+        addSubview(line)
+        line.translatesAutoresizingMaskIntoConstraints = false
+        line.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        line.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        line.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        line.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
+        return line
+    }()
+    
+    lazy var textField: UITextField = {
+        let textField = UITextField()
+        textField.autocapitalizationType = .sentences
+        textField.attributedPlaceholder = NSAttributedString(string: "Your message here...",
+        attributes: [NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any,
+                     NSAttributedString.Key.foregroundColor: theme.themeSettings.textFieldTextColor])
+        textField.textAlignment = .left
+        textField.font = UIFont(name: "SFProText-Regular", size: 17)
+        textField.borderStyle = .roundedRect
+        addSubview(textField)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.topAnchor.constraint(equalTo: topAnchor, constant: 17).isActive = true
+        textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 50).isActive = true
+        textField.leadingAnchor.constraint(equalTo: addButton.trailingAnchor, constant: 8).isActive = true
+        textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -19).isActive = true
+        textField.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        textField.centerYAnchor.constraint(equalTo: addButton.centerYAnchor).isActive = true
+        return textField
+    }()
+
+    lazy var addButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "AddIcon"), for: .normal)
+
+        addSubview(button)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.widthAnchor.constraint(equalTo: button.heightAnchor).isActive = true
+        return button
+    }()
+    
+    lazy var sendButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.isEnabled = false
+        button.isHidden = true
+        button.setImage(UIImage(named: "SendIcon"), for: .normal)
+        button.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
+        
+        addSubview(button)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.topAnchor.constraint(equalTo: textField.topAnchor, constant: 2).isActive = true
+        button.bottomAnchor.constraint(equalTo: textField.bottomAnchor, constant: -6).isActive = true
+        button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -31).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        return button
+    }()
+    
+    // MARK: - Handlers
+    var sendHandler: (() -> Void)?
+    @objc func sendButtonTapped() { sendHandler?() }
+    
+    // MARK: - Init / deinit
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init(theme: Theme) {
+        self.theme = theme
+        super.init(frame: CGRect.zero)
+        applyTheme(theme: theme)
+    }
+    
+    // MARK: - Setup View
+    func enableSendButton(_ state: Bool) {
+        sendButton.isHidden = !state
+        sendButton.isEnabled = state
+    }
+    
+    private func applyTheme(theme: Theme) {
+        self.theme = theme
+        backgroundColor = theme.themeSettings.barColor
+        borderLine.backgroundColor = Colors.separatorColor()
+        textField.backgroundColor = theme.themeSettings.textFieldBackgroundColor
+        if #available(iOS 13.0, *) {
+        } else {
+            textField.keyboardAppearance = theme.themeSettings.keyboardAppearance
+            textField.textColor = theme.themeSettings.textColor
+        }
+    }
+}
