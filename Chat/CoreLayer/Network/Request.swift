@@ -43,7 +43,7 @@ class BlueTravelRequest: Request {
     override var command: String { return "&q=blue+travel&image_type=photo&pretty=true&per_page=150" }
 }
 
-class PinkFasionRequest: Request {
+class PinkFashionRequest: Request {
     override var command: String { return "&q=pink+fashion&image_type=photo&pretty=true&per_page=150" }
 }
 
