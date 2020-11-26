@@ -43,6 +43,7 @@ class CollectionViewController: LogViewController {
         guard var constant = navigationController?.navigationBar.bounds.height else { return }
         if #available(iOS 13.0, *) { } else { constant += 20 }
         collectionView.activateTopConstraint(with: constant)
+        navigationController?.view.addGestureRecognizer(collectionView.animator.gestureRecognizer)
     }
     
     // MARK: - Setup View
@@ -64,8 +65,6 @@ class CollectionViewController: LogViewController {
     
     // MARK: - Handlers
     private func createHandlers() {
-        navigationController?.view.addGestureRecognizer(collectionView.animator.gestureRecognizer)
-        
         collectionView.collectionView.delegate = self
         collectionView.collectionView.dataSource = self
 

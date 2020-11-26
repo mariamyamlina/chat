@@ -44,6 +44,7 @@ class ConversationsListViewController: LogViewController {
         conversationsListView.tableView.isHidden = false
         applyTheme(theme: model.currentTheme)
         getChannels()
+        navigationController?.view.addGestureRecognizer(conversationsListView.animator.gestureRecognizer)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -129,8 +130,6 @@ class ConversationsListViewController: LogViewController {
     }
     
     private func createHandlers() {
-        navigationController?.view.addGestureRecognizer(conversationsListView.animator.gestureRecognizer)
-        
         conversationsListView.profileMenuHandler = { [weak self] in
             guard let self = self else { return }
             let profileController = self.presentationAssembly.profileViewController().embedInNavigationController()

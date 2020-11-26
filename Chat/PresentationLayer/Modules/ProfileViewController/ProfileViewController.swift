@@ -60,6 +60,7 @@ class ProfileViewController: LogViewController {
         let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
         let constant = view.bounds.height - navigationBarHeight - statusBarHeight - 470
         profileView.activateBioTextViewHeightConstraint(with: constant)
+        navigationController?.view.addGestureRecognizer(profileView.animator.gestureRecognizer)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -142,8 +143,6 @@ class ProfileViewController: LogViewController {
     
     // MARK: - Handlers
     private func createHandlers() {
-        navigationController?.view.addGestureRecognizer(profileView.animator.gestureRecognizer)
-        
         profileView.nameTextView.delegate = self
         profileView.bioTextView.delegate = self
         
