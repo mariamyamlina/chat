@@ -18,7 +18,12 @@ class ChatUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        let textFieldsCount = app.textViews.count
-        XCTAssertTrue(textFieldsCount == 0)
+        let barButton = app.navigationBars.buttons["barButtonItem"]
+        _ = barButton.waitForExistence(timeout: 3.0)
+        barButton.tap()
+        let textView = app.textViews["profileTextView"].firstMatch
+        _ = textView.waitForExistence(timeout: 3.0)
+        let textViews = app.textViews
+        XCTAssertEqual(textViews.count, 2)
     }
 }

@@ -46,6 +46,8 @@ class ProfileView: UIView {
     
     lazy var nameTextView: UITextView = {
         let nameTextView = UITextView()
+        nameTextView.accessibilityIdentifier = "profileTextView"
+        nameTextView.isAccessibilityElement = true
         nameTextView.textAlignment = .center
         nameTextView.isScrollEnabled = false
         nameTextView.autocapitalizationType = .words
@@ -71,6 +73,8 @@ class ProfileView: UIView {
     
     lazy var bioTextView: UITextView = {
         let bioTextView = UITextView()
+        bioTextView.accessibilityIdentifier = "profileTextView"
+        bioTextView.isAccessibilityElement = true
         bioTextView.textAlignment = .left
         bioTextView.autocapitalizationType = .sentences
         bioTextView.text = bio ?? "UX/UI designer, web-designer" + "\n" + "Moscow, Russia"
@@ -89,6 +93,8 @@ class ProfileView: UIView {
     
     lazy var profileImageView: ProfileImageView = {
         let profileImageView = ProfileImageView(small: false, name: name, image: image)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(configureActionSheet))
+        profileImageView.addGestureRecognizer(tap)
         profileImageView.isUserInteractionEnabled = false
         scrollViewContentView.addSubview(profileImageView)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -217,7 +223,6 @@ class ProfileView: UIView {
         if indicator {
             setupButtonView(button: editProfileButton, title: "Cancel Editing", color: .systemRed)
             [nameTextView, bioTextView].forEach { $0.layer.borderWidth = 1.0 }
-            profileImageView.isUserInteractionEnabled = true
             startPosition = CGPoint(x: editProfileButton.layer.position.x,
                                     y: editProfileButton.layer.position.y)
             animator.startTrembling(for: editProfileButton, position: startPosition)
