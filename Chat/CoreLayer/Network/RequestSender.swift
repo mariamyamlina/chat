@@ -6,7 +6,7 @@
 //  Copyright © 2020 Maria Myamlina. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 struct RequestConfig<Parser> where Parser: IParser {
     let request: IRequest
@@ -31,7 +31,7 @@ protocol IRequestSender {
     func send(requestConfig: RequestConfig<Parser>,
               completionHandler: @escaping (Result<DataModel, NetworkError>) -> Void)
     func load(imageWithURL url: URL,
-              completionHandler: @escaping (Result<UIImage?, NetworkError>) -> Void)
+              completionHandler: @escaping (Result<Data, NetworkError>) -> Void)
     func cancel(loadingWithURL url: URL)
 }
 
@@ -65,13 +65,13 @@ class RequestSender: IRequestSender {
     }
     
     func load(imageWithURL url: URL,
-              completionHandler: @escaping (Result<UIImage?, NetworkError>) -> Void) {
+              completionHandler: @escaping (Result<Data, NetworkError>) -> Void) {
         let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
             guard error == nil else { return }
             guard let data = data else { return }
             
             DispatchQueue.main.async {
-                completionHandler(Result.success(UIImage(data: data)))
+                completionHandler(Result.success(data))
             }
         }
         currentTasks.append(task)

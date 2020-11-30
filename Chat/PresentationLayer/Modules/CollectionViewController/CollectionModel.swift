@@ -71,7 +71,7 @@ extension CollectionModel: ICollectionModel {
     var currentTheme: Theme { return settingsService.currentTheme }
     
     func fetchUrls() {
-        imagesService.loadImages { (images: DataModel?, error) in
+        imagesService.loadUrls { (images: DataModel?, error) in
             if let images = images {
                 let cells = images.hits.map({ CollectionCellModel(imageUrl: URL(string: $0.webformatURL),
                                                                   imagesService: self.imagesService) })

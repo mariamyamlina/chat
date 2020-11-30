@@ -9,7 +9,7 @@
 import UIKit
 
 protocol IImagesService {
-    func loadImages(completionHandler: @escaping (DataModel?, NetworkError?) -> Void)
+    func loadUrls(completionHandler: @escaping (DataModel?, NetworkError?) -> Void)
     func loadImage(with url: URL, completionHandler: @escaping (UIImage?, NetworkError?) -> Void)
     func cancelLoadImage(with url: URL)
 }
@@ -26,7 +26,7 @@ class ImagesService {
 
 // MARK: - IImagesService
 extension ImagesService: IImagesService {
-    func loadImages(completionHandler: @escaping (DataModel?, NetworkError?) -> Void) {
+    func loadUrls(completionHandler: @escaping (DataModel?, NetworkError?) -> Void) {
         let requestConfig = RequestsFactory.requestConfig()
         requestSender.send(requestConfig: requestConfig) { (result: Result<DataModel, NetworkError>) in
             switch result {
@@ -39,10 +39,10 @@ extension ImagesService: IImagesService {
     }
     
     func loadImage(with url: URL, completionHandler: @escaping (UIImage?, NetworkError?) -> Void) {
-        requestSender.load(imageWithURL: url) { (result: Result<UIImage?, NetworkError>) in
+        requestSender.load(imageWithURL: url) { (result: Result<Data, NetworkError>) in
             switch result {
-            case .success(let image):
-                completionHandler(image, nil)
+            case .success(let data):
+                completionHandler(UIImage(data: data), nil)
             case .failure(let error):
                 completionHandler(nil, error)
             }
