@@ -11,6 +11,7 @@ import UIKit
 protocol IImagesService {
     func loadImages(completionHandler: @escaping (DataModel?, NetworkError?) -> Void)
     func loadImage(with url: URL, completionHandler: @escaping (UIImage?, NetworkError?) -> Void)
+    func cancelLoadImage(with url: URL)
 }
 
 class ImagesService {
@@ -38,7 +39,7 @@ extension ImagesService: IImagesService {
     }
     
     func loadImage(with url: URL, completionHandler: @escaping (UIImage?, NetworkError?) -> Void) {
-        requestSender.getImage(with: url) { (result: Result<UIImage?, NetworkError>) in
+        requestSender.load(imageWithURL: url) { (result: Result<UIImage?, NetworkError>) in
             switch result {
             case .success(let image):
                 completionHandler(image, nil)
@@ -46,5 +47,9 @@ extension ImagesService: IImagesService {
                 completionHandler(nil, error)
             }
         }
+    }
+    
+    func cancelLoadImage(with url: URL) {
+        requestSender.cancel(loadingWithURL: url)
     }
 }
