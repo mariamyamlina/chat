@@ -45,9 +45,7 @@ class ConversationsListViewController: LogViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        model.getChannels(errorHandler: { [weak self] (errorTitle, errorInfo) in
-            self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
-        })
+        getChannels()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -85,7 +83,7 @@ class ConversationsListViewController: LogViewController {
         guard let navigationBar = navigationController?.navigationBar else { return }
         conversationsListView.setupNavigationItem(navigationItem: navigationItem)
         conversationsListView.setupNavigationBar(navigationBar: navigationBar)
-        updateImageView()
+        updateProfileImage()
     }
     
     private func setupTableView() {
@@ -104,11 +102,17 @@ class ConversationsListViewController: LogViewController {
     }
     
     // MARK: - Handlers
+    private func getChannels() {
+        model.getChannels(errorHandler: { [weak self] (errorTitle, errorInfo) in
+            self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
+        })
+    }
+    
     func loadCompletion() {
         conversationsListView.profileImage.loadImageCompletion(name: model.name, image: model.image)
     }
         
-    func updateImageView() {
+    func updateProfileImage() {
         model.loadWithGCD(completion: loadCompletion)
 //        model.loadWithOperations(completion: loadCompletion)
     }
@@ -152,6 +156,7 @@ extension ConversationsListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension ConversationsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         let conversationController = presentationAssembly.conversationViewController(channel: model.channel(at: indexPath))
         navigationController?.pushViewController(conversationController, animated: true)
     }

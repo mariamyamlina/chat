@@ -18,6 +18,8 @@ protocol IServicesAssembly {
     
     var themeService: IThemesService { get }
     var dataService: IDataService { get }
+    
+    var imagesService: IImagesService { get }
 }
 
 class ServicesAssembly: IServicesAssembly {
@@ -35,14 +37,16 @@ class ServicesAssembly: IServicesAssembly {
     
     lazy var themeService: IThemesService = ThemesService(themeStorage: self.coreAssembly.themeStorage)
     lazy var dataService: IDataService = DataService(gcdDataManager: self.coreAssembly.gcdDataManager,
-                                                            operationDataManager: self.coreAssembly.operationDataManager)
+                                                     operationDataManager: self.coreAssembly.operationDataManager)
     
     lazy var fetchService: IFetchService = FetchService(coreDataStack: self.coreAssembly.coreDataStack)
     lazy var channelService: IChannelService = ChannelService(coreDataStack: self.coreAssembly.coreDataStack,
-                                                                     firebaseManager: self.coreAssembly.firebaseManager)
+                                                              firebaseManager: self.coreAssembly.firebaseManager)
     func messageService(with channel: Channel?) -> IMessageService {
         return MessageService(coreDataStack: self.coreAssembly.coreDataStack,
                               firebaseManager: self.coreAssembly.firebaseManager,
                               channel: channel)
     }
+    
+    lazy var imagesService: IImagesService = ImagesService(requestSender: self.coreAssembly.requestSender)
 }

@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "Kyle-2.jpg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "Kyle-1.jpg",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "Kyle.jpg",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Kyle.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

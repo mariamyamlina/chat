@@ -26,7 +26,7 @@ extension UIAlertController {
     func applyTheme(theme: Theme) {
         if #available(iOS 13.0, *) { } else {
             if let subview = self.view.subviews.first?.subviews.first?.subviews.first {
-                subview.backgroundColor = theme.themeSettings.alertColor
+                subview.backgroundColor = theme.settings.alertColor
             }
         }
     }

@@ -12,14 +12,18 @@ import Firebase
 protocol IFirebaseManager: class {
     var universallyUniqueIdentifier: String { get }
     
-    func getChannels(completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
-    func addChannelsListener(completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
+    func getChannels(completion: @escaping ([[String: Any]]) -> Void,
+                     errorHandler: @escaping (String?, String?) -> Void)
+    func addChannelsListener(completion: @escaping (DocumentChangeType, [String: Any]) -> Void,
+                             errorHandler: @escaping (String?, String?) -> Void)
     func removeChannelsListener()
     func create(channel name: String)
     func delete(channel id: String)
     
-    func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
-    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void)
+    func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void,
+                     errorHandler: @escaping (String?, String?) -> Void)
+    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, [String: Any]) -> Void,
+                             errorHandler: @escaping (String?, String?) -> Void)
     func removeMessagesListener()
     func create(message text: String, inChannel id: String)
 }
@@ -50,8 +54,8 @@ class FirebaseManager {
 
 extension FirebaseManager: IFirebaseManager {
     // MARK: - Channels
-        
-    func getChannels(completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func getChannels(completion: @escaping ([[String: Any]]) -> Void,
+                     errorHandler: @escaping (String?, String?) -> Void) {
         var channels: [[String: Any]] = []
         reference.getDocuments { (querySnapshot, error) in
             guard error == nil else {
@@ -60,46 +64,42 @@ extension FirebaseManager: IFirebaseManager {
             }
             guard let snapshot = querySnapshot else { return }
             for document in snapshot.documents {
-                let docData = document.data()
-                let docId = document.documentID
-                guard let nameFromFB = docData["name"] as? String,
-                    !nameFromFB.containtsOnlyOfWhitespaces() else { continue }
-                let lastMessageFromFB = docData["lastMessage"] as? String
-                let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                let channel = ["identifier": docId,
-                               "name": nameFromFB,
-                               "lastMessage": lastMessageFromFB as Any,
-                               "lastActivity": lastActivityFromFB as Any,
-                               "profileImage": self.generateImage() as Any] as [String: Any]
+                guard let channel = self.getChannel(documentData: document.data(),
+                                                    documentId: document.documentID) else { continue }
                 channels.append(channel)
             }
             completion(channels)
         }
     }
     
-    func addChannelsListener(completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func addChannelsListener(completion: @escaping (DocumentChangeType, [String: Any]) -> Void,
+                             errorHandler: @escaping (String?, String?) -> Void) {
         channelsListener = reference.addSnapshotListener(includeMetadataChanges: true) { querySnapshot, error in
             guard error == nil else {
                 errorHandler("Firebase", error?.localizedDescription)
                 return
             }
             guard let snapshot = querySnapshot else { return }
-            snapshot.documentChanges.forEach { diff in
-                let docData = diff.document.data()
-                let docId = diff.document.documentID
-                if let nameFromFB = docData["name"] as? String,
-                    !nameFromFB.containtsOnlyOfWhitespaces() {
-                   let lastMessageFromFB = docData["lastMessage"] as? String
-                   let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
-                    let channel = ["identifier": docId,
-                                   "name": nameFromFB,
-                                   "lastMessage": lastMessageFromFB as Any,
-                                   "lastActivity": lastActivityFromFB as Any,
-                                   "profileImage": self.generateImage() as Any] as [String: Any]
-                    completion(diff.type, channel)
-                }
+            for diff in snapshot.documentChanges {
+                guard let channel = self.getChannel(documentData: diff.document.data(),
+                                                    documentId: diff.document.documentID) else { continue }
+                completion(diff.type, channel)
             }
         }
+    }
+    
+    private func getChannel(documentData docData: [String: Any],
+                            documentId docId: String) -> [String: Any]? {
+        guard let nameFromFB = docData["name"] as? String,
+            !nameFromFB.containtsOnlyOfWhitespaces() else { return nil }
+        let lastMessageFromFB = docData["lastMessage"] as? String
+        let lastActivityFromFB = (docData["lastActivity"] as? Timestamp)?.dateValue()
+        let channel = ["identifier": docId,
+                       "name": nameFromFB,
+                       "lastMessage": lastMessageFromFB as Any,
+                       "lastActivity": lastActivityFromFB as Any,
+                       "profileImage": self.generateImage() as Any] as [String: Any]
+        return channel
     }
     
     func removeChannelsListener() {
@@ -116,8 +116,8 @@ extension FirebaseManager: IFirebaseManager {
     }
 
     // MARK: - Messages
-
-    func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func getMessages(inChannel id: String, completion: @escaping ([[String: Any]]) -> Void,
+                     errorHandler: @escaping (String?, String?) -> Void) {
         var messages: [[String: Any]] = []
         reference.document(id).collection("messages").getDocuments { (querySnapshot, error) in
             guard error == nil else {
@@ -126,46 +126,42 @@ extension FirebaseManager: IFirebaseManager {
             }
             guard let snapshot = querySnapshot else { return }
             for document in snapshot.documents {
-                let docData = document.data()
-                let docId = document.documentID
-                guard let contentFromFB = docData["content"] as? String,
-                      let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
-                      let senderIdFromFB = docData["senderId"] as? String,
-                      let senderNameFromFB = docData["senderName"] as? String else { continue }
-                let message = ["identifier": docId,
-                               "content": contentFromFB,
-                               "created": dateFromFB,
-                               "senderId": senderIdFromFB,
-                               "senderName": senderNameFromFB] as [String: Any]
+                guard let message = self.getMessage(documentData: document.data(),
+                                                    documentId: document.documentID) else { continue }
                 messages.append(message)
             }
             completion(messages)
         }
     }
     
-    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, [String: Any]) -> Void, errorHandler: @escaping (String?, String?) -> Void) {
+    func addMessagesListener(inChannel id: String, completion: @escaping (DocumentChangeType, [String: Any]) -> Void,
+                             errorHandler: @escaping (String?, String?) -> Void) {
         channelsListener = reference.document(id).collection("messages").addSnapshotListener(includeMetadataChanges: true) { querySnapshot, error in
             guard error == nil else {
                 errorHandler("Firebase", error?.localizedDescription)
                 return
             }
             guard let snapshot = querySnapshot else { return }
-            snapshot.documentChanges.forEach { diff in
-                let docData = diff.document.data()
-                let docId = diff.document.documentID
-                if let contentFromFB = docData["content"] as? String,
-                   let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
-                   let senderIdFromFB = docData["senderId"] as? String,
-                   let senderNameFromFB = docData["senderName"] as? String {
-                    let message = ["identifier": docId,
-                                   "content": contentFromFB,
-                                   "created": dateFromFB,
-                                   "senderId": senderIdFromFB,
-                                   "senderName": senderNameFromFB] as [String: Any]
-                    completion(diff.type, message)
-                }
+            for diff in snapshot.documentChanges {
+                guard let message = self.getMessage(documentData: diff.document.data(),
+                                                    documentId: diff.document.documentID) else { continue }
+                completion(diff.type, message)
             }
         }
+    }
+    
+    private func getMessage(documentData docData: [String: Any],
+                            documentId docId: String) -> [String: Any]? {
+        guard let contentFromFB = docData["content"] as? String,
+              let dateFromFB = (docData["created"] as? Timestamp)?.dateValue(),
+              let senderIdFromFB = docData["senderId"] as? String,
+              let senderNameFromFB = docData["senderName"] as? String else { return nil }
+        let message = ["identifier": docId,
+                       "content": contentFromFB,
+                       "created": dateFromFB,
+                       "senderId": senderIdFromFB,
+                       "senderName": senderNameFromFB] as [String: Any]
+        return message
     }
     
     func removeMessagesListener() {
@@ -181,47 +177,15 @@ extension FirebaseManager: IFirebaseManager {
     }
 }
 
-// MARK: - Generate image
+// MARK: - Generator
 extension FirebaseManager {
     private func generateImage() -> UIImage? {
-        let randNum = Int(arc4random_uniform(15))
-        let image: UIImage?
-        switch randNum {
-        case 0:
-            image = UIImage(named: "Butters")
-        case 1:
-            image = UIImage(named: "Chef")
-        case 2:
-            image = UIImage(named: "Craig")
-        case 3:
-            image = UIImage(named: "Eric")
-        case 4:
-            image = UIImage(named: "Ike")
-        case 5:
-            image = UIImage(named: "Jimmy")
-        case 6:
-            image = UIImage(named: "Kenny")
-        case 7:
-            image = UIImage(named: "Kyle")
-        case 8:
-            image = UIImage(named: "Lien")
-        case 9:
-            image = UIImage(named: "Randy")
-        case 10:
-            image = UIImage(named: "Sheila")
-        case 11:
-            image = UIImage(named: "Sheron")
-        case 12:
-            image = UIImage(named: "Stan")
-        case 13:
-            image = UIImage(named: "Timmy")
-        case 14:
-            image = UIImage(named: "Token")
-        case 15:
-            image = UIImage(named: "Wendy")
-        default:
-            image = nil
+        let array = ["Butters", "Chef", "Craig", "Eric", "Ike", "Jimmy", "Kenny", "Kyle",
+                     "Lien", "Randy", "Sheila", "Sheron", "Stan", "Timmy", "Token", "Wendy"]
+        if let name = array.randomElement() {
+            return UIImage(named: name)
+        } else {
+            return nil
         }
-        return image
     }
 }
