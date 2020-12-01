@@ -12,7 +12,6 @@ target 'Chat' do
 
   target 'ChatTests' do
       inherit! :search_paths
-      pod 'Firebase'
   end
 
 end
