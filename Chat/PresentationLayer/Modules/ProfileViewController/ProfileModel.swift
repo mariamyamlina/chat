@@ -13,7 +13,7 @@ protocol IProfileModel: class {
     func loadWithGCD(completion: @escaping () -> Void)
     func saveWithOperations(nameDidChange: Bool, bioDidChange: Bool, imageDidChange: Bool, completion: @escaping (Bool, Bool, Bool) -> Void)
     func loadWithOperations(completion: @escaping () -> Void)
-    func buttonLog(_ button: UIButton, _ function: String)
+    func buttonLog(_ button: ButtonWithTouchSize, _ function: String)
     var currentTheme: Theme { get }
     var name: String? { get }
     var bio: String? { get }
@@ -63,7 +63,7 @@ extension ProfileModel: IProfileModel {
         dataService.load(dataManager: dataService.operationDataManager, mustReadBio: true, completion: completion)
     }
     
-    func buttonLog(_ button: UIButton, _ function: String) {
+    func buttonLog(_ button: ButtonWithTouchSize, _ function: String) {
         loger.printButtonLog(button, function)
     }
     

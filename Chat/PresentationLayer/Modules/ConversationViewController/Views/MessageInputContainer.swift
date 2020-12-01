@@ -9,6 +9,9 @@
 import UIKit
 
 class MessageInputContainer: UIView {
+    // MARK: - Dependencies
+    let animator = Animator()
+    
     // MARK: - UI
     var theme: Theme
     
@@ -43,8 +46,8 @@ class MessageInputContainer: UIView {
         return textField
     }()
 
-    lazy var addButton: UIButton = {
-        let button = UIButton(type: .system)
+    lazy var addButton: ButtonWithTouchSize = {
+        let button = ButtonWithTouchSize(type: .system)
         button.setImage(UIImage(named: "AddIcon"), for: .normal)
 
         addSubview(button)
@@ -54,8 +57,8 @@ class MessageInputContainer: UIView {
         return button
     }()
     
-    lazy var sendButton: UIButton = {
-        let button = UIButton(type: .system)
+    lazy var sendButton: ButtonWithTouchSize = {
+        let button = ButtonWithTouchSize(type: .system)
         button.isEnabled = false
         button.isHidden = true
         button.setImage(UIImage(named: "SendIcon"), for: .normal)

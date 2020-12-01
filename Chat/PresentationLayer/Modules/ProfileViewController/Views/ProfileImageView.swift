@@ -10,6 +10,9 @@ import UIKit
 
 @IBDesignable
 class ProfileImageView: UIView {
+    // MARK: - Dependencies
+    let animator = Animator()
+    
     // MARK: - UI
     var profileImageWidthConstraint, profileImageHeightConstraint: NSLayoutConstraint?
     var lettersLabelWidthConstraint, lettersLabelHeightConstraint: NSLayoutConstraint?

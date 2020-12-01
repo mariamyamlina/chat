@@ -9,6 +9,9 @@
 import UIKit
 
 class ThemesView: UIView {
+    // MARK: - Dependencies
+    let animator = Animator()
+    
     // MARK: - UI
     var theme: Theme
     

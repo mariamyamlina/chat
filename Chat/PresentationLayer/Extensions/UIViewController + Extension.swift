@@ -15,6 +15,7 @@ extension UIViewController {
     }
     
     func configureNewChannelAlert(model: IConversationsListModel,
+                                  animator: Animator,
                                   view: ConversationsListView) {
         let alertController = UIAlertController(title: "Create new channel", message: nil, preferredStyle: .alert)
         alertController.addTextField()
@@ -28,10 +29,12 @@ extension UIViewController {
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         [createAction, cancelAction].forEach { alertController.addAction($0) }
         alertController.applyTheme(theme: model.currentTheme)
+        alertController.view.addGestureRecognizer(animator.gestureRecognizer)
         self.present(alertController, animated: true, completion: nil)
     }
     
     func configureAlert(model: IProfileModel,
+                        animator: Animator,
                         view: ProfileView,
                         changeInfoIndicator: [Bool],
                         completion: @escaping (Bool, Bool, Bool) -> Void,
@@ -71,10 +74,12 @@ extension UIViewController {
             alertController.addAction(repeatAction)
         }
         alertController.applyTheme(theme: model.currentTheme)
+        alertController.view.addGestureRecognizer(animator.gestureRecognizer)
         self.present(alertController, animated: true, completion: nil)
     }
     
     func configureImagePickerAlert(model: IProfileModel,
+                                   animator: Animator,
                                    completion: @escaping (UIImagePickerController.SourceType?) -> Void) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.pruneNegativeWidthConstraints()
@@ -92,6 +97,7 @@ extension UIViewController {
         }
         [galeryAction, takePhotoAction, loadPhotoAction, cancelAction].forEach { alertController.addAction($0) }
         alertController.applyTheme(theme: model.currentTheme)
+        alertController.view.addGestureRecognizer(animator.gestureRecognizer)
         self.present(alertController, animated: true, completion: nil)
     }
 }

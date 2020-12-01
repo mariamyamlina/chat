@@ -9,6 +9,10 @@
 import UIKit
 
 class ConversationTableViewCell: UITableViewCell {
+    // MARK: - Dependencies
+    static let reuseIdentifier = "Conversation Cell"
+    let animator = Animator()
+    
     // MARK: - UI
     lazy var profileImage: UIImageView = {
         let profileImage = UIImageView()
@@ -86,17 +90,6 @@ class ConversationTableViewCell: UITableViewCell {
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
-    
-    // MARK: - Init / deinit
-    static let reuseIdentifier = "Conversation Cell"
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-    }
 
     // MARK: - Setup View
     override func setSelected(_ selected: Bool, animated: Bool) {

@@ -76,7 +76,8 @@ class ConversationViewController: LogViewController {
         do {
             try model.frc.performFetch()
         } catch {
-            configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
+            configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription,
+                              animator: self.conversationView.animator)
         }
     }
     
@@ -95,15 +96,19 @@ class ConversationViewController: LogViewController {
         if let unwrChannel = model.channel {
             model.getMessages(inChannel: unwrChannel,
                                   errorHandler: { [weak self] (errorTitle, errorInfo) in
-                                    self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
+                                    guard let self = self else { return }
+                                    self.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo,
+                                                            animator: self.conversationView.animator)
             })
         }
     }
     
     // MARK: - Keyboard
     private func addKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardNotification),
+                                               name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     private func removeKeyboardNotifications() {
