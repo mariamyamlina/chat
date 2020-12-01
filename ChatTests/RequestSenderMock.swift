@@ -19,19 +19,18 @@ final class RequestSenderMock: IRequestSender {
                       completionHandler: @escaping (Result<DataModel, NetworkError>) -> Void) {
         callsCount += 1
         receivedURLs.append(config.request.urlRequest?.url?.absoluteString)
-        guard let stub = sendStub else { return }
-        stub(completionHandler)
+        sendStub?(completionHandler)
     }
 
     func load(imageWithURL url: URL,
               completionHandler: @escaping (Result<Data, NetworkError>) -> Void) {
         callsCount += 1
         receivedURLs.append(url.absoluteString)
-        guard let stub = loadStub else { return }
-        stub(completionHandler)
+        loadStub?(completionHandler)
     }
 
     func cancel(loadingWithURL url: URL) {
+        callsCount += 1
         receivedURLs.append(url.absoluteString)
     }
 }

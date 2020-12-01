@@ -14,7 +14,7 @@ class ChatUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func testExample() throws {
+    func testEntryFields() throws {
         let app = XCUIApplication()
         app.launch()
 
@@ -22,8 +22,9 @@ class ChatUITests: XCTestCase {
         _ = barButton.waitForExistence(timeout: 3.0)
         barButton.tap()
         let textView = app.textViews["profileTextView"].firstMatch
-        _ = textView.waitForExistence(timeout: 3.0)
         let textViews = app.textViews
-        XCTAssertEqual(textViews.count, 2)
+        let textFields = app.textFields
+        _ = textView.waitForExistence(timeout: 3.0)
+        XCTAssertEqual(textViews.count + textFields.count, 2)
     }
 }
