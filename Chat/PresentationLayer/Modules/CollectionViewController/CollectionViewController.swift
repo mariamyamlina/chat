@@ -43,6 +43,7 @@ class CollectionViewController: LogViewController {
         guard var constant = navigationController?.navigationBar.bounds.height else { return }
         if #available(iOS 13.0, *) { } else { constant += 20 }
         collectionView.activateTopConstraint(with: constant)
+        navigationController?.view.addGestureRecognizer(collectionView.animator.gestureRecognizer)
     }
     
     // MARK: - Setup View
@@ -137,7 +138,8 @@ extension CollectionViewController: ICollectionModelDelegate {
     
     func show(error message: String) {
         DispatchQueue.main.async {
-            self.configureLogAlert(withTitle: "Network", withMessage: message)
+            self.configureLogAlert(withTitle: "Network", withMessage: message,
+                                   animator: self.collectionView.animator)
         }
     }
 }

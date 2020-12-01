@@ -12,6 +12,8 @@ import CoreData
 class ConversationsListViewController: LogViewController {
     // MARK: - UI
     lazy var conversationsListView = ConversationsListView(theme: model.currentTheme, name: model.name, image: model.image)
+    lazy var frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width,
+                            height: (navigationController?.navigationBar.frame.height ?? 44) + UIApplication.shared.statusBarFrame.height)
     
     // MARK: - Dependencies
     private let presentationAssembly: IPresentationAssembly
@@ -41,11 +43,13 @@ class ConversationsListViewController: LogViewController {
         super.viewWillAppear(animated)
         conversationsListView.tableView.isHidden = false
         applyTheme(theme: model.currentTheme)
+        getChannels()
+        navigationController?.view.addGestureRecognizer(conversationsListView.animator.gestureRecognizer)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        getChannels()
+        showNewMessageButton()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -56,8 +60,7 @@ class ConversationsListViewController: LogViewController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        guard let height = navigationController?.navigationBar.frame.height else { return }
-        conversationsListView.showNewMessageButton(height >= 96)
+        showNewMessageButton()
     }
     
     // MARK: - Setup View
@@ -81,6 +84,7 @@ class ConversationsListViewController: LogViewController {
     
     private func setupNavigationBar() {
         guard let navigationBar = navigationController?.navigationBar else { return }
+        navigationBar.prefersLargeTitles = true
         conversationsListView.setupNavigationItem(navigationItem: navigationItem)
         conversationsListView.setupNavigationBar(navigationBar: navigationBar)
         updateProfileImage()
@@ -97,14 +101,22 @@ class ConversationsListViewController: LogViewController {
         do {
             try model.frc.performFetch()
         } catch {
-            configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription)
+            configureLogAlert(withTitle: "Fetch", withMessage: error.localizedDescription,
+                              animator: self.conversationsListView.animator)
         }
     }
     
     // MARK: - Handlers
+    private func showNewMessageButton() {
+        guard let height = navigationController?.navigationBar.frame.height else { return }
+        conversationsListView.showNewMessageButton(height >= 96)
+    }
+    
     private func getChannels() {
         model.getChannels(errorHandler: { [weak self] (errorTitle, errorInfo) in
-            self?.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo)
+            guard let self = self else { return }
+            self.configureLogAlert(withTitle: errorTitle, withMessage: errorInfo,
+                                    animator: self.conversationsListView.animator)
         })
     }
     
@@ -121,7 +133,8 @@ class ConversationsListViewController: LogViewController {
         conversationsListView.profileMenuHandler = { [weak self] in
             guard let self = self else { return }
             let profileController = self.presentationAssembly.profileViewController().embedInNavigationController()
-            profileController.modalPresentationStyle = UIModalPresentationStyle.pageSheet
+            profileController.modalPresentationStyle = .fullScreen
+            profileController.transitioningDelegate = self
             self.present(profileController, animated: true, completion: nil)
         }
         
@@ -135,7 +148,7 @@ class ConversationsListViewController: LogViewController {
         
         conversationsListView.alertWithTextFieldHandler = { [weak self] in
             guard let self = self else { return }
-            self.configureNewChannelAlert(model: self.model, view: self.conversationsListView)
+            self.configureNewChannelAlert(model: self.model, animator: self.conversationsListView.animator, view: self.conversationsListView)
         }
     }
 }
@@ -230,5 +243,16 @@ extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard navigationController?.topViewController == self else { return }
         conversationsListView.tableView.endUpdates()
+    }
+}
+
+// MARK: - UIViewControllerTransitioningDelegate
+extension ConversationsListViewController: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return Transition(startIndicator: true, startFrame: frame)
+    }
+
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return Transition(startIndicator: false, startFrame: frame)
     }
 }

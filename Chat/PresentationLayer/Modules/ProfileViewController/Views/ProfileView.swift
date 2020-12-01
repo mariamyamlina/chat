@@ -9,11 +9,16 @@
 import UIKit
 
 class ProfileView: UIView {
+    // MARK: - Dependencies
+    let animator = Animator()
+    
     // MARK: - UI
     var theme: Theme
     var name, bio: String?
     var image: UIImage?
     var gcdSaveButtonBottomConstraint, operationSaveButtonBottomConstraint: NSLayoutConstraint?
+
+    var startPosition = CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2)
     
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -84,8 +89,6 @@ class ProfileView: UIView {
     
     lazy var profileImageView: ProfileImageView = {
         let profileImageView = ProfileImageView(small: false, name: name, image: image)
-        let tap = UITapGestureRecognizer(target: self, action: #selector(configureActionSheet))
-        profileImageView.addGestureRecognizer(tap)
         profileImageView.isUserInteractionEnabled = false
         scrollViewContentView.addSubview(profileImageView)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -118,9 +121,9 @@ class ProfileView: UIView {
         addSubview(gcdSaveButton)
         gcdSaveButton.translatesAutoresizingMaskIntoConstraints = false
         gcdSaveButtonBottomConstraint = NSLayoutConstraint(item: gcdSaveButton, attribute: .bottom, relatedBy: .equal,
-                                                           toItem: self, attribute: .bottom, multiplier: 1, constant: -20)
+                                                           toItem: self, attribute: .bottom, multiplier: 1, constant: -30)
         gcdSaveButtonBottomConstraint?.isActive = true
-        gcdSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10).isActive = true
+        gcdSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
         gcdSaveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
         gcdSaveButton.widthAnchor.constraint(equalToConstant: (UIScreen.main.bounds.width - 10 - 12 - 12) / 2).isActive = true
         gcdSaveButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
@@ -138,9 +141,9 @@ class ProfileView: UIView {
         addSubview(operationSaveButton)
         operationSaveButton.translatesAutoresizingMaskIntoConstraints = false
         operationSaveButtonBottomConstraint = NSLayoutConstraint(item: operationSaveButton, attribute: .bottom, relatedBy: .equal,
-                                                                 toItem: self, attribute: .bottom, multiplier: 1, constant: -20)
+                                                                 toItem: self, attribute: .bottom, multiplier: 1, constant: -30)
         operationSaveButtonBottomConstraint?.isActive = true
-        operationSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 10).isActive = true
+        operationSaveButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
         operationSaveButton.leadingAnchor.constraint(equalTo: gcdSaveButton.trailingAnchor, constant: 10).isActive = true
         operationSaveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
         operationSaveButton.widthAnchor.constraint(equalTo: gcdSaveButton.widthAnchor).isActive = true
@@ -159,17 +162,15 @@ class ProfileView: UIView {
         scrollViewContentView.addSubview(editProfileButton)
         editProfileButton.translatesAutoresizingMaskIntoConstraints = false
         editProfileButton.topAnchor.constraint(equalTo: bioTextView.bottomAnchor, constant: 20).isActive = true
-        editProfileButton.bottomAnchor.constraint(equalTo: scrollViewContentView.bottomAnchor).isActive = true
-        editProfileButton.leadingAnchor.constraint(greaterThanOrEqualTo: scrollViewContentView.leadingAnchor, constant: 12).isActive = true
-        editProfileButton.trailingAnchor.constraint(lessThanOrEqualTo: scrollViewContentView.trailingAnchor, constant: -12).isActive = true
+        editProfileButton.bottomAnchor.constraint(equalTo: scrollViewContentView.bottomAnchor, constant: -15).isActive = true
         editProfileButton.centerXAnchor.constraint(equalTo: scrollViewContentView.centerXAnchor).isActive = true
-        editProfileButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 296).isActive = true
+        editProfileButton.widthAnchor.constraint(equalToConstant: 140).isActive = true
         editProfileButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
         return editProfileButton
     }()
     
-    lazy var editPhotoButton: UIButton = {
-        let editPhotoButton = UIButton()
+    lazy var editPhotoButton: ButtonWithTouchSize = {
+        let editPhotoButton = ButtonWithTouchSize()
         setupButtonView(button: editPhotoButton, title: "Edit", color: .systemBlue)
         editPhotoButton.titleLabel?.font = UIFont(name: "SFProText-Semibold", size: 16.0)
         editPhotoButton.titleLabel?.textAlignment = .center
@@ -217,18 +218,23 @@ class ProfileView: UIView {
             setupButtonView(button: editProfileButton, title: "Cancel Editing", color: .systemRed)
             [nameTextView, bioTextView].forEach { $0.layer.borderWidth = 1.0 }
             profileImageView.isUserInteractionEnabled = true
+            startPosition = CGPoint(x: editProfileButton.layer.position.x,
+                                    y: editProfileButton.layer.position.y)
+            animator.startTrembling(for: editProfileButton, position: startPosition)
         } else {
             setupButtonView(button: editProfileButton, title: "Edit Profile", color: .systemBlue)
             setSaveButtonsEnable(flag: false)
             [nameTextView, bioTextView].forEach { $0.layer.borderWidth = 0.0}
+            animator.stopTrembling(for: editProfileButton, position: startPosition)
         }
     }
     
     func animate(isKeyboardShowing: Bool, keyboardHeight: CGFloat, bottomOffset: CGPoint) {
-        [gcdSaveButtonBottomConstraint, operationSaveButtonBottomConstraint].forEach {$0?.constant = isKeyboardShowing ? -keyboardHeight - 20 : -20}
-        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: { self.layoutIfNeeded() },
-                       completion: { [weak self] (_) in
-            if isKeyboardShowing, bottomOffset.y > 0 { self?.scrollView.setContentOffset(bottomOffset, animated: true) }
+        [gcdSaveButtonBottomConstraint, operationSaveButtonBottomConstraint].forEach {$0?.constant = isKeyboardShowing ? -keyboardHeight - 30 : -30}
+        animator.animateKeyboard(animation: { self.layoutIfNeeded() },
+                                 completion: { [weak self] (_) in
+                                    if isKeyboardShowing, bottomOffset.y > 0 { self?.scrollView.setContentOffset(bottomOffset, animated: true)
+                                    }
         })
     }
     
@@ -268,7 +274,7 @@ class ProfileView: UIView {
     }
     
     // MARK: - Setup View
-    func setupButtonView(button: UIButton, title: String, color: UIColor) {
+    func setupButtonView(button: ButtonWithTouchSize, title: String, color: UIColor) {
         button.setTitle(title, for: .normal)
         button.setTitleColor(color, for: .normal)
         button.setTitleColor(color.withAlphaComponent(0.4), for: .highlighted)
@@ -281,14 +287,20 @@ class ProfileView: UIView {
         [nameTextView, bioTextView].forEach { $0?.layer.borderWidth = 0 }
         setSaveButtonsEnable(flag: false)
         setTextViewsEditable(flag: false)
+        animator.stopTrembling(for: editProfileButton, position: startPosition)
     }
     
     private func setTextViewsEditable(flag: Bool) {
-        [nameTextView, nameTextView].forEach { $0.isEditable = flag }
+        [nameTextView, bioTextView].forEach { $0.isEditable = flag }
         editPhotoButton.isEnabled = flag
     }
     
-    func setSaveButtonsEnable(flag: Bool) { [gcdSaveButton, operationSaveButton].forEach { $0.isEnabled = flag } }
+    func setSaveButtonsEnable(flag: Bool) {
+        [gcdSaveButton, operationSaveButton].forEach { $0.isEnabled = flag }
+        if !flag {
+            [nameTextView, bioTextView].forEach { $0.resignFirstResponder() }
+        }
+    }
     
     func applyTheme(theme: Theme) {
         self.theme = theme

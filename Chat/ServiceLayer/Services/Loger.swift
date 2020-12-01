@@ -11,7 +11,7 @@ import UIKit
 protocol ILoger {
     func printAppLog(_ message: String, _ current: UIApplication.State, _ function: String)
     func printVCLog(_ message: String, _ function: String)
-    func printButtonLog(_ button: UIButton, _ function: String)
+    func printButtonLog(_ button: ButtonWithTouchSize, _ function: String)
     func printDBLog(_ modificationType: String, _ count: Int)
     func printDBStatLog(_ channelsCount: Int, _ messagesCount: Int, _ infoAbout: [String])
 }
@@ -58,7 +58,7 @@ extension Loger: ILoger {
         }
     }
     
-    func printButtonLog(_ button: UIButton, _ function: String) {
+    func printButtonLog(_ button: ButtonWithTouchSize, _ function: String) {
         if buttonLogIndicator {
             print("Button frame from \(function):\n\(button.frame)\n")
         }

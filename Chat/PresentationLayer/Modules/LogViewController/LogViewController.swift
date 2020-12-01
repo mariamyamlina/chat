@@ -56,11 +56,13 @@ class LogViewController: UIViewController {
 
 // MARK: - LogAlert
 extension LogViewController {
-    func configureLogAlert(withTitle title: String? = nil, withMessage message: String? = nil) {
+    func configureLogAlert(withTitle title: String? = nil, withMessage message: String? = nil,
+                           animator: Animator) {
         let alertController = UIAlertController(title: (title ?? "") + " Error", message: message, preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "OK", style: .cancel)
         alertController.addAction(cancelAction)
         alertController.applyTheme(theme: model.currentTheme)
+        alertController.view.addGestureRecognizer(animator.gestureRecognizer)
         self.present(alertController, animated: true, completion: nil)
     }
 }

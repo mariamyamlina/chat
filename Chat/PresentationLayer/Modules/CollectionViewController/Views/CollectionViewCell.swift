@@ -9,7 +9,9 @@
 import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
+    // MARK: - Dependencies
     static let reuseIdentifier = "Collection Cell"
+    let animator = Animator()
     
     // MARK: - UI
     var placeholder = UIImage(named: "ImagePlaceholder")

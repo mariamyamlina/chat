@@ -9,6 +9,9 @@
 import UIKit
 
 class ConversationView: UIView {
+    // MARK: - Dependencies
+    let animator = Animator()
+    
     // MARK: - UI
     var messageInputContainerBottomConstraint: NSLayoutConstraint?
     var theme: Theme
@@ -110,12 +113,11 @@ class ConversationView: UIView {
     
     func animate(isKeyboardShowing: Bool, keyboardHeight: CGFloat, indexPathForLastRow: IndexPath?) {
         messageInputContainerBottomConstraint?.constant = isKeyboardShowing ? -keyboardHeight : 0
-        UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
-            self.layoutIfNeeded()
-        }, completion: { [weak self] (_) in
-            guard let indexPath = indexPathForLastRow,
-                isKeyboardShowing else { return }
-            self?.scrollTableView(to: indexPath)
+        animator.animateKeyboard(animation: { self.layoutIfNeeded() },
+                                 completion: { [weak self] (_) in
+                                    guard let indexPath = indexPathForLastRow,
+                                        isKeyboardShowing else { return }
+                                    self?.scrollTableView(to: indexPath)
         })
     }
 }

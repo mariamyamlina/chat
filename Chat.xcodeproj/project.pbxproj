@@ -41,6 +41,7 @@
 		996A40C6256169B10048361C /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A40C5256169B10048361C /* Request.swift */; };
 		996A40C8256169DE0048361C /* RequestsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A40C7256169DE0048361C /* RequestsFactory.swift */; };
 		996A40CA25617CD50048361C /* ImagesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A40C925617CD50048361C /* ImagesService.swift */; };
+		996A5511256A97B20045898D /* Animator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996A5510256A97B20045898D /* Animator.swift */; };
 		996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996FA7B3253FAB4B007EC8AA /* Channel.swift */; };
 		997CEE202530D8EF00645079 /* GCDDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE1F2530D8EF00645079 /* GCDDataManager.swift */; };
 		997CEE222530D91500645079 /* OperationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997CEE212530D91500645079 /* OperationDataManager.swift */; };
@@ -69,6 +70,7 @@
 		99CB3E08255B4CE100DDD117 /* ThemeStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CB3E07255B4CE100DDD117 /* ThemeStorage.swift */; };
 		99CB3E0C255B620A00DDD117 /* SettingsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CB3E0B255B620A00DDD117 /* SettingsStorage.swift */; };
 		99D40CCE25581862005FEF4C /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D40CCD25581862005FEF4C /* CoreAssembly.swift */; };
+		99DF507B256AA90800BA96D2 /* Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF507A256AA90800BA96D2 /* Transition.swift */; };
 		99E52A6C2542EF40007BD9B6 /* Chat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A6A2542EF40007BD9B6 /* Chat.xcdatamodeld */; };
 		99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E52A6E2542F313007BD9B6 /* CoreDataStack.swift */; };
 		99E8B6972526850C00117A04 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E8B6962526850C00117A04 /* ThemesViewController.swift */; };
@@ -119,6 +121,7 @@
 		996A40C5256169B10048361C /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 		996A40C7256169DE0048361C /* RequestsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestsFactory.swift; sourceTree = "<group>"; };
 		996A40C925617CD50048361C /* ImagesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesService.swift; sourceTree = "<group>"; };
+		996A5510256A97B20045898D /* Animator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animator.swift; sourceTree = "<group>"; };
 		996FA7B3253FAB4B007EC8AA /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		997CEE1F2530D8EF00645079 /* GCDDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDDataManager.swift; sourceTree = "<group>"; };
 		997CEE212530D91500645079 /* OperationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDataManager.swift; sourceTree = "<group>"; };
@@ -149,6 +152,7 @@
 		99CB3E07255B4CE100DDD117 /* ThemeStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeStorage.swift; sourceTree = "<group>"; };
 		99CB3E0B255B620A00DDD117 /* SettingsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStorage.swift; sourceTree = "<group>"; };
 		99D40CCD25581862005FEF4C /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
+		99DF507A256AA90800BA96D2 /* Transition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transition.swift; sourceTree = "<group>"; };
 		99E52A6B2542EF40007BD9B6 /* Chat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Chat.xcdatamodel; sourceTree = "<group>"; };
 		99E52A6E2542F313007BD9B6 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		99E8B6962526850C00117A04 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
@@ -298,7 +302,6 @@
 			children = (
 				994518DC255725AB00D5B015 /* ThemesView.swift */,
 				99E8B69A252689ED00117A04 /* ThemeButton.swift */,
-				9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -359,6 +362,8 @@
 		99CB3DF5255B19B800DDD117 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				99DF5079256AA8E800BA96D2 /* Animations */,
+				9984672F251B5EA1004E9044 /* ButtonWithTouchSize.swift */,
 				994F1C992534C987003FC809 /* Colors.swift */,
 				990AC648255C8346006A60D4 /* ConfigurableView.swift */,
 				99CB3DFA255B1A3600DDD117 /* Date + Extension.swift */,
@@ -384,6 +389,15 @@
 				99D40CCD25581862005FEF4C /* CoreAssembly.swift */,
 			);
 			path = Assembly;
+			sourceTree = "<group>";
+		};
+		99DF5079256AA8E800BA96D2 /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				996A5510256A97B20045898D /* Animator.swift */,
+				99DF507A256AA90800BA96D2 /* Transition.swift */,
+			);
+			path = Animations;
 			sourceTree = "<group>";
 		};
 		99ED327525580EA0008848D0 /* PresentationLayer */ = {
@@ -696,10 +710,12 @@
 				99803F87250ADD0F000284D9 /* AppDelegate.swift in Sources */,
 				996A40C2256169220048361C /* Parser.swift in Sources */,
 				990FCB99254C969800156A48 /* MessageDB+CoreDataProperties.swift in Sources */,
+				99DF507B256AA90800BA96D2 /* Transition.swift in Sources */,
 				996FA7B4253FAB4B007EC8AA /* Channel.swift in Sources */,
 				99ED327E25580F75008848D0 /* ServicesAssembly.swift in Sources */,
 				996A40C6256169B10048361C /* Request.swift in Sources */,
 				9989C60A255F049D009F7A31 /* CollectionView.swift in Sources */,
+				996A5511256A97B20045898D /* Animator.swift in Sources */,
 				995C84B2253B09DA0036B067 /* Message.swift in Sources */,
 				99569DE42515FD6900F103D4 /* LogViewController.swift in Sources */,
 				99E52A6F2542F313007BD9B6 /* CoreDataStack.swift in Sources */,

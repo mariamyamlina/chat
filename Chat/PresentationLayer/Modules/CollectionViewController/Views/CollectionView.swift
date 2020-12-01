@@ -9,6 +9,9 @@
 import UIKit
 
 class CollectionView: UIView {
+    // MARK: - Dependencies
+    let animator = Animator()
+    
     // MARK: - UI
     var theme: Theme
     

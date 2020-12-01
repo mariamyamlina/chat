@@ -9,12 +9,14 @@
 import UIKit
 
 class MessageTableViewCell: UITableViewCell {
+    // MARK: - Dependencies
+    static let reuseIdentifier = "Message Cell"
+    let animator = Animator()
+    
     enum MessageType {
         case input
         case output
     }
-    
-    static let reuseIdentifier = "Message Cell"
     
     // MARK: - UI
     lazy var messageTextView: UITextView = {
