@@ -9,11 +9,12 @@
 import UIKit
 
 protocol IPresentationAssembly {
+    func logModel() -> ILogModel
     func conversationsListViewController() -> ConversationsListViewController
     func conversationViewController(channel: Channel?) -> ConversationViewController
     func profileViewController() -> ProfileViewController
     func themesViewController() -> ThemesViewController
-    func logModel() -> ILogModel
+    func collectionViewController() -> CollectionViewController
 }
 
 class PresentationAssembly: IPresentationAssembly {
@@ -81,5 +82,16 @@ class PresentationAssembly: IPresentationAssembly {
     private func themesModel() -> ThemesModel {
         return ThemesModel(themeService: serviceAssembly.themeService,
                            settingsService: serviceAssembly.settingsService)
+    }
+    
+    // MARK: - CollectionViewController
+    func collectionViewController() -> CollectionViewController {
+        let model = collectionModel()
+        let collectionVC = CollectionViewController(model: model, presentationAssembly: self)
+        return collectionVC
+    }
+    
+    private func collectionModel() -> CollectionModel {
+        return CollectionModel(settingsService: serviceAssembly.settingsService, imagesService: serviceAssembly.imagesService)
     }
 }

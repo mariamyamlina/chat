@@ -9,51 +9,51 @@
 import UIKit
 
 struct Colors {
-    static let profileImageGreen = UIColor(red: 228 / 250, green: 232 / 250, blue: 43 / 250, alpha: 1)
-    static let lettersLabelColor = UIColor(red: 54 / 250, green: 55 / 250, blue: 56 / 250, alpha: 1)
-    static let onlineIndicatorGreen = UIColor(red: 90 / 250, green: 212 / 250, blue: 57 / 250, alpha: 1)
+    static let profileImageGreen = UIColor(hexString: "#E4E82B")
+    static let lettersLabelColor = UIColor(hexString: "#363738")
     
-    static let messageLabelLightColor = UIColor(red: 60 / 250, green: 60 / 250, blue: 67 / 250, alpha: 0.6)
-    static let messageLabelDarkColor = UIColor(red: 141 / 250, green: 141 / 250, blue: 147 / 250, alpha: 1)
+    static let onlineIndicatorGreen = UIColor(hexString: "#5AD439")
+    static let settingsIconColor = UIColor(hexString: "#545458", alpha: 0.65)
     
-    static let settingsIconColor = UIColor(red: 84 / 250, green: 84 / 250, blue: 88 / 250, alpha: 0.65)
+    static let messageLabelLightColor = UIColor(hexString: "#3C3C43", alpha: 0.6)
+    static let messageLabelDarkColor = UIColor(hexString: "#8D8D93")
 
-    static let darkBlue = UIColor(red: 25 / 250, green: 54 / 250, blue: 97 / 250, alpha: 1)
-    static let darkGreen = UIColor(red: 10 / 250, green: 75 / 250, blue: 70 / 250, alpha: 1)
-    static let darkGray = UIColor(red: 84 / 250, green: 84 / 250, blue: 88 / 250, alpha: 0.65)
+    static let darkBlue = UIColor(hexString: "#193661")
+    static let darkGreen = UIColor(hexString: "#0A4B46")
+    static let darkGray = UIColor(hexString: "#545458", alpha: 0.65)
     
-    static let lightBarColor = UIColor(red: 245 / 250, green: 245 / 250, blue: 245 / 250, alpha: 1.0)
-    static let darkBarColor = UIColor(red: 30 / 250, green: 30 / 250, blue: 30 / 250, alpha: 1.0)
+    static let lightBarColor = UIColor(hexString: "#F5F5F5")
+    static let darkBarColor = UIColor(hexString: "#1E1E1E")
     
-    static let timeLightGrayColor = UIColor(red: 0 / 250, green: 0 / 250, blue: 0 / 250, alpha: 0.25)
-    static let timeGrayColor = UIColor(red: 171 / 250, green: 171 / 250, blue: 171 / 250, alpha: 1)
+    static let timeLightGrayColor = UIColor(hexString: "#000000", alpha: 0.25)
+    static let timeGrayColor = UIColor(hexString: "#ABABAB")
     static let timeWhiteColor = UIColor.white
     
-    static let inputGray = UIColor(red: 223 / 250, green: 223 / 250, blue: 223 / 250, alpha: 1)
-    static let inputLightGray = UIColor(red: 234 / 250, green: 235 / 250, blue: 237 / 250, alpha: 1)
-    static let inputDarkGray = UIColor(red: 46 / 250, green: 46 / 250, blue: 46 / 250, alpha: 1)
+    static let inputGray = UIColor(hexString: "#DFDFDF")
+    static let inputLightGray = UIColor(hexString: "#EAEBED")
+    static let inputDarkGray = UIColor(hexString: "#2E2E2E")
     
-    static let outputGreen = UIColor(red: 220 / 250, green: 247 / 250, blue: 197 / 250, alpha: 1)
-    static let outputBlue = UIColor(red: 67 / 250, green: 137 / 250, blue: 249 / 250, alpha: 1)
-    static let outputDarkGray = UIColor(red: 92 / 250, green: 92 / 250, blue: 92 / 250, alpha: 1)
+    static let outputGreen = UIColor(hexString: "#DCF7C5")
+    static let outputBlue = UIColor(hexString: "#4389F9")
+    static let outputDarkGray = UIColor(hexString: "#5C5C5C")
     
-    static let saveButtonLightColor = UIColor(red: 246 / 250, green: 246 / 250, blue: 246 / 250, alpha: 1)
-    static let saveButtonDarkColor = UIColor(red: 27 / 250, green: 27 / 250, blue: 27 / 250, alpha: 1)
+    static let saveButtonLightColor = UIColor(hexString: "#F6F6F6")
+    static let saveButtonDarkColor = UIColor(hexString: "#1B1B1B")
     
-    static let textFieldDarkBackgroundColor = UIColor(red: 59 / 250, green: 59 / 250, blue: 59 / 250, alpha: 1)
     static let textFieldLightBackgroundColor = UIColor.white
+    static let textFieldDarkBackgroundColor = UIColor(hexString: "#3B3B3B")
     
-    static let textFieldLightTextColor = UIColor(red: 142 / 250, green: 142 / 250, blue: 147 / 250, alpha: 1)
-    static let textFieldDarkTextColor = UIColor(red: 153 / 250, green: 153 / 250, blue: 153 / 250, alpha: 1)
+    static let textFieldLightTextColor = UIColor(hexString: "#8E8E93")
+    static let textFieldDarkTextColor = UIColor(hexString: "#999999")
     
-    static let searchBarLightTextColor = UIColor(red: 0 / 250, green: 0 / 250, blue: 0 / 250, alpha: 0.05)
-    static let searchBarDarkTextColor = UIColor(red: 245 / 250, green: 245 / 250, blue: 245 / 250, alpha: 1)
+    static let searchBarLightColor = UIColor.black.withAlphaComponent(0.05)
+    static let searchBarDarkColor = UIColor(hexString: "#F5F5F5")
     
     static let tableViewHeaderTextLightColor = UIColor.lightGray
-    static let tableViewHeaderTextDarkColor = UIColor(red: 232 / 255, green: 233 / 255, blue: 237 / 255, alpha: 1)
+    static let tableViewHeaderTextDarkColor = UIColor(hexString: "#E8E9ED")
     
-    static let tableViewHeaderLightColor = UIColor(red: 255 / 255, green: 255 / 255, blue: 255 / 255, alpha: 0.85)
-    static let tableViewHeaderDarkColor = UIColor(red: 0 / 255, green: 0 / 255, blue: 0 / 255, alpha: 0.85)
+    static let tableViewHeaderLightColor = UIColor.white.withAlphaComponent(0.85)
+    static let tableViewHeaderDarkColor = UIColor.black.withAlphaComponent(0.85)
 
     static let separatorColor = { () -> UIColor in
         if #available(iOS 13.0, *) {
@@ -64,9 +64,39 @@ struct Colors {
     }
     static let tableViewLightSeparatorColor = UIColor.lightGray
     
-    static let alertDarkColor = UIColor(red: 30 / 250, green: 30 / 250, blue: 30 / 250, alpha: 0.75)
+    static let alertDarkColor = UIColor(hexString: "#1E1E1E", alpha: 0.75)
     static let alertLightColor = UIColor.white
     
     static let classicAndDayButtonColor = UIColor.white
-    static let nightButtonColor = UIColor(red: 6 / 250, green: 6 / 250, blue: 6 / 250, alpha: 1)
+    static let nightButtonColor = UIColor(hexString: "#060606")
+}
+
+extension UIColor {
+    convenience init(hexString: String, alpha: CGFloat = 1.0) {
+        let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let scanner = Scanner(string: hexString)
+        if hexString.hasPrefix("#") {
+            scanner.scanLocation = 1
+        }
+        var color: UInt32 = 0
+        scanner.scanHexInt32(&color)
+        let mask = 0x000000FF
+        let r = Int(color >> 16) & mask
+        let g = Int(color >> 8) & mask
+        let b = Int(color) & mask
+        let red = CGFloat(r) / 255.0
+        let green = CGFloat(g) / 255.0
+        let blue = CGFloat(b) / 255.0
+        self.init(red: red, green: green, blue: blue, alpha: alpha)
+    }
+    
+    func toHexString() -> String {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+        let rgb: Int = (Int)(r * 255) << 16 | (Int)(g * 255) << 8 | (Int)(b * 255) << 0
+        return String(format: "#%06x", rgb)
+    }
 }

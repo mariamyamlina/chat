@@ -75,7 +75,7 @@ extension UIViewController {
     }
     
     func configureImagePickerAlert(model: IProfileModel,
-                                   completion: @escaping (UIImagePickerController.SourceType) -> Void) {
+                                   completion: @escaping (UIImagePickerController.SourceType?) -> Void) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.pruneNegativeWidthConstraints()
         let galeryAction = UIAlertAction(title: "Choose from gallery", style: .default) { (_) in
@@ -84,10 +84,13 @@ extension UIViewController {
         let takePhotoAction = UIAlertAction(title: "Take a photo", style: .default) { (_) in
             completion(.camera)
         }
+        let loadPhotoAction = UIAlertAction(title: "Load from network", style: .default) { (_) in
+            completion(nil)
+        }
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (_) in
             alertController.dismiss(animated: true, completion: nil)
         }
-        [galeryAction, takePhotoAction, cancelAction].forEach { alertController.addAction($0) }
+        [galeryAction, takePhotoAction, loadPhotoAction, cancelAction].forEach { alertController.addAction($0) }
         alertController.applyTheme(theme: model.currentTheme)
         self.present(alertController, animated: true, completion: nil)
     }

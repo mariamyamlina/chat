@@ -41,11 +41,7 @@ class ChannelService {
                                               lastActivity: channel.lastActivity,
                                               profileImage: channel.profileImage?.jpegData(compressionQuality: 1.0),
                                               in: context)
-                    do {
-                        try context.obtainPermanentIDs(for: [channelDB])
-                    } catch {
-                        errorHandler("CoreData", error.localizedDescription)
-                    }
+                    try? context.obtainPermanentIDs(for: [channelDB])
                 } else {
                     if channelFromDB?.lastActivity != channel.lastActivity || channelFromDB?.lastMessage != channel.lastMessage {
                         channelFromDB?.lastActivity = channel.lastActivity
@@ -63,18 +59,15 @@ class ChannelService {
     private func save(channel: Channel,
                       errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
-            guard coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) == nil else { return }
+            guard coreDataStack.load(channel: channel.identifier, from: context,
+                                     errorHandler: errorHandler) == nil else { return }
             let channelDB = ChannelDB(identifier: channel.identifier,
                                       name: channel.name,
                                       lastMessage: channel.lastMessage,
                                       lastActivity: channel.lastActivity,
                                       profileImage: channel.profileImage?.jpegData(compressionQuality: 1.0),
                                       in: context)
-            do {
-                try context.obtainPermanentIDs(for: [channelDB])
-            } catch {
-                errorHandler("CoreData", error.localizedDescription)
-            }
+            try? context.obtainPermanentIDs(for: [channelDB])
         }
     }
     
@@ -82,7 +75,8 @@ class ChannelService {
     private func update(channel: Channel,
                         errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
-            guard let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+            guard let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context,
+                                                         errorHandler: errorHandler) else { return }
             if channelFromDB.lastActivity != channel.lastActivity || channelFromDB.lastMessage != channel.lastMessage {
                 channelFromDB.lastActivity = channel.lastActivity
                 channelFromDB.lastMessage = channel.lastMessage
@@ -94,7 +88,8 @@ class ChannelService {
     private func delete(compareWithChannels channels: [Channel],
                         errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
-            coreDataStack.arrayDifference(entityType: .channel, predicate: nil, arrayOfEntities: channels, in: context, errorHandler: errorHandler).forEach {
+            coreDataStack.arrayDifference(entityType: .channel, predicate: nil, arrayOfEntities: channels, in: context,
+                                          errorHandler: errorHandler).forEach {
                 let fetchRequest = coreDataStack.fetchRequest(for: .channel, with: $0)
                 do {
                     let channelDB = try context.fetch(fetchRequest).first as? ChannelDB
@@ -111,7 +106,8 @@ class ChannelService {
     private func delete(channel: Channel,
                         errorHandler: @escaping (String?, String?) -> Void) {
         coreDataStack.performSave { context in
-            guard let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context, errorHandler: errorHandler) else { return }
+            guard let channelFromDB = coreDataStack.load(channel: channel.identifier, from: context,
+                                                         errorHandler: errorHandler) else { return }
             let object = context.object(with: channelFromDB.objectID)
             context.delete(object)
         }

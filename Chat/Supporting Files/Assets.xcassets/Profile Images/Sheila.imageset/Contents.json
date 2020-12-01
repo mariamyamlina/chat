@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "Sheila-2.jpg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "Sheila-1.jpg",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "Sheila.jpg",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Sheila.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

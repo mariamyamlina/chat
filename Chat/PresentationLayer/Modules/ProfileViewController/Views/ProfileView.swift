@@ -84,6 +84,9 @@ class ProfileView: UIView {
     
     lazy var profileImageView: ProfileImageView = {
         let profileImageView = ProfileImageView(small: false, name: name, image: image)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(configureActionSheet))
+        profileImageView.addGestureRecognizer(tap)
+        profileImageView.isUserInteractionEnabled = false
         scrollViewContentView.addSubview(profileImageView)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         profileImageView.topAnchor.constraint(equalTo: scrollViewContentView.topAnchor, constant: 7).isActive = true
@@ -183,7 +186,7 @@ class ProfileView: UIView {
         let leftViewLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 115, height: 22))
         leftViewLabel.text = "My Profile"
         if #available(iOS 13.0, *) { } else {
-            leftViewLabel.textColor = theme.themeSettings.textColor
+            leftViewLabel.textColor = theme.settings.textColor
         }
         leftViewLabel.font = UIFont(name: "SFProDisplay-Bold", size: 26)
         return UIBarButtonItem(customView: leftViewLabel)
@@ -209,9 +212,11 @@ class ProfileView: UIView {
     @objc func editProfileButtonTapped() {
         let indicator = editProfileButton.titleLabel?.text == "Edit Profile"
         setTextViewsEditable(flag: indicator)
+        profileImageView.isUserInteractionEnabled = indicator
         if indicator {
             setupButtonView(button: editProfileButton, title: "Cancel Editing", color: .systemRed)
             [nameTextView, bioTextView].forEach { $0.layer.borderWidth = 1.0 }
+            profileImageView.isUserInteractionEnabled = true
         } else {
             setupButtonView(button: editProfileButton, title: "Edit Profile", color: .systemBlue)
             setSaveButtonsEnable(flag: false)
@@ -227,7 +232,8 @@ class ProfileView: UIView {
         })
     }
     
-    func activateBioTextViewHeightConstraint(with constant: CGFloat) { bioTextView.heightAnchor.constraint(equalToConstant: constant).isActive = true }
+    func activateBioTextViewHeightConstraint(with constant: CGFloat) { bioTextView.heightAnchor.constraint(equalToConstant: constant).isActive = true
+    }
     
     func saveSucceedCompletion(name: String?, image: UIImage?) {
         self.name = name
@@ -286,12 +292,12 @@ class ProfileView: UIView {
     
     func applyTheme(theme: Theme) {
         self.theme = theme
-        [self, scrollViewContentView].forEach { $0?.backgroundColor = theme.themeSettings.backgroundColor }
-        [nameTextView, bioTextView].forEach { $0?.textColor = theme.themeSettings.textColor }
-        activityIndicator.color = theme.themeSettings.textColor
-        [gcdSaveButton, operationSaveButton, editProfileButton].forEach { $0?.backgroundColor = theme.themeSettings.saveButtonColor }
+        [self, scrollViewContentView].forEach { $0?.backgroundColor = theme.settings.backgroundColor }
+        [nameTextView, bioTextView].forEach { $0?.textColor = theme.settings.textColor }
+        activityIndicator.color = theme.settings.textColor
+        [gcdSaveButton, operationSaveButton, editProfileButton].forEach { $0?.backgroundColor = theme.settings.saveButtonColor }
         if #available(iOS 13.0, *) { } else {
-            [nameTextView, bioTextView].forEach { $0?.keyboardAppearance = theme.themeSettings.keyboardAppearance }
+            [nameTextView, bioTextView].forEach { $0?.keyboardAppearance = theme.settings.keyboardAppearance }
         }
     }
 }

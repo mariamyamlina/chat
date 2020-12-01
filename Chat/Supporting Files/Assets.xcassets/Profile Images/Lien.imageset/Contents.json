@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "Lien-2.jpeg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "Lien-1.jpeg",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "Lien.jpeg",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Lien.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

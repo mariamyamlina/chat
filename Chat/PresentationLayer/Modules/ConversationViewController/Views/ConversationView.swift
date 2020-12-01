@@ -60,7 +60,7 @@ class ConversationView: UIView {
     
     // MARK: - Setup View
     fileprivate func applyTheme(theme: Theme) {
-        backgroundColor = theme.themeSettings.backgroundColor
+        backgroundColor = theme.settings.backgroundColor
     }
     
     func configureTopView(text: String?, image: UIImage?) -> TopView {
@@ -82,8 +82,8 @@ class ConversationView: UIView {
         dateLabel.font = UIFont(name: "SFProText-Semibold", size: 13)
         dateLabel.textAlignment = .center
         dateLabel.text = sectionInfo
-        dateLabel.textColor = theme.themeSettings.tableViewHeaderTextColor
-        dateLabel.backgroundColor = theme.themeSettings.tableViewHeaderColor
+        dateLabel.textColor = theme.settings.tableViewHeaderTextColor
+        dateLabel.backgroundColor = theme.settings.tableViewHeaderColor
 
         headerView.addSubview(dateLabel)
         return headerView

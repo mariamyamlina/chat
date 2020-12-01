@@ -19,7 +19,7 @@ class ConversationsListView: UIView {
         if #available(iOS 13.0, *) {
             searchController.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [
                 NSAttributedString.Key.font: UIFont(name: "SFProText-Regular", size: 17) as Any,
-                NSAttributedString.Key.foregroundColor: theme.themeSettings.textFieldTextColor])
+                NSAttributedString.Key.foregroundColor: theme.settings.textFieldTextColor])
         } else {
             searchController.searchBar.placeholder = "Search"
         }
@@ -100,14 +100,14 @@ class ConversationsListView: UIView {
     
     // MARK: - Setup View
     func applyTheme(theme: Theme) {
-        backgroundColor = theme.themeSettings.backgroundColor
-        tableView.separatorColor = theme.themeSettings.tableViewSeparatorColor
+        backgroundColor = theme.settings.backgroundColor
+        tableView.separatorColor = theme.settings.tableViewSeparatorColor
         tableView.reloadData()
         if #available(iOS 13.0, *) {
-            searchController.searchBar.searchTextField.backgroundColor = theme.themeSettings.searchBarTextColor
-            searchController.searchBar.searchTextField.leftView?.tintColor = theme.themeSettings.textFieldTextColor
+            searchController.searchBar.searchTextField.backgroundColor = theme.settings.searchBarColor
+            searchController.searchBar.searchTextField.leftView?.tintColor = theme.settings.textFieldTextColor
         } else {
-            searchController.searchBar.keyboardAppearance = theme.themeSettings.keyboardAppearance
+            searchController.searchBar.keyboardAppearance = theme.settings.keyboardAppearance
         }
     }
     
@@ -128,10 +128,10 @@ class ConversationsListView: UIView {
     func setupTextField(_ textField: UITextField?) {
         textField?.autocapitalizationType = .sentences
         textField?.attributedPlaceholder = NSAttributedString(string: "Channel name here",
-                                                              attributes: [NSAttributedString.Key.foregroundColor: theme.themeSettings.textFieldTextColor])
+                                                              attributes: [NSAttributedString.Key.foregroundColor: theme.settings.textFieldTextColor])
         if #available(iOS 13.0, *) { } else {
-            textField?.backgroundColor = theme.themeSettings.textFieldBackgroundColor
-            textField?.keyboardAppearance = theme.themeSettings.keyboardAppearance
+            textField?.backgroundColor = theme.settings.textFieldBackgroundColor
+            textField?.keyboardAppearance = theme.settings.keyboardAppearance
         }
     }
     

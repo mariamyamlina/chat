@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "Craig-2.jpg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "Craig-1.jpg",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "Craig.jpg",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Craig.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

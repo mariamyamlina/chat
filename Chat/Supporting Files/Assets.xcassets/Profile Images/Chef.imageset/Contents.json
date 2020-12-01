@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "Chef-2.jpg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "Chef-1.jpg",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "Chef.jpg",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Chef.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

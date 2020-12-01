@@ -15,6 +15,7 @@ protocol ICoreAssembly {
     var firebaseManager: IFirebaseManager { get }
     var themeStorage: IThemeStorage { get }
     var settingsStorage: ISettingsStorage { get }
+    var requestSender: IRequestSender { get }
 }
 
 class CoreAssembly: ICoreAssembly {
@@ -24,4 +25,5 @@ class CoreAssembly: ICoreAssembly {
     lazy var firebaseManager: IFirebaseManager = FirebaseManager(settingsStorage: self.settingsStorage)
     lazy var themeStorage: IThemeStorage = ThemeStorage()
     lazy var settingsStorage: ISettingsStorage = SettingsStorage(themeStorage: self.themeStorage)
+    lazy var requestSender: IRequestSender = RequestSender()
 }

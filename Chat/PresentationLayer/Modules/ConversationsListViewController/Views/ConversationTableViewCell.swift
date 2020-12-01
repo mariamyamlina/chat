@@ -110,7 +110,7 @@ class ConversationTableViewCell: UITableViewCell {
     }
     
     fileprivate func applyTheme(theme: Theme) {
-        let currentTheme = theme.themeSettings
+        let currentTheme = theme.settings
         backgroundColor = .clear
         nameLabel.textColor = currentTheme.textColor
         messageLabel.textColor = currentTheme.messageLabelColor

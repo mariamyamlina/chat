@@ -26,7 +26,7 @@ class TopView: UIView {
     
     lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.textColor = theme.themeSettings.textColor
+        label.textColor = theme.settings.textColor
         label.font = UIFont(name: "SFProText-Semibold", size: 16)
         
         contentView.addSubview(label)
