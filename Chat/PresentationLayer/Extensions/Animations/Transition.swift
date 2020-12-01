@@ -12,14 +12,7 @@ class Transition: NSObject {
     // MARK: - Dependencies
     let startIndicator: Bool
     let startFrame: CGRect
-    
-    lazy var duration: TimeInterval = {
-        if startIndicator {
-            return 1.2
-        } else {
-            return 2.0
-        }
-    }()
+    let duration = 0.6
     
     // MARK: - Init / deinit
     init(startIndicator: Bool, startFrame: CGRect) {
