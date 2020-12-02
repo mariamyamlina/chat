@@ -46,7 +46,7 @@ class ProfileView: UIView {
     
     lazy var nameTextView: UITextView = {
         let nameTextView = UITextView()
-        nameTextView.accessibilityIdentifier = "profileTextView"
+        nameTextView.accessibilityIdentifier = "nameTextView"
         nameTextView.isAccessibilityElement = true
         nameTextView.textAlignment = .center
         nameTextView.isScrollEnabled = false
@@ -73,7 +73,7 @@ class ProfileView: UIView {
     
     lazy var bioTextView: UITextView = {
         let bioTextView = UITextView()
-        bioTextView.accessibilityIdentifier = "profileTextView"
+        bioTextView.accessibilityIdentifier = "bioTextView"
         bioTextView.isAccessibilityElement = true
         bioTextView.textAlignment = .left
         bioTextView.autocapitalizationType = .sentences
