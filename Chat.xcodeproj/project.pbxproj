@@ -265,6 +265,16 @@
 			path = DataManager;
 			sourceTree = "<group>";
 		};
+		9944508925799FB4009D45E3 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				99E6BA762575722F00E19324 /* RequestSenderMock.swift */,
+				99C0C9D62576EC70001784D2 /* ThemeStorageMock.swift */,
+				99C0C9D82576F0C0001784D2 /* DataManagerMock.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		994518DB2556F02D00D5B015 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -469,9 +479,7 @@
 			children = (
 				99E6BA6E257571FF00E19324 /* ChatTests.swift */,
 				99E6BA70257571FF00E19324 /* Info.plist */,
-				99E6BA762575722F00E19324 /* RequestSenderMock.swift */,
-				99C0C9D62576EC70001784D2 /* ThemeStorageMock.swift */,
-				99C0C9D82576F0C0001784D2 /* DataManagerMock.swift */,
+				9944508925799FB4009D45E3 /* Mocks */,
 			);
 			path = ChatTests;
 			sourceTree = "<group>";
