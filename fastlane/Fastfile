@@ -1,0 +1,25 @@
+setup_travis
+
+desc "Build for testing"
+lane :build_for_testing do
+  cocoapods
+  scan(
+    clean: true,
+    device: 'iPhone 11 Pro',
+    build_for_testing: true
+  )
+end
+
+desc "Run tests"
+lane :run_tests do
+  scan(
+    device: 'iPhone 11 Pro',
+    test_without_building: true
+  )
+end
+
+desc "Build for testing and run tests"
+lane :build_and_test do
+  build_for_testing
+  run_tests
+end
