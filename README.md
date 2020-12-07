@@ -6,6 +6,7 @@
 
 - Chat project for TFS
 - Execute *'$brew install libsodium'* command before start to install the encryption library
+- Run *$bundle exec fastlane generate_config* to generate Config.xcconfig file
 
 ## Author
 
