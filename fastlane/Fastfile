@@ -2,15 +2,14 @@ setup_travis
 
 desc "Build for testing"
 lane :build_for_testing do
+  generate_config
   cocoapods
   scan(
     clean: true,
     device: 'iPhone 11 Pro',
     build_for_testing: true
   )
-  discord_notify(
-    message: "Build succeeded"
-  )
+  
 end
 
 desc "Run tests"
@@ -39,5 +38,21 @@ lane :discord_notify do |notification|
     success: true,
     thumbnail_url: "https://acdn.tinkoff.ru/static/documents/80f3f5f9-eabc-4b45-9c5f-30c048a8a756.png",
     discord_user_id: author_id
+  )
+end
+
+desc "Generate .xcconfig file"
+lane :generate_config do
+network_key = ENV['NETWORK_API_KEY']
+firebase_key = ENV['FB_API_KEY']
+  set_xcconfig_value(
+    path: 'Chat/Config.xcconfig',
+    name: 'NETWORK_API_KEY',
+    value: network_key
+  )
+  set_xcconfig_value(
+    path: 'Chat/Config.xcconfig',
+    name: 'FB_API_KEY',
+    value: firebase_key
   )
 end

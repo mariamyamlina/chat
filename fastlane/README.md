@@ -35,6 +35,11 @@ Build for testing and run tests
 fastlane discord_notify
 ```
 Send notification to discord
+### generate_config
+```
+fastlane generate_config
+```
+Generate .xcconfig file
 
 ----
 
