@@ -18,12 +18,12 @@ class Request: IRequest {
         return ""
     }
     private var baseUrl: String = "https://pixabay.com/api/?key="
-    private var apiKey = "19123229-ae49243578cecb1abfcac9d42"
+    private var apiKey = Bundle.main.object(forInfoDictionaryKey: "APIKey") as? String
     
     // MARK: - IRequest
     var urlRequest: URLRequest? {
-        let urlString: String = baseUrl + apiKey + command
-        if let url = URL(string: urlString) {
+        if let key = apiKey,
+            let url = URL(string: baseUrl + key + command) {
             return URLRequest(url: url)
         }
         return nil

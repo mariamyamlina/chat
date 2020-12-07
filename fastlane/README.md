@@ -20,9 +20,9 @@ or alternatively using `brew install fastlane`
 fastlane build_for_testing
 ```
 Build for testing
-### run_tests
+### run_all_tests
 ```
-fastlane run_tests
+fastlane run_all_tests
 ```
 Run tests
 ### build_and_test
@@ -30,6 +30,11 @@ Run tests
 fastlane build_and_test
 ```
 Build for testing and run tests
+### discord_notify
+```
+fastlane discord_notify
+```
+Send notification to discord
 
 ----
 

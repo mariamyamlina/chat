@@ -8,10 +8,13 @@ lane :build_for_testing do
     device: 'iPhone 11 Pro',
     build_for_testing: true
   )
+  discord_notify(
+    message: "Build succeeded"
+  )
 end
 
 desc "Run tests"
-lane :run_tests do
+lane :run_all_tests do
   scan(
     device: 'iPhone 11 Pro',
     test_without_building: true
@@ -21,5 +24,20 @@ end
 desc "Build for testing and run tests"
 lane :build_and_test do
   build_for_testing
-  run_tests
+  run_all_tests
+end
+
+desc "Send notification to discord"
+lane :discord_notify do |notification|
+  webhook_url = ENV['DISCORD_WEBHOOK_URL']
+  app_name = "Chat"
+  author_id = ENV['DISCORD_USER_ID']
+  discord_notifier(
+    webhook_url: webhook_url,
+    title: app_name,
+    description: notification[:message],
+    success: true,
+    thumbnail_url: "https://acdn.tinkoff.ru/static/documents/80f3f5f9-eabc-4b45-9c5f-30c048a8a756.png",
+    discord_user_id: author_id
+  )
 end
