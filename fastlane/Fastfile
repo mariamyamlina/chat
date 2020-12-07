@@ -48,11 +48,11 @@ firebase_key = ENV['FB_API_KEY']
   set_xcconfig_value(
     path: 'Chat/Config.xcconfig',
     name: 'NETWORK_API_KEY',
-    value: 'networkkey'
+    value: network_key
   )
   set_xcconfig_value(
     path: 'Chat/Config.xcconfig',
     name: 'FB_API_KEY',
-    value: 'fbkey'
+    value: firebase_key
   )
 end
