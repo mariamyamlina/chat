@@ -8,3 +8,6 @@
 
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
+
+// To generate Config.xcconfig file content run the command below:
+// $ bundle exec fastlane generate_config

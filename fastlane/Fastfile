@@ -9,7 +9,9 @@ lane :build_for_testing do
     device: 'iPhone 11 Pro',
     build_for_testing: true
   )
-  
+  discord_notify(
+    message: "Build succeeded"
+  )
 end
 
 desc "Run tests"
