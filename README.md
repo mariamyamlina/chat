@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.com/mariamyamlina/chat.svg?branch=homework-13)](https://travis-ci.com/mariamyamlina/chat)
 
 - Chat project for TFS
-- Execute *'$brew install libsodium'* command before start to install the encryption library
-- Run *$bundle exec fastlane generate_config* to generate Config.xcconfig file
+- Execute *'$ brew install libsodium'* command before start to install the encryption library
+- Run *'$ bundle exec fastlane generate_config'* to generate Config.xcconfig file
 
 ## Author
 
