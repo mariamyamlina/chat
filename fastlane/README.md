@@ -19,17 +19,17 @@ or alternatively using `brew install fastlane`
 ```
 fastlane build_for_testing
 ```
-Build for testing
+Generate .xcconfig, install pods, clean build for testing and notify discord
 ### run_all_tests
 ```
 fastlane run_all_tests
 ```
-Run tests
+Run app tests
 ### build_and_test
 ```
 fastlane build_and_test
 ```
-Build for testing and run tests
+Build for testing and run all tests
 ### discord_notify
 ```
 fastlane discord_notify

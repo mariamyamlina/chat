@@ -1,20 +1,28 @@
 setup_travis
 
-desc "Build for testing"
+desc "Generate .xcconfig, install pods, clean build for testing and notify discord"
 lane :build_for_testing do
-  generate_config
-  cocoapods
-  scan(
-    clean: true,
-    device: 'iPhone 11 Pro',
-    build_for_testing: true
-  )
-  discord_notify(
-    message: "Build succeeded"
-  )
+  begin
+    generate_config
+    cocoapods
+    scan(
+      clean: true,
+      device: 'iPhone 11 Pro',
+      build_for_testing: true
+    )
+    discord_notify(
+      message: "Build succeeded",
+      success: true
+    )
+  rescue => exception
+    discord_notify(
+      message: "Build failed",
+      success: false
+    )
+  end
 end
 
-desc "Run tests"
+desc "Run app tests"
 lane :run_all_tests do
   scan(
     device: 'iPhone 11 Pro',
@@ -22,7 +30,7 @@ lane :run_all_tests do
   )
 end
 
-desc "Build for testing and run tests"
+desc "Build for testing and run all tests"
 lane :build_and_test do
   build_for_testing
   run_all_tests
@@ -36,7 +44,7 @@ lane :discord_notify do |notification|
     webhook_url: webhook_url,
     title: app_name,
     description: notification[:message],
-    success: true,
+    success: notification[:success],
     thumbnail_url: "https://acdn.tinkoff.ru/static/documents/80f3f5f9-eabc-4b45-9c5f-30c048a8a756.png"
   )
 end
