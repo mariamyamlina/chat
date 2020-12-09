@@ -49,7 +49,7 @@ lane :discord_notify do |notification|
     thumbnail_url: "https://acdn.tinkoff.ru/static/documents/80f3f5f9-eabc-4b45-9c5f-30c048a8a756.png",
     fields:[
       {
-        name: "Created by", 
+        name: "Created by:", 
         value: author_name
       }
     ]
