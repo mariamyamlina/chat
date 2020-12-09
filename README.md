@@ -1,6 +1,6 @@
 # Chat
 
-[![Build Status](https://travis-ci.com/mariamyamlina/chat.svg?branch=homework-13)](https://travis-ci.com/mariamyamlina/chat)
+[![Build Status](https://travis-ci.org/mariamyamlina/chat.svg?branch=homework-13)](https://travis-ci.org/mariamyamlina/chat)
 
 - Chat project for TFS
 - Execute *'$ brew install libsodium'* command before start to install the encryption library
