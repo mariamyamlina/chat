@@ -40,12 +40,19 @@ desc "Send notification to discord"
 lane :discord_notify do |notification|
   webhook_url = ENV['DISCORD_WEBHOOK_URL']
   app_name = "Chat"
+  author_name = "Maria Myamlina"
   discord_notifier(
     webhook_url: webhook_url,
     title: app_name,
     description: notification[:message],
     success: notification[:success],
-    thumbnail_url: "https://acdn.tinkoff.ru/static/documents/80f3f5f9-eabc-4b45-9c5f-30c048a8a756.png"
+    thumbnail_url: "https://acdn.tinkoff.ru/static/documents/80f3f5f9-eabc-4b45-9c5f-30c048a8a756.png",
+    fields:[
+      {
+        name: "Created by", 
+        value: author_name
+      }
+    ]
   )
 end
 
