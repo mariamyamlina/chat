@@ -112,6 +112,7 @@
 		2D669EE74477880C6CB0979D /* Pods_Chat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		32563607774D08B4120B1BF2 /* Pods-Chat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.debug.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.debug.xcconfig"; sourceTree = "<group>"; };
 		51BE540F661E248C6EEBD7C7 /* Pods-ChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatTests.release.xcconfig"; path = "Target Support Files/Pods-ChatTests/Pods-ChatTests.release.xcconfig"; sourceTree = "<group>"; };
+		9902D6F8257E7E6F00B3D9F2 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		990AC640255C171A006A60D4 /* SettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsService.swift; sourceTree = "<group>"; };
 		990AC644255C6DB4006A60D4 /* FetchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchService.swift; sourceTree = "<group>"; };
 		990AC648255C8346006A60D4 /* ConfigurableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableView.swift; sourceTree = "<group>"; };
@@ -322,12 +323,13 @@
 		99803F85250ADD0F000284D9 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				99803F94250ADD11000284D9 /* Info.plist */,
 				99ED327525580EA0008848D0 /* PresentationLayer */,
 				99ED327925580F3A008848D0 /* ServiceLayer */,
 				99ED327F25580FA1008848D0 /* CoreLayer */,
 				99803F86250ADD0F000284D9 /* AppDelegate.swift */,
 				99ED328025580FC8008848D0 /* RootAssembly.swift */,
+				99803F94250ADD11000284D9 /* Info.plist */,
+				9902D6F8257E7E6F00B3D9F2 /* Config.xcconfig */,
 				994518DB2556F02D00D5B015 /* Supporting Files */,
 			);
 			path = Chat;
@@ -959,6 +961,7 @@
 /* Begin XCBuildConfiguration section */
 		99803F95250ADD11000284D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9902D6F8257E7E6F00B3D9F2 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1019,6 +1022,7 @@
 		};
 		99803F96250ADD11000284D9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9902D6F8257E7E6F00B3D9F2 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
