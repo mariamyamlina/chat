@@ -9,23 +9,47 @@
 import UIKit
 
 // MARK: - CollectionCellModel
-struct CollectionCellModel {
-    let image: UIImage?
+protocol ICollectionCellModel: class {
+    func fetchImage(completion: @escaping (UIImage?) -> Void)
+    func cancelFetch()
 }
 
-struct CellDisplayModel {
-    let imageUrl: String
+class CollectionCellModel {
+    // MARK: - Dependencies
+    let imageUrl: URL?
+    let imagesService: IImagesService
+
+    // MARK: - Init / deinit
+    init(imageUrl: URL?, imagesService: IImagesService) {
+        self.imageUrl = imageUrl
+        self.imagesService = imagesService
+    }
 }
 
+// MARK: - ICollectionCellModel
+extension CollectionCellModel: ICollectionCellModel {
+    func fetchImage(completion: @escaping (UIImage?) -> Void) {
+        guard let url = imageUrl else { return }
+        imagesService.loadImage(with: url) { (image: UIImage?, _) in
+            completion(image)
+        }
+    }
+    
+    func cancelFetch() {
+        guard let url = imageUrl else { return }
+        imagesService.cancelLoadImage(with: url)
+    }
+}
+
+// MARK: - CollectionModel
 protocol ICollectionModel: class {
     var delegate: ICollectionModelDelegate? { get set }
     var currentTheme: Theme { get }
-    func fetchImages()
-    func fetchImage(with url: URL, completion: @escaping (CollectionCellModel, Theme) -> Void)
+    func fetchUrls()
 }
 
 protocol ICollectionModelDelegate: class {
-    func setup(dataSource: [CellDisplayModel])
+    func setup(dataSource: [CollectionCellModel])
     func show(error message: String)
 }
 
@@ -46,21 +70,12 @@ class CollectionModel {
 extension CollectionModel: ICollectionModel {
     var currentTheme: Theme { return settingsService.currentTheme }
     
-    func fetchImages() {
-        imagesService.loadImages { (images: DataModel?, error) in
+    func fetchUrls() {
+        imagesService.loadUrls { (images: DataModel?, error) in
             if let images = images {
-                let cells = images.hits.map({ CellDisplayModel(imageUrl: $0.webformatURL) })
+                let cells = images.hits.map({ CollectionCellModel(imageUrl: URL(string: $0.webformatURL),
+                                                                  imagesService: self.imagesService) })
                 self.delegate?.setup(dataSource: cells)
-            } else {
-                self.delegate?.show(error: error?.message ?? "")
-            }
-        }
-    }
-    
-    func fetchImage(with url: URL, completion: @escaping (CollectionCellModel, Theme) -> Void) {
-        imagesService.loadImage(with: url) { (image: UIImage?, error) in
-            if let image = image {
-                completion(CollectionCellModel(image: image), self.settingsService.currentTheme)
             } else {
                 self.delegate?.show(error: error?.message ?? "")
             }

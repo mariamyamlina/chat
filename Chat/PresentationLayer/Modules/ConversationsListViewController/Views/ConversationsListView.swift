@@ -33,7 +33,13 @@ class ConversationsListView: UIView {
     }()
     
     lazy var backBarButtonItem: UIBarButtonItem = { return UIBarButtonItem(title: "", style: .plain, target: nil, action: nil) }()
-    lazy var rightBarButtonItem: UIBarButtonItem = { return configureRightBarButtonItem() }()
+    
+    lazy var rightBarButtonItem: UIBarButtonItem = {
+        let barButtonItem = configureRightBarButtonItem()
+        barButtonItem.isAccessibilityElement = true
+        barButtonItem.accessibilityIdentifier = "barButtonItem"
+        return barButtonItem
+    }()
     
     lazy var leftBarButtonItem: UIBarButtonItem = {
         let button = ButtonWithTouchSize(type: .system)
@@ -77,6 +83,7 @@ class ConversationsListView: UIView {
         profileImage.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         profileImage.layer.cornerRadius = profileImage.bounds.size.width / 2
         profileImage.clipsToBounds = true
+        profileImage.isUserInteractionEnabled = false
         return profileImage
     }()
     
@@ -120,8 +127,8 @@ class ConversationsListView: UIView {
         rightButton.layer.cornerRadius = rightButton.bounds.width / 2
         rightButton.clipsToBounds = true
         rightButton.addTarget(self, action: #selector(profileMenuTapped), for: .touchUpInside)
-        profileImage.addSubview(rightButton)
-        return UIBarButtonItem(customView: profileImage)
+        rightButton.addSubview(profileImage)
+        return UIBarButtonItem(customView: rightButton)
     }
     
     func showNewMessageButton(_ show: Bool) {

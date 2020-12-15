@@ -6,7 +6,7 @@
 //  Copyright © 2020 Maria Myamlina. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 struct RequestConfig<Parser> where Parser: IParser {
     let request: IRequest
@@ -30,12 +30,14 @@ enum NetworkError: Error {
 protocol IRequestSender {
     func send(requestConfig: RequestConfig<Parser>,
               completionHandler: @escaping (Result<DataModel, NetworkError>) -> Void)
-    func getImage(with url: URL,
-                  completionHandler: @escaping (Result<UIImage?, NetworkError>) -> Void)
+    func load(imageWithURL url: URL,
+              completionHandler: @escaping (Result<Data, NetworkError>) -> Void)
+    func cancel(loadingWithURL url: URL)
 }
 
 class RequestSender: IRequestSender {
     let session = URLSession.shared
+    var currentTasks: [URLSessionDataTask] = []
     
     func send<Parser>(requestConfig config: RequestConfig<Parser>,
                       completionHandler: @escaping (Result<DataModel, NetworkError>) -> Void) {
@@ -62,23 +64,25 @@ class RequestSender: IRequestSender {
         task.resume()
     }
     
-    func getImage(with url: URL,
-                  completionHandler: @escaping (Result<UIImage?, NetworkError>) -> Void) {
+    func load(imageWithURL url: URL,
+              completionHandler: @escaping (Result<Data, NetworkError>) -> Void) {
         let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
-            guard error == nil else {
-                completionHandler(.failure(.badTask))
-                return
-            }
-            
-            guard let data = data else {
-                completionHandler(.failure(.badData))
-                return
-            }
+            guard error == nil else { return }
+            guard let data = data else { return }
             
             DispatchQueue.main.async {
-                completionHandler(Result.success(UIImage(data: data)))
+                completionHandler(Result.success(data))
             }
         }
+        currentTasks.append(task)
         task.resume()
+    }
+    
+    func cancel(loadingWithURL url: URL) {
+        DispatchQueue(label: "com.chat.requestsender", qos: .userInteractive).async { [weak self] in
+            let runningTasks = self?.currentTasks.filter { $0.state == .running }
+            let task = runningTasks?.filter { $0.currentRequest?.url == url }
+            task?.first?.cancel()
+        }
     }
 }

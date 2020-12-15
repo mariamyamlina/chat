@@ -17,7 +17,7 @@ class CollectionViewController: LogViewController {
     private let model: ICollectionModel
     
     // DisplayModel
-    private var dataSource: [CellDisplayModel] = []
+    private var dataSource: [CollectionCellModel] = []
     
     // MARK: - Init / deinit
     required init?(coder: NSCoder) {
@@ -75,22 +75,19 @@ class CollectionViewController: LogViewController {
     
     private func setupFetching() {
         model.delegate = self
-        model.fetchImages()
+        model.fetchUrls()
     }
 }
 
 // MARK: - UICollectionViewDelegate
 extension CollectionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let url = URL(string: dataSource[indexPath.row].imageUrl) {
-            model.fetchImage(with: url) { [weak self] (model, _) in
-                guard let pickedImage = model.image else { return }
-                let navigationVC = self?.presentingViewController as? UINavigationController
-                guard let profileVC = navigationVC?.viewControllers.first as? ProfileViewController else { return }
-                profileVC.updateProfileImage(with: pickedImage)
-                self?.dismiss(animated: true, completion: nil)
-            }
-        }
+        guard let cell = collectionView.cellForItem(at: indexPath) as? CollectionViewCell,
+            let pickedImage = cell.imageView.image, pickedImage != cell.placeholder else { return }
+        let navigationVC = presentingViewController as? UINavigationController
+        guard let profileVC = navigationVC?.viewControllers.first as? ProfileViewController else { return }
+        profileVC.updateProfileImage(with: pickedImage)
+        dismiss(animated: true, completion: nil)
     }
 }
 
@@ -103,10 +100,7 @@ extension CollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseIdentifier,
                                                             for: indexPath) as? CollectionViewCell else { return CollectionViewCell() }
-        
-        if let url = URL(string: dataSource[indexPath.row].imageUrl) {
-            model.fetchImage(with: url, completion: cell.configure)
-        }
+        cell.configure(with: dataSource[indexPath.row], theme: model.currentTheme)
         return cell
     }
 }
@@ -129,7 +123,7 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
 
 // MARK: - ICollectionModelDelegate
 extension CollectionViewController: ICollectionModelDelegate {
-    func setup(dataSource: [CellDisplayModel]) {
+    func setup(dataSource: [CollectionCellModel]) {
         self.dataSource = dataSource
         DispatchQueue.main.async {
             self.collectionView.reloadData()

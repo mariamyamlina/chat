@@ -12,6 +12,7 @@ class CollectionViewCell: UICollectionViewCell {
     // MARK: - Dependencies
     static let reuseIdentifier = "Collection Cell"
     let animator = Animator()
+    var model: CollectionCellModel?
     
     // MARK: - UI
     var placeholder = UIImage(named: "ImagePlaceholder")
@@ -42,12 +43,16 @@ class CollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.imageView.image = placeholder
+        self.model?.cancelFetch()
     }
 }
 
 // MARK: - Configuration
 extension CollectionViewCell: IConfigurableView {
     func configure(with model: CollectionCellModel, theme: Theme) {
-        self.imageView.image = model.image
+        self.model = model
+        self.model?.fetchImage { [weak self] image in
+            self?.imageView.image = image
+        }
     }
 }
