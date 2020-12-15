@@ -31,7 +31,9 @@ class ChatUITests: XCTestCase {
         _ = bioTextView.waitForExistence(timeout: 3.0)
         
         // Assert
-        XCTAssertTrue(nameTextView.exists && bioTextView.exists)
-        XCTAssertEqual(textViews.count + textFields.count, 2)
+        XCTAssertTrue(nameTextView.exists)
+        XCTAssertTrue(bioTextView.exists)
+        XCTAssertEqual(textViews.count, 2)
+        XCTAssertEqual(textFields.count, 0)
     }
 }
