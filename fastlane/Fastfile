@@ -1,0 +1,73 @@
+setup_travis
+
+desc "Generate .xcconfig, install pods, clean build for testing and notify discord"
+lane :build_for_testing do
+  begin
+    generate_config
+    cocoapods
+    scan(
+      clean: true,
+      device: 'iPhone 11 Pro',
+      build_for_testing: true
+    )
+    discord_notify(
+      message: "Build succeeded",
+      success: true
+    )
+  rescue => exception
+    discord_notify(
+      message: "Build failed",
+      success: false
+    )
+  end
+end
+
+desc "Run app tests"
+lane :run_all_tests do
+  scan(
+    device: 'iPhone 11 Pro',
+    test_without_building: true
+  )
+end
+
+desc "Build for testing and run all tests"
+lane :build_and_test do
+  build_for_testing
+  run_all_tests
+end
+
+desc "Send notification to discord"
+lane :discord_notify do |notification|
+  webhook_url = ENV['DISCORD_WEBHOOK_URL']
+  app_name = "Chat"
+  author_name = "Maria Myamlina"
+  discord_notifier(
+    webhook_url: webhook_url,
+    title: app_name,
+    description: notification[:message],
+    success: notification[:success],
+    thumbnail_url: "https://acdn.tinkoff.ru/static/documents/80f3f5f9-eabc-4b45-9c5f-30c048a8a756.png",
+    fields:[
+      {
+        name: "Created by:", 
+        value: author_name
+      }
+    ]
+  )
+end
+
+desc "Generate .xcconfig file"
+lane :generate_config do
+network_key = ENV['NETWORK_API_KEY']
+firebase_key = ENV['FB_API_KEY']
+  set_xcconfig_value(
+    path: 'Chat/Config.xcconfig',
+    name: 'NETWORK_API_KEY',
+    value: network_key
+  )
+  set_xcconfig_value(
+    path: 'Chat/Config.xcconfig',
+    name: 'FB_API_KEY',
+    value: firebase_key
+  )
+end
