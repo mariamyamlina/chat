@@ -1,6 +1,6 @@
 # Chat
 
-[![Build Status](https://travis-ci.org/mariamyamlina/chat.svg?branch=homework-13)](https://travis-ci.org/mariamyamlina/chat)
+[![Build Status](https://travis-ci.org/mariamyamlina/chat.svg?branch=master)](https://travis-ci.org/mariamyamlina/chat)
 
 ## Description
 
